@@ -1,0 +1,21 @@
+import { ICommandHandler } from "@/core/domain/shared/ts-utilities";
+import { {{classify name}}Command } from "./{{dasherize name}}.command";
+import { {{classify name}}CommandResponse } from "./{{dasherize name}}-command.response";
+import { inject, injectable, registry } from "tsyringe";
+
+@injectable()
+@registry([
+  {
+    token: {{classify name}}CommandHandlerService.constructor.name,
+    useClass: {{classify name}}CommandHandlerService,
+  },
+])
+export class {{classify name}}CommandHandlerService implements ICommandHandler<{{classify name}}Command> {
+  constructor() {
+    //
+  }
+
+  async execute(command: {{classify name}}Command): Promise<{{classify name}}CommandResponse> {
+    return new {{classify name}}CommandResponse();
+  }
+}

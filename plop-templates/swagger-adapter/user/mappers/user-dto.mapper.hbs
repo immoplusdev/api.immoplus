@@ -1,0 +1,26 @@
+import { IMapper } from 'clever-ts-utilities';
+import { {{classify name}}Dto } from '../{{name}}.dto';
+import { {{classify name}} } from 'src/core/domain/models/{{name}}';
+
+export class {{classify name}}DtoMapper implements IMapper<{{classify name}}, {{classify name}}Dto> {
+  mapFrom(param: {{classify name}}): {{classify name}}Dto {
+    return new {{classify name}}Dto({
+      // id: param.id,
+      // login: param.login,
+      // email: param.email,
+      // phone: param.phone,
+      // avatar: param.avatar,
+    });
+  }
+
+  mapTo(param: {{classify name}}Dto): {{classify name}} {
+    return new {{classify name}}({
+      // id: param.id,
+      // login: param.login,
+      // email: param.email,
+      // phone: param.phone,
+      // avatar: param.avatar,
+      // password: null,
+    });
+  }
+}

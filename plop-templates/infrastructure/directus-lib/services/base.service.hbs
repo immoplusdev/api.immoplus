@@ -1,0 +1,13 @@
+import { IocDependencies } from "@/core/application/ioc/app-ioc-dependencies.enum";
+import { injectable, registry } from "tsyringe";
+import { {{classify name}}ServicePort } from "@/core/domain/{{dasherize group}}/{{dasherize name}}-service.port";
+
+
+@injectable()
+@registry([
+  {
+    token: IocDependencies.{{classify name}}ServicePort,
+    useClass: {{classify name}}Service,
+  },
+])
+export class {{classify name}}Service implements {{classify name}}ServicePort {}

@@ -36,7 +36,6 @@
     "@nestjsx/crud": "^5.0.0-alpha.3",
     "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
     "bcrypt": "^5.1.0",
-    "clever-ts-utilities": "^2.3.6",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1",
     "compression": "^1.7.4",

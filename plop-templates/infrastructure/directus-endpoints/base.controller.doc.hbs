@@ -1,0 +1,100 @@
+import { FilterQuery } from "@/core/domain/shared/models/global.model";
+import {
+  Security,
+  Route,
+  Tags,
+  Get,
+  Controller,
+  Post,
+  Body,
+  Path,
+  Query,
+  Patch,
+} from "@tsoa/runtime";
+import { mockApiOutput } from "@/infrastructure/express-adapter/helpers/api.helper";
+import { SecuritySchemeEnum } from "@/infrastructure/tsoa-adapter/enums/security-scheme.enum";
+import { {{classify name}}Dto } from "./dtos/{{dasherize name}}.dto";
+import { WrapperResponseDto } from "@/infrastructure/express-adapter/responses/wrapper-response.dto";
+import { DirectusCommandOmittedFields } from "@/infrastructure/directus-adapter/models/directus-create-omitted-fields.model";
+
+@Security(SecuritySchemeEnum.Jwt)
+@Route("items/{{underscore name}}")
+@Tags("Ressource {{dasherize name}}")
+export class {{classify name}}ControllerDoc extends Controller {
+  /**
+   * @summary Créer un élément
+   * @param payload
+   * @returns
+   */
+  @Post()
+  public async createOne(
+    @Body() payload: Omit<{{classify name}}Dto, DirectusCommandOmittedFields>
+  ): Promise<
+    WrapperResponseDto<{{classify name}}Dto>
+  > {
+    return mockApiOutput(payload);
+  }
+
+  /**
+   * @summary Récupérer les données d'un élément
+   * @param id
+   * @param fields Spécifier quel champ l'on souhaite récupérer. Ex: field1,field2 ou *
+   * @returns
+   */
+  @Get("{id}")
+  public async readOne(
+    @Path() id: string,
+    @Query() fields?: string
+  ): Promise<WrapperResponseDto<{{classify name}}Dto>> {
+    return mockApiOutput({ id, fields });
+  }
+
+  /**
+   *@summary Récupérer plusieurs éléments
+   * @param filter Indiquer les conditions du filtre. Ex: filter[field][_eq]=value ou filter={ "field": { "_eq": "value" }}.
+   * @param fields Spécifier quel champ l'on souhaite récupérer. Ex: field1,field2 ou *
+   * @param meta indiquer quelles meta récupérer ( comme le nombre de pages... ). Ex: meta=*
+   * @param limit Indiquer le nombre d'éléments à récupérer.
+   * @param page Indiquer la page à récupérer.
+   * @param sort Indiquer le rangement à suivre. Ex: sort=date_create ou sort=+date_created ou sort=date_create,date_updated.
+   * @param search Indiquer des mots clés à rechercher dans les résultats.
+   * @param offset Indiquer le nombre d'éléments à ignore lors de la récupérer des données.
+   */
+
+  @Get()
+  public async readByQuery(
+    @Query() filter: FilterQuery[] = [`{ "status": { "_eq": "published" }}`],
+    @Query() fields?: string,
+    @Query() meta = "*",
+    @Query() limit?: number,
+    @Query() page?: number,
+    @Query() sort?: string,
+    @Query() search?: string
+    // @Query() offset?: number,
+  ): Promise<WrapperResponseDto<{{classify name}}Dto[]>> {
+    return mockApiOutput({
+      fields,
+      limit,
+      meta,
+      //   offset,
+      page,
+      sort,
+      filter,
+      search,
+    });
+  }
+
+  /**
+   * @summary Mettre un élément à jour
+   * @param payload
+   * @param id
+   * @returns
+   */
+  @Patch("{id}")
+  public async updateOne(
+    @Path() id: string,
+    @Body() payload: Partial<Omit<{{classify name}}Dto, DirectusCommandOmittedFields>>
+  ): Promise<WrapperResponseDto<{{classify name}}Dto>> {
+    return mockApiOutput({ id, payload });
+  }
+}

@@ -1,0 +1,6 @@
+import { OmitMethods } from 'clever-ts-utilities';
+export class {{classify name}}QueryDto {
+  constructor(data?: OmitMethods<{{classify name}}QueryDto>) {
+    Object.assign(this, data);
+  }
+}

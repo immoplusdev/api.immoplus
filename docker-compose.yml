@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+
+  nestjs:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    ports:
+      - '${NEST_PORT}:3000'
+    volumes:
+      - uploads:/app/uploads
+    env_file:
+      - ./.env
+
+volumes:
+  uploads:
+
+

@@ -1,0 +1,4 @@
+import { {{classify name}} } from '@/core/domain/models/{{dasherize name}}';
+import { CrudRepositoryPort } from '@/libs/utilities/crud-repository.port';
+
+export abstract class {{classify name}}RepositoryPort extends CrudRepositoryPort<{{classify name}}> {}

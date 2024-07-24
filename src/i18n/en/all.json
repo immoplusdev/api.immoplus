@@ -1,0 +1,5 @@
+{
+  "validation": {
+    "create_user_error": "error in creation"
+  }
+}

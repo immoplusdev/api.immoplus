@@ -1,0 +1,4 @@
+import { {{classify name}} } from "@/core/domain/{{dasherize group}}/{{dasherize name}}.model";
+import { BaseRepositoryPort } from "@/core/domain/shared/repositories/base-repository.port";
+
+export abstract class {{classify name}}RepositoryPort extends BaseRepositoryPort<{{classify name}}> {}

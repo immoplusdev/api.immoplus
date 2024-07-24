@@ -1,0 +1,25 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Mg{{classify name}}, Mg{{classify name}}Schema } from './mg-{{name}}.schema';
+import { Mg{{classify name}}RepositoryService } from './mg-{{name}}-repository.service';
+import { {{classify name}}RepositoryPort } from "@/core/domain/ports/{{name}}-repository.port";
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: Mg{{classify name}}.name, schema: Mg{{classify name}}Schema }]),
+  ],
+  providers: [
+    Mg{{classify name}}RepositoryService,
+    {
+      provide: {{classify name}}RepositoryPort,
+      useClass: Mg{{classify name}}RepositoryService,
+    },
+  ],
+  exports: [
+    {
+      provide: {{classify name}}RepositoryPort,
+      useClass: Mg{{classify name}}RepositoryService,
+    },
+  ],
+})
+export class Mg{{classify name}}Module {}

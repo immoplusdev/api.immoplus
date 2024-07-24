@@ -1,0 +1,6 @@
+import { OmitMethods } from 'clever-ts-utilities';
+export class {{classify name}}Command {
+  constructor(data?: OmitMethods<{{classify name}}Command>) {
+    Object.assign(this, data);
+  }
+}

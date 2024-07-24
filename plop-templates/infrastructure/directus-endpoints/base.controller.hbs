@@ -1,0 +1,14 @@
+import { AppSettings } from "@/core/domain/config/config.model";
+import { TranslationServicePort } from "@/core/domain/globalization/translation-service.port";
+import { IocDependencies } from "@/core/application/ioc/app-ioc-dependencies.enum";
+import { Route, Tags, Controller } from "@tsoa/runtime";
+import { inject, injectable } from "tsyringe";
+
+@Route("{{underscore name}}")
+@Tags("Ressource {{dasherize name}}")
+@injectable()
+export class {{classify name}}Controller extends Controller {
+  constructor() {
+    super();
+  }
+}

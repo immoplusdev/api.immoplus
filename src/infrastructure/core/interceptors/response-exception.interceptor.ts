@@ -6,8 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { BaseException } from '../../../core/domain/shared/exceptions';
-import { UnexpectedException } from '../../../core/domain/shared/exceptions/unexpected.exception';
+import { BaseException, UnexpectedException } from '@/core/domain/shared/exceptions';
 
 @Injectable()
 export class ResponseExceptionInterceptor implements NestInterceptor {
