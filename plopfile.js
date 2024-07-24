@@ -191,36 +191,36 @@ module.exports = function (plop) {
   const generateDto = [
     {
       type: "add",
-      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/dtos/{{dasherize name}}.dto.ts",
+      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/dtos/{{dasherize name}}.dtos.ts",
       templateFile:
-        "plop-templates/infrastructure/directus-endpoints/dtos/base.dto.hbs",
+        "plop-templates/infrastructure/directus-endpoints/dtos/base.dtos.hbs",
     },
   ];
 
   const generateDtoMapper = [
     {
       type: "add",
-      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/mappers/{{dasherize name}}-dto.mapper.ts",
+      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/mappers/{{dasherize name}}-dtos.mapper.ts",
       templateFile:
-        "plop-templates/infrastructure/directus-endpoints/mappers/base-dto.mapper.hbs",
+        "plop-templates/infrastructure/directus-endpoints/mappers/base-dtos.mapper.hbs",
     },
   ];
 
   const generateCommandDto = [
     {
       type: "add",
-      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/dtos/{{dasherize name}}-command.dto.ts",
+      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/dtos/{{dasherize name}}-command.dtos.ts",
       templateFile:
-        "plop-templates/infrastructure/directus-endpoints/dtos/base-command.dto.hbs",
+        "plop-templates/infrastructure/directus-endpoints/dtos/base-command.dtos.hbs",
     },
   ];
 
   const generateQueryDto = [
     {
       type: "add",
-      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/dtos/{{dasherize name}}-query.dto.ts",
+      path: "src/infrastructure/directus-endpoints/{{dasherize group}}/dtos/{{dasherize name}}-query.dtos.ts",
       templateFile:
-        "plop-templates/infrastructure/directus-endpoints/dtos/base-query.dto.hbs",
+        "plop-templates/infrastructure/directus-endpoints/dtos/base-query.dtos.hbs",
     },
   ];
 
@@ -295,14 +295,14 @@ module.exports = function (plop) {
     actions: [...generateServicePort, ...generateService],
   });
 
-  plop.setGenerator("infra:dto", {
-    description: "Generate dto",
+  plop.setGenerator("infra:dtos", {
+    description: "Generate dtos",
     prompts: groupPrompts,
     actions: generateDto,
   });
 
   plop.setGenerator("infra:mapper", {
-    description: "Generate dto mapper",
+    description: "Generate dtos mapper",
     prompts: groupPrompts,
     actions: generateDtoMapper,
   });
