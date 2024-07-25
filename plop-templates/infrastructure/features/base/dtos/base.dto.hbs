@@ -1,7 +1,19 @@
 import { OmitMethods } from '@/lib/ts-utilities';
+import { WrapperResponseDto } from "@/lib/responses";
 
 export class {{classify name}}Dto {
   constructor(data?: OmitMethods<{{classify name}}Dto>) {
     Object.assign(this, data);
   }
 }
+
+export class WrapperResponse{{classify name}}Dto extends WrapperResponseDto<{{classify name}}Dto> {
+   @ApiProperty({ type: UserDto })
+   data: UserDto;
+}
+
+export class WrapperResponse{{classify name}}ListDto extends WrapperResponseDto<{{classify name}}Dto[]> {
+   @ApiProperty({ type: [UserDto] })
+   data: UserDto[];
+}
+

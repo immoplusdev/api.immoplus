@@ -1,6 +1,7 @@
 import { UserStatus } from '@/core/domain/users/user-status.enum';
 import { OmitMethods } from '@/lib/ts-utilities';
 import { ApiProperty } from '@nestjs/swagger';
+import { WrapperResponseDto } from "@/lib/responses";
 
 export class UserDto {
   @ApiProperty()
@@ -51,4 +52,14 @@ export class UserDto {
   constructor(data?: OmitMethods<UserDto>) {
     if (data) Object.assign(this, data);
   }
+}
+
+export class WrapperResponseUserDto extends WrapperResponseDto<UserDto> {
+  @ApiProperty({ type: UserDto })
+  data: UserDto;
+}
+
+export class WrapperResponseUserListDto extends WrapperResponseDto<UserDto[]> {
+  @ApiProperty({ type: [UserDto] })
+  data: UserDto[];
 }
