@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppService } from './app.service';
-import { GlobalInterceptorsModule } from './infrastructure/core/interceptors/global-interceptors.module';
+import { GlobalInterceptorsModule } from '@/infrastructure/interceptors/global-interceptors.module';
 import { I18nModule } from 'nestjs-i18n';
 import { i18Configs } from '@/infrastructure/configs/i18n/i18n.configs';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtonfigs } from '@/infrastructure/configs/auth/jwt.configs';
-import { GlobalPipesModule } from './infrastructure/core/pipes/global-pipes.module';
+import { GlobalPipesModule } from '@/infrastructure/pipes/global-pipes.module';
 import { TypeormModule } from '@/infrastructure/configs/typeorm/typeorm.module';
-import { RestModule } from '@/infrastructure/configs/rest/rest.module';
+import { RestModule } from '@/infrastructure/rest/rest.module';
 
 @Module({
   imports: [

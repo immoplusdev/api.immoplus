@@ -1,8 +1,8 @@
-import { IUsersRepository, User } from '@/core/domain/users';
-import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import { UserEntity } from '@/infrastructure/features/users/users.entity';
-import { Deps } from '@/core/domain/shared/ioc';
+import { IUsersRepository, User } from "@/core/domain/users";
+import { Inject, Injectable } from "@nestjs/common";
+import { DataSource, Repository } from "typeorm";
+import { UserEntity } from "@/infrastructure/features/users/users.entity";
+import { Deps } from "@/core/domain/shared/ioc";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -43,5 +43,15 @@ export class UsersRepository implements IUsersRepository {
 
   async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
     return await this.repository.findOneBy({ phoneNumber });
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    let user: User | null = null;
+    try {
+      if (username.includes("@")) user = await this.findByEmail(username);
+      if (!user) user = await this.findByPhoneNumber(username);
+    } catch (error) {
+    }
+    return user;
   }
 }

@@ -8,12 +8,12 @@ export class {{classify name}}Dto {
 }
 
 export class WrapperResponse{{classify name}}Dto extends WrapperResponseDto<{{classify name}}Dto> {
-   @ApiProperty({ type: UserDto })
-   data: UserDto;
+   @ApiProperty({ type: {{classify name}}Dto })
+   data: {{classify name}}Dto;
 }
 
 export class WrapperResponse{{classify name}}ListDto extends WrapperResponseDto<{{classify name}}Dto[]> {
-   @ApiProperty({ type: [UserDto] })
-   data: UserDto[];
+   @ApiProperty({ type: [{{classify name}}Dto] })
+   data: {{classify name}}Dto[];
 }
 

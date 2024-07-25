@@ -1,28 +1,40 @@
-import { IocDependencies } from "@/core/application/ioc/app-ioc-dependencies.enum";
-import { inject, injectable, registry } from "tsyringe";
-import { BaseRepository } from "../base-repository";
-import { AppServiceOptions } from "@/core/domain/shared/models/app-service-options.model";
-import { EntitiesEnum } from "@/core/domain/shared/enums/app-entities.enum";
-import { EntityManagerServicePort } from "@/core/domain/shared/services/entity-manager-service.port";
-import { {{classify name}} } from "@/core/domain/{{dasherize group}}/{{dasherize name}}.model";
-import { {{classify name}}RepositoryPort } from "@/core/domain/{{dasherize group}}/{{dasherize name}}-repository.port";
+import { DataSource, Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Deps } from '@/core/domain/shared/ioc';
+import { {{classify name}}, I{{classify name}}Repository } from "@/core/domain/{{dasherize group}}";
+import { {{classify name}} } from '@/infrastructure/features/{{dasherize group}}';
 
 
-@injectable()
-@registry([
-  {
-    token: IocDependencies.{{classify name}}RepositoryPort,
-    useClass: {{classify name}}Repository,
-  },
-])
-export class {{classify name}}Repository extends BaseRepository<{{classify name}}> implements {{classify name}}RepositoryPort{
+@Injectable()
+export class {{classify name}}Repository implements I{{classify name}}Repository{
+  private readonly repository: Repository<{{classify name}}Entity>;
   constructor(
-    @inject(IocDependencies.EntityManagerServicePort)
-    entityService: EntityManagerServicePort,
-    @inject(IocDependencies.AppServiceOptions)
-    serviceOptions: AppServiceOptions
+    @Inject(Deps.DataSource)
+    readonly dataSource: DataSource,
   ) {
-    super(EntitiesEnum.{{classify name}}, entityService, serviceOptions);
-    super.init(serviceOptions);
+    this.repository = dataSource.getRepository({{classify name}}Entity);
+  }
+
+
+  async create(payload: Partial<{{classify name}}>): Promise<{{classify name}}> {
+    return await this.repository.save(payload);
+  }
+
+  async findAll(): Promise<{{classify name}}[]> {
+    return await this.repository.find();
+  }
+
+  async findOne(id: string): Promise<{{classify name}}> {
+    return await this.repository.findOneBy({ id });
+  }
+
+  async update(id: string, payload: Partial<{{classify name}}>): Promise<string> {
+    await this.repository.update(id, payload);
+    return id;
+  }
+
+  async delete(id: string): Promise<string> {
+    await this.repository.delete(id);
+    return id;
   }
 }

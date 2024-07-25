@@ -5,7 +5,7 @@ import {
 } from "class-validator";
 
 @ValidatorConstraint()
-export class PointCoordinatesValidator implements ValidatorConstraintInterface {
+export class IsPointCoordinates implements ValidatorConstraintInterface {
   validate(
     coordinates: number[]
     // , validationArguments: ValidationArguments

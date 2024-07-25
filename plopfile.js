@@ -72,6 +72,14 @@ module.exports = function(plop) {
     },
   ];
 
+  const generateInterface = [
+    {
+      type: "add",
+      path: "src/core/domain/{{dasherize group}}/i-{{dasherize name}}.ts",
+      templateFile: "plop-templates/core/domain/base/i-base.hbs",
+    },
+  ];
+
   const generateEnum = [
     {
       type: "add",
@@ -282,6 +290,12 @@ module.exports = function(plop) {
     description: "Generate model",
     prompts: groupPrompts,
     actions: generateModel,
+  });
+
+  plop.setGenerator("core:interface", {
+    description: "Generate interface",
+    prompts: groupPrompts,
+    actions: generateInterface,
   });
 
   plop.setGenerator("core:enum", {

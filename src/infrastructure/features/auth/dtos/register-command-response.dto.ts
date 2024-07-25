@@ -1,14 +1,8 @@
-import { OmitMethods } from '@/lib/ts-utilities';
-import { ApiProperty } from '@nestjs/swagger';
-import { UserDto } from '@/infrastructure/features/users';
+import { OmitMethods } from "@/lib/ts-utilities";
+import { ApiProperty } from "@nestjs/swagger";
+import { UserDto } from "@/infrastructure/features/users";
 
 export class RegisterCommandResponseDto {
-  @ApiProperty()
-  accessToken: string;
-  @ApiProperty()
-  expires: string;
-  @ApiProperty()
-  refreshToken: string;
   @ApiProperty({ type: UserDto })
   user: UserDto;
 
