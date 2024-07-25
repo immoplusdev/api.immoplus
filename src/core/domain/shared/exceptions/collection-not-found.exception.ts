@@ -1,4 +1,4 @@
-import { BaseException } from './base.exception';
+import { BaseException } from "@/core/domain/shared/exceptions";
 
 export class CollectionNotFoundException extends BaseException {
   constructor() {

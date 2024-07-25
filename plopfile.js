@@ -40,14 +40,6 @@ module.exports = function (plop) {
     text.replaceAll("-", "_").toUpperCase()
   );
 
-  // const basePrompts = [
-  //   {
-  //     type: "input",
-  //     name: "name",
-  //     message: "entity name",
-  //   },
-  // ];
-
   const groupPrompts = [
     {
       type: "input",
@@ -149,7 +141,7 @@ module.exports = function (plop) {
       type: "add",
       path: "src/core/application/features/{{dasherize group}}/{{dasherize name}}-command-handler.service.ts",
       templateFile:
-        "plop-templates/core/application/features/base/command-handlers/base-command-handler.service.hbs",
+        "plop-templates/core/application/features/base/command-handlers/base-command.handler.hbs",
     },
     {
       type: "add",
@@ -170,7 +162,7 @@ module.exports = function (plop) {
       type: "add",
       path: "src/core/application/features/{{dasherize group}}/{{dasherize name}}-query-handler.service.ts",
       templateFile:
-        "plop-templates/core/application/features/base/query-handlers/base-query-handler.service.hbs",
+        "plop-templates/core/application/features/base/query-handlers/base-query.handler.hbs",
     },
     {
       type: "add",
@@ -231,7 +223,7 @@ module.exports = function (plop) {
       type: "add",
       path: "src/core/domain/{{dasherize group}}/{{dasherize name}}-{{dasherizeSingular pattern}}.port.ts",
       templateFile:
-        "plop-templates/core/domain/pattern/base-pattern.port.hbs",
+        "plop-templates/core/domain/pattern/i-base-pattern.hbs",
     },
     {
       type: "add",
