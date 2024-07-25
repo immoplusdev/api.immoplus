@@ -3,7 +3,7 @@ import { OmitMethods } from '@/lib/ts-utilities';
 export class RegisterCommand {
   firstName: string;
   lastName: string;
-  city: string;
+  city?: string;
   email: string;
   phoneNumber: string;
   password: string;

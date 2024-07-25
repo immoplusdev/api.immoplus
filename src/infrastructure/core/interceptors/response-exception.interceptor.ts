@@ -22,8 +22,11 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
             throw err;
           } else if (err instanceof BadRequestException) {
             const errResponse = err.getResponse();
-            throw new FailedValidationException((errResponse as any).message[0]);
+            throw new FailedValidationException(
+              (errResponse as any).message[0],
+            );
           } else {
+            console.log(err)
             throw new UnexpectedException();
           }
         },

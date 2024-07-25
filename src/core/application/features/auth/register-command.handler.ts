@@ -1,18 +1,21 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterCommand } from '@/core/application/features/auth/register.command';
 import { RegisterCommandResponse } from '@/core/application/features/auth/register-command.response';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { IUsersRepository } from '@/core/domain/users';
 import { UserEmailAlreadyTakenException } from '@/core/application/features/auth/user-email-already-taken.exception';
-import {
-  UserPhoneNumberAlreadyTakenException,
-} from '@/core/application/features/auth/user-phone-number-already-taken.exception';
+import { UserPhoneNumberAlreadyTakenException } from '@/core/application/features/auth/user-phone-number-already-taken.exception';
 import { Deps } from '@/core/domain/shared/ioc';
-
+import { Role } from '@/core/application/features/roles';
 
 @CommandHandler(RegisterCommand)
-export class RegisterCommandHandler implements ICommandHandler<RegisterCommand, RegisterCommandResponse> {
-  constructor(@Inject(Deps.UsersRepository) private readonly usersRepository: IUsersRepository) {}
+export class RegisterCommandHandler
+  implements ICommandHandler<RegisterCommand, RegisterCommandResponse>
+{
+  constructor(
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUsersRepository,
+  ) {}
 
   async execute(command: RegisterCommand): Promise<RegisterCommandResponse> {
     await this.validateInput(command);
@@ -23,13 +26,15 @@ export class RegisterCommandHandler implements ICommandHandler<RegisterCommand, 
       password: command.password,
       firstName: command.firstName,
       lastName: command.lastName,
-      city: command.city,
+      role: Role.Customer,
+      city: command.city || null,
     });
+
     return new RegisterCommandResponse({
-      accessToken: "string",
-      expires: "string",
-      refreshToken: "string",
-      user: user
+      accessToken: 'string',
+      expires: 'string',
+      refreshToken: 'string',
+      user: user,
     });
   }
 

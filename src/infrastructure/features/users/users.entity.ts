@@ -37,7 +37,7 @@ export class UserEntity {
   address?: string;
   @Column({ name: 'address_2', type: 'varchar', nullable: true })
   address2?: string;
-  @Column({ name: 'email_verified', type: 'varchar', nullable: true })
+  @Column({ name: 'email_verified', type: 'bool', default: false })
   emailVerified: boolean;
   @Column({ name: 'phone_number_verified', type: 'bool', default: false })
   phoneNumberVerified: boolean;

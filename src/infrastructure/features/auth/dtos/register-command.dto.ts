@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OmitMethods } from '@/lib/ts-utilities';
-import { IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 
 export class RegisterCommandDto {
   @ApiProperty()
@@ -10,10 +10,11 @@ export class RegisterCommandDto {
   @IsNotEmpty()
   lastName: string;
   @ApiProperty()
-  @IsNotEmpty()
-  city: string;
+  @IsOptional()
+  city?: string;
   @ApiProperty()
   @IsNotEmpty()
+  @IsEmail()
   email: string;
   @ApiProperty()
   @IsNotEmpty()

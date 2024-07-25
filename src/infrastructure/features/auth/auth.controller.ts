@@ -9,7 +9,7 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller('register-customer')
 export class AuthController {
   constructor(readonly commandBus: CommandBus) {
   }
