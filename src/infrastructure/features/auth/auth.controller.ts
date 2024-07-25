@@ -18,7 +18,7 @@ import {
 import { LoginCommandDto } from "@/infrastructure/features/auth/dtos/login-command.dto";
 import { RegisterCommand } from "@/core/application/features/auth";
 
-@ApiTags("auth")
+@ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
   constructor(readonly commandBus: CommandBus) {

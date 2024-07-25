@@ -136,9 +136,9 @@ module.exports = function(plop) {
   const generateDomainExporter = [
     {
       type: "add",
-      path: "src/domain/{{dasherize group}}/index.ts",
+      path: "src/core/domain/{{dasherize group}}/index.ts",
       templateFile:
-        "plop-templates/domain/base/index.hbs",
+        "plop-templates/core/domain/base/index.hbs",
     },
   ];
 
