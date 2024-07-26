@@ -13,6 +13,7 @@ const {
   classify,
   // eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 } = require("inflection");
+const moment = require("moment");
 
 module.exports = function(plop) {
   plop.setHelper("upperCase", (text) => text.toUpperCase());
@@ -41,6 +42,15 @@ module.exports = function(plop) {
   plop.setHelper("exceptionnify", (text) =>
     text.replaceAll("-", "_").toUpperCase(),
   );
+  plop.setHelper("timestampify", () => moment().format("YYYYMMDDHHmmss"));
+
+  const namePrompt = [
+    {
+      type: "input",
+      name: "name",
+      message: "entity name",
+    },
+  ];
 
   const groupPrompts = [
     {
@@ -172,6 +182,16 @@ module.exports = function(plop) {
         "plop-templates/infrastructure/features/base/base.controller.hbs",
     },
   ];
+
+  const generateMigration = [
+    {
+      type: "add",
+      path: "src/infrastructure/db/migrations/{{dasherize name}}-{{timestampify}}.migration.ts",
+      templateFile:
+        "plop-templates/infrastructure/db/migrations/base.hbs",
+    },
+  ];
+
 
   const generateCommand = [
     {
@@ -370,8 +390,8 @@ module.exports = function(plop) {
     actions: generatePattern,
   });
 
-  plop.setGenerator("crud:entity", {
-    description: "Generate CRUD en",
+  plop.setGenerator("infra:entity", {
+    description: "Generate Typeorm entity",
     prompts: groupPrompts,
     actions: [
       ...generateModel,
@@ -381,13 +401,13 @@ module.exports = function(plop) {
     ],
   });
 
-  plop.setGenerator("crud:controller", {
-    description: "Generate CRUD endpoint",
+  plop.setGenerator("infra:controller", {
+    description: "Generate Rest endpoint",
     prompts: groupPrompts,
     actions: [...generateController],
   });
 
-  plop.setGenerator("crud:entity_and_controller", {
+  plop.setGenerator("infra:entity_and_controller", {
     description: "Generate CRUD endpoint",
     prompts: groupPrompts,
     actions: [
@@ -400,6 +420,14 @@ module.exports = function(plop) {
       ...generateController,
       ...generateDomainExporter,
       ...generateInfraExporter,
+    ],
+  });
+
+  plop.setGenerator("db:migration", {
+    description: "Generate DB migration",
+    prompts: namePrompt,
+    actions: [
+      ...generateMigration,
     ],
   });
 };

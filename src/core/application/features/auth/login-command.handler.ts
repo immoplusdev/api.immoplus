@@ -40,7 +40,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
     const payload = this.santizePayload(user);
     const accessToken = this.jwtManagerService.generateAccessToken(payload);
-    const expires = this.configsManagerService.getEnvVariable<string>("JWT_ACCESS_TOKEN_EXPIRES_IN");
+    const expires = this.configsManagerService.getEnvVariable<string>("JWT_REFRESH_EXPIRES_IN");
     const refreshToken = this.jwtManagerService.generateRefresh(payload);
 
     return new LoginCommandResponse({

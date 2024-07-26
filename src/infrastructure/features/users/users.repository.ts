@@ -1,4 +1,4 @@
-import { IUsersRepository, User } from "@/core/domain/users";
+import { IUsersRepository, User, UserWithRoleData } from "@/core/domain/users";
 import { Inject, Injectable } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users/users.entity";
@@ -53,5 +53,17 @@ export class UsersRepository implements IUsersRepository {
     } catch (error) {
     }
     return user;
+  }
+
+  async findByIdWithRoleData(id: string): Promise<UserWithRoleData | null> {
+    const item: any = await this.repository.findOne({
+      where: {
+        id,
+      },
+      relations: ["role"],
+    });
+    item.roleData = item.role;
+    item.role = item.role.id;
+    return item;
   }
 }

@@ -8,7 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtonfigs } from '@/infrastructure/configs/auth/jwt.configs';
 import { GlobalPipesModule } from '@/infrastructure/pipes/global-pipes.module';
-import { TypeormModule } from '@/infrastructure/configs/typeorm/typeorm.module';
+import { TypeormModule } from '@/infrastructure/typeorm/typeorm.module';
 import { RestModule } from '@/infrastructure/rest/rest.module';
 
 @Module({

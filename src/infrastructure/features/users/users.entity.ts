@@ -1,55 +1,79 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { UserStatus } from '@/core/domain/users/user-status.enum';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity, JoinColumn, ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { UserStatus } from "@/core/domain/users";
+import { RoleEntity } from "@/infrastructure/features/roles";
 
-@Entity('users')
+@Entity("users")
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
+  // basic fields
+  @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column({ name: 'first_name', type: 'varchar' })
+  @Column({ name: "first_name", type: "varchar" })
   firstName: string;
-  @Column({ name: 'last_name', type: 'varchar' })
+  @Column({ name: "last_name", type: "varchar" })
   lastName: string;
-  @Column({ name: 'email', type: 'varchar' })
+  @Column({ name: "email", type: "varchar" })
   email: string;
-  @Column({ name: 'password', type: 'varchar' })
+  @Column({ name: "password", type: "varchar" })
   password: string;
-  @Column({ name: 'role', type: 'varchar' })
+  @Column({ name: "role", type: "uuid" })
+  @ManyToOne(() => RoleEntity, (role) => role.id)
+  @JoinColumn()
   role: string;
-  @Column({ name: 'language', type: 'varchar', nullable: true })
+  @Column({ name: "language", type: "varchar", nullable: true })
   language?: string;
-  @Column({ name: 'avatar', type: 'varchar', nullable: true })
+  @Column({ name: "avatar", type: "varchar", nullable: true })
   avatar?: string;
-  @Column({ name: 'verification_code', type: 'varchar', nullable: true })
-  verificationCode?: string;
-  @Column({ name: 'phone_number', type: 'varchar' })
+  @Column({ name: "phone_number", type: "varchar" })
   phoneNumber: string;
-  @Column({ name: 'otp', type: 'varchar', nullable: true })
+  @Column({ name: "otp", type: "varchar", nullable: true })
   otp?: string;
-  @Column({ name: 'country', type: 'varchar', nullable: true })
+  @CreateDateColumn({name: "otp_expiration"})
+  otpExpiration?: Date;
+
+  // User Data
+  @Column({ name: "country", type: "varchar", nullable: true })
   country?: string;
-  @Column({ name: 'state', type: 'varchar', nullable: true })
+  @Column({ name: "state", type: "varchar", nullable: true })
   state?: string;
-  @Column({ name: 'city', type: 'varchar', nullable: true })
+  @Column({ name: "city", type: "varchar", nullable: true })
   city?: string;
-  @Column({ name: 'commune', type: 'varchar', nullable: true })
+  @Column({ name: "commune", type: "varchar", nullable: true })
   commune?: string;
-  @Column({ name: 'address', type: 'varchar', nullable: true })
+  @Column({ name: "address", type: "varchar", nullable: true })
   address?: string;
-  @Column({ name: 'address_2', type: 'varchar', nullable: true })
+  @Column({ name: "address_2", type: "varchar", nullable: true })
   address2?: string;
-  @Column({ name: 'email_verified', type: 'bool', default: false })
-  emailVerified: boolean;
-  @Column({ name: 'phone_number_verified', type: 'bool', default: false })
-  phoneNumberVerified: boolean;
-  @Column({ name: 'currency', type: 'varchar', nullable: true })
+  @Column({ name: "currency", type: "varchar", nullable: true })
   currency?: string;
-  @Column({ name: 'auth_login_attempts', type: 'int', default: 0 })
+
+
+
+  // Status and Dates
+  @Column({ name: "email_verified", type: "bool", default: false })
+  emailVerified: boolean;
+  @Column({ name: "phone_number_verified", type: "bool", default: false })
+  phoneNumberVerified: boolean;
+  @Column({ name: "auth_login_attempts", type: "int", default: 0 })
   authLoginAttempts: number;
   @Column({
-    name: 'status',
-    type: 'varchar',
+    name: "status",
+    type: "varchar",
     nullable: false,
     default: UserStatus.Active,
   })
   status: UserStatus;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt?: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt?: Date;
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt: Date;
 }

@@ -5,6 +5,7 @@ export enum Deps {
 
   // Repositories
   UsersRepository = "UsersRepository",
+  RoleRepository = "RoleRepository",
 
   // Services
   LoggerService = "LoggerService",

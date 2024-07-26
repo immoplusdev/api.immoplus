@@ -8,8 +8,8 @@ import {
   UserPhoneNumberAlreadyTakenException,
 } from "@/core/application/features/auth/user-phone-number-already-taken.exception";
 import { Deps } from "@/core/domain/shared/ioc";
-import { Role } from "@/core/application/features/roles";
 import { IPasswordManagerService } from "@/core/domain/auth";
+import { UserRole } from "@/core/domain/roles";
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
@@ -31,7 +31,7 @@ export class RegisterCommandHandler
       password: this.passwordManagerService.encryptPassword(command.password),
       firstName: command.firstName,
       lastName: command.lastName,
-      role: Role.Customer,
+      role: UserRole.Customer,
       city: command.city || null,
     });
 
@@ -41,16 +41,16 @@ export class RegisterCommandHandler
   }
 
   async validateInput(command: RegisterCommand) {
-    await this.emailAvailable(command.email);
-    await this.phoneNumberAvailable(command.phoneNumber);
+    await this.verifyEmailAvailable(command.email);
+    await this.verifyPhoneNumberAvailable(command.phoneNumber);
   }
 
-  async emailAvailable(email: string) {
+  async verifyEmailAvailable(email: string) {
     const user = await this.usersRepository.findByEmail(email);
     if (user?.id) throw new UserEmailAlreadyTakenException();
   }
 
-  async phoneNumberAvailable(phoneNumber: string) {
+  async verifyPhoneNumberAvailable(phoneNumber: string) {
     const user = await this.usersRepository.findByPhoneNumber(phoneNumber);
     if (user?.id) throw new UserPhoneNumberAlreadyTakenException();
   }

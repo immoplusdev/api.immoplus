@@ -25,14 +25,19 @@ export class AuthController {
   }
 
   @ApiResponse({
-    type: WrapperResponseRegisterCommandResponseDto,
+    type: WrapperResponseLoginCommandResponseDto,
   })
   @Post("register-customer")
   async registerCustomer(@Body() payload: RegisterCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<RegisterCommandResponseDto>();
-    const command = new RegisterCommand(payload);
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
+    const registerCommand = new RegisterCommand(payload);
+    const loginCOmmand = new LoginCommand({
+      username: registerCommand.phoneNumber,
+      password: registerCommand.password,
+    });
 
-    const response = await this.commandBus.execute(command);
+     await this.commandBus.execute(registerCommand);
+    const response = await this.commandBus.execute(loginCOmmand);
     return responseMapper.mapFrom(response);
   }
 
