@@ -2,6 +2,7 @@ import { BaseException } from './base.exception';
 
 export class UnauthorizedException extends BaseException {
   constructor() {
-    super(`ACCESS_FORBIDDEN`, 401);
+    super(`UNAUTHORIZED`, 401);
   }
 }
+//Unauthorized

@@ -20,7 +20,7 @@ export class UsersDataRepository implements IUsersDataRepository{
     return await this.repository.save(payload);
   }
 
-  async findAll(): Promise<UserData[]> {
+  async find(): Promise<UserData[]> {
     return await this.repository.find();
   }
 

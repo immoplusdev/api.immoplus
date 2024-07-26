@@ -42,18 +42,18 @@ export class UsersController {
     type: WrapperResponseUserListDto,
   })
   @Get()
-  async findAll() {
-    const mapper = new WrapperResponseDtoMapper<UserDto[]>();
-    return mapper.mapFrom(await this.usersRepository.findAll());
+  async readMany() {
+    const responseMapper = new WrapperResponseDtoMapper<UserDto[]>();
+    return responseMapper.mapFrom(await this.usersRepository.find());
   }
 
   @ApiResponse({
     type: WrapperResponseUserDto,
   })
   @Get(":id")
-  async findOne(@Param("id") id: string) {
-    const mapper = new WrapperResponseDtoMapper<UserDto>();
-    return mapper.mapFrom(await this.usersRepository.findOne(id));
+  async readOne(@Param("id") id: string) {
+    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
+    return responseMapper.mapFrom(await this.usersRepository.findOne(id));
   }
 
   @ApiResponse({
@@ -61,18 +61,18 @@ export class UsersController {
   })
   @Patch(":id")
   async update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    const mapper = new WrapperResponseDtoMapper<UserDto>();
+    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
     await this.usersRepository.update(id, updateUserDto);
-    return mapper.mapFrom(await this.usersRepository.findOne(id));
+    return responseMapper.mapFrom(await this.usersRepository.findOne(id));
   }
 
   @ApiResponse({
     type: WrapperResponseUserDto,
   })
   @Delete(":id")
-  async remove(@Param("id") id: string) {
-    const mapper = new WrapperResponseDtoMapper<UserDto>();
+  async delete(@Param("id") id: string) {
+    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
     await this.usersRepository.delete(id);
-    return mapper.mapFrom(await this.usersRepository.findOne(id));
+    return responseMapper.mapFrom(await this.usersRepository.findOne(id));
   }
 }

@@ -11,3 +11,4 @@ export * from './unexpected.exception';
 export * from './user-already-exists.exception';
 export * from './user-inactive.exception';
 export * from './user-not-found.exception';
+export * from './access-forbidden.exception';

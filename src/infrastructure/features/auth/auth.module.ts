@@ -29,10 +29,9 @@ const providers: Provider[] = [
 
 
 @Module({
-  imports: [CqrsModule, ConfigsModule, LoggingModule, UsersModule],
   controllers: [AuthController],
+  imports: [CqrsModule, ConfigsModule, LoggingModule, UsersModule],
   providers: [...providers, ...commandHandlers, AuthService, JwtManagerService],
   exports: [...providers],
 })
-export class AuthModule {
-}
+export class AuthModule {}

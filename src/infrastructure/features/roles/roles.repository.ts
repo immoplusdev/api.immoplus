@@ -20,7 +20,7 @@ export class RoleRepository implements IRoleRepository{
     return await this.repository.save(payload);
   }
 
-  async findAll(): Promise<Role[]> {
+  async find(): Promise<Role[]> {
     return await this.repository.find();
   }
 

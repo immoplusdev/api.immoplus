@@ -1,16 +1,21 @@
-import { IUsersRepository, User, UserWithRoleData } from "@/core/domain/users";
+import { IUsersRepository, User, UserWithRoleAndPermissions } from "@/core/domain/users";
 import { Inject, Injectable } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users/users.entity";
 import { Deps } from "@/core/domain/shared/ioc";
+import { IPermissionRepository } from "@/core/domain/permissions";
+import { Role } from "@/core/domain/roles";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
   private readonly repository: Repository<UserEntity>;
-  private  readonly relations = ["role", "additionalData"]
+  private readonly relations = ["role", "additionalData"];
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
+    @Inject(Deps.PermissionRepository)
+    private readonly permissionRepository: IPermissionRepository,
   ) {
     this.repository = dataSource.getRepository(UserEntity);
   }
@@ -19,7 +24,7 @@ export class UsersRepository implements IUsersRepository {
     return await this.repository.save(payload);
   }
 
-  async findAll(): Promise<User[]> {
+  async find(): Promise<User[]> {
     return await this.repository.find({
       relations: this.relations,
     });
@@ -64,19 +69,26 @@ export class UsersRepository implements IUsersRepository {
       if (username.includes("@")) user = await this.findByEmail(username);
       if (!user) user = await this.findByPhoneNumber(username);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return null;
     }
     return user;
   }
 
-  // async findByIdWithRoleData(id: string): Promise<UserWithRoleData | null> {
-  //   const item: any = await this.repository.findOne({
-  //     where: {
-  //       id,
-  //     },
-  //     relations: ["role"],
-  //   });
-  //   return item;
-  // }
+  async findByIdWithRoleAndPermissions(id: string): Promise<UserWithRoleAndPermissions | null> {
+
+    const user = await this.repository.findOne({
+      where: {
+        id,
+      },
+      relations: this.relations,
+    });
+
+    const permissions = await this.permissionRepository.findByRoleId((user.role as Role).id);
+
+    return new UserWithRoleAndPermissions({
+      ...user,
+      permissions,
+    });
+  }
 }

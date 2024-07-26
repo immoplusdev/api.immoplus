@@ -1,5 +1,5 @@
-import { OmitMethods } from '@/lib/ts-utilities';
-import { UserStatus } from '@/core/domain/users/user-status.enum';
+import { OmitMethods } from "@/lib/ts-utilities";
+import { UserStatus } from "@/core/domain/users/user-status.enum";
 import { UserData } from "@/core/domain/users/users-data.model";
 import { Role } from "@/core/domain/roles";
 
@@ -17,7 +17,7 @@ export class User {
   otp?: string;
   otpExpiration?: Date;
 
-// User Data
+  // User Data
   country?: string;
   state?: string;
   city?: string;

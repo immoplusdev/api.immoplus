@@ -1,7 +1,7 @@
 export interface IJwtManagerService {
   generateAccessToken(payload: any): string;
 
-  generateRefresh(payload: any): string;
+  generateRefreshToken(payload: any): string;
 }
 
 export interface JwtSignOptions {

@@ -33,7 +33,7 @@ export class UserEntity {
   language?: string;
   @Column({ name: "avatar", type: "varchar", nullable: true })
   avatar?: string;
-  @Column({ name: "phone_number", type: "varchar" })
+  // @Column({ name: "phone_number", type: "varchar" })
   phoneNumber: string;
   @Column({ name: "otp", type: "varchar", nullable: true })
   otp?: string;
