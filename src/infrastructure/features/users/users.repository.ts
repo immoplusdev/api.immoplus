@@ -7,7 +7,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 @Injectable()
 export class UsersRepository implements IUsersRepository {
   private readonly repository: Repository<UserEntity>;
-
+  private  readonly relations = ["role", "additionalData"]
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
@@ -20,11 +20,16 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.repository.find();
+    return await this.repository.find({
+      relations: this.relations,
+    });
   }
 
   async findOne(id: string): Promise<User> {
-    return await this.repository.findOneBy({ id });
+    return await this.repository.findOne({
+      where: { id },
+      relations: this.relations,
+    });
   }
 
   async update(id: string, payload: Partial<User>): Promise<string> {
@@ -38,11 +43,19 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.repository.findOneBy({ email });
+    return await this.repository.findOne({
+      where: { email },
+      relations: this.relations,
+    });
   }
 
   async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
-    return await this.repository.findOneBy({ phoneNumber });
+    return await this.repository.findOne(
+      {
+        where: { phoneNumber },
+        relations: this.relations,
+      },
+    );
   }
 
   async findByUsername(username: string): Promise<User | null> {
@@ -51,19 +64,19 @@ export class UsersRepository implements IUsersRepository {
       if (username.includes("@")) user = await this.findByEmail(username);
       if (!user) user = await this.findByPhoneNumber(username);
     } catch (error) {
+      console.log(error)
+      return null;
     }
     return user;
   }
 
-  async findByIdWithRoleData(id: string): Promise<UserWithRoleData | null> {
-    const item: any = await this.repository.findOne({
-      where: {
-        id,
-      },
-      relations: ["role"],
-    });
-    item.roleData = item.role;
-    item.role = item.role.id;
-    return item;
-  }
+  // async findByIdWithRoleData(id: string): Promise<UserWithRoleData | null> {
+  //   const item: any = await this.repository.findOne({
+  //     where: {
+  //       id,
+  //     },
+  //     relations: ["role"],
+  //   });
+  //   return item;
+  // }
 }

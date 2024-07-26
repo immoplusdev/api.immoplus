@@ -10,5 +10,5 @@ export interface IUsersRepository
 
   findByUsername(username: string): Promise<User | null>;
 
-  findByIdWithRoleData(id: string): Promise<UserWithRoleData | null>;
+  // findByIdWithRoleData(id: string): Promise<UserWithRoleData | null>;
 }

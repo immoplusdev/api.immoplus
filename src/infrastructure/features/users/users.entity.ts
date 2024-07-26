@@ -7,8 +7,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { UserStatus } from "@/core/domain/users";
+import { UserData, UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
+import { UserDataEntity } from "@/infrastructure/features/users/users-data.entity";
+import { Role } from "@/core/domain/roles";
 
 @Entity("users")
 export class UserEntity {
@@ -25,8 +27,8 @@ export class UserEntity {
   password: string;
   @Column({ name: "role", type: "uuid" })
   @ManyToOne(() => RoleEntity, (role) => role.id)
-  @JoinColumn()
-  role: string;
+  @JoinColumn({ name: "role_id" })
+  role: Role | string;
   @Column({ name: "language", type: "varchar", nullable: true })
   language?: string;
   @Column({ name: "avatar", type: "varchar", nullable: true })
@@ -35,7 +37,7 @@ export class UserEntity {
   phoneNumber: string;
   @Column({ name: "otp", type: "varchar", nullable: true })
   otp?: string;
-  @CreateDateColumn({name: "otp_expiration"})
+  @CreateDateColumn({ name: "otp_expiration" })
   otpExpiration?: Date;
 
   // User Data
@@ -54,7 +56,10 @@ export class UserEntity {
   @Column({ name: "currency", type: "varchar", nullable: true })
   currency?: string;
 
-
+  @Column({ name: "additional_data", type: "uuid" })
+  @OneToOne(() => UserDataEntity, (userData) => userData.user)
+  @JoinColumn({name: "additional_data_id"})
+  additionalData?: UserData | string;
 
   // Status and Dates
   @Column({ name: "email_verified", type: "bool", default: false })

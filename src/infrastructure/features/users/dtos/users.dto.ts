@@ -1,9 +1,15 @@
-import { UserStatus } from '@/core/domain/users/user-status.enum';
-import { OmitMethods } from '@/lib/ts-utilities';
-import { ApiProperty } from '@nestjs/swagger';
+import { UserStatus } from "@/core/domain/users/user-status.enum";
+import { OmitMethods } from "@/lib/ts-utilities";
+import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
+import { Role } from "@/core/domain/roles";
+import { RoleDto } from "@/infrastructure/features/roles";
+import { UserData } from "@/core/domain/users";
+import { UserDataDto } from "@/infrastructure/features/users/dtos/users-data.dto";
 
 export class UserDto {
+
+  // basic fields
   @ApiProperty()
   id: string;
   @ApiProperty()
@@ -14,18 +20,20 @@ export class UserDto {
   email: string;
   @ApiProperty()
   password: string;
-  @ApiProperty()
-  role: string;
+  @ApiProperty({ type: RoleDto })
+  role: RoleDto | string;
   @ApiProperty()
   language?: string;
   @ApiProperty()
   avatar?: string;
   @ApiProperty()
-  verificationCode?: string;
-  @ApiProperty()
   phoneNumber: string;
   @ApiProperty()
   otp?: string;
+  @ApiProperty()
+  otpExpiration?: Date;
+
+  // User Data
   @ApiProperty()
   country?: string;
   @ApiProperty()
@@ -39,15 +47,25 @@ export class UserDto {
   @ApiProperty()
   address2?: string;
   @ApiProperty()
+  currency?: string;
+  @ApiProperty({ type: UserDataDto })
+  additionalData?: UserData | string;
+
+  // Status and Dates
+  @ApiProperty()
   emailVerified: boolean;
   @ApiProperty()
   phoneNumberVerified: boolean;
   @ApiProperty()
-  currency?: string;
-  @ApiProperty()
   authLoginAttempts: number;
   @ApiProperty()
   status: UserStatus;
+  @ApiProperty()
+  createdAt?: Date;
+  @ApiProperty()
+  updatedAt?: Date;
+  @ApiProperty()
+  deletedAt: Date;
 
   constructor(data?: OmitMethods<UserDto>) {
     if (data) Object.assign(this, data);
