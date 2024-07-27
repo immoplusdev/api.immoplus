@@ -12,3 +12,6 @@ export * from "./login-with-phone-number-command.handler";
 export * from "./register-pro-entreprise.command";
 export * from "./register-pro-entreprise-command.handler";
 export * from "./register-pro-entreprise-command.response";
+export * from "./register-pro-particulier.command";
+export * from "./register-pro-particulier-command.handler";
+export * from "./register-pro-particulier-command.response";

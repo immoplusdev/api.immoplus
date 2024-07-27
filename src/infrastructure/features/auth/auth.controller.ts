@@ -3,7 +3,7 @@ import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   LoginWithPhoneNumberCommandDto, LoginWithPhoneNumberCommandResponseDto,
-  RegisterCommandDto, RegisterProEntrepriseCommandDto,
+  RegisterCommandDto, RegisterProEntrepriseCommandDto, RegisterProParticulierCommandDto,
   WrapperResponseLoginWithPhoneNumberCommandResponseDto,
 } from "@/infrastructure/features/auth/dtos";
 import { CommandBus } from "@nestjs/cqrs";
@@ -14,7 +14,11 @@ import {
   WrapperResponseLoginCommandResponseDto,
 } from "@/infrastructure/features/auth/dtos/login-command-response.dto";
 import { LoginCommandDto } from "@/infrastructure/features/auth/dtos/login-command.dto";
-import { RegisterCommand, RegisterProEntrepriseCommand } from "@/core/application/features/auth";
+import {
+  RegisterCommand,
+  RegisterProEntrepriseCommand,
+  RegisterProParticulierCommand,
+} from "@/core/application/features/auth";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -29,6 +33,23 @@ export class AuthController {
   async registerCustomer(@Body() payload: RegisterCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
     const registerCommand = new RegisterCommand(payload);
+    const loginCommand = new LoginCommand({
+      username: registerCommand.phoneNumber,
+      password: registerCommand.password,
+    });
+
+    await this.commandBus.execute(registerCommand);
+    const response = await this.commandBus.execute(loginCommand);
+    return responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseLoginCommandResponseDto,
+  })
+  @Post("register-pro-particulier")
+  async registerProParticulier(@Body() payload: RegisterProParticulierCommandDto) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
+    const registerCommand = new RegisterProParticulierCommand(payload);
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
       password: registerCommand.password,
