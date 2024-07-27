@@ -26,7 +26,17 @@ export class CreateBasicRoles20240726081447 implements MigrationInterface {
       },
     ];
 
-    await queryRunner.query('CREATE TABLE IF NOT EXISTS roles (`id` varchar(36) NOT NULL);');
+    await queryRunner.query(`
+      CREATE TABLE \`roles\` (
+        \`id\` varchar(36) NOT NULL,
+        \`name\` varchar(255) NOT NULL,
+        \`description\` varchar(255) DEFAULT NULL,
+        \`icon\` varchar(255) DEFAULT NULL,
+        \`enforce_tfa\` tinyint NOT NULL DEFAULT '0',
+        \`app_access\` tinyint NOT NULL DEFAULT '0',
+        \`admin_access\` tinyint NOT NULL DEFAULT '0'
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+    `);
 
 
     for (const role of roles) {
