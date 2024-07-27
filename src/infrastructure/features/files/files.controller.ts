@@ -69,7 +69,6 @@ export class FileController {
         title: { type: "string" },
         folder: { type: "string" },
         description: { type: "string" },
-        // outletId: { type: 'integer' },
         file: {
           type: "string",
           format: "binary",
@@ -106,6 +105,61 @@ export class FileController {
     const command = new UploadFileCommand({
       ...payload,
       userId,
+      file,
+    });
+
+    const response = await this.commandBus.execute(command);
+    return responseMapper.mapFrom(response);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseUploadFileCommandResponseDto,
+  })
+  @Post("public")
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        folder: { type: "string" },
+        description: { type: "string" },
+        file: {
+          type: "string",
+          format: "binary",
+        },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor("file", {
+      storage: diskStorage({
+        destination: fileUploadConfig.uploadPath,
+        filename: (req, file, cb) => {
+          const fileNameSplit = file.originalname.split(".");
+          const fileExt = fileNameSplit[fileNameSplit.length - 1];
+          cb(null, `${generateUuid()}.${fileExt}`);
+        },
+      }),
+    }),
+  )
+  async createPublic(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          // new MaxFileSizeValidator({ maxSize: 10000 }),
+          // new FileTypeValidator({ fileType: 'image/jpeg' }),
+        ],
+      }),
+    )
+      file: Express.Multer.File,
+    @Body() payload: UploadFileCommandDto,
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
+    const command = new UploadFileCommand({
+      ...payload,
+      userId: null,
       file,
     });
 

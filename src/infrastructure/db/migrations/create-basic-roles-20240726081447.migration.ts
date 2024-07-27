@@ -26,6 +26,12 @@ export class CreateBasicRoles20240726081447 implements MigrationInterface {
       },
     ];
 
+    await queryRunner.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id UUID PRIMARY KEY
+         );
+      `);
+
     for (const role of roles) {
       await queryRunner.query(
         `INSERT INTO roles (id, name, admin_access) VALUES ('${role.id}', '${role.name}', '${role.admin_access}')`,
