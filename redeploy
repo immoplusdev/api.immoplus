@@ -2,5 +2,5 @@
 
 sudo git pull
 sudo rm .env
-sudo cp ../.env.example ./.env
+sudo cp ../.env.prod ./.env
 sudo docker-compose up -d --build
