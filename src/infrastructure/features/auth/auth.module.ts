@@ -6,7 +6,7 @@ import { RegisterCommandHandler } from "@/core/application/features/auth/registe
 import { UsersModule } from "@/infrastructure/features/users/users.module";
 import {
   LoginCommandHandler,
-  LoginWithPhoneNumberCommandHandler,
+  LoginWithPhoneNumberCommandHandler, RegisterProEntrepriseCommandHandler,
 } from "@/core/application/features/auth";
 import { JwtManagerService } from "@/infrastructure/features/auth/jwt-manager.service";
 import { LoggingModule } from "@/infrastructure/features/logging";
@@ -14,7 +14,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { PasswordManagerService } from "@/infrastructure/features/auth/password-manager.service";
 import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
 
-const commandHandlers = [RegisterCommandHandler, LoginCommandHandler, LoginWithPhoneNumberCommandHandler];
+const commandHandlers = [RegisterCommandHandler, RegisterProEntrepriseCommandHandler, LoginCommandHandler, LoginWithPhoneNumberCommandHandler,];
 
 const providers: Provider[] = [
   {

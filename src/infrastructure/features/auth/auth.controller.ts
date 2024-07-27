@@ -51,7 +51,7 @@ export class AuthController {
       password: registerCommand.password,
     });
 
-    await this.commandBus.execute(RegisterProEntrepriseCommand);
+    await this.commandBus.execute(registerCommand);
     const response = await this.commandBus.execute(loginCommand);
     return responseMapper.mapFrom(response);
   }

@@ -27,7 +27,7 @@ export class FileEntity {
   type?: string;
   @Column({ name: "folder", type: "varchar", nullable: true })
   folder?: string;
-  @Column({ name: "uploaded_by", type: "uuid" })
+  @Column({ name: "uploaded_by", type: "uuid", nullable: true })
   @ManyToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: "uploaded_by" })
   uploadedBy?: User | string;
