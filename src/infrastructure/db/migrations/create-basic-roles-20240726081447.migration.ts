@@ -26,11 +26,8 @@ export class CreateBasicRoles20240726081447 implements MigrationInterface {
       },
     ];
 
-    await queryRunner.query(`
-        CREATE TABLE IF NOT EXISTS users (
-          id UUID PRIMARY KEY
-         );
-      `);
+    await queryRunner.query('CREATE TABLE IF NOT EXISTS roles (`id` varchar(36) NOT NULL);');
+
 
     for (const role of roles) {
       await queryRunner.query(
