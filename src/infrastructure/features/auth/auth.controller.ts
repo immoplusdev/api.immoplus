@@ -3,7 +3,7 @@ import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   LoginWithPhoneNumberCommandDto, LoginWithPhoneNumberCommandResponseDto,
-  RegisterCommandDto,
+  RegisterCommandDto, RegisterProEntrepriseCommandDto,
   WrapperResponseLoginWithPhoneNumberCommandResponseDto,
 } from "@/infrastructure/features/auth/dtos";
 import { CommandBus } from "@nestjs/cqrs";
@@ -14,7 +14,7 @@ import {
   WrapperResponseLoginCommandResponseDto,
 } from "@/infrastructure/features/auth/dtos/login-command-response.dto";
 import { LoginCommandDto } from "@/infrastructure/features/auth/dtos/login-command.dto";
-import { RegisterCommand } from "@/core/application/features/auth";
+import { RegisterCommand, RegisterProEntrepriseCommand } from "@/core/application/features/auth";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -35,6 +35,23 @@ export class AuthController {
     });
 
     await this.commandBus.execute(registerCommand);
+    const response = await this.commandBus.execute(loginCommand);
+    return responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseLoginCommandResponseDto,
+  })
+  @Post("register-pro-entreprise")
+  async registerProEntreprise(@Body() payload: RegisterProEntrepriseCommandDto) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
+    const registerCommand = new RegisterProEntrepriseCommand(payload);
+    const loginCommand = new LoginCommand({
+      username: registerCommand.phoneNumber,
+      password: registerCommand.password,
+    });
+
+    await this.commandBus.execute(RegisterProEntrepriseCommand);
     const response = await this.commandBus.execute(loginCommand);
     return responseMapper.mapFrom(response);
   }

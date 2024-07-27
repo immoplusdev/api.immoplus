@@ -9,3 +9,6 @@ export * from "./login-command.handler";
 export * from "./login-with-phone-number.command";
 export * from "./login-with-phone-number-command.response";
 export * from "./login-with-phone-number-command.handler";
+export * from "./register-pro-entreprise.command";
+export * from "./register-pro-entreprise-command.handler";
+export * from "./register-pro-entreprise-command.response";

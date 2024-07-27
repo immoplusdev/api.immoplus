@@ -6,13 +6,13 @@ export class UserData {
   user?: User | string;
   lieuNaissance?: string;
   activite?: string;
-  photoIdentite?: string;
-  pieceIdentite?: string;
+  photoIdentite?: File | string;
+  pieceIdentite?: File | string;
 
   // Pro entreprise
   nomEntreprise?: string;
   emailEntreprise?: string;
-  registreCommerce?: string;
+  registreCommerce?: File | string;
   numeroContribuable?: string;
   typeEntreprise?: string;
 

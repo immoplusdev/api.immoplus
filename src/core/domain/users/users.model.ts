@@ -12,7 +12,7 @@ export class User {
   password: string;
   role: Role | string;
   language?: string;
-  avatar?: string;
+  avatar?: File | string;
   phoneNumber: string;
   otp?: string;
   otpExpiration?: Date;

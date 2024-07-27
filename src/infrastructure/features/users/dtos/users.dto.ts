@@ -25,7 +25,7 @@ export class UserDto {
   @ApiProperty()
   language?: string;
   @ApiProperty()
-  avatar?: string;
+  avatar?: File | string;
   @ApiProperty()
   phoneNumber: string;
   @ApiProperty()

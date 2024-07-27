@@ -1,21 +1,19 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { RegisterCommand } from "@/core/application/features/auth/register.command";
-import { RegisterCommandResponse } from "@/core/application/features/auth/register-command.response";
-import { Inject } from "@nestjs/common";
-import { IUsersDataRepository, IUsersRepository } from "@/core/domain/users";
+import { RegisterProEntrepriseCommand } from "./register-pro-entreprise.command";
+import { RegisterProEntrepriseCommandResponse } from "./register-pro-entreprise-command.response";
 import { UserEmailAlreadyTakenException } from "@/core/application/features/auth/user-email-already-taken.exception";
 import {
   UserPhoneNumberAlreadyTakenException,
 } from "@/core/application/features/auth/user-phone-number-already-taken.exception";
+import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
+import { IUsersDataRepository, IUsersRepository } from "@/core/domain/users";
 import { IPasswordManagerService } from "@/core/domain/auth";
-import { UserRole } from "@/core/domain/roles";
 import { generateUuid } from "@/lib/ts-utilities/db";
+import { UserRole } from "@/core/domain/roles";
 
-
-@CommandHandler(RegisterCommand)
-export class RegisterCommandHandler
-  implements ICommandHandler<RegisterCommand, RegisterCommandResponse> {
+@CommandHandler(RegisterProEntrepriseCommand)
+export class RegisterProEntrepriseCommandHandler implements ICommandHandler<RegisterProEntrepriseCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUsersRepository,
@@ -26,12 +24,16 @@ export class RegisterCommandHandler
   ) {
   }
 
-  async execute(command: RegisterCommand): Promise<RegisterCommandResponse> {
+  async execute(command: RegisterProEntrepriseCommand): Promise<RegisterProEntrepriseCommandResponse> {
     await this.validateInput(command);
 
     const userId = generateUuid();
     const userData = await this.usersDataRepository.create({
-      activite: "",
+      nomEntreprise: command.nomEntreprise,
+      emailEntreprise: command.emailEntreprise,
+      registreCommerce: command.registreCommerce,
+      numeroContribuable: command.numeroContribuable,
+      typeEntreprise: command.typeEntreprise,
       user: userId,
     });
 
@@ -42,17 +44,17 @@ export class RegisterCommandHandler
       password: this.passwordManagerService.encryptPassword(command.password),
       firstName: command.firstName,
       lastName: command.lastName,
-      role: UserRole.Customer,
+      role: UserRole.ProEntreprise,
       city: command.city || null,
       additionalData: userData.id,
     });
 
-    return new RegisterCommandResponse({
+    return new RegisterProEntrepriseCommandResponse({
       user,
     });
   }
 
-  async validateInput(command: RegisterCommand) {
+  async validateInput(command: RegisterProEntrepriseCommand) {
     await this.verifyEmailAvailable(command.email);
     await this.verifyPhoneNumberAvailable(command.phoneNumber);
   }

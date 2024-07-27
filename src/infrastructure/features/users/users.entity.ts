@@ -11,6 +11,7 @@ import { UserData, UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { UserDataEntity } from "@/infrastructure/features/users/users-data.entity";
 import { Role } from "@/core/domain/roles";
+import { FileEntity } from "@/infrastructure/features/files";
 
 @Entity("users")
 export class UserEntity {
@@ -31,8 +32,9 @@ export class UserEntity {
   role: Role | string;
   @Column({ name: "language", type: "varchar", nullable: true })
   language?: string;
-  @Column({ name: "avatar", type: "varchar", nullable: true })
-  avatar?: string;
+  @Column({ name: "avatar", type: "uuid", nullable: true })
+  @ManyToOne(() => FileEntity, (file) => file.id)
+  avatar?: File | string;
   @Column({ name: "phone_number", type: "varchar" })
   phoneNumber: string;
   @Column({ name: "otp", type: "varchar", nullable: true })
@@ -58,7 +60,7 @@ export class UserEntity {
 
   @Column({ name: "additional_data", type: "uuid" })
   @OneToOne(() => UserDataEntity, (userData) => userData.user)
-  @JoinColumn({name: "additional_data_id"})
+  @JoinColumn({ name: "additional_data_id" })
   additionalData?: UserData | string;
 
   // Status and Dates

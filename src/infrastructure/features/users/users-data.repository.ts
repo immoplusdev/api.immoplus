@@ -1,31 +1,34 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Deps } from '@/core/domain/shared/ioc';
 import { UserData, IUsersDataRepository } from "@/core/domain/users";
 import { UserDataEntity } from '@/infrastructure/features/users';
+import { BaseRepository } from "@/infrastructure/typeorm";
+import { File } from "@/core/domain/files";
+import { SearchItemsParams } from "@/core/domain/http";
 
 
 @Injectable()
 export class UsersDataRepository implements IUsersDataRepository{
-  private readonly repository: Repository<UserDataEntity>;
+  private readonly repository: BaseRepository<File>;
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = dataSource.getRepository(UserDataEntity);
+    this.repository = new BaseRepository(dataSource, UserDataEntity);
   }
 
 
   async create(payload: Partial<UserData>): Promise<UserData> {
-    return await this.repository.save(payload);
+    return await this.repository.create(payload);
   }
 
-  async find(): Promise<UserData[]> {
-    return await this.repository.find();
+  async find(query?: SearchItemsParams): Promise<UserData[]> {
+    return await this.repository.find(query);
   }
 
-  async findOne(id: string): Promise<UserData> {
-    return await this.repository.findOneBy({ id });
+  async findOne(id: string, fields?: []): Promise<UserData> {
+    return await this.repository.findOne(id, fields);
   }
 
   async update(id: string, payload: Partial<UserData>): Promise<string> {
