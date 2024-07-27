@@ -58,7 +58,7 @@ export class SearchItemsParamsDto {
     required: false,
     isArray: true,
     type: String,
-    default: [`{ "_field": "champ", "_op": "eq", "_val": "valeur" }`],
+    default: [`{ "_field": "field", "_op": "eq", "_val": "value" }`],
   })
   _where?: [ItemsParamsCriteriasDto];
 

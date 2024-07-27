@@ -1,30 +1,34 @@
-import { DataSource, Repository } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource, Repository } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { File, IFileRepository } from "@/core/domain/files";
-import { FileEntity } from '@/infrastructure/features/files';
+import { FileEntity } from "@/infrastructure/features/files";
+import { SearchItemsParams } from "@/core/domain/http";
+import { BaseRepository } from "@/infrastructure/typeorm";
 
 
 @Injectable()
-export class FileRepository implements IFileRepository{
-  private readonly repository: Repository<FileEntity>;
+export class FileRepository implements IFileRepository {
+  private readonly repository: BaseRepository<File>;
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = dataSource.getRepository(FileEntity);
+    this.repository = new BaseRepository(dataSource, FileEntity);
   }
 
   async create(payload: Partial<File>): Promise<File> {
-    return await this.repository.save(payload);
+    return await this.repository.create(payload);
   }
 
-  async find(): Promise<File[]> {
-    return await this.repository.find();
+  async find(query?: SearchItemsParams): Promise<File[]> {
+    return await this.repository.find(query);
   }
 
-  async findOne(id: string): Promise<File> {
-    return await this.repository.findOneBy({ id });
+  async findOne(id: string, fields?: []): Promise<File> {
+    // TODO: Implement select and search filters
+    return await this.repository.findOne(id, fields);
   }
 
   async update(id: string, payload: Partial<File>): Promise<string> {

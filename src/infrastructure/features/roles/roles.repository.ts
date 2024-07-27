@@ -1,31 +1,34 @@
-import { DataSource, Repository } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { Role, IRoleRepository } from "@/core/domain/roles";
-import { RoleEntity } from '@/infrastructure/features/roles';
+import { RoleEntity } from "@/infrastructure/features/roles";
+import { SearchItemsParams } from "@/core/domain/http";
+import { BaseRepository } from "@/infrastructure/typeorm";
 
 
 @Injectable()
-export class RoleRepository implements IRoleRepository{
-  private readonly repository: Repository<RoleEntity>;
+export class RoleRepository implements IRoleRepository {
+  private readonly repository: BaseRepository<Role>;
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = dataSource.getRepository(RoleEntity);
+    this.repository = new BaseRepository(dataSource, RoleEntity);
   }
 
 
   async create(payload: Partial<Role>): Promise<Role> {
-    return await this.repository.save(payload);
+    return await this.repository.create(payload);
   }
 
-  async find(): Promise<Role[]> {
-    return await this.repository.find();
+  async find(query?: SearchItemsParams): Promise<Role[]> {
+    return await this.repository.find(query);
   }
 
-  async findOne(id: string): Promise<Role> {
-    return await this.repository.findOneBy({ id });
+  async findOne(id: string, fields?: []): Promise<Role> {
+    return await this.repository.findOne(id, fields);
   }
 
   async update(id: string, payload: Partial<Role>): Promise<string> {

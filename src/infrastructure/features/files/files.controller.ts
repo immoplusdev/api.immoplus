@@ -1,15 +1,27 @@
+import { createReadStream } from "fs";
 import {
   Body,
-  Controller,
+  Controller, Delete,
+  Get,
+  Inject,
+  Param,
+  ParseFilePipe,
+  Patch,
   Post,
+  Query, StreamableFile,
+  UploadedFile,
   UseGuards,
-  UseInterceptors, UploadedFile, ParseFilePipe, Get, Param, Inject, Query,
+  UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { FileDto, UploadFileCommandDto, WrapperResponseFileListDto } from "@/infrastructure/features/files/dtos";
-import { UserRole } from "@/core/domain/roles";
+import {
+  FileDto,
+  UploadFileCommandDto,
+  WrapperResponseFileDto,
+  WrapperResponseFileListDto,
+} from "@/infrastructure/features/files/dtos";
+import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -23,12 +35,13 @@ import {
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { JwtAuthGuard } from "src/infrastructure/auth/guards";
-import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IFileRepository } from "@/core/domain/files";
-import { ensureResourceListOwnership } from "@/infrastructure/auth/helpers";
+import { File, IFileRepository } from "@/core/domain/files";
+import { ensureResourceListOwnership, ensureResourceOwnership } from "@/infrastructure/auth/helpers";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
-import { File } from "@/core/domain/files";
+import { UpdateUserDto } from "@/infrastructure/features/users";
+
 
 @ApiTags("File")
 @Controller("files")
@@ -76,7 +89,7 @@ export class FileController {
       }),
     }),
   )
-  async createFile(
+  async create(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -108,13 +121,15 @@ export class FileController {
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Get(":id")
+  @Get()
   async readMany(
-    @Param("id") id: string,
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
   ) {
+
     const responseMapper = new WrapperResponseDtoMapper<FileDto[]>();
+
     params._where = addConditionsToWhereClause([{
       _field: "uploadedBy",
       _l_op: "and",
@@ -122,55 +137,117 @@ export class FileController {
     }], params._where);
 
     const files: File[] = await this.fileRepository.find(params);
-    ensureResourceListOwnership(files, userId, "user");
+
+    if (userRole.id != UserRole.Admin) ensureResourceListOwnership(files, userId, "uploadedBy");
 
     return responseMapper.mapFrom(files);
   }
 
+  @ApiResponse({
+    type: WrapperResponseFileDto,
+  })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get(":id")
+  async readOne(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+  ) {
 
-//   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-//   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
-//   @UseGuards(JwtAuthGuard)
-//   @ApiBearerAuth()
-//   @Get("raw/:id")
-//   async;
-//
-//   getRawFile(
-//     @Param("id")
-//       id: string,
-//     @CurrentUser("id")
-//       userId: string,
-//   ):
-//     Promise<StreamableFile> {
-//     const file = await this.fileRepository.findOne(id);
-//     const filePath = getFilePath(file.fileNameDisk);
-//
-//     ensureResourceOwnership(userId, file.uploadedBy,
-//     );
-//
-//     const outputFile = createReadStream(filePath);
-//     return new StreamableFile(outputFile);
-//   }
-//
-//   @Get("raw/public/:id")
-//   async getRawPublicFile(@Param("id")
-//                            id: string;
-//
-// ):
-//
-//   Promise<StreamableFile> {
-//     const file = await this.fileRepository.findOne(id);
-//     const filePath = getFilePath(file.fileNameDisk);
-//
-//     const outputFile = createReadStream(filePath);
-//     return new StreamableFile(outputFile);
-//   }
+    const responseMapper = new WrapperResponseDtoMapper<FileDto>();
+
+    const file = await this.fileRepository.findOne(id);
+
+    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+
+    return responseMapper.mapFrom(file);
+  }
+
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get("raw/:id")
+  async getRawFile(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+  ):
+    Promise<StreamableFile> {
+    const file = await this.fileRepository.findOne(id);
+    const filePath = getFilePath(file.fileNameDisk);
+
+    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+
+    const outputFile = createReadStream(filePath);
+    return new StreamableFile(outputFile);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get("raw/public/:id")
+  async getRawPublicFile(
+    @Param("id") id: string,
+    @CurrentUser("role") userRole: Role,
+  ): Promise<StreamableFile> {
+    const file = await this.fileRepository.findOne(id);
+    const filePath = getFilePath(file.fileNameDisk);
+
+    const outputFile = createReadStream(filePath);
+    return new StreamableFile(outputFile);
+  }
 
 
+  @ApiResponse({
+    type: WrapperResponseFileDto,
+  })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Files, PermissionAction.Update])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Patch(":id")
+  async update(
+    @Param("id") id: string,
+    @Body() payload: UploadFileCommandDto,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role) {
+
+    const responseMapper = new WrapperResponseDtoMapper<FileDto>();
+
+    const file = await this.fileRepository.findOne(id);
+
+    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+
+    await this.fileRepository.update(id, payload);
+
+    return responseMapper.mapFrom(await this.fileRepository.findOne(id));
+  }
+
+  @ApiResponse({
+    type: WrapperResponseFileDto,
+  })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Files, PermissionAction.Delete])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete(":id")
+  async delete(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role) {
+
+    const responseMapper = new WrapperResponseDtoMapper<FileDto>();
+
+    const file = await this.fileRepository.findOne(id);
+
+    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+
+    await this.fileRepository.delete(id);
+
+    return responseMapper.mapFrom(file);
+  }
 }
 
-
-// @RequiredRoles(RoleEnum.Tenant)
-// @RequiredPermissions([PermissionEnum.User, ActionsEnum.Read])
-// @UseGuards(JwtAuthGuard)
-// @ApiBearerAuth()

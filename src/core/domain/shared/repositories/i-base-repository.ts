@@ -2,8 +2,8 @@ import { SearchItemsParams } from "@/core/domain/http";
 
 export interface IBaseRepository<
   Model,
-  CreateDto = Model,
-  UpdateDto = Model,
+  CreateDto = Partial<Model>,
+  UpdateDto = Partial<Model>,
   KeyType = string,
 > {
   create(payload: CreateDto): Promise<Model>;

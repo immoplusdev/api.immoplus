@@ -5,10 +5,13 @@ import { UserEntity } from "@/infrastructure/features/users/users.entity";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
 import { Role } from "@/core/domain/roles";
+import { SearchItemsParams } from "@/core/domain/http";
+import { BaseRepository } from "@/infrastructure/typeorm";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
-  private readonly repository: Repository<UserEntity>;
+  private readonly userRepository: Repository<UserEntity>;
+  private readonly repository: BaseRepository<User>;
   private readonly relations = ["role", "additionalData"];
 
   constructor(
@@ -17,23 +20,24 @@ export class UsersRepository implements IUsersRepository {
     @Inject(Deps.PermissionRepository)
     private readonly permissionRepository: IPermissionRepository,
   ) {
-    this.repository = dataSource.getRepository(UserEntity);
+    this.repository = new BaseRepository(dataSource, UserEntity);
+    this.userRepository = dataSource.getRepository(UserEntity);
   }
 
   async create(payload: Partial<User>): Promise<User> {
-    return await this.repository.save(payload);
+    return await this.repository.create(payload);
   }
 
-  async find(): Promise<User[]> {
-    return await this.repository.find({
-      relations: this.relations,
-    });
+  async find(query?: SearchItemsParams): Promise<User[]> {
+    return await this.repository.find(query);
   }
 
-  async findOne(id: string): Promise<User> {
-    return await this.repository.findOne({
+
+  async findOne(id: string, fields?: []): Promise<User> {
+    return await this.userRepository.findOne({
       where: { id },
       relations: this.relations,
+      select: fields,
     });
   }
 
@@ -48,14 +52,14 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return await this.repository.findOne({
+    return await this.userRepository.findOne({
       where: { email },
       relations: this.relations,
     });
   }
 
   async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
-    return await this.repository.findOne(
+    return await this.userRepository.findOne(
       {
         where: { phoneNumber },
         relations: this.relations,
@@ -77,7 +81,7 @@ export class UsersRepository implements IUsersRepository {
 
   async findByIdWithRoleAndPermissions(id: string): Promise<UserWithRoleAndPermissions | null> {
 
-    const user = await this.repository.findOne({
+    const user = await this.userRepository.findOne({
       where: {
         id,
       },

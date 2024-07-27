@@ -3,12 +3,10 @@ import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   LoginWithPhoneNumberCommandDto, LoginWithPhoneNumberCommandResponseDto,
-  RegisterCommandDto, RegisterCommandDtoMapper,
-  RegisterCommandResponseDto, WrapperResponseLoginWithPhoneNumberCommandResponseDto,
-  WrapperResponseRegisterCommandResponseDto,
+  RegisterCommandDto,
+  WrapperResponseLoginWithPhoneNumberCommandResponseDto,
 } from "@/infrastructure/features/auth/dtos";
 import { CommandBus } from "@nestjs/cqrs";
-import { AutoMapper } from "@/lib/ts-utilities";
 import { LoginWithPhoneNumberCommand } from "@/core/application/features/auth/login-with-phone-number.command";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
 import {
@@ -31,13 +29,13 @@ export class AuthController {
   async registerCustomer(@Body() payload: RegisterCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
     const registerCommand = new RegisterCommand(payload);
-    const loginCOmmand = new LoginCommand({
+    const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
       password: registerCommand.password,
     });
 
-     await this.commandBus.execute(registerCommand);
-    const response = await this.commandBus.execute(loginCOmmand);
+    await this.commandBus.execute(registerCommand);
+    const response = await this.commandBus.execute(loginCommand);
     return responseMapper.mapFrom(response);
   }
 
@@ -55,15 +53,15 @@ export class AuthController {
   }
 
 
-  @ApiResponse({
-    type: WrapperResponseLoginWithPhoneNumberCommandResponseDto,
-  })
-  @Post("login-with-phone-number")
-  async loginWithPhoneNumber(@Body() payload: LoginWithPhoneNumberCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberCommandResponseDto>();
-    const command = new LoginWithPhoneNumberCommand(payload);
-
-    const response = await this.commandBus.execute(command);
-    return responseMapper.mapFrom(response);
-  }
+  // @ApiResponse({
+  //   type: WrapperResponseLoginWithPhoneNumberCommandResponseDto,
+  // })
+  // @Post("login-with-phone-number")
+  // async loginWithPhoneNumber(@Body() payload: LoginWithPhoneNumberCommandDto) {
+  //   const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberCommandResponseDto>();
+  //   const command = new LoginWithPhoneNumberCommand(payload);
+  //
+  //   const response = await this.commandBus.execute(command);
+  //   return responseMapper.mapFrom(response);
+  // }
 }
