@@ -44,7 +44,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
     const refreshToken = this.jwtManagerService.generateRefreshToken(payload);
 
     return new LoginCommandResponse({
-      user,
+      user: new User(user).clearPassword(),
       accessToken,
       expires,
       refreshToken,

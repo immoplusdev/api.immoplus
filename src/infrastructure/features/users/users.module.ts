@@ -6,6 +6,7 @@ import { UsersRepository } from './users.repository';
 import { UsersDataRepository } from "@/infrastructure/features/users/users-data.repository";
 import { PermissionModule } from "@/infrastructure/features/permissions";
 import { RoleModule } from "@/infrastructure/features/roles";
+import { CqrsModule } from "@nestjs/cqrs";
 
 const providers: Provider[] = [
   {
@@ -19,7 +20,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [UsersController],
-  imports: [TypeormModule, PermissionModule, RoleModule],
+  imports: [CqrsModule, TypeormModule, PermissionModule, RoleModule],
   providers: [...providers],
   exports: [...providers],
 })

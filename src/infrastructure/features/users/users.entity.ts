@@ -83,4 +83,10 @@ export class UserEntity {
   updatedAt?: Date;
   @DeleteDateColumn({ name: "deleted_at" })
   deletedAt: Date;
+
+
+  clearPassword(){
+    this.password = "********";
+    return this;
+  }
 }

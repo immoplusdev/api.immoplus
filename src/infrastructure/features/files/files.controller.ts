@@ -40,7 +40,6 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { File, IFileRepository } from "@/core/domain/files";
 import { ensureResourceListOwnership, ensureResourceOwnership } from "@/infrastructure/auth/helpers";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
-import { UpdateUserDto } from "@/infrastructure/features/users";
 
 
 @ApiTags("File")
@@ -192,7 +191,7 @@ export class FileController {
 
     const files: File[] = await this.fileRepository.find(params);
 
-    if (userRole.id != UserRole.Admin) ensureResourceListOwnership(files, userId, "uploadedBy");
+    ensureResourceListOwnership(files, userId, "uploadedBy", userRole.id);
 
     return responseMapper.mapFrom(files);
   }
@@ -215,7 +214,7 @@ export class FileController {
 
     const file = await this.fileRepository.findOne(id);
 
-    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     return responseMapper.mapFrom(file);
   }
@@ -234,7 +233,7 @@ export class FileController {
     const file = await this.fileRepository.findOne(id);
     const filePath = getFilePath(file.fileNameDisk);
 
-    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     const outputFile = createReadStream(filePath);
     return new StreamableFile(outputFile);
@@ -273,7 +272,7 @@ export class FileController {
 
     const file = await this.fileRepository.findOne(id);
 
-    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     await this.fileRepository.update(id, payload);
 
@@ -297,7 +296,7 @@ export class FileController {
 
     const file = await this.fileRepository.findOne(id);
 
-    if (userRole.id != UserRole.Admin) ensureResourceOwnership(userId, file.uploadedBy);
+    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     await this.fileRepository.delete(id);
 

@@ -67,6 +67,11 @@ export class UserDto {
   @ApiProperty()
   deletedAt: Date;
 
+  clearPassword() {
+    this.password = "********";
+    return this;
+  }
+
   constructor(data?: OmitMethods<UserDto>) {
     if (data) Object.assign(this, data);
   }

@@ -36,6 +36,11 @@ export class User {
   updatedAt?: Date;
   deletedAt: Date;
 
+  clearPassword() {
+    this.password = "********"
+    return this;
+  }
+
   constructor(data?: OmitMethods<User>) {
     if (data) Object.assign(this, data);
   }
