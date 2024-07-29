@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserRole } from "@/core/domain/roles";
 
 @Entity("roles")
 export class RoleEntity {
@@ -16,4 +17,7 @@ export class RoleEntity {
   appAccess: boolean;
   @Column({ name: 'admin_access', type: 'bool', default: false })
   adminAccess: boolean;
+  hasAdminAccess(){
+    return this.adminAccess || this.id == UserRole.Admin;
+  }
 }

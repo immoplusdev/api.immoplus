@@ -34,8 +34,11 @@ export class User {
   phoneNumberVerified: boolean;
   status: UserStatus;
   createdAt?: Date;
+  createdBy?: User | string;
   updatedAt?: Date;
-  deletedAt: Date;
+  updatedBy?: User | string;
+  deletedAt?: Date;
+  deletedBy?: User | string;
 
   clearPassword() {
     this.password = "********"

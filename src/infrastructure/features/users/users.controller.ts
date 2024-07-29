@@ -15,14 +15,13 @@ import { PermissionAction, PermissionCollection } from "@/core/domain/permission
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { JwtAuthGuard } from "src/infrastructure/auth/guards";
-import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/shared/ioc";
 import {
   ensureResourceOwnership,
   filterRessourceByOwnership,
 } from "@/infrastructure/auth/helpers";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
-import { IUsersRepository, User, UserData } from "@/core/domain/users";
+import { IUsersRepository, User } from "@/core/domain/users";
 import {
   UpdateUserAdditionalDataCommandResponseDto,
   UpdateUserCommandDto,
@@ -34,6 +33,7 @@ import {
 import { Role, UserRole } from "@/core/domain/roles";
 import { UserDtoMapper } from "@/infrastructure/features/users";
 import { UpdateUserAdditionalDataCommand } from "@/core/application/features/users";
+import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
 
 @ApiTags("User")
@@ -45,26 +45,6 @@ export class UsersController {
     private readonly usersRepository: IUsersRepository,
   ) {
   }
-
-  // @ApiResponse({
-  //   type: WrapperResponseUserDto,
-  // })
-  // @Post()
-  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([PermissionCollection.Users, PermissionAction.Create])
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // async create(
-  //   @CurrentUser("id") userId: string,
-  //   @Body() payload: CreateUserCommandDto,
-  // ) {
-  //
-  //   const responseMapper = new WrapperResponseDtoMapper<CreateUserCommandResponseDto>();
-  //
-  //   const response = await this.usersRepository.create(payload);
-  //
-  //   return responseMapper.mapFrom(response);
-  // }
 
 
   @ApiResponse({
@@ -83,14 +63,16 @@ export class UsersController {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto[]>();
 
-    params._where = addConditionsToWhereClause([{
-      _field: "uploadedBy",
+    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
+      _field: "createdBy",
       _l_op: "and",
       _val: userId,
     }], params._where);
 
     const users = await this.usersRepository.find(params);
+
     const outputUsers = filterRessourceByOwnership<User>(users, userId, "id", userRole.id);
+
     return responseMapper.mapFrom(UserDtoMapper.mapListFrom(outputUsers));
   }
 
@@ -112,7 +94,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(id);
 
-    ensureResourceOwnership(userId, user.id, userRole.id);
+    ensureResourceOwnership(userId, user.createdBy, userRole.id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }
@@ -134,7 +116,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(userId);
 
-    ensureResourceOwnership(userId, user.id, userRole.id);
+    ensureResourceOwnership(userId, user.createdBy, userRole.id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }
@@ -159,7 +141,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(id);
 
-    ensureResourceOwnership(userId, user.id, userRole.id);
+    ensureResourceOwnership(userId, user.createdBy, userRole.id);
 
     await this.usersRepository.update(user.id, payload);
 
@@ -184,7 +166,9 @@ export class UsersController {
 
     const responseMapper = new WrapperResponseDtoMapper<UpdateUserAdditionalDataCommandResponseDto>();
 
-    ensureResourceOwnership(userId, userId, userRole.id);
+    const user = await this.usersRepository.findOne(userId, ["createdBy"]);
+
+    ensureResourceOwnership(userId, user.createdBy, userRole.id);
 
     const command = new UpdateUserAdditionalDataCommand({
       ...payload,
@@ -212,12 +196,11 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(id);
 
-    ensureResourceOwnership(userId, user.id, userRole.id);
+    ensureResourceOwnership(userId, user.createdBy, userRole.id);
 
     await this.usersRepository.delete(id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }
-
 }
 

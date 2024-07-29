@@ -1,6 +1,6 @@
 import { Module, Provider } from '@nestjs/common';
 import { Deps } from '@/core/domain/shared/ioc';
-import { TypeormModule } from '@/infrastructure/configs/typeorm/typeorm.module';
+import { TypeormModule } from "@/infrastructure/typeorm";
 import { {{classify name}}Controller } from './{{dasherize name}}.controller';
 import { {{classify name}}Repository } from './{{dasherize name}}.repository';
 

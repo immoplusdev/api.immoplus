@@ -7,6 +7,7 @@ export enum Deps {
   PermissionRepository = "PermissionRepository",
   UsersDataRepository = "UsersDataRepository",
   FileRepository = "FileRepository",
+  NotificationRepository = "NotificationRepository",
 
 
   // Services

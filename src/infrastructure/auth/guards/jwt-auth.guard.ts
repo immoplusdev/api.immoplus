@@ -4,6 +4,8 @@ import { PERMISSIONS_KEY, ROLES_KEY } from '../../decorators';
 import { Reflector } from '@nestjs/core';
 import { UnauthorizedException } from "@/core/domain/shared/exceptions";
 import { AuthorizationManagerService } from "@/infrastructure/features/auth/authorization-manager.service";
+import { Role } from "@/core/domain/roles";
+import { User } from "@/core/domain/users";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -43,6 +45,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       )
     )
       throw new UnauthorizedException();
-    return user;
+
+    user.role = new Role(user.role)
+    return new User(user) as never;
   }
 }

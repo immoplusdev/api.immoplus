@@ -5,10 +5,11 @@ import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/auth";
 import { PermissionModule } from "@/infrastructure/features/permissions";
 import { Deps } from "@/core/domain/shared/ioc";
 import { FileModule } from "@/infrastructure/features/files";
+import { NotificationModule } from "@/infrastructure/features/notifications";
 
 export const controllers = [];
 
-const modules = [UsersModule, PermissionModule, AuthModule, FileModule];
+const modules = [UsersModule, PermissionModule, AuthModule, FileModule, NotificationModule];
 
 @Module({
   providers: [

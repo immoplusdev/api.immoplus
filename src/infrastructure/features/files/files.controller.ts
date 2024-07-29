@@ -183,7 +183,7 @@ export class FileController {
 
     const responseMapper = new WrapperResponseDtoMapper<FileDto[]>();
 
-    params._where = addConditionsToWhereClause([{
+    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "uploadedBy",
       _l_op: "and",
       _val: userId,

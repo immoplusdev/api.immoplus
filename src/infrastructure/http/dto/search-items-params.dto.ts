@@ -85,9 +85,9 @@ export type ItemsOperatorDto =
   | 'nin'
   | 'contains'
   | 'ncontains'
-  | 'startswith'
-  | 'endswith'
-  | 'isnull'
-  | 'isnotnull'
-  | 'isempty'
-  | 'isnotempty';
+  // | 'startswith'
+  // | 'endswith'
+  // | 'isnull'
+  // | 'isnotnull'
+  // | 'isempty'
+  // | 'isnotempty';

@@ -4,8 +4,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
 import { Role } from "@/core/domain/roles";
 import { RoleDto } from "@/infrastructure/features/roles";
-import { UserData } from "@/core/domain/users";
+import { User, UserData } from "@/core/domain/users";
 import { UserDataDto } from "@/infrastructure/features/users/dto/users-data.dto";
+import { Column, CreateDateColumn, DeleteDateColumn, JoinColumn, ManyToOne, UpdateDateColumn } from "typeorm";
 
 export class UserDto {
 
@@ -65,9 +66,15 @@ export class UserDto {
   @ApiProperty()
   createdAt?: Date;
   @ApiProperty()
+  createdBy?: User | string;
+  @ApiProperty()
   updatedAt?: Date;
   @ApiProperty()
-  deletedAt: Date;
+  updatedBy?: User | string;
+  @ApiProperty()
+  deletedAt?: Date;
+  @ApiProperty()
+  deletedBy?: User | string;
 
   clearPassword() {
     this.password = "********";

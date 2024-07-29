@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { UserData, UserStatus } from "@/core/domain/users";
+import { User, UserData, UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { UserDataEntity } from "@/infrastructure/features/users/users-data.entity";
 import { Role } from "@/core/domain/roles";
@@ -81,11 +81,22 @@ export class UserEntity {
   status: UserStatus;
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;
+  @Column({ name: "created_by", type: "uuid", nullable: true })
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  @JoinColumn({ name: "created_by" })
+  createdBy?: User | string;
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt?: Date;
+  @Column({ name: "updated_by", type: "uuid", nullable: true })
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  @JoinColumn({ name: "updated_by" })
+  updatedBy?: User | string;
   @DeleteDateColumn({ name: "deleted_at" })
   deletedAt: Date;
-
+  @Column({ name: "deleted_by", type: "uuid", nullable: true })
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  @JoinColumn({ name: "deleted_by" })
+  deletedBy?: User | string;
 
   clearPassword(){
     this.password = "********";

@@ -3,29 +3,30 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Deps } from '@/core/domain/shared/ioc';
 import { {{classify name}}, I{{classify name}}Repository } from "@/core/domain/{{dasherize group}}";
 import { {{classify name}}Entity } from '@/infrastructure/features/{{dasherize group}}';
-
+import { BaseRepository } from "@/infrastructure/typeorm";
+import { SearchItemsParams } from "@/core/domain/http";
 
 @Injectable()
 export class {{classify name}}Repository implements I{{classify name}}Repository{
-  private readonly repository: Repository<{{classify name}}Entity>;
+  private readonly repository: BaseRepository<{{classify name}}>;
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = dataSource.getRepository({{classify name}}Entity);
+    this.repository = new BaseRepository(dataSource, {{classify name}}Entity);
   }
 
 
   async create(payload: Partial<{{classify name}}>): Promise<{{classify name}}> {
-    return await this.repository.save(payload);
+    return await this.repository.create(payload);
   }
 
-  async findAll(): Promise<{{classify name}}[]> {
-    return await this.repository.find();
+  async find(query?: SearchItemsParams): Promise<{{classify name}}[]> {
+    return await this.repository.find(query);
   }
 
-  async findOne(id: string): Promise<{{classify name}}> {
-    return await this.repository.findOneBy({ id });
+  async findOne(id: string, fields?: []): Promise<{{classify name}}> {
+    return await this.repository.findOne(id, fields);
   }
 
   async update(id: string, payload: Partial<{{classify name}}>): Promise<string> {

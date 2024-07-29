@@ -7,6 +7,7 @@ import { IPermissionRepository } from "@/core/domain/permissions";
 import { Role } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
+import { mapQueryFieldsToTypeormSelection } from "@/infrastructure/http";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -33,11 +34,11 @@ export class UsersRepository implements IUsersRepository {
   }
 
 
-  async findOne(id: string, fields?: []): Promise<User> {
+  async findOne(id: string, fields?: string[]): Promise<User> {
     return await this.userRepository.findOne({
       where: { id },
       relations: this.relations,
-      select: fields,
+      select: mapQueryFieldsToTypeormSelection(fields),
     });
   }
 

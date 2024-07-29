@@ -1,0 +1,1 @@
+export type ItemStatusFields = "id" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "deletedAt" | "deletedBy"
