@@ -10,7 +10,7 @@ export interface IBaseRepository<
 
   find(query?: SearchItemsParams): Promise<Model[]>;
 
-  findOne(id: KeyType, fields?: []): Promise<Model>;
+  findOne(id: KeyType, fields?: KeyType[]): Promise<Model>;
 
   update(id: KeyType, payload: UpdateDto): Promise<KeyType>;
 

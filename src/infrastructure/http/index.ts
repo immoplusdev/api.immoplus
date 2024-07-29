@@ -1,2 +1,2 @@
-export * from "./dtos";
+export * from "./dto";
 export * from "./typeorm-utils";

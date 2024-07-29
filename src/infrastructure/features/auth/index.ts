@@ -1,3 +1,3 @@
-export * from "./dtos";
+export * from "./dto";
 export * from "./auth.module";
 export * from "./auth.controller";

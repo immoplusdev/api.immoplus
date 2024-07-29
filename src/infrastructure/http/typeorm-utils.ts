@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { ItemsParamsCriterias, SearchItemsParams } from "@/core/domain/http";
 import { InvalidQueryException } from "@/core/domain/shared/exceptions";
-import { ItemsParamsCriteriasDto } from "@/infrastructure/http/dtos";
+import { ItemsParamsCriteriasDto } from "src/infrastructure/http/dto";
 
 export function parseHttpQuery(query: any): SearchItemsParams {
   const params: SearchItemsParams = {};

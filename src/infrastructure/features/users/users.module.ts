@@ -7,6 +7,10 @@ import { UsersDataRepository } from "@/infrastructure/features/users/users-data.
 import { PermissionModule } from "@/infrastructure/features/permissions";
 import { RoleModule } from "@/infrastructure/features/roles";
 import { CqrsModule } from "@nestjs/cqrs";
+import { UpdateUserAdditionalDataCommandHandler } from "@/core/application/features/users";
+
+const commandHandlers = [UpdateUserAdditionalDataCommandHandler];
+
 
 const providers: Provider[] = [
   {
@@ -21,7 +25,7 @@ const providers: Provider[] = [
 @Module({
   controllers: [UsersController],
   imports: [CqrsModule, TypeormModule, PermissionModule, RoleModule],
-  providers: [...providers],
+  providers: [...providers, ...commandHandlers],
   exports: [...providers],
 })
 export class UsersModule {}

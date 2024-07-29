@@ -64,6 +64,8 @@ export class UserEntity {
   additionalData?: UserData | string;
 
   // Status and Dates
+  @Column({ name: "identity_verified", type: "bool", default: false })
+  identityVerified: boolean;
   @Column({ name: "email_verified", type: "bool", default: false })
   emailVerified: boolean;
   @Column({ name: "phone_number_verified", type: "bool", default: false })

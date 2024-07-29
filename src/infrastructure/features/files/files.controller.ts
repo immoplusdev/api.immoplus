@@ -20,7 +20,7 @@ import {
   UploadFileCommandDto,
   WrapperResponseFileDto,
   WrapperResponseFileListDto,
-} from "@/infrastructure/features/files/dtos";
+} from "src/infrastructure/features/files/dto";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { diskStorage } from "multer";
@@ -31,7 +31,7 @@ import { UploadFileCommand } from "@/core/application/features/files";
 import {
   UploadFileCommandResponseDto,
   WrapperResponseUploadFileCommandResponseDto,
-} from "@/infrastructure/features/files/dtos/upload-file-command-response.dto";
+} from "@/infrastructure/features/files/dto/upload-file-command-response.dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { JwtAuthGuard } from "src/infrastructure/auth/guards";

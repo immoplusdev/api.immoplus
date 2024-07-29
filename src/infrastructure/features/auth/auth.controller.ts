@@ -2,18 +2,15 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
-  LoginWithPhoneNumberCommandDto, LoginWithPhoneNumberCommandResponseDto,
   RegisterCommandDto, RegisterProEntrepriseCommandDto, RegisterProParticulierCommandDto,
-  WrapperResponseLoginWithPhoneNumberCommandResponseDto,
-} from "@/infrastructure/features/auth/dtos";
+} from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
-import { LoginWithPhoneNumberCommand } from "@/core/application/features/auth/login-with-phone-number.command";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
 import {
   LoginCommandResponseDto,
   WrapperResponseLoginCommandResponseDto,
-} from "@/infrastructure/features/auth/dtos/login-command-response.dto";
-import { LoginCommandDto } from "@/infrastructure/features/auth/dtos/login-command.dto";
+} from "@/infrastructure/features/auth/dto/login-command-response.dto";
+import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-command.dto";
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,

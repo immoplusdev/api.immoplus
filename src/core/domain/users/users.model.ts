@@ -30,6 +30,7 @@ export class User {
   // Status and Dates
   authLoginAttempts: number;
   emailVerified: boolean;
+  identityVerified: boolean;
   phoneNumberVerified: boolean;
   status: UserStatus;
   createdAt?: Date;

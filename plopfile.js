@@ -161,9 +161,9 @@ module.exports = function(plop) {
     },
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/index.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/index.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/index.hbs",
+        "plop-templates/infrastructure/features/base/dto/index.hbs",
     },
     {
       type: "add",
@@ -246,48 +246,48 @@ module.exports = function(plop) {
   const generateDto = [
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/{{dasherize name}}.dto.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}.dto.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/base.dto.hbs",
+        "plop-templates/infrastructure/features/base/dto/base.dto.hbs",
     },
   ];
 
   const generateDtoMapper = [
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/{{dasherize name}}-dto.mapper.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}-dto.mapper.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/base-dto.mapper.hbs",
+        "plop-templates/infrastructure/features/base/dto/base-dto.mapper.hbs",
     },
   ];
 
   const generateCommandDto = [
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/{{dasherize name}}-command.dto.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}-command.dto.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/base-command.dto.hbs",
+        "plop-templates/infrastructure/features/base/dto/base-command.dto.hbs",
     },
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/{{dasherize name}}-command-response.dto.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}-command-response.dto.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/base-command-response.dto.hbs",
+        "plop-templates/infrastructure/features/base/dto/base-command-response.dto.hbs",
     },
   ];
 
   const generateQueryDto = [
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/{{dasherize name}}-query.dto.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}-query.dto.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/base-query.dto.hbs",
+        "plop-templates/infrastructure/features/base/dto/base-query.dto.hbs",
     },
     {
       type: "add",
-      path: "src/infrastructure/features/{{dasherize group}}/dtos/{{dasherize name}}-query-response.dto.ts",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}-query-response.dto.ts",
       templateFile:
-        "plop-templates/infrastructure/features/base/dtos/base-query-response.dto.hbs",
+        "plop-templates/infrastructure/features/base/dto/base-query-response.dto.hbs",
     },
   ];
 
@@ -366,14 +366,14 @@ module.exports = function(plop) {
     actions: [...generateServicePort, ...generateService],
   });
 
-  plop.setGenerator("infra:dtos", {
-    description: "Generate dtos",
+  plop.setGenerator("infra:dto", {
+    description: "Generate dto",
     prompts: groupPrompts,
     actions: generateDto,
   });
 
   plop.setGenerator("infra:mapper", {
-    description: "Generate dtos mapper",
+    description: "Generate dto mapper",
     prompts: groupPrompts,
     actions: generateDtoMapper,
   });

@@ -5,7 +5,7 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { Role } from "@/core/domain/roles";
 import { RoleDto } from "@/infrastructure/features/roles";
 import { UserData } from "@/core/domain/users";
-import { UserDataDto } from "@/infrastructure/features/users/dtos/users-data.dto";
+import { UserDataDto } from "@/infrastructure/features/users/dto/users-data.dto";
 
 export class UserDto {
 
@@ -52,6 +52,8 @@ export class UserDto {
   additionalData?: UserData | string;
 
   // Status and Dates
+  @ApiProperty()
+  identityVerified: boolean;
   @ApiProperty()
   emailVerified: boolean;
   @ApiProperty()
