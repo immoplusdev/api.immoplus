@@ -1,8 +1,11 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiNoContentResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
-  RegisterCommandDto, RegisterProEntrepriseCommandDto, RegisterProParticulierCommandDto,
+  RegisterCommandDto,
+  RegisterProEntrepriseCommandDto,
+  RegisterProParticulierCommandDto,
+  UpdatePasswordCommandDto,
 } from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
@@ -14,8 +17,12 @@ import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-comman
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand,
+  RegisterProParticulierCommand, UpdatePasswordCommand,
 } from "@/core/application/features/auth";
+import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { UserRole } from "@/core/domain/roles";
+import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import { JwtAuthGuard } from "@/infrastructure/auth";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -85,6 +92,21 @@ export class AuthController {
 
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
+  }
+
+  @ApiNoContentResponse()
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Users, PermissionAction.Update])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("update-password")
+  async updatePassword(
+    @Body() payload: UpdatePasswordCommandDto,
+    @CurrentUser("id") userId: string) {
+    const responseMapper = new WrapperResponseDtoMapper<UpdatePasswordCommandDto>();
+    const command = new UpdatePasswordCommand({ ...payload, userId });
+
+    await this.commandBus.execute(command);
   }
 
 

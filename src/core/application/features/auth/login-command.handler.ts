@@ -9,6 +9,7 @@ import { IUsersRepository, User } from "@/core/domain/users";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { IJwtManagerService, IPasswordManagerService, UserCannotLoginException } from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
+import { UpdatePasswordCommand } from "@/core/application/features/auth/update-password.command";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
@@ -29,7 +30,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 
-    if (!this.passwordManagerService.passwordMatchesHash(command.password, user.password)) throw new InvalidCredentialsException();
+    this.verifyPassword(command.password, user.password);
 
     await this.createUserSession(user);
 
@@ -60,5 +61,9 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
   private santizePayload(payload: any) {
     return JSON.parse(JSON.stringify(payload));
+  }
+
+  private verifyPassword(password: string, hash: string) {
+    if (!this.passwordManagerService.passwordMatchesHash(password, hash)) throw new InvalidCredentialsException();
   }
 }

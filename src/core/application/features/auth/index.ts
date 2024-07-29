@@ -15,3 +15,6 @@ export * from "./register-pro-entreprise-command.response";
 export * from "./register-pro-particulier.command";
 export * from "./register-pro-particulier-command.handler";
 export * from "./register-pro-particulier-command.response";
+export * from "./update-password.command";
+export * from "./update-password-command.handler";
+export * from "./update-password-command.response";

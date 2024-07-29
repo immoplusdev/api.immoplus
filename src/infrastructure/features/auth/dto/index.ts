@@ -5,5 +5,7 @@ export * from "./login-with-phone-number-command.dto";
 export * from "./login-with-phone-number-command-response.dto";
 export * from "./register-pro-entreprise-command.dto";
 export * from "./register-pro-entreprise-command-response.dto";
-export * from "./register-pro-particulier-command.dto"
-export * from "./register-pro-particulier-command-response.dto"
+export * from "./register-pro-particulier-command.dto";
+export * from "./register-pro-particulier-command-response.dto";
+export * from "./update-password-command.dto";
+export * from "./update-password-command-response.dto";
