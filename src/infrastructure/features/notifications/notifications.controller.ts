@@ -120,7 +120,7 @@ export class NotificationController {
 
     ensureResourceOwnership(userId, item.createdBy, userRole.id);
 
-    await this.repository.update(userId, payload);
+    await this.repository.updateOne(userId, payload);
 
     return responseMapper.mapFrom(await this.repository.findOne(id));
   }

@@ -12,7 +12,7 @@ export interface IBaseRepository<
 
   findOne(id: KeyType, fields?: KeyType[]): Promise<Model>;
 
-  update(id: KeyType, payload: UpdateDto): Promise<KeyType>;
+  updateOne(id: KeyType, payload: UpdateDto): Promise<KeyType>;
 
   delete(id: KeyType): Promise<KeyType>;
 }

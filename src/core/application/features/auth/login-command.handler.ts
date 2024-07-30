@@ -7,18 +7,21 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { InvalidCredentialsException } from "@/core/domain/shared/exceptions";
 import { IUsersRepository, User } from "@/core/domain/users";
 import { IConfigsManagerService } from "@/core/domain/configs";
-import { IJwtManagerService, IPasswordManagerService, UserCannotLoginException } from "@/core/domain/auth";
+import {
+  IAuthService,
+  IJwtManagerService,
+  IPasswordManagerService,
+  UserCannotLoginException,
+} from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
-import { UpdatePasswordCommand } from "@/core/application/features/auth/update-password.command";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
     @Inject(Deps.UsersRepository) private readonly userRepository: IUsersRepository,
+    @Inject(Deps.AuthService) private readonly authService: IAuthService,
     @Inject(Deps.PasswordManagerService) private readonly passwordManagerService: IPasswordManagerService,
-    @Inject(Deps.JwtManagerService) private readonly jwtManagerService: IJwtManagerService,
-    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
   ) {
     //
   }
@@ -38,29 +41,11 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   }
 
   private generateUserTokens(user: User): LoginCommandResponse {
-
-    const payload = this.santizePayload(user);
-    const accessToken = this.jwtManagerService.generateAccessToken(payload);
-    const expires = this.configsManagerService.getEnvVariable<string>("JWT_REFRESH_EXPIRES_IN");
-    const refreshToken = this.jwtManagerService.generateRefreshToken(payload);
-
-    return new LoginCommandResponse({
-      user: new User(user).clearPassword(),
-      accessToken,
-      expires,
-      refreshToken,
-    });
+    return this.authService.generateUserTokens(user);
   };
 
   private async createUserSession(user: User) {
-    // TODO: Deal with session creation
-    return await new Promise((resolve, reject) => {
-      resolve({});
-    });
-  }
-
-  private santizePayload(payload: any) {
-    return JSON.parse(JSON.stringify(payload));
+    await this.authService.createUserSession(user);
   }
 
   private verifyPassword(password: string, hash: string) {

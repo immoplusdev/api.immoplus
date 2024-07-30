@@ -42,8 +42,8 @@ export class UsersRepository implements IUsersRepository {
     });
   }
 
-  async update(id: string, payload: Partial<User>): Promise<string> {
-    await this.repository.update(id, payload);
+  async updateOne(id: string, payload: Partial<User>): Promise<string> {
+    await this.repository.updateOne(id, payload);
     return id;
   }
 
@@ -52,27 +52,29 @@ export class UsersRepository implements IUsersRepository {
     return id;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string, fields?: string[]): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email },
       relations: this.relations,
+      select: mapQueryFieldsToTypeormSelection(fields),
     });
   }
 
-  async findByPhoneNumber(phoneNumber: string): Promise<User | null> {
+  async findByPhoneNumber(phoneNumber: string, fields?: string[]): Promise<User | null> {
     return await this.userRepository.findOne(
       {
         where: { phoneNumber },
         relations: this.relations,
+        select: mapQueryFieldsToTypeormSelection(fields),
       },
     );
   }
 
-  async findByUsername(username: string): Promise<User | null> {
+  async findByUsername(username: string, fields?: string[]): Promise<User | null> {
     let user: User | null = null;
     try {
-      if (username.includes("@")) user = await this.findByEmail(username);
-      if (!user) user = await this.findByPhoneNumber(username);
+      if (username.includes("@")) user = await this.findByEmail(username, fields);
+      if (!user) user = await this.findByPhoneNumber(username, fields);
     } catch (error) {
       console.log(error);
       return null;
@@ -80,13 +82,14 @@ export class UsersRepository implements IUsersRepository {
     return user;
   }
 
-  async findByIdWithRoleAndPermissions(id: string): Promise<UserWithRoleAndPermissions | null> {
+  async findByIdWithRoleAndPermissions(id: string, fields?: string[]): Promise<UserWithRoleAndPermissions | null> {
 
     const user = await this.userRepository.findOne({
       where: {
         id,
       },
       relations: this.relations,
+      select: mapQueryFieldsToTypeormSelection(fields),
     });
 
     const permissions = await this.permissionRepository.findByRoleId((user.role as Role).id);

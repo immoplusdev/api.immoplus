@@ -25,7 +25,7 @@ export class UpdateUserAdditionalDataCommandHandler implements ICommandHandler<U
 
     const additionalDataId = (user.additionalData as User).id;
 
-    await this.usersDataRepository.update(
+    await this.usersDataRepository.updateOne(
       additionalDataId,
       {
         // Pro particulier

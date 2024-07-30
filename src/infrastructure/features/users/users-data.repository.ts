@@ -31,8 +31,8 @@ export class UsersDataRepository implements IUsersDataRepository{
     return await this.repository.findOne(id, fields);
   }
 
-  async update(id: string, payload: Partial<UserData>): Promise<string> {
-    await this.repository.update(id, payload);
+  async updateOne(id: string, payload: Partial<UserData>): Promise<string> {
+    await this.repository.updateOne(id, payload);
     return id;
   }
 

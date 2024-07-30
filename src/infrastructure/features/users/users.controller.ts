@@ -143,7 +143,7 @@ export class UsersController {
 
     ensureResourceOwnership(userId, user.createdBy, userRole.id);
 
-    await this.usersRepository.update(user.id, payload);
+    await this.usersRepository.updateOne(user.id, payload);
 
     const response = await this.usersRepository.findOne(id);
 

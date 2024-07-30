@@ -32,7 +32,13 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return item;
   }
 
+
   async update(id: KeyType, payload: UpdateDto): Promise<KeyType> {
+    await this.repository.update(id, payload);
+    return id;
+  }
+
+  async updateOne(id: KeyType, payload: UpdateDto): Promise<KeyType> {
     await this.repository.update(id, payload);
     return id;
   }

@@ -274,7 +274,7 @@ export class FileController {
 
     ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
 
-    await this.fileRepository.update(id, payload);
+    await this.fileRepository.updateOne(id, payload);
 
     return responseMapper.mapFrom(await this.fileRepository.findOne(id));
   }

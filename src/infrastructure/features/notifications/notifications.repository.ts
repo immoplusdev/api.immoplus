@@ -30,8 +30,8 @@ export class NotificationRepository implements INotificationRepository{
     return await this.repository.findOne(id, fields);
   }
 
-  async update(id: string, payload: Partial<Notification>): Promise<string> {
-    await this.repository.update(id, payload);
+  async updateOne(id: string, payload: Partial<Notification>): Promise<string> {
+    await this.repository.updateOne(id, payload);
     return id;
   }
 

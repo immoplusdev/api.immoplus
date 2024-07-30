@@ -16,6 +16,7 @@ import { LoggingModule } from "@/infrastructure/features/logging";
 import { Deps } from "@/core/domain/shared/ioc";
 import { PasswordManagerService } from "@/infrastructure/features/auth/password-manager.service";
 import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
+import { TfaService } from "@/infrastructure/features/auth/tfa.service";
 
 const commandHandlers = [
   RegisterCommandHandler, RegisterProEntrepriseCommandHandler, RegisterProParticulierCommandHandler, LoginCommandHandler, LoginWithPhoneNumberCommandHandler,
@@ -30,6 +31,14 @@ const providers: Provider[] = [
   {
     provide: Deps.JwtManagerService,
     useClass: JwtManagerService,
+  },
+  {
+    provide: Deps.TfaService,
+    useClass: TfaService,
+  },
+  {
+    provide: Deps.AuthService,
+    useClass: AuthService,
   },
 ];
 

@@ -30,7 +30,7 @@ export class UpdatePasswordCommandHandler implements ICommandHandler<UpdatePassw
   }
 
   private async updatePassword(userId: string, password: string) {
-    await this.usersRepository.update(userId, { password: this.passwordManagerService.encryptPassword(password) });
+    await this.usersRepository.updateOne(userId, { password: this.passwordManagerService.encryptPassword(password) });
   }
 
   private verifyPassword(password: string, hash: string) {

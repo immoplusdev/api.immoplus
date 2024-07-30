@@ -3,3 +3,6 @@ export * from "./i-authorization-manager.service";
 export * from "./i-jwt-sign-options";
 export * from "./i-password-manager.service";
 export * from "./user-cannot-login.exception";
+export * from "./i-tfa.service";
+export * from "./i-auth.service";
+export * from "./login-response.model";
