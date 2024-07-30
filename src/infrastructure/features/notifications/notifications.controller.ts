@@ -16,7 +16,6 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ensureResourceOwnership } from "@/infrastructure/auth/helpers";
-import { ItemStatusFields } from "@/core/domain/shared/types";
 
 
 @ApiTags("Notification")
@@ -25,8 +24,7 @@ export class NotificationController {
   constructor(
     @Inject(Deps.NotificationRepository)
     private readonly repository: INotificationRepository,
-  ) {
-  }
+  ) {}
 
 
   @ApiResponse({
@@ -41,6 +39,7 @@ export class NotificationController {
     @Body() payload: NotificationDto,
     @CurrentUser() userId: string,
   ) {
+
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
 
     const response = await this.repository.create({ ...payload, createdBy: userId });
@@ -113,7 +112,7 @@ export class NotificationController {
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
-    @Body() payload: Partial<Omit<NotificationDto, ItemStatusFields>>,
+    @Body() payload: NotificationDto,
   ) {
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
 
