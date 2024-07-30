@@ -1,3 +1,5 @@
+import { MailService } from "@/infrastructure/features/notifications";
+
 export enum Deps {
   DataSource = "DataSource",
 
@@ -16,6 +18,7 @@ export enum Deps {
   JwtManagerService = "JwtManagerService",
   ConfigsManagerService = "ConfigsManagerService",
   SmsService = "SmsService",
+  MailService = "MailService",
 
   // Guards
   AppGuard = "AppGuard"

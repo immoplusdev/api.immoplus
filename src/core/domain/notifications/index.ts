@@ -3,3 +3,5 @@ export * from "./i-notifications.repository";
 export * from "./notification-type.enum";
 export * from "./notification-status.enum";
 export * from "./i-sms.service";
+export * from "./i-mail.service";
+export * from "./send-mail-params.model";

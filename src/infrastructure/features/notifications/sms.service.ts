@@ -36,10 +36,7 @@ export class SmsService implements ISmsService {
       responseUrl: "http://res.my.domain.com",
     };
 
-    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
-      this.loggerService.info(message, payload);
-      return;
-    }
+    if (this.isSandbox()) return this.loggerService.info(message, payload);
 
     const headers = {
       "Content-Type": "application/features/json",
@@ -49,6 +46,10 @@ export class SmsService implements ISmsService {
 
     const campainResponse = await this.createLeTextoCampain(payload, headers);
     await this.scheduleLeTextoCampain(campainResponse.data.id, headers);
+  }
+
+  private isSandbox() {
+    return this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev;
   }
 
   private sanitizeRecipients(recipients: string[]) {
