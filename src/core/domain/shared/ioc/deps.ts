@@ -15,7 +15,7 @@ export enum Deps {
   PasswordManagerService = "PasswordManagerService",
   JwtManagerService = "JwtManagerService",
   ConfigsManagerService = "ConfigsManagerService",
-  SmsServiceService = "SmsServiceService",
+  SmsService = "SmsService",
 
   // Guards
   AppGuard = "AppGuard"

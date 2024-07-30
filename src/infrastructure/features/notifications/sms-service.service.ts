@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ISmsServiceService } from "@/core/domain/notifications";
+import { ISmsService } from "@/core/domain/notifications";
 import { Deps } from "@/core/domain/shared/ioc";
 import { ILoggerService } from "@/core/domain/logging";
 import axios from "axios";
@@ -9,7 +9,7 @@ import { AppProfile } from "@/core/domain/shared/enums";
 
 
 @Injectable()
-export class SmsServiceService implements ISmsServiceService {
+export class SmsService implements ISmsService {
   constructor(
     @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,

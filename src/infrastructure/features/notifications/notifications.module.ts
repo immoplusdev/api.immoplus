@@ -1,9 +1,11 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
-import { NotificationController } from './notifications.controller';
-import { NotificationRepository } from './notifications.repository';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
+import { NotificationController } from "./notifications.controller";
+import { NotificationRepository } from "./notifications.repository";
 import { TypeormModule } from "@/infrastructure/typeorm";
-import { SmsServiceService } from "@/infrastructure/features/notifications";
+import { SmsService } from "@/infrastructure/features/notifications/sms-service.service";
+import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
+import { LoggingModule } from "@/infrastructure/features/logging";
 
 const providers: Provider[] = [
   {
@@ -11,15 +13,16 @@ const providers: Provider[] = [
     useClass: NotificationRepository,
   },
   {
-    provide: Deps.SmsServiceService,
-    useClass: SmsServiceService,
-  },
+    provide: Deps.SmsService,
+    useClass: SmsService,
+  }
 ];
 
 @Module({
   controllers: [NotificationController],
-  imports: [TypeormModule],
+  imports: [TypeormModule, ConfigsModule, LoggingModule],
   providers: [...providers],
   exports: [...providers],
 })
-export class NotificationModule {}
+export class NotificationModule {
+}
