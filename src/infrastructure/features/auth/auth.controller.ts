@@ -4,8 +4,8 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   RegisterCommandDto,
   RegisterProEntrepriseCommandDto,
-  RegisterProParticulierCommandDto, SendSmsOtpCommandDto,
-  UpdatePasswordCommandDto, WrapperResponseSendSmsOtpCommandResponseDto,
+  RegisterProParticulierCommandDto, SendEmailOtpCommandDto, SendSmsOtpCommandDto,
+  UpdatePasswordCommandDto,
 } from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
@@ -17,7 +17,7 @@ import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-comman
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand, SendSmsOtpCommand, UpdatePasswordCommand,
+  RegisterProParticulierCommand, SendEmailOtpCommand, SendSmsOtpCommand, UpdatePasswordCommand,
 } from "@/core/application/features/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
@@ -114,8 +114,15 @@ export class AuthController {
 
   @ApiNoContentResponse()
   @Post("send-sms-otp")
-  async loginWithPhoneNumber(@Body() payload: SendSmsOtpCommandDto) {
+  async sendSmsOtp(@Body() payload: SendSmsOtpCommandDto) {
     const command = new SendSmsOtpCommand(payload);
+    await this.commandBus.execute(command);
+  }
+
+  @ApiNoContentResponse()
+  @Post("send-email-otp")
+  async sendEmailOtp(@Body() payload: SendEmailOtpCommandDto) {
+    const command = new SendEmailOtpCommand(payload);
     await this.commandBus.execute(command);
   }
 }

@@ -12,7 +12,7 @@ dotenv.config();
 describe("NodemailerService", () => {
   let mailingService: IMailService;
   const configsManagerService = new ConfigsManagerService(new ConfigService());
-  const loggerService = new LoggerService();
+  const loggerService = new LoggerService(configsManagerService);
 
   beforeEach(() => {
     mailingService = new MailService(configsManagerService, loggerService);

@@ -8,7 +8,7 @@ import {
   LoginCommandHandler,
   LoginWithPhoneNumberCommandHandler,
   RegisterProEntrepriseCommandHandler,
-  RegisterProParticulierCommandHandler, SendSmsOtpCommandHandler,
+  RegisterProParticulierCommandHandler, SendEmailOtpCommandHandler, SendSmsOtpCommandHandler,
   UpdatePasswordCommandHandler,
 } from "@/core/application/features/auth";
 import { JwtManagerService } from "@/infrastructure/features/auth/jwt-manager.service";
@@ -24,7 +24,7 @@ const commandHandlers = [
   RegisterCommandHandler, RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler, LoginCommandHandler,
   LoginWithPhoneNumberCommandHandler, UpdatePasswordCommandHandler,
-  SendSmsOtpCommandHandler
+  SendSmsOtpCommandHandler, SendEmailOtpCommandHandler
 ];
 
 const providers: Provider[] = [

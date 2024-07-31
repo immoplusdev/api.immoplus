@@ -11,3 +11,5 @@ export * from "./update-password-command.dto";
 export * from "./update-password-command-response.dto";
 export * from "./send-sms-otp-command.dto";
 export * from "./send-sms-otp-command-response.dto";
+export * from "./send-email-otp-command.dto";
+export * from "./send-email-otp-command-response.dto";

@@ -6,7 +6,8 @@
     "otp_sent": "Votre code de vérification est {otp}."
   },
   "mail": {
-    "otp_sent": "Votre code de vérification est {otp}."
+    "otp_sent_subject": "Votre code de vérification est {otp}.",
+    "otp_sent_body": "Votre code de vérification est <b>{otp}</b>."
   },
   "exception": {
     "something_went_wrong": "Nous avons rencontré une erreur inattendue lors de l'opération.",

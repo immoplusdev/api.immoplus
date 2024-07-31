@@ -21,3 +21,6 @@ export * from "./update-password-command.response";
 export * from "./send-sms-otp.command";
 export * from "./send-sms-otp-command.handler";
 export * from "./send-sms-otp-command.response";
+export * from "./send-email-otp.command";
+export * from "./send-email-otp-command.handler";
+export * from "./send-email-otp-command.response";

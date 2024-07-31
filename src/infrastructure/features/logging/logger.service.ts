@@ -17,22 +17,22 @@ export class LoggerService implements ILoggerService {
   }
 
   info(message: string, context?: unknown): void {
-    this.logger.log(`Info: ${message}`, context);
+    this.logger.log(`Info: ${message}`);
     this.logContext(context);
   }
 
   error(message: string, context?: unknown): void {
-    this.logger.error(message, context);
+    this.logger.error(message);
     this.logContext(context);
   }
 
   warn(message: string, context?: unknown): void {
-    this.logger.warn(message, context);
+    this.logger.warn(message);
     this.logContext(context);
   }
 
   private logContext(context?: unknown) {
-    if (context && this.isProduction()) console.log(context);
+    if (context && !this.isProduction()) console.log(context);
   }
 
   private isProduction(): boolean {
