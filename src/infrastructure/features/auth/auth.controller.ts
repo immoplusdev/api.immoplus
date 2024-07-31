@@ -4,8 +4,8 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   RegisterCommandDto,
   RegisterProEntrepriseCommandDto,
-  RegisterProParticulierCommandDto,
-  UpdatePasswordCommandDto,
+  RegisterProParticulierCommandDto, SendSmsOtpCommandDto,
+  UpdatePasswordCommandDto, WrapperResponseSendSmsOtpCommandResponseDto,
 } from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
@@ -17,17 +17,21 @@ import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-comman
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand, UpdatePasswordCommand,
+  RegisterProParticulierCommand, SendSmsOtpCommand, UpdatePasswordCommand,
 } from "@/core/application/features/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
+import { I18nService } from "nestjs-i18n";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
-  constructor(readonly commandBus: CommandBus) {
+  constructor(
+    readonly commandBus: CommandBus,
+    private readonly i18n: I18nService
+  ) {
   }
 
   @ApiResponse({
@@ -103,22 +107,15 @@ export class AuthController {
   async updatePassword(
     @Body() payload: UpdatePasswordCommandDto,
     @CurrentUser("id") userId: string) {
-    const responseMapper = new WrapperResponseDtoMapper<UpdatePasswordCommandDto>();
     const command = new UpdatePasswordCommand({ ...payload, userId });
-
     await this.commandBus.execute(command);
   }
 
 
-  // @ApiResponse({
-  //   type: WrapperResponseLoginWithPhoneNumberCommandResponseDto,
-  // })
-  // @Post("login-with-phone-number")
-  // async loginWithPhoneNumber(@Body() payload: LoginWithPhoneNumberCommandDto) {
-  //   const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberCommandResponseDto>();
-  //   const command = new LoginWithPhoneNumberCommand(payload);
-  //
-  //   const response = await this.commandBus.execute(command);
-  //   return responseMapper.mapFrom(response);
-  // }
+  @ApiNoContentResponse()
+  @Post("send-sms-otp")
+  async loginWithPhoneNumber(@Body() payload: SendSmsOtpCommandDto) {
+    const command = new SendSmsOtpCommand(payload);
+    await this.commandBus.execute(command);
+  }
 }

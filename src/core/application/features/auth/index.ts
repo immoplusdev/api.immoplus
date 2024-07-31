@@ -18,3 +18,6 @@ export * from "./register-pro-particulier-command.response";
 export * from "./update-password.command";
 export * from "./update-password-command.handler";
 export * from "./update-password-command.response";
+export * from "./send-sms-otp.command";
+export * from "./send-sms-otp-command.handler";
+export * from "./send-sms-otp-command.response";

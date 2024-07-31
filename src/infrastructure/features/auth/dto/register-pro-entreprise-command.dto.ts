@@ -4,12 +4,12 @@ import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 import { IsValidPassword } from "@/lib/ts-utilities/class-validator/is-valid-password.validator";
 
 export class RegisterProEntrepriseCommandDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  firstName: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  lastName: string;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // firstName: string;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // lastName: string;
   @ApiProperty()
   @IsOptional()
   city?: string;

@@ -1,5 +1,12 @@
 {
   "validation": {
     "create_user_error": "Erreur lors de la création de l'utilisateur"
+  },
+  "sms": {
+    "otp_sent": "Votre code de vérification est {otp}."
+  },
+  "mail": {
+    "otp_sent": "Votre code de vérification est {otp}."
   }
 } 
+

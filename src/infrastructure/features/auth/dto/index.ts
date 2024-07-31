@@ -9,3 +9,5 @@ export * from "./register-pro-particulier-command.dto";
 export * from "./register-pro-particulier-command-response.dto";
 export * from "./update-password-command.dto";
 export * from "./update-password-command-response.dto";
+export * from "./send-sms-otp-command.dto";
+export * from "./send-sms-otp-command-response.dto";

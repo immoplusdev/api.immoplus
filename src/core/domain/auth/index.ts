@@ -6,3 +6,4 @@ export * from "./user-cannot-login.exception";
 export * from "./i-tfa.service";
 export * from "./i-auth.service";
 export * from "./login-response.model";
+export * from "./invalid-otp.exception";

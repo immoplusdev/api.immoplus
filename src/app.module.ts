@@ -1,16 +1,18 @@
-import { Module } from '@nestjs/common';
-import { I18nModule } from 'nestjs-i18n';
-import { ConfigModule } from '@nestjs/config';
+import { Module, Provider } from "@nestjs/common";
+import { I18nModule } from "nestjs-i18n";
+import { ConfigModule } from "@nestjs/config";
 
 
-import { i18Configs, jwtonfigs } from '@/infrastructure/configs';
-import { GlobalPipesModule } from '@/infrastructure/pipes';
-import { GlobalInterceptorsModule } from '@/infrastructure/interceptors';
-import { TypeormModule } from '@/infrastructure/typeorm';
-import { RestModule } from '@/infrastructure/rest/rest.module';
-import { AppService } from './app.service';
+import { i18Configs, jwtonfigs } from "@/infrastructure/configs";
+import { GlobalPipesModule } from "@/infrastructure/pipes";
+import { GlobalInterceptorsModule } from "@/infrastructure/interceptors";
+import { TypeormModule } from "@/infrastructure/typeorm";
+import { RestModule } from "@/infrastructure/rest/rest.module";
+import { AppService } from "./app.service";
 
 import { JwtModule } from "@nestjs/jwt";
+
+const providers: Provider[] = [];
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { JwtModule } from "@nestjs/jwt";
     JwtModule.register(jwtonfigs),
     RestModule,
   ],
-  providers: [AppService],
+  exports: [...providers],
+  providers: [...providers],
 })
-export class AppModule {}
+export class AppModule {
+}

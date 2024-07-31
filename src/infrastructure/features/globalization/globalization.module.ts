@@ -1,0 +1,24 @@
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
+import { GlobalizationService } from "@/infrastructure/features/globalization";
+import { I18nModule, I18nService } from "nestjs-i18n";
+import { i18Configs } from "@/infrastructure/configs";
+
+const providers: Provider[] = [
+  {
+    provide: Deps.GlobalizationService,
+    useFactory: (i18n: I18nService) => {
+      console.log('i18n');
+      console.log(i18n);
+      return new GlobalizationService(i18n);
+    },
+  },
+];
+
+@Module({
+  imports: [I18nModule.forRoot(i18Configs)],
+  providers: [...providers],
+  exports: [...providers],
+})
+
+export class GlobalizationModule {}

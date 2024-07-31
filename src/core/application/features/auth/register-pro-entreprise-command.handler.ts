@@ -42,8 +42,6 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
       email: command.email.toLowerCase(),
       phoneNumber: command.phoneNumber,
       password: this.passwordManagerService.encryptPassword(command.password),
-      firstName: command.firstName,
-      lastName: command.lastName,
       role: UserRole.ProEntreprise,
       city: command.city || null,
       additionalData: userData.id,

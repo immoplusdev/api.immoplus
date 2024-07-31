@@ -8,7 +8,7 @@ import {
   LoginCommandHandler,
   LoginWithPhoneNumberCommandHandler,
   RegisterProEntrepriseCommandHandler,
-  RegisterProParticulierCommandHandler,
+  RegisterProParticulierCommandHandler, SendSmsOtpCommandHandler,
   UpdatePasswordCommandHandler,
 } from "@/core/application/features/auth";
 import { JwtManagerService } from "@/infrastructure/features/auth/jwt-manager.service";
@@ -17,10 +17,14 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { PasswordManagerService } from "@/infrastructure/features/auth/password-manager.service";
 import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
 import { TfaService } from "@/infrastructure/features/auth/tfa.service";
+import { NotificationModule } from "@/infrastructure/features/notifications";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
 
 const commandHandlers = [
-  RegisterCommandHandler, RegisterProEntrepriseCommandHandler, RegisterProParticulierCommandHandler, LoginCommandHandler, LoginWithPhoneNumberCommandHandler,
-  UpdatePasswordCommandHandler,
+  RegisterCommandHandler, RegisterProEntrepriseCommandHandler,
+  RegisterProParticulierCommandHandler, LoginCommandHandler,
+  LoginWithPhoneNumberCommandHandler, UpdatePasswordCommandHandler,
+  SendSmsOtpCommandHandler
 ];
 
 const providers: Provider[] = [
@@ -45,9 +49,8 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [AuthController],
-  imports: [CqrsModule, ConfigsModule, LoggingModule, UsersModule],
+  imports: [CqrsModule, ConfigsModule, GlobalizationModule, LoggingModule, UsersModule, NotificationModule],
   providers: [...providers, ...commandHandlers, AuthService, JwtManagerService],
   exports: [...providers],
 })
-export class AuthModule {
-}
+export class AuthModule {}

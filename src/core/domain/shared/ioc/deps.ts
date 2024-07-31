@@ -1,6 +1,7 @@
 import { MailService } from "@/infrastructure/features/notifications";
 import { TfaService } from "@/infrastructure/features/auth/tfa.service";
 import { AuthService } from "@/infrastructure/features/auth/auth.service";
+import { GlobalizationService } from "@/infrastructure/features/globalization";
 
 export enum Deps {
   DataSource = "DataSource",
@@ -23,6 +24,7 @@ export enum Deps {
   MailService = "MailService",
   TfaService = "TfaService",
   AuthService = "AuthService",
+  GlobalizationService = "GlobalizationService",
 
   // Guards
   AppGuard = "AppGuard"

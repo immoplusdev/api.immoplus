@@ -1,8 +1,8 @@
 import { OmitMethods } from '@/lib/ts-utilities';
 
 export class RegisterProEntrepriseCommand {
-  firstName: string;
-  lastName: string;
+  // firstName: string;
+  // lastName: string;
   city?: string;
   email: string;
   phoneNumber: string;

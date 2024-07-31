@@ -3,5 +3,5 @@ export interface ITfaService {
   generateUserOtp(userId: string): Promise<string>;
   generateUserPhoneNumberOtp(phoneNumber: string): Promise<string>;
   generateUserEmailOtp(email: string): Promise<string>;
-  verifyUserOtp(userId: string, otp: string): Promise<boolean>;
+  verifyUserOtp(userId: string, otp: string, resetIfValid?:boolean): Promise<boolean>;
 }
