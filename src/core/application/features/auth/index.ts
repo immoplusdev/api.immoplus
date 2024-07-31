@@ -27,3 +27,6 @@ export * from "./send-email-otp-command.response";
 export * from "./verify-email.command";
 export * from "./verify-email-command.handler";
 export * from "./verify-email-command.response";
+export * from "./verify-phone-number.command";
+export * from "./verify-phone-number-command.handler";
+export * from "./verify-phone-number-command.response";

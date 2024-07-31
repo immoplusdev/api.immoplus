@@ -5,7 +5,7 @@ import {
   RegisterCommandDto,
   RegisterProEntrepriseCommandDto,
   RegisterProParticulierCommandDto, SendEmailOtpCommandDto, SendSmsOtpCommandDto,
-  UpdatePasswordCommandDto, VerifyEmailCommandDto,
+  UpdatePasswordCommandDto, VerifyEmailCommandDto, VerifyPhoneNumberCommandDto,
 } from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
@@ -17,7 +17,12 @@ import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-comman
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand, SendEmailOtpCommand, SendSmsOtpCommand, UpdatePasswordCommand, VerifyEmailCommand,
+  RegisterProParticulierCommand,
+  SendEmailOtpCommand,
+  SendSmsOtpCommand,
+  UpdatePasswordCommand,
+  VerifyEmailCommand,
+  VerifyPhoneNumberCommand,
 } from "@/core/application/features/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
@@ -129,6 +134,13 @@ export class AuthController {
   @Post("verify-email")
   async verifyEmail(@Body() payload: VerifyEmailCommandDto) {
     const command = new VerifyEmailCommand(payload);
+    await this.commandBus.execute(command);
+  }
+
+  @ApiNoContentResponse()
+  @Post("verify-phone-number")
+  async verifyPhoneNumber(@Body() payload: VerifyPhoneNumberCommandDto) {
+    const command = new VerifyPhoneNumberCommand(payload);
     await this.commandBus.execute(command);
   }
 }

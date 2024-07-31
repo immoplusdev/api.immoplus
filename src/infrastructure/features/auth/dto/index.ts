@@ -15,3 +15,5 @@ export * from "./send-email-otp-command.dto";
 export * from "./send-email-otp-command-response.dto";
 export * from "./verify-email-command.dto";
 export * from "./verify-email-command-response.dto";
+export * from "./verify-phone-number-command.dto";
+export * from "./verify-phone-number-command-response.dto";
