@@ -7,9 +7,8 @@ import { i18Configs } from "@/infrastructure/configs";
 const providers: Provider[] = [
   {
     provide: Deps.GlobalizationService,
+    inject: [I18nService],
     useFactory: (i18n: I18nService) => {
-      console.log('i18n');
-      console.log(i18n);
       return new GlobalizationService(i18n);
     },
   },

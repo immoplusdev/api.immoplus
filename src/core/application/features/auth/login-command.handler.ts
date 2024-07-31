@@ -6,10 +6,8 @@ import { ILoggerService } from "@/core/domain/logging";
 import { Deps } from "@/core/domain/shared/ioc";
 import { InvalidCredentialsException } from "@/core/domain/shared/exceptions";
 import { IUsersRepository, User } from "@/core/domain/users";
-import { IConfigsManagerService } from "@/core/domain/configs";
 import {
   IAuthService,
-  IJwtManagerService,
   IPasswordManagerService,
   UserCannotLoginException,
 } from "@/core/domain/auth";

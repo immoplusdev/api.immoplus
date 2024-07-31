@@ -12,6 +12,8 @@ export class GlobalizationService implements IGlobalizationService {
   }
 
   t<P extends never, R = PathValue<any, P>>(key: P, options?: TranslateOptions): IfAnyOrNever<R, string, R> {
-    return this.i18n.t(key, options);
+    const translation = this.i18n.t(key as string, options);
+    console.log(translation)
+    return translation as never;
   }
 }

@@ -20,7 +20,7 @@ export class SendSmsOtpCommandHandler implements ICommandHandler<SendSmsOtpComma
 
   async execute(command: SendSmsOtpCommand): Promise<SendSmsOtpCommandResponse> {
     const otp = await this.tfaService.generateUserPhoneNumberOtp(command.phoneNumber);
-    const message = this.globalizationService.t("sms.otp_sent", { args: { otp } });
+    const message = this.globalizationService.t("all.sms.otp_sent", { args: { otp } });
     await this.smsService.sendSms([command.phoneNumber], message);
     return new SendSmsOtpCommandResponse();
   }
