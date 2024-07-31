@@ -2,6 +2,6 @@ import { BaseException } from '../shared/exceptions/base.exception';
 
 export class UserAlreadyExistsException extends BaseException {
   constructor() {
-    super(`USER_ALREADY_EXISTS`, 409);
+    super(`$t:all.exception.user_already_exists`, 409);
   }
 }

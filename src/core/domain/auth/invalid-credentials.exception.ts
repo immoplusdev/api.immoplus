@@ -2,6 +2,6 @@ import { BaseException } from '../shared/exceptions/base.exception';
 
 export class InvalidCredentialsException extends BaseException {
   constructor() {
-    super(`Mauvais nom d'utilisateur ou mot de passe`, 401);
+    super(`$t:all.exception.invalid_crendentials`, 401);
   }
 }

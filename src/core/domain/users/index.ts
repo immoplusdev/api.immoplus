@@ -5,5 +5,4 @@ export * from "./user-with-role-and-permissions.model";
 export * from "./users-data.model";
 export * from "./i-users-data.repository";
 export * from "./user-already-exists.exception";
-export * from "./user-inactive.exception";
 export * from "./user-not-found.exception";

@@ -2,6 +2,6 @@ import { BaseException } from './base.exception';
 
 export class InvalidQueryException extends BaseException {
   constructor() {
-    super(`Requête invalide`, 400);
+    super(`'$t:all.exception.bad_request'`, 400);
   }
 }

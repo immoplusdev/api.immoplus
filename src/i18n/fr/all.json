@@ -9,9 +9,18 @@
     "otp_sent": "Votre code de vérification est {otp}."
   },
   "exception": {
+    "something_went_wrong": "Nous avons rencontré une erreur inattendue lors de l'opération.",
+    "bad_request": "Mauvaise requête",
     "access_forbidden": "Accès interdit",
     "collection_not_found": "Collection introuvable",
-    "user_not_found": "Utilisateur introuvable"
+    "user_not_found": "Utilisateur introuvable",
+    "item_not_found": "Élément introuvable",
+    "invalid_crendentials": "Mauvais nom d'utilisateur ou mot de passe",
+    "unauthorized": "Non autorisé",
+    "user_cannot_login": "L'utilisateur ne peut pas se connecter",
+    "wrong_password": "Mauvais mot de passe",
+    "account_data_already_verified": "Les données du compte ont déjà été vérifiées",
+    "user_already_exists": "L'utilisateur existe déjà"
   }
 } 
 

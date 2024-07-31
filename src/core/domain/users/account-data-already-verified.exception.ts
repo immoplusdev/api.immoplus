@@ -2,6 +2,6 @@ import { BaseException } from "@/core/domain/shared/exceptions";
 
 export class AccountDataAlreadyVerifiedException extends BaseException {
   constructor() {
-    super("ACCOUNT_DATA_ALREADY_VERIFIED", 409);
+    super("$t:all.exception.account_data_already_verified", 409);
   }
 }
