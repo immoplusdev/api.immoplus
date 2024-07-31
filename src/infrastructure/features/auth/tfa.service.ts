@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ITfaService } from "@/core/domain/auth";
+import { InvalidOtpException, ITfaService, VerifyOtpOptions } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IUsersRepository, UserNotFoundException } from "@/core/domain/users";
 import { generateRandomString } from "@/lib/ts-utilities/strings";
@@ -30,7 +30,7 @@ export class TfaService implements ITfaService {
   }
 
   async generateUserPhoneNumberOtp(phoneNumber: string) {
-    const user = await this.usersRepository.findByPhoneNumber(phoneNumber, ["id"]);
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, ["id"]);
     if (!user) throw new UserNotFoundException();
 
     const otp = this.generateOtp();
@@ -39,7 +39,7 @@ export class TfaService implements ITfaService {
   }
 
   async generateUserEmailOtp(email: string) {
-    const user = await this.usersRepository.findByEmail(email, ["id"]);
+    const user = await this.usersRepository.findOneByEmail(email, ["id"]);
     if (!user) throw new UserNotFoundException();
 
     const otp = this.generateOtp();
@@ -47,13 +47,41 @@ export class TfaService implements ITfaService {
     return otp;
   }
 
-  async verifyUserOtp(userId: string, otp: string, resetIfValid?: boolean) {
+  async verifyUserOtp(userId: string, otp: string, options?: VerifyOtpOptions) {
     const user = await this.usersRepository.findOne(userId, ["id", "otp"]);
     if (!user) throw new UserNotFoundException();
 
     const otpIsValid = user.otp === otp;
 
-    if (otpIsValid && resetIfValid) await this.generateUserOtp(userId);
+    if (!otpIsValid && options?.throwException) throw new InvalidOtpException();
+
+    if (otpIsValid && options?.resetIfValid) await this.generateUserOtp(userId);
+
+    return otpIsValid;
+  }
+
+  async verifyUserEmailOtp(email: string, otp: string, options?: VerifyOtpOptions) {
+    const user = await this.usersRepository.findOneByEmail(email, ["id", "otp"]);
+    if (!user) throw new UserNotFoundException();
+
+    const otpIsValid = user.otp === otp;
+
+    if (!otpIsValid && options?.throwException) throw new InvalidOtpException();
+
+    if (otpIsValid && options?.resetIfValid) await this.generateUserOtp(user.id);
+
+    return otpIsValid;
+  }
+
+  async verifyUserPhoneNumberOtp(phoneNumber: string, otp: string, options?: VerifyOtpOptions) {
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, ["id", "otp"]);
+    if (!user) throw new UserNotFoundException();
+
+    const otpIsValid = user.otp === otp;
+
+    if (!otpIsValid && options?.throwException) throw new InvalidOtpException();
+
+    if (otpIsValid && options?.resetIfValid) await this.generateUserOtp(user.id);
 
     return otpIsValid;
   }

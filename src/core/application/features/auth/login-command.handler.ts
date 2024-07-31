@@ -25,7 +25,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
 
   async execute(command: LoginCommand): Promise<LoginCommandResponse> {
-    const user = await this.userRepository.findByUsername(command.username);
+    const user = await this.userRepository.findOneByUsername(command.username);
     if (!user) throw new InvalidCredentialsException();
 
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();

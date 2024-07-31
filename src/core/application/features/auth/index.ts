@@ -24,3 +24,6 @@ export * from "./send-sms-otp-command.response";
 export * from "./send-email-otp.command";
 export * from "./send-email-otp-command.handler";
 export * from "./send-email-otp-command.response";
+export * from "./verify-email.command";
+export * from "./verify-email-command.handler";
+export * from "./verify-email-command.response";

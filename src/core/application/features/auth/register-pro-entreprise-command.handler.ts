@@ -58,12 +58,12 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
   }
 
   async verifyEmailAvailable(email: string) {
-    const user = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.findOneByEmail(email);
     if (user?.id) throw new UserEmailAlreadyTakenException();
   }
 
   async verifyPhoneNumberAvailable(phoneNumber: string) {
-    const user = await this.usersRepository.findByPhoneNumber(phoneNumber);
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber);
     if (user?.id) throw new UserPhoneNumberAlreadyTakenException();
   }
 }

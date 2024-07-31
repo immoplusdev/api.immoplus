@@ -5,7 +5,7 @@ import {
   RegisterCommandDto,
   RegisterProEntrepriseCommandDto,
   RegisterProParticulierCommandDto, SendEmailOtpCommandDto, SendSmsOtpCommandDto,
-  UpdatePasswordCommandDto,
+  UpdatePasswordCommandDto, VerifyEmailCommandDto,
 } from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
@@ -17,7 +17,7 @@ import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-comman
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand, SendEmailOtpCommand, SendSmsOtpCommand, UpdatePasswordCommand,
+  RegisterProParticulierCommand, SendEmailOtpCommand, SendSmsOtpCommand, UpdatePasswordCommand, VerifyEmailCommand,
 } from "@/core/application/features/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
@@ -30,7 +30,7 @@ import { I18nService } from "nestjs-i18n";
 export class AuthController {
   constructor(
     readonly commandBus: CommandBus,
-    private readonly i18n: I18nService
+    private readonly i18n: I18nService,
   ) {
   }
 
@@ -111,7 +111,6 @@ export class AuthController {
     await this.commandBus.execute(command);
   }
 
-
   @ApiNoContentResponse()
   @Post("send-sms-otp")
   async sendSmsOtp(@Body() payload: SendSmsOtpCommandDto) {
@@ -123,6 +122,13 @@ export class AuthController {
   @Post("send-email-otp")
   async sendEmailOtp(@Body() payload: SendEmailOtpCommandDto) {
     const command = new SendEmailOtpCommand(payload);
+    await this.commandBus.execute(command);
+  }
+
+  @ApiNoContentResponse()
+  @Post("verify-email")
+  async verifyEmail(@Body() payload: VerifyEmailCommandDto) {
+    const command = new VerifyEmailCommand(payload);
     await this.commandBus.execute(command);
   }
 }

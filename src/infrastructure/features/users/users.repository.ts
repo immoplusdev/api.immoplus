@@ -52,7 +52,7 @@ export class UsersRepository implements IUsersRepository {
     return id;
   }
 
-  async findByEmail(email: string, fields?: string[]): Promise<User | null> {
+  async findOneByEmail(email: string, fields?: string[]): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email },
       relations: this.relations,
@@ -60,7 +60,7 @@ export class UsersRepository implements IUsersRepository {
     });
   }
 
-  async findByPhoneNumber(phoneNumber: string, fields?: string[]): Promise<User | null> {
+  async findOneByPhoneNumber(phoneNumber: string, fields?: string[]): Promise<User | null> {
     return await this.userRepository.findOne(
       {
         where: { phoneNumber },
@@ -70,18 +70,18 @@ export class UsersRepository implements IUsersRepository {
     );
   }
 
-  async findByUsername(username: string, fields?: string[]): Promise<User | null> {
+  async findOneByUsername(username: string, fields?: string[]): Promise<User | null> {
     let user: User | null = null;
     try {
-      if (username.includes("@")) user = await this.findByEmail(username, fields);
-      if (!user) user = await this.findByPhoneNumber(username, fields);
+      if (username.includes("@")) user = await this.findOneByEmail(username, fields);
+      if (!user) user = await this.findOneByPhoneNumber(username, fields);
     } catch (error) {
       return null;
     }
     return user;
   }
 
-  async findByIdWithRoleAndPermissions(id: string, fields?: string[]): Promise<UserWithRoleAndPermissions | null> {
+  async findOneByIdWithRoleAndPermissions(id: string, fields?: string[]): Promise<UserWithRoleAndPermissions | null> {
 
     const user = await this.userRepository.findOne({
       where: {
