@@ -6,8 +6,6 @@ import {
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
-import { BaseException, UnexpectedException } from "@/core/domain/shared/exceptions";
-import { FailedValidationException } from "@/core/domain/shared/exceptions/failed-validation.exception";
 
 @Injectable()
 export class OwnerAccessRequiredInterceptor implements NestInterceptor {
@@ -15,7 +13,6 @@ export class OwnerAccessRequiredInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(
         () => {
-          console.log("here")
         },
       ),
     );

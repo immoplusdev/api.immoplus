@@ -4,10 +4,9 @@ import { LoginCommandResponse } from "./login-command.response";
 import { Inject } from "@nestjs/common";
 import { ILoggerService } from "@/core/domain/logging";
 import { Deps } from "@/core/domain/shared/ioc";
-import { InvalidCredentialsException } from "@/core/domain/shared/exceptions";
 import { IUsersRepository, User } from "@/core/domain/users";
 import {
-  IAuthService,
+  IAuthService, InvalidCredentialsException,
   IPasswordManagerService,
   UserCannotLoginException,
 } from "@/core/domain/auth";

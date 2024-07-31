@@ -3,6 +3,7 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 import { ConfigService } from "@nestjs/config";
 import { fileUploadConfig } from "@/infrastructure/configs";
 import { IFileUploadConfig } from "@/core/domain/files";
+import { AppProfile } from "@/core/domain/shared/enums";
 
 
 @Injectable()
@@ -17,7 +18,15 @@ export class ConfigsManagerService implements IConfigsManagerService {
     return this.config.get<T>(variableName);
   }
 
-  getFileUploadConfigs(): IFileUploadConfig{
+  getFileUploadConfigs(): IFileUploadConfig {
     return fileUploadConfig;
+  }
+
+  getAppProfile(): AppProfile {
+    return this.getEnvVariable<AppProfile>("NEST_APP_PROFILE");
+  }
+
+  isAppProfileProduction(): boolean {
+    return this.getAppProfile() === AppProfile.Prod;
   }
 }

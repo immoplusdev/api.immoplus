@@ -5,7 +5,6 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IUsersRepository } from "@/core/domain/users";
 import { IPasswordManagerService } from "@/core/domain/auth";
-import { InvalidCredentialsException } from "@/core/domain/shared/exceptions";
 import { WrongPasswordException } from "@/core/domain/auth/wrong-password.exception";
 
 @CommandHandler(UpdatePasswordCommand)

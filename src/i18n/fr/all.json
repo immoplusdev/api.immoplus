@@ -7,6 +7,11 @@
   },
   "mail": {
     "otp_sent": "Votre code de vérification est {otp}."
+  },
+  "exception": {
+    "access_forbidden": "Accès interdit",
+    "collection_not_found": "Collection introuvable",
+    "user_not_found": "Utilisateur introuvable"
   }
 } 
 

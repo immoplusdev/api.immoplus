@@ -1,9 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ITfaService } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersRepository } from "@/core/domain/users";
+import { IUsersRepository, UserNotFoundException } from "@/core/domain/users";
 import { generateRandomString } from "@/lib/ts-utilities/strings";
-import { UserNotFoundException } from "@/core/domain/shared/exceptions";
 
 
 @Injectable()
@@ -26,7 +25,6 @@ export class TfaService implements ITfaService {
       });
       return otp;
     } catch (err) {
-      console.log(err)
       throw new UserNotFoundException();
     }
   }

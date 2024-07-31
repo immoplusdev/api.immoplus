@@ -1,5 +1,5 @@
-import { AccessForbiddenException } from "@/core/domain/shared/exceptions";
 import { UserRole } from "@/core/domain/roles";
+import { AccessForbiddenException } from "@/core/domain/auth";
 
 export function ensureResourceOwnership(userId: string, ownerId?: unknown, userRole?: string) {
   if (!ownerId) return;

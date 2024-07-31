@@ -4,6 +4,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";
 import { AppProfile } from "@/core/domain/shared/enums";
+
 const nodemailer = require("nodemailer");
 
 @Injectable()
@@ -42,13 +43,14 @@ export class MailService implements IMailService {
   }
 
   async isMailServerAlive(): Promise<boolean> {
+    const loggerService = this.loggerService;
     return new Promise((resolve, reject) => {
       this.mailTransport.verify(function(error: unknown, _success: unknown) {
         if (error) {
-          console.log(error);
+          loggerService.error(error.toString(), error);
           reject(false);
         } else {
-          console.log("mail server alive");
+          loggerService.info("mail server alive");
           resolve(true);
         }
       });

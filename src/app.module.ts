@@ -11,6 +11,7 @@ import { RestModule } from "@/infrastructure/rest/rest.module";
 import { AppService } from "./app.service";
 
 import { JwtModule } from "@nestjs/jwt";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
 
 const providers: Provider[] = [];
 
@@ -20,6 +21,7 @@ const providers: Provider[] = [];
       isGlobal: true,
     }),
     TypeormModule,
+    GlobalizationModule,
     GlobalInterceptorsModule,
     GlobalPipesModule,
     I18nModule.forRoot(i18Configs),

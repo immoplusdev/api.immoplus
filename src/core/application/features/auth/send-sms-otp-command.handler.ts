@@ -5,7 +5,6 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { ITfaService } from "@/core/domain/auth";
 import { ISmsService } from "@/core/domain/notifications";
-import { I18nService } from "nestjs-i18n";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
 @CommandHandler(SendSmsOtpCommand)

@@ -76,7 +76,6 @@ export class UsersRepository implements IUsersRepository {
       if (username.includes("@")) user = await this.findByEmail(username, fields);
       if (!user) user = await this.findByPhoneNumber(username, fields);
     } catch (error) {
-      console.log(error);
       return null;
     }
     return user;

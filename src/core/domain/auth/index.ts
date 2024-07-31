@@ -7,3 +7,6 @@ export * from "./i-tfa.service";
 export * from "./i-auth.service";
 export * from "./login-response.model";
 export * from "./invalid-otp.exception";
+export * from "./access-forbidden.exception";
+export * from "./invalid-credentials.exception";
+export * from "./invalid-password.exception";
