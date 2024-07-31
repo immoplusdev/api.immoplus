@@ -17,3 +17,5 @@ export * from "./verify-email-command.dto";
 export * from "./verify-email-command-response.dto";
 export * from "./verify-phone-number-command.dto";
 export * from "./verify-phone-number-command-response.dto";
+export * from "./reset-password-command.dto"
+export * from "./reset-password-command-response.dto"

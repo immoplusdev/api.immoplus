@@ -4,7 +4,7 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   RegisterCommandDto,
   RegisterProEntrepriseCommandDto,
-  RegisterProParticulierCommandDto, SendEmailOtpCommandDto, SendSmsOtpCommandDto,
+  RegisterProParticulierCommandDto, ResetPasswordCommandDto, SendEmailOtpCommandDto, SendSmsOtpCommandDto,
   UpdatePasswordCommandDto, VerifyEmailCommandDto, VerifyPhoneNumberCommandDto,
 } from "src/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
@@ -17,7 +17,7 @@ import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-comman
 import {
   RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand,
+  RegisterProParticulierCommand, ResetPasswordCommand,
   SendEmailOtpCommand,
   SendSmsOtpCommand,
   UpdatePasswordCommand,
@@ -141,6 +141,13 @@ export class AuthController {
   @Post("verify-phone-number")
   async verifyPhoneNumber(@Body() payload: VerifyPhoneNumberCommandDto) {
     const command = new VerifyPhoneNumberCommand(payload);
+    await this.commandBus.execute(command);
+  }
+
+  @ApiNoContentResponse()
+  @Post("reset-password")
+  async resetPassword(@Body() payload: ResetPasswordCommandDto) {
+    const command = new ResetPasswordCommand(payload);
     await this.commandBus.execute(command);
   }
 }

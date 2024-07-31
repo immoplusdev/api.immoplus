@@ -30,3 +30,6 @@ export * from "./verify-email-command.response";
 export * from "./verify-phone-number.command";
 export * from "./verify-phone-number-command.handler";
 export * from "./verify-phone-number-command.response";
+export * from "./reset-password.command";
+export * from "./reset-password-command.handler";
+export * from "./reset-password-command.response";
