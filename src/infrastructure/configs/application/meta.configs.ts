@@ -1,6 +1,6 @@
 export const metaConfigs = {
-    projectName: "immoplus",
+    projectName: "Immoplus",
     projectDescription: "Immoplus",
     projectVersion: "1.0",
-    projectTag: "immoplus"
+    projectTag: "Immoplus"
 }

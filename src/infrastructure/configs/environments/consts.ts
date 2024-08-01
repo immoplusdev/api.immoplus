@@ -1,0 +1,1 @@
+export const NEST_SWAGGER_ENABLED = process.env.NEST_SWAGGER_ENABLED === "true";

@@ -6,7 +6,6 @@ import { RegisterCommandHandler } from "@/core/application/features/auth/registe
 import { UsersModule } from "@/infrastructure/features/users/users.module";
 import {
   LoginCommandHandler,
-  LoginWithPhoneNumberCommandHandler,
   RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler,
   ResetPasswordCommandHandler,
@@ -24,14 +23,17 @@ import { ConfigsModule } from "@/infrastructure/features/configs/configs.module"
 import { TfaService } from "@/infrastructure/features/auth/tfa.service";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import {
+  LoginWithPhoneNumberOtpCommandHandler,
+} from "@/core/application/features/auth/login-with-phone-number-otp-command.handler";
 
 const commandHandlers = [
   RegisterCommandHandler, RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler, LoginCommandHandler,
-  LoginWithPhoneNumberCommandHandler, UpdatePasswordCommandHandler,
+  UpdatePasswordCommandHandler,
   SendSmsOtpCommandHandler, SendEmailOtpCommandHandler,
   VerifyEmailCommandHandler, VerifyPhoneNumberCommandHandler,
-  ResetPasswordCommandHandler
+  ResetPasswordCommandHandler, LoginWithPhoneNumberOtpCommandHandler,
 ];
 
 const providers: Provider[] = [
@@ -60,4 +62,5 @@ const providers: Provider[] = [
   providers: [...providers, ...commandHandlers, AuthService, JwtManagerService],
   exports: [...providers],
 })
-export class AuthModule {}
+export class AuthModule {
+}
