@@ -19,5 +19,7 @@ export * from "./reset-password-command.dto";
 export * from "./reset-password-command-response.dto";
 export * from "./login-with-phone-number-otp-command.dto";
 export * from "./login-with-phone-number-otp-command-response.dto";
-export * from "./login-command-response.dto"
-export * from "./login-command.dto"
+export * from "./login-command-response.dto";
+export * from "./login-command.dto";
+export * from "./login-with-email-otp-command.dto";
+export * from "./login-with-email-otp-command-response.dto";

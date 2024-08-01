@@ -17,7 +17,6 @@ export class LoginWithPhoneNumberOtpCommandHandler implements ICommandHandler<Lo
   constructor(
     @Inject(Deps.UsersRepository) private readonly userRepository: IUsersRepository,
     @Inject(Deps.AuthService) private readonly authService: IAuthService,
-    @Inject(Deps.PasswordManagerService) private readonly passwordManagerService: IPasswordManagerService,
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
   ) {
     //
@@ -26,7 +25,6 @@ export class LoginWithPhoneNumberOtpCommandHandler implements ICommandHandler<Lo
   async execute(command: LoginWithPhoneNumberOtpCommand): Promise<LoginWithPhoneNumberOtpCommandResponse> {
     const user = await this.userRepository.findOneByPhoneNumber(command.phoneNumber);
     if (!user) throw new UserNotFoundException();
-
 
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 

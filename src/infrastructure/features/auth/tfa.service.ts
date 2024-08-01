@@ -7,6 +7,7 @@ import { generateRandomString } from "@/lib/ts-utilities/strings";
 
 @Injectable()
 export class TfaService implements ITfaService {
+  // TODO: Implement account blocking mechanism for multiple failed otp validation attempts
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUsersRepository,
@@ -22,6 +23,7 @@ export class TfaService implements ITfaService {
       const otp = this.generateOtp();
       await this.usersRepository.updateOne(userId, {
         otp,
+        authLoginAttempts: 0
       });
       return otp;
     } catch (err) {

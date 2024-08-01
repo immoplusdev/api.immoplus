@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiNoContentResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
+  LoginWithEmailOtpCommandDto, LoginWithEmailOtpCommandResponseDto,
   LoginWithPhoneNumberOtpCommandDto,
   LoginWithPhoneNumberOtpCommandResponseDto,
   RegisterCommandDto,
@@ -23,6 +24,7 @@ import {
 } from "@/infrastructure/features/auth/dto/login-command-response.dto";
 import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-command.dto";
 import {
+  LoginWithEmailOtpCommand,
   LoginWithPhoneNumberOtpCommand,
   RegisterCommand,
   RegisterProEntrepriseCommand,
@@ -51,6 +53,7 @@ export class AuthController {
   @ApiResponse({
     type: WrapperResponseLoginCommandResponseDto,
   })
+  @HttpCode(200)
   @Post("register-customer")
   async registerCustomer(@Body() payload: RegisterCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
@@ -68,6 +71,7 @@ export class AuthController {
   @ApiResponse({
     type: WrapperResponseLoginCommandResponseDto,
   })
+  @HttpCode(200)
   @Post("register-pro-particulier")
   async registerProParticulier(@Body() payload: RegisterProParticulierCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
@@ -85,6 +89,7 @@ export class AuthController {
   @ApiResponse({
     type: WrapperResponseLoginCommandResponseDto,
   })
+  @HttpCode(200)
   @Post("register-pro-entreprise")
   async registerProEntreprise(@Body() payload: RegisterProEntrepriseCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
@@ -103,6 +108,7 @@ export class AuthController {
   @ApiResponse({
     type: WrapperResponseLoginCommandResponseDto,
   })
+  @HttpCode(200)
   @Post("login")
   async login(@Body() payload: LoginCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
@@ -116,14 +122,29 @@ export class AuthController {
   @ApiResponse({
     type: WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
   })
+  @HttpCode(200)
   @Post("login-with-phone-number-otp")
-  async loginWithPhoneNUmberOtp(@Body() payload: LoginWithPhoneNumberOtpCommandDto) {
+  async loginWithPhoneNumberOtp(@Body() payload: LoginWithPhoneNumberOtpCommandDto) {
     const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberOtpCommandResponseDto>();
     const command = new LoginWithPhoneNumberOtpCommand(payload);
 
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
   }
+
+  @ApiResponse({
+    type: WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
+  })
+  @HttpCode(200)
+  @Post("login-with-email-otp")
+  async loginWithEmailOtp(@Body() payload: LoginWithEmailOtpCommandDto) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginWithEmailOtpCommandResponseDto>();
+    const command = new LoginWithEmailOtpCommand(payload);
+
+    const response = await this.commandBus.execute(command);
+    return responseMapper.mapFrom(response);
+  }
+
 
   @ApiNoContentResponse()
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)

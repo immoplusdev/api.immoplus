@@ -33,3 +33,6 @@ export * from "./reset-password-command.response";
 export * from "./login-with-phone-number-otp.command";
 export * from "./login-with-phone-number-otp-command.handler";
 export * from "./login-with-phone-number-otp-command.response";
+export * from "./login-with-email-otp.command";
+export * from "./login-with-email-otp-command.handler";
+export * from "./login-with-email-otp-command.response";

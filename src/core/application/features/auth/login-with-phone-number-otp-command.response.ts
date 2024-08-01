@@ -5,4 +5,8 @@ export class LoginWithPhoneNumberOtpCommandResponse {
   expires: string;
   refreshToken: string;
   user: User;
+
+  constructor(data?: LoginWithPhoneNumberOtpCommandResponse) {
+    if (data) Object.assign(this, data);
+  }
 }

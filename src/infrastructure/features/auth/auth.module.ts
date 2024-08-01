@@ -5,7 +5,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { RegisterCommandHandler } from "@/core/application/features/auth/register-command.handler";
 import { UsersModule } from "@/infrastructure/features/users/users.module";
 import {
-  LoginCommandHandler,
+  LoginCommandHandler, LoginWithEmailOtpCommandHandler,
   RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler,
   ResetPasswordCommandHandler,
@@ -34,6 +34,7 @@ const commandHandlers = [
   SendSmsOtpCommandHandler, SendEmailOtpCommandHandler,
   VerifyEmailCommandHandler, VerifyPhoneNumberCommandHandler,
   ResetPasswordCommandHandler, LoginWithPhoneNumberOtpCommandHandler,
+  LoginWithEmailOtpCommandHandler
 ];
 
 const providers: Provider[] = [

@@ -9,6 +9,8 @@ import { RestModule } from "@/infrastructure/rest/rest.module";
 
 import { JwtModule } from "@nestjs/jwt";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import { rateLimitingConfig } from "@/infrastructure/configs/rate-limiting";
+import { ThrottlerModule } from "@nestjs/throttler";
 
 const providers: Provider[] = [];
 
@@ -23,7 +25,9 @@ const providers: Provider[] = [];
     GlobalPipesModule,
     I18nModule.forRoot(i18Configs),
     JwtModule.register(jwtonfigs),
+    // ThrottlerModule.forRoot(rateLimitingConfig),
     RestModule,
+
   ],
   exports: [...providers],
   providers: [...providers],

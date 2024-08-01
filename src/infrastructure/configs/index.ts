@@ -10,3 +10,4 @@ export * from  "./i18n";
 export * from  "./kafka";
 export * from  "./swagger";
 export * from  "./validation";
+export * from "./rate-limiting";
