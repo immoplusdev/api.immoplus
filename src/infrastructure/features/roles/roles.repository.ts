@@ -18,26 +18,35 @@ export class RoleRepository implements IRoleRepository {
     this.repository = new BaseRepository(dataSource, RoleEntity);
   }
 
-
-  async create(payload: Partial<Role>): Promise<Role> {
-    return await this.repository.create(payload);
+  async createMany(payload: Partial<Role>[]): Promise<Role[]> {
+    return await this.repository.createMany(payload);
   }
 
-  async find(query?: SearchItemsParams): Promise<Role[]> {
-    return await this.repository.find(query);
+  async createOne(payload: Partial<Role>): Promise<Role> {
+    return await this.repository.createOne(payload);
+  }
+
+  async findByQuery(query?: SearchItemsParams): Promise<Role[]> {
+    return await this.repository.findByQuery(query);
   }
 
   async findOne(id: string, fields?: []): Promise<Role> {
     return await this.repository.findOne(id, fields);
   }
 
-  async updateOne(id: string, payload: Partial<Role>): Promise<string> {
-    await this.repository.updateOne(id, payload);
-    return id;
+  async updateByQuery(query: SearchItemsParams, payload: Partial<Role>): Promise<string[]> {
+    return await this.repository.updateByQuery(query, payload);
   }
 
-  async delete(id: string): Promise<string> {
-    await this.repository.delete(id);
-    return id;
+  async updateOne(id: string, payload: Partial<Role>): Promise<string> {
+    return await this.repository.updateOne(id, payload);
+  }
+
+  deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return this.repository.deleteByQuery(query);
+  }
+
+  async deleteOne(id: string): Promise<string> {
+    return await this.repository.deleteOne(id);
   }
 }

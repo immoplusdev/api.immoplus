@@ -29,6 +29,7 @@ export class AuthService implements IAuthService {
 
   async createUserSession(user: User): Promise<void> {
     // TODO: Deal with session creation
+    // TODO: use nanoid directus like implementation to generate the refresh_token
     return await new Promise((resolve, reject) => {
       resolve({} as never,
       );

@@ -7,7 +7,12 @@ export interface SearchItemsParams {
   _select?: string[];
 }
 
-export type ItemsParamsOrderDirection = 'asc' | 'desc';
+
+export interface SelectItemsParams {
+  _select?: string[];
+}
+
+export type ItemsParamsOrderDirection = "asc" | "desc";
 
 export interface ItemsParamsCriterias {
   _field: string;
@@ -16,22 +21,22 @@ export interface ItemsParamsCriterias {
   _l_op?: ItemsParamsCriteriasLogic;
 }
 
-export type ItemsParamsCriteriasLogic = 'and' | 'or';
+export type ItemsParamsCriteriasLogic = "and" | "or";
 
 export type ItemsOperator =
-  | 'eq'
-  | 'neq'
-  | 'gt'
-  | 'gte'
-  | 'lt'
-  | 'lte'
-  | 'in'
-  | 'nin'
-  | 'contains'
-  | 'ncontains'
-  // | 'startswith'
-  // | 'endswith'
-  // | 'isnull'
-  // | 'isnotnull'
-  // | 'isempty'
-  // | 'isnotempty';
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "in"
+  | "nin"
+  | "contains"
+  | "ncontains"
+// | 'startswith'
+// | 'endswith'
+// | 'isnull'
+// | 'isnotnull'
+// | 'isempty'
+// | 'isnotempty';

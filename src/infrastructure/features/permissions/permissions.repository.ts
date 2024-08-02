@@ -10,28 +10,45 @@ import { BaseRepository } from "@/infrastructure/typeorm";
 @Injectable()
 export class PermissionRepository implements IPermissionRepository {
   private readonly repository: BaseRepository<Permission>;
-  private readonly permissionRepository: Repository<PermissionEntity>;
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
     this.repository = new BaseRepository(dataSource, PermissionEntity);
-    this.permissionRepository = dataSource.getRepository(PermissionEntity);
   }
 
-
-  async create(payload: Partial<Permission>): Promise<Permission> {
-    return await this.repository.create(payload);
+  async createMany(payload: Partial<Permission>[]): Promise<Permission[]> {
+    return await this.repository.createMany(payload);
   }
 
-  async find(query?: SearchItemsParams): Promise<Permission[]> {
-    return await this.repository.find(query);
+  async createOne(payload: Partial<Permission>): Promise<Permission> {
+    return await this.repository.createOne(payload);
   }
 
+  async findByQuery(query?: SearchItemsParams): Promise<Permission[]> {
+    return await this.repository.findByQuery(query);
+  }
 
   async findOne(id: string, fields?: []): Promise<Permission> {
     return await this.repository.findOne(id, fields);
+  }
+
+  async findByRoleId(roleId: string): Promise<Permission[]> {
+    return await this.repository.findByQuery({
+      _where: [
+        {
+          _field: "role",
+          _op: "eq",
+          _val: roleId,
+          _l_op: "and",
+        },
+      ],
+    });
+  }
+
+  async updateByQuery(query: SearchItemsParams, payload: Partial<Permission>): Promise<string[]> {
+    return await this.repository.updateByQuery(query, payload);
   }
 
   async updateOne(id: string, payload: Partial<Permission>): Promise<string> {
@@ -39,16 +56,12 @@ export class PermissionRepository implements IPermissionRepository {
     return id;
   }
 
-  async delete(id: string): Promise<string> {
-    await this.repository.delete(id);
-    return id;
+  async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return await this.repository.deleteByQuery(query);
   }
 
-  async findByRoleId(roleId: string): Promise<Permission[]> {
-    return await this.permissionRepository.find({
-      where: {
-        role: roleId,
-      },
-    });
+  async deleteOne(id: string): Promise<string> {
+    await this.repository.deleteOne(id);
+    return id;
   }
 }

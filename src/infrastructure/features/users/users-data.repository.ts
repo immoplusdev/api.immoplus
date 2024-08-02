@@ -1,16 +1,17 @@
-import { DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { UserData, IUsersDataRepository } from "@/core/domain/users";
-import { UserDataEntity } from '@/infrastructure/features/users';
+import { UserDataEntity } from "@/infrastructure/features/users";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { File } from "@/core/domain/files";
 import { SearchItemsParams } from "@/core/domain/http";
 
 
 @Injectable()
-export class UsersDataRepository implements IUsersDataRepository{
+export class UsersDataRepository implements IUsersDataRepository {
   private readonly repository: BaseRepository<File>;
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
@@ -19,16 +20,24 @@ export class UsersDataRepository implements IUsersDataRepository{
   }
 
 
-  async create(payload: Partial<UserData>): Promise<UserData> {
-    return await this.repository.create(payload);
+  async createMany(payload: Partial<UserData>[]): Promise<UserData[]> {
+    return await this.repository.createMany(payload);
   }
 
-  async find(query?: SearchItemsParams): Promise<UserData[]> {
-    return await this.repository.find(query);
+  async createOne(payload: Partial<UserData>): Promise<UserData> {
+    return await this.repository.createOne(payload);
+  }
+
+  async findByQuery(query?: SearchItemsParams): Promise<UserData[]> {
+    return await this.repository.findByQuery(query);
   }
 
   async findOne(id: string, fields?: []): Promise<UserData> {
     return await this.repository.findOne(id, fields);
+  }
+
+  async updateByQuery(query: SearchItemsParams, payload: Partial<UserData>): Promise<string[]> {
+    return await this.repository.updateByQuery(query, payload);
   }
 
   async updateOne(id: string, payload: Partial<UserData>): Promise<string> {
@@ -36,8 +45,12 @@ export class UsersDataRepository implements IUsersDataRepository{
     return id;
   }
 
-  async delete(id: string): Promise<string> {
-    await this.repository.delete(id);
+  async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return await this.repository.deleteByQuery(query);
+  }
+
+  async deleteOne(id: string): Promise<string> {
+    await this.repository.deleteOne(id);
     return id;
   }
 }

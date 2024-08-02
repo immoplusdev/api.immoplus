@@ -9,20 +9,21 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
 
   constructor(
     readonly dataSource: DataSource,
-    entityClass: any
+    entityClass: any,
   ) {
     this.repository = dataSource.getRepository(entityClass);
   }
 
-  async create(payload: CreateDto): Promise<Model> {
+  async createMany(payload: CreateDto[]): Promise<Model[]> {
+    return await Promise.all(payload.map(async (item) => await this.createOne(item)));
+  }
+
+  async createOne(payload: CreateDto): Promise<Model> {
     return await this.repository.save(payload);
   }
 
-  async find(query: SearchItemsParams): Promise<Model[]> {
-    if (query) {
-      const params = mapQueryToTypeormQuery(query);
-      return await this.repository.find(params);
-    }
+  async findByQuery(query?: SearchItemsParams): Promise<Model[]> {
+    if (query) return await this.repository.find(mapQueryToTypeormQuery(query));
     return await this.repository.find();
   }
 
@@ -32,10 +33,9 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return item;
   }
 
-
-  async update(id: KeyType, payload: UpdateDto): Promise<KeyType> {
-    await this.repository.update(id, payload);
-    return id;
+  async updateByQuery(query: SearchItemsParams, payload: UpdateDto): Promise<KeyType[]> {
+    const result = await this.repository.update(mapQueryToTypeormQuery(query).where, payload);
+    return result.affected && result.affected[0] ? result.affected[0] : [];
   }
 
   async updateOne(id: KeyType, payload: UpdateDto): Promise<KeyType> {
@@ -43,7 +43,12 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return id;
   }
 
-  async delete(id: KeyType): Promise<KeyType> {
+  async deleteByQuery(query: SearchItemsParams): Promise<KeyType[]> {
+    const result = await this.repository.softDelete(mapQueryToTypeormQuery(query).where);
+    return result.affected && result.affected[0] ? result.affected[0] : [];
+  }
+
+  async deleteOne(id: KeyType): Promise<KeyType> {
     await this.repository.softDelete(id);
     return id;
   }

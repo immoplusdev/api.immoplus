@@ -9,8 +9,7 @@ export function parseHttpQuery(query: any): SearchItemsParams {
   if (query._per_page) params._per_page = query._per_page;
   if (query._order_by) params._order_by = query._order_by;
   if (query._order_dir) params._order_dir = query._order_dir;
-  if (query._select) query.select = query._select.split(",");
-
+  if (query._select) params._select = typeof query._select == "string" ? query._select.split(",") : query._select;
   if (query._where) {
     try {
       const stringCriterias: string[] =
@@ -60,29 +59,35 @@ export function mapQueryToTypeormQuery(query: SearchItemsParams) {
 }
 
 export function mapToTypeormWhere(criterias: ItemsParamsCriterias[]): any {
-  // TODO: Implement filter later;
-  return {};
 
-  // const filter = {};
-  // if(criterias.length == 0) return filter;
-  //
-  // const operator = getOperator(criterias[0]._op, );
-  // for (const criteria of criterias) {
-  //    = getLOperator(criteria._l_op, getOperator(criteria._op, criteria._val));
-  // }
-  //
-  // if(criterias.length != 0) filter[criteria._field] = getOperator(criteria._op, criteria._val);
-  // return filter;
+  if (criterias.length == 0) return {};
+
+  const filters = {};
+  const typeormFilter = {};
+  for (const criteria of criterias) {
+    if (!filters[criteria._field]) filters[criteria._field] = {
+      _l_op: criteria?._l_op || "and",
+      _op: criteria?._op || "eq",
+      filters: [],
+    };
+    filters[criteria._field].filters.push(getOperator(criteria._op, criteria._val));
+  }
+
+  for (const key of Object.keys(filters)) {
+    typeormFilter[key] = getLOperator(filters[key]._op, filters[key].filters);
+  }
+
+  return typeormFilter;
 }
 
-function getLOperator(lOperator: ItemsParamsCriteriasLogic, value: any): any {
+function getLOperator(lOperator: ItemsParamsCriteriasLogic, value: any[]): any {
   switch (lOperator) {
     case "and":
-      return And(value);
+      return And(...value);
     case "or":
-      return Or(value);
+      return Or(...value);
     default:
-      return And(value);
+      return And(...value);
   }
 }
 
@@ -110,7 +115,7 @@ function getOperator(operator: ItemsOperator, value: any): any {
     case "ncontains":
       return Not(Like(value));
     default:
-      return Like(value);
+      return Equal(value);
   }
 }
 

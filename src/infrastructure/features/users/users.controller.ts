@@ -13,11 +13,11 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { CommandBus } from "@nestjs/cqrs";
-import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { JwtAuthGuard } from "src/infrastructure/auth/guards";
 import { Deps } from "@/core/domain/shared/ioc";
 import {
-  ensureResourceOwnership,
+  verifyResourceOwnership,
   filterRessourceByOwnership,
 } from "@/infrastructure/auth/helpers";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
@@ -69,11 +69,12 @@ export class UsersController {
       _val: userId,
     }], params._where);
 
-    const users = await this.usersRepository.find(params);
+    const users = await this.usersRepository.findByQuery(params);
 
-    const outputUsers = filterRessourceByOwnership<User>(users, userId, "id", userRole.id);
+    // const outputUsers = filterRessourceByOwnership<User>(users, userId, "id", userRole.id);
 
-    return responseMapper.mapFrom(UserDtoMapper.mapListFrom(outputUsers));
+    // return responseMapper.mapFrom(UserDtoMapper.mapListFrom(outputUsers));
+    return responseMapper.mapFrom(UserDtoMapper.mapListFrom(users));
   }
 
   @ApiResponse({
@@ -94,7 +95,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(id);
 
-    ensureResourceOwnership(userId, user.createdBy, userRole.id);
+    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }
@@ -107,6 +108,7 @@ export class UsersController {
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("id")
   @Get("/data/me")
   async readCurrentUser(
     @CurrentUser("id") userId: string,
@@ -116,7 +118,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(userId);
 
-    ensureResourceOwnership(userId, user.createdBy, userRole.id);
+    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }
@@ -141,7 +143,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(id);
 
-    ensureResourceOwnership(userId, user.createdBy, userRole.id);
+    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     await this.usersRepository.updateOne(user.id, payload);
 
@@ -168,7 +170,7 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(userId, ["createdBy"]);
 
-    ensureResourceOwnership(userId, user.createdBy, userRole.id);
+    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     const command = new UpdateUserAdditionalDataCommand({
       ...payload,
@@ -196,9 +198,9 @@ export class UsersController {
 
     const user = await this.usersRepository.findOne(id);
 
-    ensureResourceOwnership(userId, user.createdBy, userRole.id);
+    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
-    await this.usersRepository.delete(id);
+    await this.usersRepository.deleteOne(id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }

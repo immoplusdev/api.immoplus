@@ -46,7 +46,6 @@ import { I18nService } from "nestjs-i18n";
 export class AuthController {
   constructor(
     readonly commandBus: CommandBus,
-    private readonly i18n: I18nService,
   ) {
   }
 

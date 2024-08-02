@@ -38,7 +38,6 @@ import { JwtAuthGuard } from "src/infrastructure/auth/guards";
 import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/shared/ioc";
 import { File, IFileRepository } from "@/core/domain/files";
-import { ensureResourceListOwnership, ensureResourceOwnership } from "@/infrastructure/auth/helpers";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 
 
@@ -189,9 +188,9 @@ export class FileController {
       _val: userId,
     }], params._where);
 
-    const files: File[] = await this.fileRepository.find(params);
+    const files: File[] = await this.fileRepository.findByQuery(params);
 
-    ensureResourceListOwnership(files, userId, "uploadedBy", userRole.id);
+    // verifyResourceListOwnership(files, userId, "uploadedBy", userRole.id);
 
     return responseMapper.mapFrom(files);
   }
@@ -214,7 +213,7 @@ export class FileController {
 
     const file = await this.fileRepository.findOne(id);
 
-    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
+    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     return responseMapper.mapFrom(file);
   }
@@ -233,7 +232,7 @@ export class FileController {
     const file = await this.fileRepository.findOne(id);
     const filePath = getFilePath(file.fileNameDisk);
 
-    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
+    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     const outputFile = createReadStream(filePath);
     return new StreamableFile(outputFile);
@@ -272,7 +271,7 @@ export class FileController {
 
     const file = await this.fileRepository.findOne(id);
 
-    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
+    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     await this.fileRepository.updateOne(id, payload);
 
@@ -296,9 +295,9 @@ export class FileController {
 
     const file = await this.fileRepository.findOne(id);
 
-    ensureResourceOwnership(userId, file.uploadedBy, userRole.id);
+    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
 
-    await this.fileRepository.delete(id);
+    await this.fileRepository.deleteOne(id);
 
     return responseMapper.mapFrom(file);
   }

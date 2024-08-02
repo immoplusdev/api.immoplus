@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
+
 /**
  * Search param data
  * @example `{ "_field": "champ", "_op": "eq", "_val": "valeur" }`
@@ -50,7 +51,7 @@ export class SearchItemsParamsDto {
 
   @ApiProperty({
     required: false,
-    enum: ['asc', 'desc'],
+    enum: ["asc", "desc"],
   })
   _order_dir?: ItemsParamsOrderDirectionDto;
 
@@ -70,24 +71,33 @@ export class SearchItemsParamsDto {
   _select?: string[];
 }
 
-export type ItemsParamsOrderDirectionDto = 'asc' | 'desc';
+export class SelectItemsParamsDto {
+  @ApiProperty({
+    required: false,
+    isArray: true,
+    type: String,
+  })
+  _select?: string[];
+}
 
-export type ItemsParamsCriteriasDtoLogic = 'and' | 'or';
+export type ItemsParamsOrderDirectionDto = "asc" | "desc";
+
+export type ItemsParamsCriteriasDtoLogic = "and" | "or";
 
 export type ItemsOperatorDto =
-  | 'eq'
-  | 'neq'
-  | 'gt'
-  | 'gte'
-  | 'lt'
-  | 'lte'
-  | 'in'
-  | 'nin'
-  | 'contains'
-  | 'ncontains'
-  // | 'startswith'
-  // | 'endswith'
-  // | 'isnull'
-  // | 'isnotnull'
-  // | 'isempty'
-  // | 'isnotempty';
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "in"
+  | "nin"
+  | "contains"
+  | "ncontains"
+// | 'startswith'
+// | 'endswith'
+// | 'isnull'
+// | 'isnotnull'
+// | 'isempty'
+// | 'isnotempty';

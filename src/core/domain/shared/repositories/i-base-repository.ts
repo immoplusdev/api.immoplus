@@ -6,13 +6,22 @@ export interface IBaseRepository<
   UpdateDto = Partial<Model>,
   KeyType = string,
 > {
-  create(payload: CreateDto): Promise<Model>;
+  createMany(payload: CreateDto[]): Promise<Model[]>;
 
-  find(query?: SearchItemsParams): Promise<Model[]>;
+  createOne(payload: CreateDto): Promise<Model>;
+
+  findByQuery(query?: SearchItemsParams): Promise<Model[]>;
 
   findOne(id: KeyType, fields?: KeyType[]): Promise<Model>;
 
+  updateByQuery(query: SearchItemsParams, payload: UpdateDto): Promise<KeyType[]>;
+
   updateOne(id: KeyType, payload: UpdateDto): Promise<KeyType>;
 
-  delete(id: KeyType): Promise<KeyType>;
+  deleteByQuery(query: SearchItemsParams): Promise<KeyType[]>;
+
+  deleteOne(id: KeyType): Promise<KeyType>;
 }
+
+//TODO: edit plop repository and Irepository
+//TODO: edit plop controllers

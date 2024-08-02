@@ -36,6 +36,6 @@ export class UploadFileCommandHandler implements ICommandHandler<UploadFileComma
       uploadedBy: command.userId,
     };
 
-    return await this.fileRepository.create(payload);
+    return await this.fileRepository.createOne(payload);
   }
 }

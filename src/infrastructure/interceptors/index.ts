@@ -1,3 +1,2 @@
-export * from "./response-exception.interceptor";
-export * from "./global-interceptors.module";
-export * from "./owner-access-required.interceptor";
+export { ResponseExceptionInterceptor } from "./response-exception.interceptor";
+export { OwnerAccessRequiredInterceptor } from "./owner-access-required.interceptor";

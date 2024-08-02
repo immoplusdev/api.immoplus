@@ -7,7 +7,6 @@ import { SmsService } from "@/infrastructure/features/notifications/sms.service"
 import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
 import { LoggingModule } from "@/infrastructure/features/logging";
 import { MailService } from "@/infrastructure/features/notifications/mail.service";
-import { I18nModule } from "nestjs-i18n";
 
 const providers: Provider[] = [
   {

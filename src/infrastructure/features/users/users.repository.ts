@@ -25,14 +25,17 @@ export class UsersRepository implements IUsersRepository {
     this.userRepository = dataSource.getRepository(UserEntity);
   }
 
-  async create(payload: Partial<User>): Promise<User> {
-    return await this.repository.create(payload);
+  async createMany(payload: Partial<User>[]): Promise<User[]> {
+    return await this.repository.createMany(payload);
   }
 
-  async find(query?: SearchItemsParams): Promise<User[]> {
-    return await this.repository.find(query);
+  async createOne(payload: Partial<User>): Promise<User> {
+    return await this.repository.createOne(payload);
   }
 
+  async findByQuery(query?: SearchItemsParams): Promise<User[]> {
+    return await this.repository.findByQuery(query);
+  }
 
   async findOne(id: string, fields?: string[]): Promise<User> {
     return await this.userRepository.findOne({
@@ -40,16 +43,6 @@ export class UsersRepository implements IUsersRepository {
       relations: this.relations,
       select: mapQueryFieldsToTypeormSelection(fields),
     });
-  }
-
-  async updateOne(id: string, payload: Partial<User>): Promise<string> {
-    await this.repository.updateOne(id, payload);
-    return id;
-  }
-
-  async delete(id: string): Promise<string> {
-    await this.repository.delete(id);
-    return id;
   }
 
   async findOneByEmail(email: string, fields?: string[]): Promise<User | null> {
@@ -97,5 +90,23 @@ export class UsersRepository implements IUsersRepository {
       ...user,
       permissions,
     });
+  }
+
+  async updateByQuery(query: SearchItemsParams, payload: Partial<User>): Promise<string[]> {
+    return await this.repository.updateByQuery(query, payload);
+  }
+
+  async updateOne(id: string, payload: Partial<User>): Promise<string> {
+    await this.repository.updateOne(id, payload);
+    return id;
+  }
+
+  async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return await this.repository.deleteByQuery(query);
+  }
+
+  async deleteOne(id: string): Promise<string> {
+    await this.repository.deleteOne(id);
+    return id;
   }
 }

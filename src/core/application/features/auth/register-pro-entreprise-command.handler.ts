@@ -28,7 +28,7 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
     await this.validateInput(command);
 
     const userId = generateUuid();
-    const userData = await this.usersDataRepository.create({
+    const userData = await this.usersDataRepository.createOne({
       nomEntreprise: command.nomEntreprise,
       emailEntreprise: command.emailEntreprise,
       registreCommerce: command.registreCommerce,
@@ -37,7 +37,7 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
       user: userId,
     });
 
-    const user = await this.usersRepository.create({
+    const user = await this.usersRepository.createOne({
       id: userId,
       email: command.email.toLowerCase(),
       phoneNumber: command.phoneNumber,

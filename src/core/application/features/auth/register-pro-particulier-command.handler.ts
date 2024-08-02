@@ -28,14 +28,14 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     await this.validateInput(command);
 
     const userId = generateUuid();
-    const userData = await this.usersDataRepository.create({
+    const userData = await this.usersDataRepository.createOne({
       activite: command.activite,
       photoIdentite: command.photoIdentite,
       pieceIdentite: command.pieceIdentite,
       user: userId,
     });
 
-    const user = await this.usersRepository.create({
+    const user = await this.usersRepository.createOne({
       id: userId,
       email: command.email.toLowerCase(),
       phoneNumber: command.phoneNumber,

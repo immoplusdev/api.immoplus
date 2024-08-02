@@ -8,14 +8,13 @@ import {
   WrapperResponseNotificationDto,
   WrapperResponseNotificationListDto,
 } from "@/infrastructure/features/notifications";
-import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { SearchItemsParamsDto } from "@/infrastructure/http";
+import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
-import { ensureResourceOwnership } from "@/infrastructure/auth/helpers";
 
 
 @ApiTags("Notification")
@@ -24,8 +23,8 @@ export class NotificationController {
   constructor(
     @Inject(Deps.NotificationRepository)
     private readonly repository: INotificationRepository,
-  ) {}
-
+  ) {
+  }
 
   @ApiResponse({
     type: WrapperResponseNotificationDto,
@@ -42,7 +41,7 @@ export class NotificationController {
 
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
 
-    const response = await this.repository.create({ ...payload, createdBy: userId });
+    const response = await this.repository.createOne({ ...payload, createdBy: userId });
 
     return responseMapper.mapFrom(response);
   }
@@ -55,6 +54,7 @@ export class NotificationController {
   @RequiredPermissions([PermissionCollection.Notifications, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
   @Get()
   async readMany(
     @Query() params: SearchItemsParamsDto,
@@ -70,7 +70,7 @@ export class NotificationController {
       _val: userId,
     }], params._where);
 
-    const items = await this.repository.find(params);
+    const items = await this.repository.findByQuery(params);
 
     return responseMapper.mapFrom(items);
   }
@@ -82,23 +82,18 @@ export class NotificationController {
   @RequiredPermissions([PermissionCollection.Notifications, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
-    @Query("fields") fields?: string[],
+    @Query() params?: SelectItemsParamsDto,
   ) {
-
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
 
-    const item = await this.repository.findOne(id, fields);
-
-    ensureResourceOwnership(userId, item.createdBy, userRole.id);
+    const item = await this.repository.findOne(id, params?._select);
 
     return responseMapper.mapFrom(item);
   }
-
 
   @ApiResponse({
     type: WrapperResponseNotificationDto,
@@ -115,14 +110,20 @@ export class NotificationController {
     @Body() payload: NotificationDto,
   ) {
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
+    const query = {
+      _where: [
+        {
+          _field: "id",
+          _val: id,
+        },
+      ],
+    };
 
-    const item = await this.repository.findOne(id);
+    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
-    ensureResourceOwnership(userId, item.createdBy, userRole.id);
+    await this.repository.updateByQuery(query, payload);
 
-    await this.repository.updateOne(userId, payload);
-
-    return responseMapper.mapFrom(await this.repository.findOne(id));
+    return responseMapper.mapFrom((await this.repository.findByQuery(query)).at(0));
   }
 
   @ApiResponse({
@@ -139,11 +140,19 @@ export class NotificationController {
     @CurrentUser("role") userRole: Role) {
 
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
+    const query = {
+      _where: [
+        {
+          _field: "id",
+          _val: id,
+        },
+      ],
+    };
 
-    const item = await this.repository.findOne(id);
+    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
-    ensureResourceOwnership(userId, item.createdBy, userRole.id);
+    await this.repository.deleteByQuery(query);
 
-    return responseMapper.mapFrom(item);
+    return responseMapper.mapFrom({ id });
   }
 }
