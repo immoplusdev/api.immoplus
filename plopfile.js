@@ -261,6 +261,21 @@ module.exports = function(plop) {
     },
   ];
 
+  const generateCUDto = [
+    {
+      type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/create-{{dasherize name}}.dto.ts",
+      templateFile:
+        "plop-templates/infrastructure/features/base/dto/create-base.dto.hbs",
+    },
+    {
+      type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/update-{{dasherize name}}.dto.ts",
+      templateFile:
+        "plop-templates/infrastructure/features/base/dto/update-base.dto.hbs",
+    },
+  ];
+
   const generateCommandDto = [
     {
       type: "add",
@@ -372,6 +387,12 @@ module.exports = function(plop) {
     actions: generateDto,
   });
 
+  plop.setGenerator("infra:cu-dto", {
+    description: "Generate CU dto",
+    prompts: groupPrompts,
+    actions: generateCUDto,
+  });
+
   plop.setGenerator("infra:mapper", {
     description: "Generate dto mapper",
     prompts: groupPrompts,
@@ -414,6 +435,7 @@ module.exports = function(plop) {
       ...generateModel,
       ...generateEntity,
       ...generateDto,
+      ...generateCUDto,
       ...generateDtoMapper,
       ...generateRepositoryPort,
       ...generateRepository,

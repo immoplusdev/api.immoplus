@@ -33,12 +33,12 @@ import {
   WrapperResponseUploadFileCommandResponseDto,
 } from "@/infrastructure/features/files/dto/upload-file-command-response.dto";
 import { CommandBus } from "@nestjs/cqrs";
-import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { JwtAuthGuard } from "src/infrastructure/auth/guards";
 import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/shared/ioc";
 import { File, IFileRepository } from "@/core/domain/files";
-import { SearchItemsParamsDto } from "@/infrastructure/http";
+import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 
 
 @ApiTags("File")
@@ -47,7 +47,7 @@ export class FileController {
   constructor(
     readonly commandBus: CommandBus,
     @Inject(Deps.FileRepository)
-    private readonly fileRepository: IFileRepository,
+    private readonly repository: IFileRepository,
   ) {
   }
 
@@ -173,6 +173,7 @@ export class FileController {
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("uploadedBy")
   @Get()
   async readMany(
     @Query() params: SearchItemsParamsDto,
@@ -188,11 +189,9 @@ export class FileController {
       _val: userId,
     }], params._where);
 
-    const files: File[] = await this.fileRepository.findByQuery(params);
+    const items = await this.repository.findByQuery(params);
 
-    // verifyResourceListOwnership(files, userId, "uploadedBy", userRole.id);
-
-    return responseMapper.mapFrom(files);
+    return responseMapper.mapFrom(items);
   }
 
   @ApiResponse({
@@ -202,20 +201,18 @@ export class FileController {
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("uploadedBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
+    @Query() params?: SelectItemsParamsDto,
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<FileDto>();
 
-    const file = await this.fileRepository.findOne(id);
+    const item = await this.repository.findOne(id, params?._select);
 
-    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
-
-    return responseMapper.mapFrom(file);
+    return responseMapper.mapFrom(item);
   }
 
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -229,23 +226,19 @@ export class FileController {
     @CurrentUser("role") userRole: Role,
   ):
     Promise<StreamableFile> {
-    const file = await this.fileRepository.findOne(id);
+    const file = await this.repository.findOne(id);
     const filePath = getFilePath(file.fileNameDisk);
-
-    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
 
     const outputFile = createReadStream(filePath);
     return new StreamableFile(outputFile);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+
   @Get("raw/public/:id")
   async getRawPublicFile(
     @Param("id") id: string,
-    @CurrentUser("role") userRole: Role,
   ): Promise<StreamableFile> {
-    const file = await this.fileRepository.findOne(id);
+    const file = await this.repository.findOne(id);
     const filePath = getFilePath(file.fileNameDisk);
 
     const outputFile = createReadStream(filePath);
@@ -268,14 +261,20 @@ export class FileController {
     @CurrentUser("role") userRole: Role) {
 
     const responseMapper = new WrapperResponseDtoMapper<FileDto>();
+    const query = {
+      _where: [
+        {
+          _field: "id",
+          _val: id,
+        },
+      ],
+    };
 
-    const file = await this.fileRepository.findOne(id);
+    if (!userRole.hasAdminAccess()) query._where.push({ _field: "uploadedBy", _val: userId });
 
-    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
+    await this.repository.updateByQuery(query, payload);
 
-    await this.fileRepository.updateOne(id, payload);
-
-    return responseMapper.mapFrom(await this.fileRepository.findOne(id));
+    return responseMapper.mapFrom((await this.repository.findByQuery(query)).at(0));
   }
 
   @ApiResponse({
@@ -292,14 +291,20 @@ export class FileController {
     @CurrentUser("role") userRole: Role) {
 
     const responseMapper = new WrapperResponseDtoMapper<FileDto>();
+    const query = {
+      _where: [
+        {
+          _field: "id",
+          _val: id,
+        },
+      ],
+    };
 
-    const file = await this.fileRepository.findOne(id);
+    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
-    // verifyResourceOwnership(userId, file.uploadedBy, userRole.id);
+    await this.repository.deleteByQuery(query);
 
-    await this.fileRepository.deleteOne(id);
-
-    return responseMapper.mapFrom(file);
+    return responseMapper.mapFrom({ id } as never);
   }
 }
 

@@ -16,26 +16,35 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
     this.repository = new BaseRepository(dataSource, {{classify name}}Entity);
   }
 
-
-  async create(payload: Partial<{{classify name}}>): Promise<{{classify name}}> {
+  async createMany(payload: Partial<{{classify name}}>[]): Promise<{{classify name}}[]> {
     return await this.repository.create(payload);
   }
 
-  async find(query?: SearchItemsParams): Promise<{{classify name}}[]> {
-    return await this.repository.find(query);
+  async createOne(payload: Partial<{{classify name}}>): Promise<{{classify name}}> {
+    return await this.repository.create(payload);
   }
 
-  async findOne(id: string, fields?: []): Promise<{{classify name}}> {
+  async findByQuery(query?: SearchItemsParams): Promise<{{classify name}}[]> {
+    return await this.repository.findByQuery(query);
+  }
+
+  async findOne(id: string, fields?: string[]): Promise<{{classify name}}> {
     return await this.repository.findOne(id, fields);
   }
 
-  async update(id: string, payload: Partial<{{classify name}}>): Promise<string> {
-    await this.repository.update(id, payload);
-    return id;
+  async updateByQuery(query: SearchItemsParams, payload: Partial<{{classify name}}>): Promise<string[]> {
+    return await this.repository.updateByQuery(query, payload);
   }
 
-  async delete(id: string): Promise<string> {
-    await this.repository.delete(id);
-    return id;
+  async updateOne(id: string, payload: Partial<{{classify name}}>): Promise<string> {
+    return await this.repository.update(id, payload);
+  }
+
+  async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return await this.repository.deleteByQuery(query);
+  }
+
+  async deleteOne(id: string): Promise<string> {
+    return await this.repository.delete(id);
   }
 }

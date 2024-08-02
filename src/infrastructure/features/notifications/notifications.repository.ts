@@ -21,7 +21,6 @@ export class NotificationRepository implements INotificationRepository {
     // this.notificationRepository = dataSource.getRepository(NotificationEntity);
   }
 
-
   async createMany(payload: Partial<Notification>[]): Promise<Notification[]> {
     return await this.repository.createMany(payload);
   }

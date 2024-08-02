@@ -2,7 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { NotificationType } from "@/core/domain/notifications/notification-type.enum";
-import { User } from "@/core/domain/users";
 import { IsOptional } from "class-validator";
 
 export class NotificationDto {

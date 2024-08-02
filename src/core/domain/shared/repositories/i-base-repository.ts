@@ -23,5 +23,4 @@ export interface IBaseRepository<
   deleteOne(id: KeyType): Promise<KeyType>;
 }
 
-//TODO: edit plop repository and Irepository
 //TODO: edit plop controllers

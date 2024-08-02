@@ -4,7 +4,8 @@ import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { INotificationRepository } from "@/core/domain/notifications";
 import {
-  NotificationDto,
+  CreateNotificationDto,
+  NotificationDto, UpdateNotificationDto,
   WrapperResponseNotificationDto,
   WrapperResponseNotificationListDto,
 } from "@/infrastructure/features/notifications";
@@ -35,7 +36,7 @@ export class NotificationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
-    @Body() payload: NotificationDto,
+    @Body() payload: CreateNotificationDto,
     @CurrentUser() userId: string,
   ) {
 
@@ -107,7 +108,7 @@ export class NotificationController {
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
-    @Body() payload: NotificationDto,
+    @Body() payload: UpdateNotificationDto,
   ) {
     const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
     const query = {
