@@ -1,0 +1,1050 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Immoplus",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3003/"
+    }
+  ],
+  "paths": {
+    "/configs": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "*/*": {
+                "example": "{}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/users/data/me": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/users/data/additional": {
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"lieuNaissance\": \"\",\n    \"activite\": \"\",\n    \"photoIdentite\": \"\",\n    \"pieceIdentite\": \"\",\n    \"nomEntreprise\": \"\",\n    \"emailEntreprise\": \"\",\n    \"registreCommerce\": \"\",\n    \"numeroContribuable\": \"\",\n    \"typeEntreprise\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/register-customer": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/register-pro-particulier": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/register-pro-entreprise": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/login-with-phone-number-otp": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/login-with-email-otp": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/update-password": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/send-sms-otp": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/send-email-otp": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/verify-phone-number": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"type\": \"\",\n    \"subject\": \"\",\n    \"message\": \"\",\n    \"collection\": \"\",\n    \"item\": \"\",\n    \"recipient\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"type\": \"\",\n      \"subject\": \"\",\n      \"message\": \"\",\n      \"collection\": \"\",\n      \"item\": \"\",\n      \"recipient\": \"\",\n      \"createdAt\": \"{{faker 'date.recent' 365}}\",\n      \"createdBy\": \"\",\n      \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n      \"updatedBy\": \"\",\n      \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n      \"deletedBy\": \"\"\n    }\n  ]\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/notifications/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"type\": \"\",\n    \"subject\": \"\",\n    \"message\": \"\",\n    \"collection\": \"\",\n    \"item\": \"\",\n    \"recipient\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"type\": \"\",\n    \"subject\": \"\",\n    \"message\": \"\",\n    \"collection\": \"\",\n    \"item\": \"\",\n    \"recipient\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"type\": \"\",\n    \"subject\": \"\",\n    \"message\": \"\",\n    \"collection\": \"\",\n    \"item\": \"\",\n    \"recipient\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/files": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/files/public": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/files/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/files/raw/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/files/raw/public/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/villes": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"createdAt\": \"{{faker 'date.recent' 365}}\",\n      \"createdBy\": \"\",\n      \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n      \"updatedBy\": \"\",\n      \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n      \"deletedBy\": \"\"\n    }\n  ]\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/villes/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/communes": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"ville\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"ville\": \"\",\n      \"createdAt\": \"{{faker 'date.recent' 365}}\",\n      \"createdBy\": \"\",\n      \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n      \"updatedBy\": \"\",\n      \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n      \"deletedBy\": \"\"\n    }\n  ]\n}"
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/communes/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"ville\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"ville\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "{\n  \"data\": {\n    \"id\": \"\",\n    \"name\": \"\",\n    \"ville\": \"\",\n    \"createdAt\": \"{{faker 'date.recent' 365}}\",\n    \"createdBy\": \"\",\n    \"updatedAt\": \"{{faker 'date.recent' 365}}\",\n    \"updatedBy\": \"\",\n    \"deletedAt\": \"{{faker 'date.recent' 365}}\",\n    \"deletedBy\": \"\"\n  }\n}"
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/reservations": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/reservations/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    },
+    "/residences": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/residences/{id}": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "patch": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ]
+      }
+    }
+  }
+}

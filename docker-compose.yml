@@ -7,10 +7,8 @@ services:
       context: .
     restart: always
     ports:
-      - '${NEST_PORT}:8055'
+      - '${NEST_PORT}:3000'
     volumes:
       - ${NEST_UPLOAD_DIR}:/app/uploads
     env_file:
       - ./.env
-    environment:
-      PORT: 8055

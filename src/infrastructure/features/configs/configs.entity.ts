@@ -15,9 +15,9 @@ export class AppConfigsEntity {
   projectName: string;
   @Column({ name: "project_url", type: "varchar", nullable: true })
   projectUrl: string;
-  // @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
-  // @JoinColumn({ name: "project_logo_id" })
-  // projectLogo: string;
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
+  @JoinColumn({ name: "project_logo_id" })
+  projectLogo: string;
   @Column({ name: "sms_sender_name", type: "varchar", nullable: true })
   smsSenderName: string;
   @Column({ name: "proximity_radius", type: "int", nullable: true })
