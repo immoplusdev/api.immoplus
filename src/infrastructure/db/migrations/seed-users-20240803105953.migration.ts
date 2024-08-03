@@ -3,7 +3,7 @@ import { UserStatus } from "@/core/domain/users";
 import { UserRole } from "@/core/domain/roles";
 import { generateUuid } from "@/lib/ts-utilities/db";
 
-export class CreateBaseAppUsers20240803105953 implements MigrationInterface {
+export class SeedUsers20240803105953 implements MigrationInterface {
   async up(queryRunner: QueryRunner): Promise<void> {
     const passwordHash = process.env.NEST_APP_ADMIN_PASSWORD_HASH;
     const adminId = process.env.NEST_APP_ADMIN_PASSWORD_ID;

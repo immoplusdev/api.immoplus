@@ -10,6 +10,8 @@ export enum Deps {
   NotificationRepository = "NotificationRepository",
   VilleRepository = "VilleRepository",
   CommuneRepository = "CommuneRepository",
+  ReservationRepository = "ReservationRepository",
+  AppConfigsRepository = "AppConfigsRepository",
 
 
   // Services

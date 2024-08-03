@@ -2,14 +2,14 @@ import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, P
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IVilleRepository } from "@/core/domain/villes";
+import { Reservation, IReservationRepository } from "@/core/domain/reservations";
 import {
-  CreateVilleDto,
-  VilleDto,
-  UpdateVilleDto,
-  WrapperResponseVilleDto,
-  WrapperResponseVilleListDto,
-} from "@/infrastructure/features/villes";
+  CreateReservationDto,
+  ReservationDto,
+  UpdateReservationDto,
+  WrapperResponseReservationDto,
+  WrapperResponseReservationListDto,
+} from "@/infrastructure/features/reservations";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
@@ -18,29 +18,29 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
-@ApiTags("Ville")
-@Controller("villes")
-export class VilleController {
+@ApiTags("Reservation")
+@Controller("reservations")
+export class ReservationController {
   constructor(
-    @Inject(Deps.VilleRepository)
-    private readonly repository: IVilleRepository,
+    @Inject(Deps.ReservationRepository)
+    private readonly repository: IReservationRepository,
   ) {
   }
 
   @ApiResponse({
-    type: WrapperResponseVilleDto,
+    type: WrapperResponseReservationDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin)
-  @RequiredPermissions([PermissionCollection.Villes, PermissionAction.Create])
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
-    @Body() payload: CreateVilleDto,
+    @Body() payload: CreateReservationDto,
     @CurrentUser() userId: string,
   ) {
 
-    const responseMapper = new WrapperResponseDtoMapper<VilleDto>();
+    const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
 
     const response = await this.repository.createOne({ ...payload, createdBy: userId });
 
@@ -48,14 +48,27 @@ export class VilleController {
   }
 
   @ApiResponse({
-    type: WrapperResponseVilleListDto,
+    type: WrapperResponseReservationListDto,
   })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
   @Get()
   async readMany(
     @Query() params: SearchItemsParamsDto,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
   ) {
 
-    const responseMapper = new WrapperResponseDtoMapper<VilleDto[]>();
+    const responseMapper = new WrapperResponseDtoMapper<ReservationDto[]>();
+
+    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
+      _field: "createdBy",
+      _l_op: "and",
+      _val: userId,
+    }], params._where);
 
     const items = await this.repository.findByQuery(params);
 
@@ -63,14 +76,19 @@ export class VilleController {
   }
 
   @ApiResponse({
-    type: WrapperResponseVilleDto,
+    type: WrapperResponseReservationDto,
   })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<VilleDto>();
+    const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
 
     const item = await this.repository.findOne(id, params?._select);
 
@@ -79,10 +97,10 @@ export class VilleController {
 
 
   @ApiResponse({
-    type: WrapperResponseVilleDto,
+    type: WrapperResponseReservationDto,
   })
-  @RequiredRoles(UserRole.Admin)
-  @RequiredPermissions([PermissionCollection.Villes, PermissionAction.Update])
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
@@ -90,9 +108,9 @@ export class VilleController {
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
-    @Body() payload: UpdateVilleDto,
+    @Body() payload: UpdateReservationDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<VilleDto>();
+    const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
     const query = {
       _where: [
         {
@@ -111,10 +129,10 @@ export class VilleController {
 
 
   @ApiResponse({
-    type: WrapperResponseVilleDto,
+    type: WrapperResponseReservationDto,
   })
-  @RequiredRoles(UserRole.Admin)
-  @RequiredPermissions([PermissionCollection.Villes, PermissionAction.Delete])
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Delete])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
@@ -123,7 +141,7 @@ export class VilleController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role) {
 
-    const responseMapper = new WrapperResponseDtoMapper<VilleDto>();
+    const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
     const query = {
       _where: [
         {

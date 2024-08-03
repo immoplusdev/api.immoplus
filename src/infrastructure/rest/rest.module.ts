@@ -6,10 +6,14 @@ import { PermissionModule } from "@/infrastructure/features/permissions";
 import { Deps } from "@/core/domain/shared/ioc";
 import { FileModule } from "@/infrastructure/features/files";
 import { NotificationModule } from "@/infrastructure/features/notifications";
+import { CommuneModule } from "@/infrastructure/features/communes";
+import { ReservationModule } from "@/infrastructure/features/reservations";
+import { ResidenceModule } from "@/infrastructure/features/residences";
+import { VilleModule } from "@/infrastructure/features/villes";
 
 export const controllers = [];
 
-const modules = [UsersModule, PermissionModule, AuthModule, FileModule, NotificationModule];
+const modules = [UsersModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule, CommuneModule, ReservationModule, ResidenceModule];
 
 @Module({
   providers: [

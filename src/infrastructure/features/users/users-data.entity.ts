@@ -20,8 +20,9 @@ export class UserDataEntity {
   @JoinColumn({ name: "photo_identite_id" })
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   photoIdentite?: File | string;
-  @JoinColumn({ name: "piece_identite_id" })
+
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
+  @JoinColumn({ name: "piece_identite_id" })
   pieceIdentite?: File | string;
 
   // Pro entreprise

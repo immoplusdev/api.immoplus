@@ -31,7 +31,7 @@ export class CommuneController {
     type: WrapperResponseCommuneDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(UserRole.Admin)
   @RequiredPermissions([PermissionCollection.Communes, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -50,25 +50,12 @@ export class CommuneController {
   @ApiResponse({
     type: WrapperResponseCommuneListDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Communes, PermissionAction.Read])
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get()
   async readMany(
-    @Query() params: SearchItemsParamsDto,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
+    @Query() params: SearchItemsParamsDto
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<CommuneDto[]>();
-
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "createdBy",
-      _l_op: "and",
-      _val: userId,
-    }], params._where);
 
     const items = await this.repository.findByQuery(params);
 
@@ -78,11 +65,6 @@ export class CommuneController {
   @ApiResponse({
     type: WrapperResponseCommuneDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Communes, PermissionAction.Read])
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
@@ -99,7 +81,7 @@ export class CommuneController {
   @ApiResponse({
     type: WrapperResponseCommuneDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(UserRole.Admin)
   @RequiredPermissions([PermissionCollection.Communes, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -131,7 +113,7 @@ export class CommuneController {
   @ApiResponse({
     type: WrapperResponseCommuneDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(UserRole.Admin)
   @RequiredPermissions([PermissionCollection.Communes, PermissionAction.Delete])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -157,5 +139,4 @@ export class CommuneController {
 
     return responseMapper.mapFrom({ id } as never);
   }
-
 }

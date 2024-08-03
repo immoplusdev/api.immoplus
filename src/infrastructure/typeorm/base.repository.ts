@@ -23,6 +23,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   async findByQuery(query?: SearchItemsParams): Promise<Model[]> {
+    // TODO: Paginate repositories
     if (query) return await this.repository.find(mapQueryToTypeormQuery(query));
     return await this.repository.find();
   }

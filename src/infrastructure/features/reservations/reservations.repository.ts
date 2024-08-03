@@ -1,0 +1,50 @@
+import { DataSource, Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { Deps } from '@/core/domain/shared/ioc';
+import { Reservation, IReservationRepository } from "@/core/domain/reservations";
+import { ReservationEntity } from '@/infrastructure/features/reservations';
+import { BaseRepository } from "@/infrastructure/typeorm";
+import { SearchItemsParams } from "@/core/domain/http";
+
+@Injectable()
+export class ReservationRepository implements IReservationRepository{
+  private readonly repository: BaseRepository<Reservation>;
+  constructor(
+    @Inject(Deps.DataSource)
+    readonly dataSource: DataSource,
+  ) {
+    this.repository = new BaseRepository(dataSource, ReservationEntity);
+  }
+
+  async createMany(payload: Partial<Reservation>[]): Promise<Reservation[]> {
+    return await this.repository.createMany(payload);
+  }
+
+  async createOne(payload: Partial<Reservation>): Promise<Reservation> {
+    return await this.repository.createOne(payload);
+  }
+
+  async findByQuery(query?: SearchItemsParams): Promise<Reservation[]> {
+    return await this.repository.findByQuery(query);
+  }
+
+  async findOne(id: string, fields?: string[]): Promise<Reservation> {
+    return await this.repository.findOne(id, fields);
+  }
+
+  async updateByQuery(query: SearchItemsParams, payload: Partial<Reservation>): Promise<string[]> {
+    return await this.repository.updateByQuery(query, payload);
+  }
+
+  async updateOne(id: string, payload: Partial<Reservation>): Promise<string> {
+    return await this.repository.updateOne(id, payload);
+  }
+
+  async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return await this.repository.deleteByQuery(query);
+  }
+
+  async deleteOne(id: string): Promise<string> {
+    return await this.repository.deleteOne(id);
+  }
+}

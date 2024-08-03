@@ -11,6 +11,7 @@ import {
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
+import { Role, UserRole } from "@/core/domain/roles";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
@@ -26,15 +27,20 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
   async execute(command: LoginCommand): Promise<LoginCommandResponse> {
     const user = await this.userRepository.findOneByUsername(command.username);
-    if (!user) throw new InvalidCredentialsException();
 
-    if (user.status != UserStatus.Active) throw new UserCannotLoginException();
+    this.verifyUserCanLogin(user);
 
     this.verifyPassword(command.password, user.password);
 
     await this.createUserSession(user);
 
     return this.generateUserTokens(user);
+  }
+
+  private verifyUserCanLogin(user: User) {
+    if (!user) throw new InvalidCredentialsException();
+    if (user.status != UserStatus.Active) throw new UserCannotLoginException();
+    if((user.role as Role).id == UserRole.Admin) throw new UserCannotLoginException();
   }
 
   private generateUserTokens(user: User): LoginCommandResponse {

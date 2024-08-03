@@ -71,3 +71,39 @@ CREATE TABLE `users_data` (
   `registre_commerce_id` varchar(36) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `villes`
+--
+
+CREATE TABLE `villes` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `communes`
+--
+
+CREATE TABLE `communes` (
+  `id` varchar(36) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `ville_id` varchar(36) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `configurations`
+--
+
+CREATE TABLE `configurations` (
+  `id` varchar(36) NOT NULL,
+  `project_name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
