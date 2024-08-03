@@ -1,9 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { StatusReservation } from "@/core/domain/reservations";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
+import { ServiceDateDto } from "@/infrastructure/features/reservations/dto/service-date.dto";
 
 export class ReservationDto {
   @ApiProperty()
@@ -12,8 +13,8 @@ export class ReservationDto {
   residence: string;
   @ApiProperty()
   statusReservation: StatusReservation;
-  @ApiProperty()
-  datesReservation: ServiceDates;
+  @ApiProperty({ type: ServiceDateDto, isArray: true })
+  datesReservation: ServiceDateDto[];
   @ApiProperty()
   statusFacture: StatusFacture;
   @ApiProperty()
@@ -45,12 +46,12 @@ export class ReservationDto {
 }
 
 export class WrapperResponseReservationDto extends WrapperResponseDto<ReservationDto> {
-   @ApiProperty({ type: ReservationDto })
-   data: ReservationDto;
+  @ApiProperty({ type: ReservationDto })
+  data: ReservationDto;
 }
 
 export class WrapperResponseReservationListDto extends WrapperResponseDto<ReservationDto[]> {
-   @ApiProperty({ type: [ReservationDto] })
-   data: ReservationDto[];
+  @ApiProperty({ type: [ReservationDto] })
+  data: ReservationDto[];
 }
 

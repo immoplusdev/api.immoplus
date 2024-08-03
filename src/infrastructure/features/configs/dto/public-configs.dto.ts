@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
-import { PublicConfigItem } from "@/core/domain/configs/public-config-item.model";
+import { PublicConfigItemDto } from "@/infrastructure/features/configs";
 
 export class PublicConfigDto {
   @ApiProperty()
@@ -28,30 +28,30 @@ export class PublicConfigDto {
   contactEmail: string;
   @ApiProperty()
   contactPhoneNumber: string;
-  @ApiProperty({ type: [PublicConfigItem] })
-  productTypes: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  galleryGroups: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  visitPaymentTypes: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  servicePaymentTypes: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  orderPaymentTypes: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  shippingTypes: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  paymentStatus: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  serviceStatus: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  shippingStatus: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  categoryPaymentTypes: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  languages: PublicConfigItem[];
-  @ApiProperty({ type: [PublicConfigItem] })
-  defaultStatus: PublicConfigItem[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  productTypes: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  galleryGroups: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  visitPaymentTypes: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  servicePaymentTypes: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  orderPaymentTypes: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  shippingTypes: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  paymentStatus: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  serviceStatus: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  shippingStatus: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  categoryPaymentTypes: PublicConfigItemDto[];
+  @ApiProperty({ type: [PublicConfigItemDto] })
+  languages: PublicConfigItemDto[];
+  @ApiProperty({ type: PublicConfigItemDto, isArray: true })
+  defaultStatus: PublicConfigItemDto[];
 
   constructor(data?: OmitMethods<PublicConfigDto>) {
     Object.assign(this, data);

@@ -11,6 +11,7 @@ export function swaggerConfigs(app: INestApplication) {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("swagger", app, document);
-
+  SwaggerModule.setup("swagger", app, document, {
+    jsonDocumentUrl: "swagger/json",
+  });
 }

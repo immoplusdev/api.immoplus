@@ -8,7 +8,7 @@ import { UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { WrapperResponsePublicConfigDto } from "@/infrastructure/features/configs/dto";
+import { PublicConfigDto, WrapperResponsePublicConfigDto } from "@/infrastructure/features/configs/dto";
 import { UpdateConfigDto } from "@/infrastructure/features/configs/dto/update-configs.dto";
 
 @ApiTags("Configs")
@@ -25,10 +25,9 @@ export class ConfigController {
   })
   @Get()
   async readSingleton() {
-    const responseMapper = new WrapperResponseDtoMapper<WrapperResponsePublicConfigDto>();
 
+    const responseMapper = new WrapperResponseDtoMapper<PublicConfigDto>();
     const item = await this.configsManagerService.getPublicConfigs();
-
     return responseMapper.mapFrom(item as never);
   }
 
