@@ -34,11 +34,11 @@ export function verifyResourceListOwnership({
 
 }
 
-export function filterRessourceByOwnership<T>({ ressources, userId, ownerField, userRole }) {
-  if (userRole && userRole == UserRole.Admin) return ressources;
-  const output: T[] = [];
-  for (const ressource of ressources) {
-    if (ressource[ownerField] && ressource[ownerField] === userId) output.push(ressource);
-  }
-  return output;
-}
+// export function filterRessourceByOwnership<T>({ ressources, userId, ownerField, userRole }) {
+//   if (userRole && userRole == UserRole.Admin) return ressources;
+//   const output: T[] = [];
+//   for (const ressource of ressources) {
+//     if (ressource[ownerField] && ressource[ownerField] === userId) output.push(ressource);
+//   }
+//   return output;
+// }

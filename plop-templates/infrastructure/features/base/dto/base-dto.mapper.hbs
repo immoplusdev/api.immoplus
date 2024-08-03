@@ -4,16 +4,11 @@ import { {{classify name}}Dto } from "./{{dasherize name}}.dto";
 
 
 export class {{classify name}}DtoMapper {
-  private mapper: AutoMapper;
-  constructor() {
-    this.mapper = new AutoMapper();
-  }
-
   mapFrom(object: {{classify name}}): {{classify name}}Dto {
-    return this.mapper.execute<{{classify name}}, {{classify name}}Dto>(object);
+    return new {{classify name}}Dto(object);
   }
 
   mapTo(object: {{classify name}}Dto): {{classify name}} {
-    return this.mapper.execute<{{classify name}}Dto, {{classify name}}>(object);
+    return new {{classify name}}(object);
   }
 }

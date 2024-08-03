@@ -11,6 +11,7 @@ import { IUsersDataRepository, IUsersRepository } from "@/core/domain/users";
 import { IPasswordManagerService } from "@/core/domain/auth";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { UserRole } from "@/core/domain/roles";
+import { IConfigsManagerService } from "@/core/domain/configs";
 
 @CommandHandler(RegisterProParticulierCommand)
 export class RegisterProParticulierCommandHandler implements ICommandHandler<RegisterProParticulierCommand> {
@@ -21,6 +22,8 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     private readonly passwordManagerService: IPasswordManagerService,
     @Inject(Deps.UsersDataRepository)
     private readonly usersDataRepository: IUsersDataRepository,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
   }
 
@@ -45,6 +48,7 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
       role: UserRole.ProParticulier,
       city: command.city || null,
       additionalData: userData.id,
+      createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
     });
 
     return new RegisterProParticulierCommandResponse({

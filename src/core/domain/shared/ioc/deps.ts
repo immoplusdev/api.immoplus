@@ -1,8 +1,3 @@
-import { MailService } from "@/infrastructure/features/notifications";
-import { TfaService } from "@/infrastructure/features/auth/tfa.service";
-import { AuthService } from "@/infrastructure/features/auth/auth.service";
-import { GlobalizationService } from "@/infrastructure/features/globalization";
-
 export enum Deps {
   DataSource = "DataSource",
 
@@ -13,6 +8,8 @@ export enum Deps {
   UsersDataRepository = "UsersDataRepository",
   FileRepository = "FileRepository",
   NotificationRepository = "NotificationRepository",
+  VilleRepository = "VilleRepository",
+  CommuneRepository = "CommuneRepository",
 
 
   // Services
@@ -25,6 +22,7 @@ export enum Deps {
   TfaService = "TfaService",
   AuthService = "AuthService",
   GlobalizationService = "GlobalizationService",
+  ResidenceRepository = "ResidenceRepository",
 
   // Guards
   AppGuard = "AppGuard"

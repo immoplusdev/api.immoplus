@@ -1,0 +1,104 @@
+import {
+  Column,
+  CreateDateColumn, DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { FileEntity } from "@/infrastructure/features/files";
+import { Commodite, StatusValidationResidence, TypeResidence } from "@/core/domain/residences";
+import { Piece } from "@/core/domain/residences/piece.model";
+import { UserEntity } from "@/infrastructure/features/users";
+import { VilleEntity } from "@/infrastructure/features/villes";
+import { CommuneEntity } from "@/infrastructure/features/communes";
+import { GeoJsonPoint } from "@/core/domain/map";
+
+@Entity("residences")
+export class ResidenceEntity {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
+  @JoinColumn({ name: "miniature_id" })
+  miniature: string;
+
+  @Column({ name: "nom", type: "varchar" })
+  nom: string;
+  @Column({ name: "type_residence", type: "varchar" })
+  typeResidence: TypeResidence;
+  @Column({ name: "description", type: "text" })
+  description: string;
+  @Column({ name: "commodites", type: "json", nullable: true })
+  commodites?: Commodite[];
+  @Column({ name: "pieces", type: "json", nullable: true })
+  pieces?: Piece[];
+  @Column({ name: "images", type: "json", nullable: true })
+  images?: string[];
+
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
+  @JoinColumn({ name: "video_id" })
+  video?: string;
+
+  @ManyToOne(() => VilleEntity, (entity) => entity.id, { nullable: true })
+  @JoinColumn({ name: "ville_id" })
+  ville?: string;
+
+
+  @ManyToOne(() => CommuneEntity, (entity) => entity.id, { nullable: true })
+  @JoinColumn({ name: "commune_id" })
+  commune?: string;
+
+  @Column({ name: "adresse", type: "varchar" })
+  adresse?: string;
+  @Column({ name: "position", type: "json", nullable: true })
+  position?: GeoJsonPoint;
+  @Column({ name: "residence_disponible", type: "bool", default: true })
+  residenceDisponible: boolean;
+  @Column({ name: "status_validation", type: "varchar", default: StatusValidationResidence.EnAttenteValidation })
+  statusValidation: StatusValidationResidence;
+
+
+  @Column({ name: "prix_reservation", type: "int" })
+  prixReservation: number;
+  @Column({ name: "duree_min_sejour", type: "int" })
+  dureeMinSejour: number;
+  @Column({ name: "duree_max_sejour", type: "int" })
+  dureeMaxSejour: number;
+  @Column({ name: "metadata", type: "json", nullable: true })
+  metadata?: Record<string, any>;
+  @Column({ name: "heure_entree", type: "varchar" })
+  heureEntree: string;
+  @Column({ name: "heure_depart", type: "varchar" })
+  heureDepart: string;
+  @Column({ name: "nombre_max_occupants", type: "int", default: 10 })
+  nombreMaxOccupants: number;
+  @Column({ name: "animaux_autorises", type: "bool", default: false })
+  animauxAutorises: boolean;
+  @Column({ name: "fetes_autorises", type: "bool", default: false })
+  fetesAutorises: boolean;
+  @Column({ name: "regles_supplementaires", type: "text", nullable: true })
+  reglesSupplementaires?: string;
+
+  @ManyToOne(() => UserEntity, (item) => item.id)
+  @JoinColumn({ name: "proprietaire_id" })
+  proprietaire?: string;
+
+  @CreateDateColumn({ name: "created_at" })
+  createdAt?: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt?: Date;
+  // @DeleteDateColumn({ name: "deleted_at" })
+  // deletedAt?: Date;
+
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  @JoinColumn({ name: "created_by" })
+  createdBy?: string;
+  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  // @JoinColumn({ name: "updated_by" })
+  // updatedBy?: string;
+  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  // @JoinColumn({ name: "deleted_by" })
+  // deletedBy?: string;
+}

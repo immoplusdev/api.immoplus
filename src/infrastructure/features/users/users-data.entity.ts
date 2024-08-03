@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User, UserData } from "@/core/domain/users";
+import { User } from "@/core/domain/users";
 import { UserEntity } from "@/infrastructure/features/users/users.entity";
 import { FileEntity } from "@/infrastructure/features/files";
 
@@ -7,8 +7,7 @@ import { FileEntity } from "@/infrastructure/features/files";
 export class UserDataEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @Column({ name: "user", type: "uuid", nullable: true  })
+  @Column({ name: "user_id", type: "uuid", nullable: true })
   @OneToOne(() => UserEntity, (user) => user.additionalData)
   user?: User | string;
 
@@ -17,11 +16,12 @@ export class UserDataEntity {
   lieuNaissance?: string;
   @Column({ name: "activite", type: "varchar", nullable: true })
   activite?: string;
-  @Column({ name: "photo_identite", type: "uuid", nullable: true })
-  @ManyToOne(() => FileEntity, (file) => file.id)
+
+  @JoinColumn({ name: "photo_identite_id" })
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   photoIdentite?: File | string;
-  @Column({ name: "piece_identite", type: "uuid", nullable: true })
-  @ManyToOne(() => FileEntity, (file) => file.id)
+  @JoinColumn({ name: "piece_identite_id" })
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   pieceIdentite?: File | string;
 
   // Pro entreprise
@@ -29,9 +29,11 @@ export class UserDataEntity {
   nomEntreprise?: string;
   @Column({ name: "email_entreprise", type: "varchar", nullable: true })
   emailEntreprise?: string;
-  @Column({ name: "registre_commerce", type: "uuid", nullable: true })
-  @ManyToOne(() => FileEntity, (file) => file.id)
+
+  @JoinColumn({ name: "registre_commerce_id" })
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   registreCommerce?: File | string;
+
   @Column({ name: "numero_contribuable", type: "varchar", nullable: true })
   numeroContribuable?: string;
   @Column({ name: "type_entreprise", type: "varchar", nullable: true })

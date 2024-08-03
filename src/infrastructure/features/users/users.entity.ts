@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User, UserData, UserStatus } from "@/core/domain/users";
+import { UserData, UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { UserDataEntity } from "@/infrastructure/features/users/users-data.entity";
 import { Role } from "@/core/domain/roles";
@@ -18,23 +18,23 @@ export class UserEntity {
   // basic fields
   @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column({ name: "first_name", type: "varchar" })
+  @Column({ name: "first_name", type: "varchar", nullable: true })
   firstName: string;
-  @Column({ name: "last_name", type: "varchar" })
+  @Column({ name: "last_name", type: "varchar", nullable: true })
   lastName: string;
   @Column({ name: "email", type: "varchar" })
   email: string;
   @Column({ name: "password", type: "varchar" })
   password: string;
-  @Column({ name: "role", type: "uuid" })
+
   @ManyToOne(() => RoleEntity, (role) => role.id)
   @JoinColumn({ name: "role_id" })
   role: Role | string;
   @Column({ name: "language", type: "varchar", nullable: true })
   language?: string;
-  @Column({ name: "avatar", type: "uuid", nullable: true })
-  @ManyToOne(() => FileEntity, (file) => file.id)
-  avatar?: File | string;
+  @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
+  @JoinColumn({ name: "avatar_id" })
+  avatar?: string;
   @Column({ name: "phone_number", type: "varchar" })
   phoneNumber: string;
   @Column({ name: "otp", type: "varchar", nullable: true })
@@ -58,7 +58,6 @@ export class UserEntity {
   @Column({ name: "currency", type: "varchar", nullable: true })
   currency?: string;
 
-  @Column({ name: "additional_data", type: "uuid" })
   @OneToOne(() => UserDataEntity, (userData) => userData.user)
   @JoinColumn({ name: "additional_data_id" })
   additionalData?: UserData | string;
@@ -79,26 +78,26 @@ export class UserEntity {
     default: UserStatus.Active,
   })
   status: UserStatus;
+
+
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;
-  @Column({ name: "created_by", type: "uuid", nullable: true })
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: "created_by" })
-  createdBy?: User | string;
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt?: Date;
-  @Column({ name: "updated_by", type: "uuid", nullable: true })
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: "updated_by" })
-  updatedBy?: User | string;
-  @DeleteDateColumn({ name: "deleted_at" })
-  deletedAt: Date;
-  @Column({ name: "deleted_by", type: "uuid", nullable: true })
-  @ManyToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: "deleted_by" })
-  deletedBy?: User | string;
+  // @DeleteDateColumn({ name: "deleted_at" })
+  // deletedAt?: Date;
+  //
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  @JoinColumn({ name: "created_by" })
+  createdBy?: string;
+  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  // @JoinColumn({ name: "updated_by" })
+  // updatedBy?: string;
+  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  // @JoinColumn({ name: "deleted_by" })
+  // deletedBy?: string;
 
-  clearPassword(){
+  clearPassword() {
     this.password = "********";
     return this;
   }

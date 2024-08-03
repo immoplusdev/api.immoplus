@@ -17,11 +17,11 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
   }
 
   async createMany(payload: Partial<{{classify name}}>[]): Promise<{{classify name}}[]> {
-    return await this.repository.create(payload);
+    return await this.repository.createMany(payload);
   }
 
   async createOne(payload: Partial<{{classify name}}>): Promise<{{classify name}}> {
-    return await this.repository.create(payload);
+    return await this.repository.createOne(payload);
   }
 
   async findByQuery(query?: SearchItemsParams): Promise<{{classify name}}[]> {
@@ -37,7 +37,7 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
   }
 
   async updateOne(id: string, payload: Partial<{{classify name}}>): Promise<string> {
-    return await this.repository.update(id, payload);
+    return await this.repository.updateOne(id, payload);
   }
 
   async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
@@ -45,6 +45,6 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
   }
 
   async deleteOne(id: string): Promise<string> {
-    return await this.repository.delete(id);
+    return await this.repository.deleteOne(id);
   }
 }

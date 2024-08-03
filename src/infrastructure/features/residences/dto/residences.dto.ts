@@ -1,0 +1,89 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { OmitMethods } from "@/lib/ts-utilities";
+import { WrapperResponseDto } from "@/lib/responses";
+import { Commodite, StatusValidationResidence, TypeResidence } from "@/core/domain/residences";
+import { Piece } from "@/core/domain/residences/piece.model";
+import { GeoJsonPoint } from "@/core/domain/map";
+
+export class ResidenceDto {
+  @ApiProperty()
+  id: string;
+  @ApiProperty()
+  miniature: string;
+  @ApiProperty()
+  nom: string;
+  @ApiProperty()
+  typeResidence: TypeResidence;
+  @ApiProperty()
+  description: string;
+  @ApiProperty()
+  commodites?: Commodite[];
+  @ApiProperty()
+  pieces?: Piece[];
+  @ApiProperty()
+  images?: string[];
+  @ApiProperty()
+  video?: string;
+  @ApiProperty()
+  ville?: string;
+  @ApiProperty()
+  commune?: string;
+  @ApiProperty()
+  adresse?: string;
+  @ApiProperty()
+  position?: GeoJsonPoint;
+  @ApiProperty()
+  residenceDisponible: boolean;
+  @ApiProperty()
+  statusValidation: StatusValidationResidence;
+  @ApiProperty()
+  prixReservation: number;
+  @ApiProperty()
+  dureeMinSejour: number;
+  @ApiProperty()
+  dureeMaxSejour: number;
+  @ApiProperty()
+  metadata?: Record<string, any>;
+  @ApiProperty()
+  heureEntree: string;
+  @ApiProperty()
+  heureDepart: string;
+  @ApiProperty()
+  nombreMaxOccupants: number;
+  @ApiProperty()
+  animauxAutorises: boolean;
+  @ApiProperty()
+  fetesAutorises: boolean;
+  @ApiProperty()
+  reglesSupplementaires?: string;
+  @ApiProperty()
+  proprietaire?: string;
+
+  @ApiProperty()
+  createdAt?: Date;
+  @ApiProperty()
+  createdBy?: string;
+  @ApiProperty()
+  updatedAt?: Date;
+  @ApiProperty()
+  updatedBy?: string;
+  @ApiProperty()
+  deletedAt?: Date;
+  @ApiProperty()
+  deletedBy?: string;
+
+  constructor(data?: OmitMethods<ResidenceDto>) {
+    Object.assign(this, data);
+  }
+}
+
+export class WrapperResponseResidenceDto extends WrapperResponseDto<ResidenceDto> {
+  @ApiProperty({ type: ResidenceDto })
+  data: ResidenceDto;
+}
+
+export class WrapperResponseResidenceListDto extends WrapperResponseDto<ResidenceDto[]> {
+  @ApiProperty({ type: [ResidenceDto] })
+  data: ResidenceDto[];
+}
+

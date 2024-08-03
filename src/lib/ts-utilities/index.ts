@@ -6,3 +6,4 @@ export * from "./clean-architecture-base";
 export * from "./types";
 export * from "./class-validator";
 export * from "./objects";
+export * from "./enums";

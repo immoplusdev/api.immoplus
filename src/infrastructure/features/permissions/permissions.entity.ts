@@ -7,7 +7,6 @@ import { PermissionAction, PermissionCollection } from "@/core/domain/permission
 export class PermissionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column({ name: "role", type: "uuid" })
   @ManyToOne(() => RoleEntity, (role) => role.id)
   @JoinColumn({ name: "role_id" })
   role: Role | string;

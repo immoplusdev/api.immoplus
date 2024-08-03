@@ -20,6 +20,7 @@ export const typeormProviders = [
         migrations: [__dirname + "/../../**/*.migration{.ts,.js}"],
         synchronize: true,
         migrationsRun: true,
+        migrationsTableName: "typeorm_migrations",
       });
 
       return dataSource.initialize();

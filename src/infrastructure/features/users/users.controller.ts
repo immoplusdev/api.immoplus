@@ -16,10 +16,6 @@ import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { JwtAuthGuard } from "src/infrastructure/auth/guards";
 import { Deps } from "@/core/domain/shared/ioc";
-import {
-  verifyResourceOwnership,
-  filterRessourceByOwnership,
-} from "@/infrastructure/auth/helpers";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { IUsersRepository, User } from "@/core/domain/users";
 import {
@@ -54,6 +50,7 @@ export class UsersController {
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
   @Get()
   async readMany(
     @Query() params: SearchItemsParamsDto,
@@ -62,7 +59,7 @@ export class UsersController {
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto[]>();
-
+    console.log(userRole)
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "createdBy",
       _l_op: "and",
@@ -71,9 +68,6 @@ export class UsersController {
 
     const users = await this.usersRepository.findByQuery(params);
 
-    // const outputUsers = filterRessourceByOwnership<User>(users, userId, "id", userRole.id);
-
-    // return responseMapper.mapFrom(UserDtoMapper.mapListFrom(outputUsers));
     return responseMapper.mapFrom(UserDtoMapper.mapListFrom(users));
   }
 
@@ -84,18 +78,15 @@ export class UsersController {
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
-    @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
+    @Param("id") id: string
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto>();
 
     const user = await this.usersRepository.findOne(id);
-
-    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }

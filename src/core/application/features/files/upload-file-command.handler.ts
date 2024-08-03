@@ -33,7 +33,7 @@ export class UploadFileCommandHandler implements ICommandHandler<UploadFileComma
       fileNameDownload: fileUploadConfig
         .parseName(command.file.filename)
         .split(".")[0],
-      uploadedBy: command.userId,
+      uploadedBy: command.userId || null,
     };
 
     return await this.fileRepository.createOne(payload);

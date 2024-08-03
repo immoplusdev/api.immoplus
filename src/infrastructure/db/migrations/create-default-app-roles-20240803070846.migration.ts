@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm"
 import { UserRole } from "@/core/domain/roles";
 
-export class CreateDefaultAppRoles20240728070846 implements MigrationInterface {
+export class CreateDefaultAppRoles20240803070846 implements MigrationInterface {
   async up(queryRunner: QueryRunner): Promise<void> {
     const roles = [
       {

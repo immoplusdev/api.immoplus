@@ -11,6 +11,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { IPasswordManagerService } from "@/core/domain/auth";
 import { UserRole } from "@/core/domain/roles";
 import { generateUuid } from "@/lib/ts-utilities/db";
+import { IConfigsManagerService } from "@/core/domain/configs";
 
 
 @CommandHandler(RegisterCommand)
@@ -23,6 +24,8 @@ export class RegisterCommandHandler
     private readonly passwordManagerService: IPasswordManagerService,
     @Inject(Deps.UsersDataRepository)
     private readonly usersDataRepository: IUsersDataRepository,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
   }
 
@@ -31,7 +34,7 @@ export class RegisterCommandHandler
 
     const userId = generateUuid();
     const userData = await this.usersDataRepository.createOne({
-      activite: "",
+      activite: null,
       user: userId,
     });
 
@@ -45,6 +48,7 @@ export class RegisterCommandHandler
       role: UserRole.Customer,
       city: command.city || null,
       additionalData: userData.id,
+      createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
     });
 
     return new RegisterCommandResponse({

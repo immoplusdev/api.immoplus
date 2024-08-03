@@ -4,6 +4,13 @@ import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { {{classify name}}, I{{classify name}}Repository } from "@/core/domain/{{dasherize group}}";
 import { Create{{classify name}}Dto, {{classify name}}Dto, Update{{classify name}}Dto, WrapperResponse{{classify name}}Dto, WrapperResponse{{classify name}}ListDto } from "@/infrastructure/features/{{dasherize group}}";
+import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { Role, UserRole } from "@/core/domain/roles";
+import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import { JwtAuthGuard } from "@/infrastructure/auth";
+import { WrapperResponseDtoMapper } from "@/lib/responses";
+import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
 @ApiTags('{{classify name}}')
 @Controller('{{dasherize name}}')
@@ -141,7 +148,7 @@ export class {{classify name}}Controller {
 
         await this.repository.deleteByQuery(query);
 
-        return responseMapper.mapFrom({ id }); 
+        return responseMapper.mapFrom({ id } as never);
   }
 
 }

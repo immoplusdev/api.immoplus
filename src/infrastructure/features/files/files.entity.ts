@@ -27,14 +27,12 @@ export class FileEntity {
   type?: string;
   @Column({ name: "folder", type: "varchar", nullable: true })
   folder?: string;
-  @Column({ name: "uploaded_by", type: "uuid", nullable: true })
-  @ManyToOne(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "uploaded_by" })
   uploadedBy?: User | string;
   @CreateDateColumn({ name: "uploaded_on" })
   uploadedOn?: Date;
-  @Column({ name: "modified_by", type: "uuid", nullable: true  })
-  @ManyToOne(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "modified_by"})
   modifiedBy?: User | string;
   @UpdateDateColumn({ name: "modified_on" })
@@ -53,7 +51,7 @@ export class FileEntity {
   duration?: number;
   @Column({ name: "embed", type: "varchar", nullable: true })
   embed?: string;
-  @Column({ name: "description", type: "varchar", nullable: true })
+  @Column({ name: "description", type: "text", nullable: true })
   description?: string;
   @Column({ name: "location", type: "varchar", nullable: true })
   location?: string;

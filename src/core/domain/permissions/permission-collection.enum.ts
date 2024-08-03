@@ -1,5 +1,8 @@
 export enum PermissionCollection {
   Files = "files",
   Users = "users",
-  Notifications = "notifications"
+  Notifications = "notifications",
+  Residences = "residences",
+  Villes = "villes",
+  Communes = "communes",
 }
