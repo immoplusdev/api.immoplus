@@ -10,7 +10,7 @@ CREATE TABLE `roles` (
   `enforce_tfa` tinyint NOT NULL DEFAULT '0',
   `app_access` tinyint NOT NULL DEFAULT '0',
   `admin_access` tinyint NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -49,7 +49,7 @@ CREATE TABLE `users` (
   `role_id` varchar(36) DEFAULT NULL,
   `avatar_id` varchar(36) DEFAULT NULL,
   `additional_data_id` varchar(36) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE TABLE `users_data` (
   `photo_identite_id` varchar(36) DEFAULT NULL,
   `piece_identite_id` varchar(36) DEFAULT NULL,
   `registre_commerce_id` varchar(36) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 
@@ -82,7 +82,7 @@ CREATE TABLE `users_data` (
 CREATE TABLE `villes` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ CREATE TABLE `communes` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `ville_id` varchar(36) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -105,5 +105,5 @@ CREATE TABLE `communes` (
 CREATE TABLE `configurations` (
   `id` varchar(36) NOT NULL,
   `project_name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

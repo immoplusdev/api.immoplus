@@ -15,7 +15,7 @@ export class UpdateUserCommandDto {
   @IsOptional()
   language?: string;
   @ApiProperty()
-  avatar?: File | string;
+  avatar?:  string;
 
   // User Data
   @ApiProperty()

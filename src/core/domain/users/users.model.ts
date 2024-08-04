@@ -12,7 +12,7 @@ export class User {
   password: string;
   role: Role | string;
   language?: string;
-  avatar?: File | string;
+  avatar?: string;
   phoneNumber: string;
   otp?: string;
   otpExpiration?: Date;
@@ -34,14 +34,14 @@ export class User {
   phoneNumberVerified: boolean;
   status: UserStatus;
   createdAt?: Date;
-  createdBy?: User | string;
+  createdBy?: string;
   updatedAt?: Date;
-  updatedBy?: User | string;
+  updatedBy?: string;
   deletedAt?: Date;
-  deletedBy?: User | string;
+  deletedBy?: string;
 
   clearPassword() {
-    this.password = "********"
+    this.password = "********";
     return this;
   }
 

@@ -2,11 +2,9 @@ import { UserStatus } from "@/core/domain/users/user-status.enum";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
-import { Role } from "@/core/domain/roles";
 import { RoleDto } from "@/infrastructure/features/roles";
-import { User, UserData } from "@/core/domain/users";
+import { UserData } from "@/core/domain/users";
 import { UserDataDto } from "@/infrastructure/features/users/dto/users-data.dto";
-import { Column, CreateDateColumn, DeleteDateColumn, JoinColumn, ManyToOne, UpdateDateColumn } from "typeorm";
 
 export class UserDto {
 
@@ -26,7 +24,7 @@ export class UserDto {
   @ApiProperty()
   language?: string;
   @ApiProperty()
-  avatar?: File | string;
+  avatar?: string;
   @ApiProperty()
   phoneNumber: string;
   @ApiProperty()
@@ -63,18 +61,19 @@ export class UserDto {
   authLoginAttempts: number;
   @ApiProperty()
   status: UserStatus;
+
   @ApiProperty()
   createdAt?: Date;
   @ApiProperty()
-  createdBy?: User | string;
+  createdBy?: string;
   @ApiProperty()
   updatedAt?: Date;
   @ApiProperty()
-  updatedBy?: User | string;
+  updatedBy?: string;
   @ApiProperty()
   deletedAt?: Date;
   @ApiProperty()
-  deletedBy?: User | string;
+  deletedBy?: string;
 
   clearPassword() {
     this.password = "********";
