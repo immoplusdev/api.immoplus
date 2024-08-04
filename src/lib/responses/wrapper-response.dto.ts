@@ -17,12 +17,17 @@ export class WrapperResponseDto<T> {
   @ApiProperty()
   hasNext: boolean;
 
+  setData(data: T) {
+    this.data = data;
+    return;
+  }
+
   buildFromQueryResult(queryResult: WrapperResponse<T>) {
     Object.assign(this, queryResult);
     return this;
   }
 
   constructor(data?: T) {
-    if (data) this.data = { ...this.data, data };
+    if (data) this.data = data;
   }
 }

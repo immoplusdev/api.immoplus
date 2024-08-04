@@ -40,7 +40,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   private verifyUserCanLogin(user: User) {
     if (!user) throw new InvalidCredentialsException();
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
-    if((user.role as Role).id == UserRole.Admin) throw new UserCannotLoginException();
+    // if((user.role as Role).id == UserRole.Admin) throw new UserCannotLoginException();
   }
 
   private generateUserTokens(user: User): LoginCommandResponse {

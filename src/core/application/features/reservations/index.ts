@@ -1,3 +1,3 @@
-export * from "./estimer-prix-reservation.command";
-export * from "./estimer-prix-reservation-command.response";
-export * from "./estimer-prix-reservation-command.handler";
+export * from "./estimer-prix-reservation.query";
+export * from "./estimer-prix-reservation-query.response";
+export * from "./estimer-prix-reservation-query.handler";

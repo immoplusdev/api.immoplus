@@ -2,20 +2,19 @@ import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { StatusReservation } from "@/core/domain/reservations";
-import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
-import { ServiceDateDto } from "@/infrastructure/shared/models/service-date.dto";
+import { ServiceDateDto } from "@/infrastructure/shared/dto/service-date.dto";
 
 export class ReservationDto {
   @ApiProperty()
   id: string;
   @ApiProperty()
   residence: string;
-  @ApiProperty()
+  @ApiProperty({ enum: StatusReservation})
   statusReservation: StatusReservation;
   @ApiProperty({ type: ServiceDateDto, isArray: true })
   datesReservation: ServiceDateDto[];
-  @ApiProperty()
+  @ApiProperty({ enum: StatusFacture })
   statusFacture: StatusFacture;
   @ApiProperty()
   retraitProEffectue: boolean;

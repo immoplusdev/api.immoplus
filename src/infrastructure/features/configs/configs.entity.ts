@@ -9,6 +9,8 @@ export class AppConfigsEntity {
   websiteUrl: string;
   @Column({ name: "normal_visit_price", type: "int", nullable: true })
   normalVisitPrice: number;
+  @Column({ name: "pourcentage_commission_reservation", type: "int", default: 5 })
+  pourcentageCommissionReservation: number;
   @Column({ name: "express_visit_price", type: "int", nullable: true })
   expressVisitPrice: number;
   @Column({ name: "project_name", type: "varchar", nullable: true })

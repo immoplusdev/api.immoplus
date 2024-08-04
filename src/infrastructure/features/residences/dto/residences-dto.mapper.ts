@@ -1,4 +1,4 @@
-import { Residence } from "@/core/domain/residences";
+import { Residence, StatusValidationResidence } from "@/core/domain/residences";
 import { ResidenceDto } from "./residences.dto";
 
 
@@ -8,6 +8,9 @@ export class ResidenceDtoMapper {
   }
 
   mapTo(object: ResidenceDto): Residence {
-    return new Residence(object);
+    return new Residence({
+      ...object,
+      statusValidation: StatusValidationResidence.EnAttenteValidation,
+    });
   }
 }

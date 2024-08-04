@@ -1,5 +1,5 @@
 import { IUsersRepository, User, UserWithRoleAndPermissions } from "@/core/domain/users";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users/users.entity";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -84,6 +84,7 @@ export class UsersRepository implements IUsersRepository {
       relations: this.relations,
       select: mapQueryFieldsToTypeormSelection(fields),
     });
+    if(!user) throw new UnauthorizedException();
 
     const permissions = await this.permissionRepository.findByRoleId((user.role as Role).id);
 

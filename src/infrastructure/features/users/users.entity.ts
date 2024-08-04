@@ -1,7 +1,6 @@
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity, JoinColumn, ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -69,6 +68,8 @@ export class UserEntity {
   emailVerified: boolean;
   @Column({ name: "phone_number_verified", type: "bool", default: false })
   phoneNumberVerified: boolean;
+  @Column({ name: "compte_pro_valide", type: "bool", default: false })
+  compteProValide: boolean;
   @Column({ name: "auth_login_attempts", type: "int", default: 0 })
   authLoginAttempts: number;
   @Column({

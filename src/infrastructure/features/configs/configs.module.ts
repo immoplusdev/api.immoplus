@@ -6,6 +6,7 @@ import { AppConfigsRepository } from "@/infrastructure/features/configs/configs.
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ConfigController } from "@/infrastructure/features/configs/configs.controller";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
 
 const providers: Provider[] = [
   {
@@ -19,7 +20,7 @@ const providers: Provider[] = [
 ];
 
 @Module({
-  imports: [ConfigModule, TypeormModule, CqrsModule],
+  imports: [ConfigModule, TypeormModule, CqrsModule, GlobalizationModule],
   controllers: [ConfigController],
   providers: [...providers],
   exports: [...providers],

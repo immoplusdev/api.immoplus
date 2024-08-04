@@ -2,11 +2,11 @@ import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, P
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
-import { Reservation, IReservationRepository } from "@/core/domain/reservations";
+import { IReservationRepository } from "@/core/domain/reservations";
 import {
-  CreateReservationDto,
+  CreateReservationDto, EstimerPrixReservationQueryDto, EstimerPrixReservationQueryResponseDto,
   ReservationDto,
-  UpdateReservationDto,
+  UpdateReservationDto, WrapperResponseEstimerPrixReservationQueryResponseDto,
   WrapperResponseReservationDto,
   WrapperResponseReservationListDto,
 } from "@/infrastructure/features/reservations";
@@ -17,15 +17,39 @@ import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { QueryBus } from "@nestjs/cqrs";
+import { EstimerPrixReservationQuery } from "@/core/application/features/reservations";
 
 @ApiTags("Reservation")
 @Controller("reservations")
 export class ReservationController {
   constructor(
+    readonly queryBus: QueryBus,
     @Inject(Deps.ReservationRepository)
     private readonly repository: IReservationRepository,
   ) {
   }
+
+  @ApiResponse({
+    type: WrapperResponseEstimerPrixReservationQueryResponseDto,
+  })
+  @Post('estimer-prix')
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async estimerPrixReservation(
+    @Body() payload: EstimerPrixReservationQueryDto
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponseDto>();
+    const query = new EstimerPrixReservationQuery(payload);
+
+    const response = await this.queryBus.execute(query);
+
+    return responseMapper.mapFrom(response);
+  }
+
+
 
   @ApiResponse({
     type: WrapperResponseReservationDto,

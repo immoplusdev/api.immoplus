@@ -4,6 +4,7 @@ export class AppConfigs {
   id: string;
   websiteUrl: string;
   normalVisitPrice: number;
+  pourcentageCommissionReservation: number;
   expressVisitPrice: number;
   projectName: string;
   projectUrl: string;

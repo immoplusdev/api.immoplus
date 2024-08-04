@@ -32,6 +32,7 @@ export class User {
   emailVerified: boolean;
   identityVerified: boolean;
   phoneNumberVerified: boolean;
+  compteProValide: boolean;
   status: UserStatus;
   createdAt?: Date;
   createdBy?: string;

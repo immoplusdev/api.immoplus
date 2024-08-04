@@ -26,6 +26,14 @@
   },
   "validation": {
     "is_valid_phone_number": "Phone number must be a valid phone number of the following format 225-0123456789"
+  },
+  "field": {
+
+  },
+  "enum": {
+    "Appartement": "Appartement",
+    "Maison": "Maison",
+    "Villa": "Villa"
   }
 } 
 

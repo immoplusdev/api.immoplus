@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { PublicConfigItemDto } from "@/infrastructure/features/configs";
+import { PublicConfigItem } from "@/core/domain/configs/public-config-item.model";
 
 export class PublicConfigDto {
   @ApiProperty()
@@ -52,6 +53,8 @@ export class PublicConfigDto {
   languages: PublicConfigItemDto[];
   @ApiProperty({ type: PublicConfigItemDto, isArray: true })
   defaultStatus: PublicConfigItemDto[];
+  @ApiProperty({ type: PublicConfigItemDto, isArray: true })
+  typesResidence: PublicConfigItemDto[];
 
   constructor(data?: OmitMethods<PublicConfigDto>) {
     Object.assign(this, data);

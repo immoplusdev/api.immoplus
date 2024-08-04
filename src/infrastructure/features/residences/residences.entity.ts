@@ -1,6 +1,6 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -62,15 +62,15 @@ export class ResidenceEntity {
 
   @Column({ name: "prix_reservation", type: "int" })
   prixReservation: number;
-  @Column({ name: "duree_min_sejour", type: "int" })
+  @Column({ name: "duree_min_sejour", type: "int", nullable: true })
   dureeMinSejour: number;
-  @Column({ name: "duree_max_sejour", type: "int" })
+  @Column({ name: "duree_max_sejour", type: "int", nullable: true })
   dureeMaxSejour: number;
   @Column({ name: "metadata", type: "json", nullable: true })
   metadata?: Record<string, any>;
-  @Column({ name: "heure_entree", type: "varchar" })
+  @Column({ name: "heure_entree", type: "varchar", length: 6, nullable: true })
   heureEntree: string;
-  @Column({ name: "heure_depart", type: "varchar" })
+  @Column({ name: "heure_depart", type: "varchar", length: 6, nullable: true })
   heureDepart: string;
   @Column({ name: "nombre_max_occupants", type: "int", default: 10 })
   nombreMaxOccupants: number;
@@ -81,7 +81,7 @@ export class ResidenceEntity {
   @Column({ name: "regles_supplementaires", type: "text", nullable: true })
   reglesSupplementaires?: string;
 
-  @ManyToOne(() => UserEntity, (item) => item.id)
+  @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true})
   @JoinColumn({ name: "proprietaire_id" })
   proprietaire?: string;
 

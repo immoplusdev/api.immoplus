@@ -5,6 +5,10 @@ import { fileUploadConfig } from "@/infrastructure/configs";
 import { IFileUploadConfig } from "@/core/domain/files";
 import { AppProfile } from "@/core/domain/shared/enums";
 import { Deps } from "@/core/domain/shared/ioc";
+import { enumToList } from "@/lib/ts-utilities";
+import { PublicConfigItem } from "@/core/domain/configs/public-config-item.model";
+import { TypeResidence } from "@/core/domain/residences";
+import { IGlobalizationService } from "@/core/domain/globalization";
 
 
 @Injectable()
@@ -13,7 +17,9 @@ export class ConfigsManagerService implements IConfigsManagerService {
 
   constructor(
     config: ConfigService,
-    @Inject(Deps.AppConfigsRepository) private readonly appConfigsRepository: IAppConfigsRepository) {
+    @Inject(Deps.AppConfigsRepository) private readonly appConfigsRepository: IAppConfigsRepository,
+    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
+  ) {
     this.config = config;
   }
 
@@ -67,7 +73,21 @@ export class ConfigsManagerService implements IConfigsManagerService {
       serviceStatus: [],
       shippingStatus: [],
       shippingTypes: [],
-      visitPaymentTypes: [],
+      visitPaymentTypes: this.translatePublicConfigItems([]),
+      typesResidence: this.enumToConfig(TypeResidence),
     });
   }
+
+  private translatePublicConfigItems(items: PublicConfigItem[]) {
+    return items.map(item => new PublicConfigItem({ text: this.globalizationService.t(`all.field.${item.text}`), value: item.value }));
+  }
+
+  private enumToConfig(value: any) {
+    return enumToList(value).map(item => new PublicConfigItem({
+      text: this.globalizationService.t(`all.enum.${item}`),
+      value: item,
+    }));
+  }
+
+
 }

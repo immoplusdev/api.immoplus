@@ -1,8 +1,11 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
-import { ResidenceController } from './residences.controller';
-import { ResidenceRepository } from './residences.repository';
+import { ResidenceRepository } from "./residences.repository";
+import { ResidenceController } from "@/infrastructure/features/residences/residences.controller";
+
+const queryHandler = [];
+const commandHandlers = [];
 
 const providers: Provider[] = [
   {
@@ -14,7 +17,7 @@ const providers: Provider[] = [
 @Module({
   controllers: [ResidenceController],
   imports: [TypeormModule],
-  providers: [...providers],
+  providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })
 export class ResidenceModule {}

@@ -21,7 +21,8 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   async createOne(payload: CreateDto): Promise<Model> {
-    return await this.repository.save(payload);
+    const { id } = await this.repository.save(payload);
+    return await this.findOne(id);
   }
 
   async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Model[]>> {

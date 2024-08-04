@@ -1,4 +1,5 @@
 import { OmitMethods } from '@/lib/ts-utilities';
+import { User } from "@/core/domain/users";
 
 export class UpdateUserAdditionalDataCommand {
   userId: string;

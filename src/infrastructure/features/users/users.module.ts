@@ -11,7 +11,6 @@ import { UpdateUserAdditionalDataCommandHandler } from "@/core/application/featu
 
 const commandHandlers = [UpdateUserAdditionalDataCommandHandler];
 
-
 const providers: Provider[] = [
   {
     provide: Deps.UsersRepository,

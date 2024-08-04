@@ -67,7 +67,7 @@ export class UsersController {
     }], params._where);
 
     const response = await this.usersRepository.findByQuery(params);
-    response.data = UserDtoMapper.mapListFrom(response.data);
+    response.setData(UserDtoMapper.mapListFrom(response.data));
     return responseMapper.mapFromQueryResult(response);
   }
 
@@ -103,13 +103,11 @@ export class UsersController {
   @Get("/data/me")
   async readCurrentUser(
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
   ) {
     const responseMapper = new WrapperResponseDtoMapper<UserDto>();
 
     const user = await this.usersRepository.findOne(userId);
 
-    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
   }
@@ -125,16 +123,12 @@ export class UsersController {
   @Patch(":id")
   async update(
     @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateUserCommandDto,
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto>();
 
     const user = await this.usersRepository.findOne(id);
-
-    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     await this.usersRepository.updateOne(user.id, payload);
 
@@ -153,19 +147,14 @@ export class UsersController {
   @Patch("/data/additional")
   async updateUserAdditionalData(
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateUserAdditionalDataCommandResponseDto,
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<UpdateUserAdditionalDataCommandResponseDto>();
 
-    const user = await this.usersRepository.findOne(userId, ["createdBy"]);
-
-    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
-
     const command = new UpdateUserAdditionalDataCommand({
       ...payload,
-      userId: userId,
+      userId,
     });
 
     const response = await this.commandBus.execute(command);
@@ -181,15 +170,11 @@ export class UsersController {
   @ApiBearerAuth()
   @Delete(":id")
   async delete(
-    @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
+    @Param("id") id: string) {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto>();
 
     const user = await this.usersRepository.findOne(id);
-
-    // verifyResourceOwnership(userId, user.createdBy, userRole.id);
 
     await this.usersRepository.deleteOne(id);
 

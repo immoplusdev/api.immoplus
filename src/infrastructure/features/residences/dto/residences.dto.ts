@@ -1,41 +1,44 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
-import { Commodite, StatusValidationResidence, TypeResidence } from "@/core/domain/residences";
+import { TypeResidence } from "@/core/domain/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
+import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 
+
+// TODO: Document later
 export class ResidenceDto {
-  @ApiProperty()
+  @ApiProperty({ format: "uuid" })
   id: string;
-  @ApiProperty()
+  @ApiProperty({ format: "uuid" })
   miniature: string;
   @ApiProperty()
   nom: string;
-  @ApiProperty()
+  @ApiProperty({ enum: TypeResidence })
   typeResidence: TypeResidence;
   @ApiProperty()
   description: string;
-  @ApiProperty()
-  commodites?: Commodite[];
-  @ApiProperty()
+  @ApiProperty({ type: ()=> CommoditeDto, isArray: true })
+  commodites?: CommoditeDto[];
+  @ApiProperty({ type: ()=> PieceDto, isArray: true })
   pieces?: Piece[];
-  @ApiProperty()
+  @ApiProperty({ type: "string", format: "uuid", isArray: true })
   images?: string[];
-  @ApiProperty()
+  @ApiProperty({ format: "uuid" })
   video?: string;
-  @ApiProperty()
+  @ApiProperty({ format: "uuid" })
   ville?: string;
-  @ApiProperty()
+  @ApiProperty({ format: "uuid" })
   commune?: string;
   @ApiProperty()
   adresse?: string;
+
+  // @ApiProperty({ type: GeoJsonPointDto })
   @ApiProperty()
   position?: GeoJsonPoint;
   @ApiProperty()
   residenceDisponible: boolean;
-  @ApiProperty()
-  statusValidation: StatusValidationResidence;
   @ApiProperty()
   prixReservation: number;
   @ApiProperty()

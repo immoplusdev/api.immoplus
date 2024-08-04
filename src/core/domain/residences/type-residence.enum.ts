@@ -1,5 +1,5 @@
 export enum TypeResidence {
   Appartement = "Appartement",
-  Maison = "Maisons",
+  Maison = "Maison",
   Villa = "Villa"
 }

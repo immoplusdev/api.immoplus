@@ -5,4 +5,3 @@ export class UnauthorizedException extends BaseException {
     super("$t:all.exception.unauthorized", 401);
   }
 }
-//Unauthorized

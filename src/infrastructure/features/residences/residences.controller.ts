@@ -31,7 +31,7 @@ export class ResidenceController {
     type: WrapperResponseResidenceDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -80,6 +80,29 @@ export class ResidenceController {
   }
 
   @ApiResponse({
+    type: WrapperResponseResidenceListDto,
+  })
+  @Get("/data/public/")
+  async readManyPublic(
+    @Query() params: SearchItemsParamsDto
+  ) {
+
+    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto[]>();
+
+    // params._where = addConditionsToWhereClause([{
+    //   _field: "createdBy",
+    //   _l_op: "and",
+    //   _val: userId,
+    // }], params._where);
+
+    const items = await this.repository.findByQuery(params);
+
+    return responseMapper.mapFromQueryResult(items);
+  }
+
+
+
+  @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -103,7 +126,23 @@ export class ResidenceController {
   @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @Get("/data/public/:id")
+  async readOnePublic(
+    @Param("id") id: string,
+    @Query() params?: SelectItemsParamsDto,
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto>();
+
+    const item = await this.repository.findOne(id, params?._select);
+
+    return responseMapper.mapFrom(item);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseResidenceDto,
+  })
+  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

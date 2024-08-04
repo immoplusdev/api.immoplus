@@ -58,6 +58,8 @@ export class UserDto {
   @ApiProperty()
   phoneNumberVerified: boolean;
   @ApiProperty()
+  compteProValide: boolean;
+  @ApiProperty()
   authLoginAttempts: number;
   @ApiProperty()
   status: UserStatus;
