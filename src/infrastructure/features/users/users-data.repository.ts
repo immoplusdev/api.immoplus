@@ -6,6 +6,7 @@ import { UserDataEntity } from "@/infrastructure/features/users";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { File } from "@/core/domain/files";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -28,7 +29,7 @@ export class UsersDataRepository implements IUsersDataRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<UserData[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<UserData[]>> {
     return await this.repository.findByQuery(query);
   }
 

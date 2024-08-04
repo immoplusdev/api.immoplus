@@ -4,7 +4,7 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { StatusReservation } from "@/core/domain/reservations";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
-import { ServiceDateDto } from "@/infrastructure/features/reservations/dto/service-date.dto";
+import { ServiceDateDto } from "@/infrastructure/shared/models/service-date.dto";
 
 export class ReservationDto {
   @ApiProperty()

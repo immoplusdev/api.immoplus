@@ -5,6 +5,7 @@ import { {{classify name}}, I{{classify name}}Repository } from "@/core/domain/{
 import { {{classify name}}Entity } from '@/infrastructure/features/{{dasherize group}}';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class {{classify name}}Repository implements I{{classify name}}Repository{
@@ -24,7 +25,7 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<{{classify name}}[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<{{classify name}}[]>> {
     return await this.repository.findByQuery(query);
   }
 

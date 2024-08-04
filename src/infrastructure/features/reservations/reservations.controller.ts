@@ -72,7 +72,7 @@ export class ReservationController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFrom(items);
+    return responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -124,7 +124,7 @@ export class ReservationController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).at(0));
+    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
 

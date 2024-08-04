@@ -59,16 +59,16 @@ export class UsersController {
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto[]>();
-    console.log(userRole)
+    console.log(userRole);
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "createdBy",
       _l_op: "and",
       _val: userId,
     }], params._where);
 
-    const users = await this.usersRepository.findByQuery(params);
-
-    return responseMapper.mapFrom(UserDtoMapper.mapListFrom(users));
+    const response = await this.usersRepository.findByQuery(params);
+    response.data = UserDtoMapper.mapListFrom(response.data);
+    return responseMapper.mapFromQueryResult(response);
   }
 
   @ApiResponse({
@@ -81,7 +81,7 @@ export class UsersController {
   @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
-    @Param("id") id: string
+    @Param("id") id: string,
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<UserDto>();

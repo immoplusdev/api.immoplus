@@ -5,6 +5,7 @@ import { Notification, INotificationRepository } from "@/core/domain/notificatio
 import { NotificationEntity } from "@/infrastructure/features/notifications";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -29,7 +30,7 @@ export class NotificationRepository implements INotificationRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Notification[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Notification[]>> {
     return await this.repository.findByQuery(query);
   }
 

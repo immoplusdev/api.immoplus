@@ -23,6 +23,9 @@
     "wrong_password": "Mauvais mot de passe",
     "account_data_already_verified": "Les données du compte ont déjà été vérifiées",
     "user_already_exists": "L'utilisateur existe déjà"
+  },
+  "validation": {
+    "is_valid_phone_number": "Phone number must be a valid phone number of the following format 225-0123456789"
   }
 } 
 

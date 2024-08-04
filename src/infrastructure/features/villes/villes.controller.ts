@@ -16,7 +16,6 @@ import { PermissionAction, PermissionCollection } from "@/core/domain/permission
 import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
-import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
 @ApiTags("Ville")
 @Controller("villes")
@@ -59,7 +58,7 @@ export class VilleController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFrom(items);
+    return responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -106,7 +105,7 @@ export class VilleController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).at(0));
+    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
 

@@ -1,4 +1,5 @@
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 export interface IBaseRepository<
   Model,
@@ -10,7 +11,7 @@ export interface IBaseRepository<
 
   createOne(payload: CreateDto): Promise<Model>;
 
-  findByQuery(query?: SearchItemsParams): Promise<Model[]>;
+  findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Model[]>>;
 
   findOne(id: KeyType, fields?: KeyType[]): Promise<Model>;
 

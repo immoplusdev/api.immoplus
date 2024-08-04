@@ -76,7 +76,7 @@ export class ResidenceController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFrom(items);
+    return responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -128,7 +128,7 @@ export class ResidenceController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).at(0));
+    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
 

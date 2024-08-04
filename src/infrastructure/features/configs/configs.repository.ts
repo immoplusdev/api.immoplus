@@ -5,6 +5,7 @@ import { AppConfigs, IAppConfigsRepository } from "@/core/domain/configs";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { AppConfigsEntity } from "@/infrastructure/features/configs";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class AppConfigsRepository implements IAppConfigsRepository{
@@ -24,7 +25,7 @@ export class AppConfigsRepository implements IAppConfigsRepository{
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<AppConfigs[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<AppConfigs[]>> {
     return await this.repository.findByQuery(query);
   }
 

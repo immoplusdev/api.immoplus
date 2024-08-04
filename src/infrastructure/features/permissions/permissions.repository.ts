@@ -5,6 +5,7 @@ import { Permission, IPermissionRepository } from "@/core/domain/permissions";
 import { PermissionEntity } from "@/infrastructure/features/permissions";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -26,7 +27,7 @@ export class PermissionRepository implements IPermissionRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Permission[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Permission[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -34,7 +35,7 @@ export class PermissionRepository implements IPermissionRepository {
     return await this.repository.findOne(id, fields);
   }
 
-  async findByRoleId(roleId: string): Promise<Permission[]> {
+  async findByRoleId(roleId: string): Promise<WrapperResponse<Permission[]>> {
     return await this.repository.findByQuery({
       _where: [
         {

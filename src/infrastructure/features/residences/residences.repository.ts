@@ -5,6 +5,7 @@ import { Residence, IResidenceRepository } from "@/core/domain/residences";
 import { ResidenceEntity } from '@/infrastructure/features/residences';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class ResidenceRepository implements IResidenceRepository{
@@ -24,7 +25,7 @@ export class ResidenceRepository implements IResidenceRepository{
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Residence[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Residence[]>> {
     return await this.repository.findByQuery(query);
   }
 

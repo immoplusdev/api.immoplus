@@ -35,7 +35,7 @@ export class ConfigsManagerService implements IConfigsManagerService {
 
   async getAppConfigs(): Promise<AppConfigs> {
     const items = await this.appConfigsRepository.findByQuery();
-    return items.at(0);
+    return items.data.at(0);
   }
 
   async updateAppConfigs(payload: Partial<AppConfigs>): Promise<string> {
@@ -45,7 +45,7 @@ export class ConfigsManagerService implements IConfigsManagerService {
   }
 
   async getAppConfigsId(): Promise<string> {
-    const [{ id }] = await this.appConfigsRepository.findByQuery({ _select: ["id"] });
+    const { data: [{ id }] } = await this.appConfigsRepository.findByQuery({ _select: ["id"] });
     return id;
   }
 

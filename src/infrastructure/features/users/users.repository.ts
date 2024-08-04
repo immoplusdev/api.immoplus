@@ -8,6 +8,7 @@ import { Role } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { mapQueryFieldsToTypeormSelection } from "@/infrastructure/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -33,7 +34,7 @@ export class UsersRepository implements IUsersRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<User[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<User[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -88,7 +89,7 @@ export class UsersRepository implements IUsersRepository {
 
     return new UserWithRoleAndPermissions({
       ...user,
-      permissions,
+      permissions: permissions.data,
     });
   }
 

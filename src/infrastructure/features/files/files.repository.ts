@@ -5,6 +5,7 @@ import { File, IFileRepository } from "@/core/domain/files";
 import { FileEntity } from "@/infrastructure/features/files";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -26,7 +27,7 @@ export class FileRepository implements IFileRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<File[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<File[]>> {
     return await this.repository.findByQuery(query);
   }
 

@@ -13,7 +13,7 @@ class IsPhoneNumberConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return "Phone number must be a valid phone number of the following format 225-0123456789";
+    return "$t:all.validation.is_valid_phone_number";
   }
 }
 

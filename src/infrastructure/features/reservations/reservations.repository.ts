@@ -5,6 +5,7 @@ import { Reservation, IReservationRepository } from "@/core/domain/reservations"
 import { ReservationEntity } from '@/infrastructure/features/reservations';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class ReservationRepository implements IReservationRepository{
@@ -24,7 +25,7 @@ export class ReservationRepository implements IReservationRepository{
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Reservation[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Reservation[]>> {
     return await this.repository.findByQuery(query);
   }
 

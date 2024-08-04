@@ -5,6 +5,7 @@ import { Ville, IVilleRepository } from "@/core/domain/villes";
 import { VilleEntity } from '@/infrastructure/features/villes';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class VilleRepository implements IVilleRepository{
@@ -24,7 +25,7 @@ export class VilleRepository implements IVilleRepository{
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Ville[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Ville[]>> {
     return await this.repository.findByQuery(query);
   }
 

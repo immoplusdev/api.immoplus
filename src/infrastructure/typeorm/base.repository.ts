@@ -3,6 +3,8 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infrastructure/http";
 import { IBaseRepository } from "@/core/domain/shared/repositories";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import { WrapperResponse } from "@/core/domain/shared/models";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 
 export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Partial<Model>, KeyType = string> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
@@ -22,10 +24,25 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return await this.repository.save(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Model[]> {
-    // TODO: Paginate repositories
-    if (query) return await this.repository.find(mapQueryToTypeormQuery(query));
-    return await this.repository.find();
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Model[]>> {
+    if (query) {
+      const typeormQuery = query ? mapQueryToTypeormQuery(query) : undefined;
+      const [data, total] = await this.repository.findAndCount(typeormQuery);
+      // result = await this.repository.find(typeormQuery);
+      // total = await this.repository.count(typeormQuery.where);
+      return new WrapperResponse(data).paginate({
+        totalCount: total,
+        currentPage: query._page || DEFAULT_PAGE,
+        pageSize: query._per_page || DEFAULT_PAGE_SIZE,
+      });
+    } else {
+      const [data, total] = await this.repository.findAndCount();
+      return new WrapperResponse(data).paginate({
+        totalCount: total,
+        currentPage: query._page || DEFAULT_PAGE,
+        pageSize: query._per_page || DEFAULT_PAGE_SIZE,
+      });
+    }
   }
 
   async findOne(id: KeyType, fields?: KeyType[]): Promise<Model> {

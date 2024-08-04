@@ -5,6 +5,7 @@ import { Role, IRoleRepository } from "@/core/domain/roles";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -26,7 +27,7 @@ export class RoleRepository implements IRoleRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Role[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Role[]>> {
     return await this.repository.findByQuery(query);
   }
 

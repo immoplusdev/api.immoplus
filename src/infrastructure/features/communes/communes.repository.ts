@@ -5,6 +5,7 @@ import { Commune, ICommuneRepository } from "@/core/domain/communes";
 import { CommuneEntity } from '@/infrastructure/features/communes';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class CommuneRepository implements ICommuneRepository{
@@ -24,7 +25,7 @@ export class CommuneRepository implements ICommuneRepository{
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<Commune[]> {
+  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Commune[]>> {
     return await this.repository.findByQuery(query);
   }
 
