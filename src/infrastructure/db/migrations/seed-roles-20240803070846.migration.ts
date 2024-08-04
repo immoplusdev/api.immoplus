@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm"
+import { MigrationInterface, QueryRunner } from "typeorm";
 import { UserRole } from "@/core/domain/roles";
 
 export class SeedRoles20240803070846 implements MigrationInterface {
@@ -27,15 +27,11 @@ export class SeedRoles20240803070846 implements MigrationInterface {
     ];
 
     for (const role of roles) {
-      await queryRunner.query(
-        `INSERT INTO roles (id, name, admin_access) VALUES ('${role.id}', '${role.name}', '${role.admin_access}')`,
-      );
+      await queryRunner.query(`INSERT INTO roles (id, name, admin_access) VALUES ('${role.id}', '${role.name}', '${role.admin_access}')`);
     }
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `DELETE FROM roles`,
-    );
+    await queryRunner.query(`DELETE FROM roles`);
   }
 }

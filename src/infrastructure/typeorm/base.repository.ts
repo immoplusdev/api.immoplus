@@ -32,15 +32,15 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
       // total = await this.repository.count(typeormQuery.where);
       return new WrapperResponse(data).paginate({
         totalCount: total,
-        currentPage: query._page || DEFAULT_PAGE,
-        pageSize: query._per_page || DEFAULT_PAGE_SIZE,
+        currentPage: query?._page || DEFAULT_PAGE,
+        pageSize: query?._per_page || DEFAULT_PAGE_SIZE,
       });
     } else {
       const [data, total] = await this.repository.findAndCount();
       return new WrapperResponse(data).paginate({
         totalCount: total,
-        currentPage: query._page || DEFAULT_PAGE,
-        pageSize: query._per_page || DEFAULT_PAGE_SIZE,
+        currentPage: query?._page || DEFAULT_PAGE,
+        pageSize: query?._per_page || DEFAULT_PAGE_SIZE,
       });
     }
   }

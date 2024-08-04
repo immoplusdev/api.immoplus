@@ -16,5 +16,17 @@ export class WrapperResponse{{classify name}}Dto extends WrapperResponseDto<{{cl
 export class WrapperResponse{{classify name}}ListDto extends WrapperResponseDto<{{classify name}}Dto[]> {
    @ApiProperty({ type: [{{classify name}}Dto] })
    data: {{classify name}}Dto[];
+   @ApiProperty()
+   currentPage: number;
+   @ApiProperty()
+   totalPages: number;
+   @ApiProperty()
+   pageSize: number;
+   @ApiProperty()
+   totalCount: number;
+   @ApiProperty()
+   hasPrevious: boolean;
+   @ApiProperty()
+   hasNext: boolean;
 }
 
