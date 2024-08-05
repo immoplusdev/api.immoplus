@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
+  JoinColumn, ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -34,7 +34,11 @@ export class ResidenceEntity {
   commodites?: Commodite[];
   @Column({ name: "pieces", type: "json", nullable: true })
   pieces?: Piece[];
-  @Column({ name: "images", type: "json", nullable: true })
+
+
+  @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
+  @JoinColumn({ name: "images" })
+  // @Column({ name: "images", type: "json", nullable: true })
   images?: string[];
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })

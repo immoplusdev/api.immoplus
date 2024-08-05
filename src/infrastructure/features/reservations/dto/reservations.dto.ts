@@ -7,7 +7,7 @@ import { ServiceDateDto } from "@/infrastructure/shared/dto/service-date.dto";
 import { Residence } from "@/core/domain/residences";
 
 export class ReservationDto {
-  @ApiProperty()
+  @ApiProperty({ format: "uuid"})
   id: string;
   @ApiProperty({ type: "string", format: "uuid" })
   residence: Residence | string;

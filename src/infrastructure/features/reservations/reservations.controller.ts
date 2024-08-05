@@ -4,9 +4,13 @@ import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
 import {
-  CreateReservationCommandDto, EstimerPrixReservationQueryDto, EstimerPrixReservationQueryResponseDto,
+  CreateReservationCommandDto,
+  EstimerPrixReservationQueryDto,
+  EstimerPrixReservationQueryResponseDto,
   ReservationDto,
-  UpdateReservationDto, WrapperResponseEstimerPrixReservationQueryResponseDto,
+  UpdateReservationDto,
+  WrapperResponseEstimerPrixReservationQueryResponseDto,
+  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   WrapperResponseReservationDto,
   WrapperResponseReservationListDto,
 } from "@/infrastructure/features/reservations";
@@ -20,13 +24,12 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
   CreateReservationCommand,
-  CreateReservationCommandResponse,
-  EstimerPrixReservationQuery, GetReservationByIdQuery,
+  EstimerPrixReservationQuery, GetReservationByIdQuery, GetResidenceOccupiedDatesQuery,
 } from "@/core/application/features/reservations";
 import {
   GetReservationByIdQueryResponseDto,
   WrapperResponseGetReservationByIdQueryResponseDto,
-} from "@/infrastructure/features/reservations/dto/get-reservation-by-id-query-response.dto";
+} from "@/infrastructure/features/reservations/dto";
 import { UnauthorizedException } from "@/core/domain/auth";
 
 @ApiTags("Reservation")
@@ -134,6 +137,21 @@ export class ReservationController {
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
     return responseMapper.mapFromQueryResult(items);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
+  })
+  @Get("data/residence-occupied-dates/:residence")
+  async getResidenceOccupiedDates(
+    @Param("residence") residenceId: string,
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<WrapperResponseGetResidenceOccupiedDatesQueryResponseDto>();
+    const query = new GetResidenceOccupiedDatesQuery({ residenceId });
+
+    const response = await this.queryBus.execute(query);
+    return responseMapper.mapFromQueryResult(response);
   }
 
   @ApiResponse({

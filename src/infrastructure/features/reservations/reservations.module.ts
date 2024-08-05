@@ -5,7 +5,7 @@ import { ReservationController } from './reservations.controller';
 import { ReservationRepository } from './reservations.repository';
 import {
   CreateReservationCommandHandler,
-  EstimerPrixReservationQueryHandler,
+  EstimerPrixReservationQueryHandler, GetResidenceOccupiedDateQueryHandler,
 } from "@/core/application/features/reservations";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ConfigsModule } from "@/infrastructure/features/configs";
@@ -15,7 +15,7 @@ import {
 } from "@/core/application/features/reservations/get-reservation-by-id-query.handler";
 import { UsersModule } from "@/infrastructure/features/users/users.module";
 
-const queryHandler = [EstimerPrixReservationQueryHandler, GetReservationByIdQueryHandler];
+const queryHandler = [EstimerPrixReservationQueryHandler, GetReservationByIdQueryHandler, GetResidenceOccupiedDateQueryHandler];
 const commandHandlers = [CreateReservationCommandHandler];
 const providers: Provider[] = [
   {

@@ -7,3 +7,6 @@ export * from "./create-reservation-command.response";
 export * from "./get-reservation-by-id.query";
 export * from "./get-reservation-by-id-query.handler";
 export * from "./get-reservation-by-id-query.response";
+export * from "./get-residence-occupied-dates.query";
+export * from "./get-residence-occupied-dates-query.handler";
+export * from "./get-residence-occupied-dates-query.response";
