@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
 import {
+  AnnulerReservationByIdCommandResponseDto,
   CreateReservationCommandDto,
   EstimerPrixReservationQueryDto,
   EstimerPrixReservationQueryResponseDto,
@@ -23,6 +24,8 @@ import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/htt
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
+  AnnulerReservationByIdCommand,
+  AnnulerReservationByIdCommandResponse,
   CreateReservationCommand,
   EstimerPrixReservationQuery, GetReservationByIdQuery, GetResidenceOccupiedDatesQuery,
 } from "@/core/application/features/reservations";
@@ -31,6 +34,9 @@ import {
   WrapperResponseGetReservationByIdQueryResponseDto,
 } from "@/infrastructure/features/reservations/dto";
 import { UnauthorizedException } from "@/core/domain/auth";
+import {
+  WrapperResponseAnnulerReservationByIdCommandResponseDto,
+} from "@/infrastructure/features/reservations";
 
 @ApiTags("Reservation")
 @Controller("reservations")
@@ -58,10 +64,8 @@ export class ReservationController {
     const query = new EstimerPrixReservationQuery(payload);
 
     const response = await this.queryBus.execute(query);
-
     return responseMapper.mapFrom(response);
   }
-
 
   @ApiResponse({
     type: WrapperResponseGetReservationByIdQueryResponseDto,
@@ -154,6 +158,7 @@ export class ReservationController {
     return responseMapper.mapFromQueryResult(response);
   }
 
+
   @ApiResponse({
     type: WrapperResponseGetReservationByIdQueryResponseDto,
   })
@@ -208,33 +213,53 @@ export class ReservationController {
 
 
   @ApiResponse({
-    type: WrapperResponseReservationDto,
+    type: WrapperResponseAnnulerReservationByIdCommandResponseDto,
   })
+  @Post("action/annuler/:id")
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Delete])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Delete(":id")
-  async delete(
-    @Param("id") id: string,
+  async annulerReservationById(
+    @Param("id") reservationId: string,
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<AnnulerReservationByIdCommandResponseDto>();
+    const command = new AnnulerReservationByIdCommand({ reservationId, userId });
 
-    const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
-    const query = {
-      _where: [
-        {
-          _field: "id",
-          _val: id,
-        },
-      ],
-    };
-
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
-
-    await this.repository.deleteByQuery(query);
-
-    return responseMapper.mapFrom({ id } as never);
+    const response = await this.commandBus.execute(command);
+    return responseMapper.mapFrom(response);
   }
+
+
+  // @ApiResponse({
+  //   type: WrapperResponseReservationDto,
+  // })
+  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  // @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Delete])
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @Delete(":id")
+  // async delete(
+  //   @Param("id") id: string,
+  //   @CurrentUser("id") userId: string,
+  //   @CurrentUser("role") userRole: Role) {
+  //
+  //   const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
+  //   const query = {
+  //     _where: [
+  //       {
+  //         _field: "id",
+  //         _val: id,
+  //       },
+  //     ],
+  //   };
+  //
+  //   if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+  //
+  //   await this.repository.deleteByQuery(query);
+  //
+  //   return responseMapper.mapFrom({ id } as never);
+  // }
 
 }

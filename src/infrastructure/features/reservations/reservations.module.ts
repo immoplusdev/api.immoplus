@@ -4,6 +4,7 @@ import { TypeormModule } from "@/infrastructure/typeorm";
 import { ReservationController } from './reservations.controller';
 import { ReservationRepository } from './reservations.repository';
 import {
+  AnnulerReservationByIdCommandHandler,
   CreateReservationCommandHandler,
   EstimerPrixReservationQueryHandler, GetResidenceOccupiedDateQueryHandler,
 } from "@/core/application/features/reservations";
@@ -16,7 +17,7 @@ import {
 import { UsersModule } from "@/infrastructure/features/users/users.module";
 
 const queryHandler = [EstimerPrixReservationQueryHandler, GetReservationByIdQueryHandler, GetResidenceOccupiedDateQueryHandler];
-const commandHandlers = [CreateReservationCommandHandler];
+const commandHandlers = [CreateReservationCommandHandler, AnnulerReservationByIdCommandHandler];
 const providers: Provider[] = [
   {
     provide: Deps.ReservationRepository,

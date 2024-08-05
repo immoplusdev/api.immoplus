@@ -10,3 +10,6 @@ export * from "./get-reservation-by-id-query.response";
 export * from "./get-residence-occupied-dates.query";
 export * from "./get-residence-occupied-dates-query.handler";
 export * from "./get-residence-occupied-dates-query.response";
+export * from "./annuler-reservation-by-id.command";
+export * from "./annuler-reservation-by-id-command.handler";
+export * from "./annuler-reservation-by-id-command.response";

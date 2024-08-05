@@ -8,5 +8,7 @@ export * from "./create-reservation-command.dto";
 export * from "./create-reservation-command-response.dto";
 export * from "./get-residence-occupied-dates-query.dto";
 export * from "./get-residence-occupied-dates-query-response.dto";
-export * from "./get-reservation-by-id-query.dto"
+export * from "./get-reservation-by-id-query.dto";
 export * from "./get-reservation-by-id-query-response.dto";
+export * from "./annuler-reservation-by-id-command.dto";
+export * from "./annuler-reservation-by-id-command-response.dto";
