@@ -22,7 +22,7 @@ export class ReservationEntity {
   @JoinColumn({ name: "residence_id" })
   residence: string;
 
-  @Column({ name: "status_reservation", type: "varchar", length: 30, default: StatusReservation.EnCoursValidationUser })
+  @Column({ name: "status_reservation", type: "varchar", length: 30, default: StatusReservation.EnCoursValidationAdmin })
   statusReservation: StatusReservation;
   @Column({ name: "dates_reservation", type: "json" })
   datesReservation: ServiceDates;
@@ -37,11 +37,11 @@ export class ReservationEntity {
   montantReservationSansCommission: number;
 
 
-  @Column({ name: "notes", type: "text" })
+  @Column({ name: "notes", type: "text", nullable: true })
   notes: string;
 
-  @Column({ name: "customer_phone_number", type: "varchar", length: 20 })
-  customerPhoneNumber: string;
+  @Column({ name: "customer_phone_number", type: "varchar", length: 20, nullable: true })
+  clientPhoneNumber: string;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;

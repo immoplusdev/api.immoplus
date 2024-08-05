@@ -7,4 +7,4 @@ export * from './update-user-command-response.dto';
 export * from './user-dto.mapper';
 export * from './update-user-additional-data-command.dto';
 export * from './update-user-additional-data-command-response.dto';
-
+export * from "./public-user-info.dto";

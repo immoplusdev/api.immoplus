@@ -1,4 +1,4 @@
-import { IUsersRepository, User, UserWithRoleAndPermissions } from "@/core/domain/users";
+import { IUsersRepository, PublicUserInfo, User, UserWithRoleAndPermissions } from "@/core/domain/users";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users/users.entity";
@@ -26,6 +26,7 @@ export class UsersRepository implements IUsersRepository {
     this.userRepository = dataSource.getRepository(UserEntity);
   }
 
+
   async createMany(payload: Partial<User>[]): Promise<User[]> {
     return await this.repository.createMany(payload);
   }
@@ -44,6 +45,15 @@ export class UsersRepository implements IUsersRepository {
       relations: this.relations,
       select: mapQueryFieldsToTypeormSelection(fields),
     });
+  }
+
+  async findPublicUserInfoByUserId(id: string): Promise<PublicUserInfo | null> {
+    // FIXME: Fix last bug here
+    const result = await this.repository.findOne(id, ["email", "firstName", "lastName", "phoneNumber"]);
+    return {
+      id,
+      ...result,
+    };
   }
 
   async findOneByEmail(email: string, fields?: string[]): Promise<User | null> {
@@ -84,7 +94,7 @@ export class UsersRepository implements IUsersRepository {
       relations: this.relations,
       select: mapQueryFieldsToTypeormSelection(fields),
     });
-    if(!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException();
 
     const permissions = await this.permissionRepository.findByRoleId((user.role as Role).id);
 

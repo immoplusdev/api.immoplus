@@ -4,3 +4,5 @@ export * from "./create-reservations.dto";
 export * from "./update-reservations.dto";
 export * from "./estimer-prix-reservation-query.dto";
 export * from "./estimer-prix-reservation-query-response.dto";
+export * from "./create-reservation-command.dto";
+export * from "./create-reservation-command-response.dto";

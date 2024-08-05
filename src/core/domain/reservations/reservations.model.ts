@@ -2,10 +2,11 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { StatusReservation } from "@/core/domain/reservations/status-reservation.enum";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
+import { Residence } from "@/core/domain/residences";
 
 export class Reservation {
   id: string;
-  residence: string;
+  residence: Residence | string;
   statusReservation: StatusReservation;
   datesReservation: ServiceDates;
   statusFacture: StatusFacture;
@@ -13,7 +14,7 @@ export class Reservation {
   montantTotalReservation: number;
   montantReservationSansCommission: number;
   notes: string;
-  customerPhoneNumber: string;
+  clientPhoneNumber: string;
   createdAt?: Date;
   updatedAt?: Date;
   // deletedAt?: Date;

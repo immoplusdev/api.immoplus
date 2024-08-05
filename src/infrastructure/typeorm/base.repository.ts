@@ -16,13 +16,16 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     this.repository = dataSource.getRepository(entityClass);
   }
 
-  async createMany(payload: CreateDto[]): Promise<Model[]> {
-    return await Promise.all(payload.map(async (item) => await this.createOne(item)));
+  async createMany(payload: CreateDto[], returnPayload: boolean = true): Promise<Model[]> {
+    const result = await Promise.all(payload.map(async (item) => await this.createOne(item, returnPayload)));
+    if (returnPayload) return result;
+    return [];
   }
 
-  async createOne(payload: CreateDto): Promise<Model> {
+  async createOne(payload: CreateDto, returnData: boolean = true): Promise<Model> {
     const { id } = await this.repository.save(payload);
-    return await this.findOne(id);
+    if (returnData) return await this.findOne(id);
+    return { id } as never;
   }
 
   async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Model[]>> {

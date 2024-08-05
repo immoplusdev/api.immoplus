@@ -6,3 +6,4 @@ export * from "./users-data.model";
 export * from "./i-users-data.repository";
 export * from "./user-already-exists.exception";
 export * from "./user-not-found.exception";
+export * from "./public-user-info.model";

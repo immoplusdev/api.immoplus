@@ -7,9 +7,9 @@ export interface IBaseRepository<
   UpdateDto = Partial<Model>,
   KeyType = string,
 > {
-  createMany(payload: CreateDto[]): Promise<Model[]>;
+  createMany(payload: CreateDto[], returnPayload?: boolean): Promise<Model[]>;
 
-  createOne(payload: CreateDto): Promise<Model>;
+  createOne(payload: CreateDto, returnPayload?: boolean): Promise<Model>;
 
   findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Model[]>>;
 

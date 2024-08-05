@@ -4,13 +4,14 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { StatusReservation } from "@/core/domain/reservations";
 import { StatusFacture } from "@/core/domain/payments";
 import { ServiceDateDto } from "@/infrastructure/shared/dto/service-date.dto";
+import { Residence } from "@/core/domain/residences";
 
 export class ReservationDto {
   @ApiProperty()
   id: string;
-  @ApiProperty()
-  residence: string;
-  @ApiProperty({ enum: StatusReservation})
+  @ApiProperty({ type: "string", format: "uuid" })
+  residence: Residence | string;
+  @ApiProperty({ enum: StatusReservation })
   statusReservation: StatusReservation;
   @ApiProperty({ type: ServiceDateDto, isArray: true })
   datesReservation: ServiceDateDto[];
@@ -25,7 +26,7 @@ export class ReservationDto {
   @ApiProperty()
   notes: string;
   @ApiProperty()
-  customerPhoneNumber: string;
+  clientPhoneNumber: string;
   @ApiProperty()
   createdAt?: Date;
   @ApiProperty()

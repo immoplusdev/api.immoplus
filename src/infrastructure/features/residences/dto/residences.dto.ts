@@ -5,6 +5,7 @@ import { TypeResidence } from "@/core/domain/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
+import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
 
 
 // TODO: Document later
@@ -19,9 +20,9 @@ export class ResidenceDto {
   typeResidence: TypeResidence;
   @ApiProperty()
   description: string;
-  @ApiProperty({ type: ()=> CommoditeDto, isArray: true })
+  @ApiProperty({ type: () => CommoditeDto, isArray: true })
   commodites?: CommoditeDto[];
-  @ApiProperty({ type: ()=> PieceDto, isArray: true })
+  @ApiProperty({ type: () => PieceDto, isArray: true })
   pieces?: Piece[];
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   images?: string[];
@@ -34,7 +35,7 @@ export class ResidenceDto {
   @ApiProperty()
   adresse?: string;
 
-  // @ApiProperty({ type: GeoJsonPointDto })
+  @ApiProperty({ type: GeoJsonPointDto })
   @ApiProperty()
   position?: GeoJsonPoint;
   @ApiProperty()
