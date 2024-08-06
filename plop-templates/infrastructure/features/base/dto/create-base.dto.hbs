@@ -3,6 +3,6 @@ import { OmitMethods } from '@/lib/ts-utilities';
 
 export class Create{{classify name}}Dto {
 constructor(data?: OmitMethods<Create{{classify name}}Dto>) {
-  Object.assign(this, data);
+  if(data) Object.assign(this, data);
   }
 }

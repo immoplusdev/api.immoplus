@@ -4,7 +4,7 @@ import { WrapperResponseDto } from "@/lib/responses";
 
 export class {{classify name}}Dto {
   constructor(data?: OmitMethods<{{classify name}}Dto>) {
-    Object.assign(this, data);
+    if(data) Object.assign(this, data);
   }
 }
 

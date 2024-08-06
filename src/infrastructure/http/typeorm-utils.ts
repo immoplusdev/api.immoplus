@@ -43,7 +43,7 @@ export function mapQueryToTypeormQuery(query: SearchItemsParams) {
 
   const searchParams = {
     where: whereConditions,
-    skip: query._page ? (query._page - 1) * query._per_page : undefined,
+    skip: query._page && query._page - 1 > 0 ? (query._page - 1) * query._per_page : 0,
     take: query._per_page,
     select: mapQueryFieldsToTypeormSelection(query._select),
     order: undefined,
