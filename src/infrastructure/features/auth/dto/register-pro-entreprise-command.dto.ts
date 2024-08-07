@@ -26,9 +26,10 @@ export class RegisterProEntrepriseCommandDto {
   @IsNotEmpty()
   nomEntreprise: string;
   @ApiProperty()
+  @IsEmail()
   @IsNotEmpty()
   emailEntreprise: string;
-  @ApiProperty()
+  @ApiProperty({ format: "binary" })
   @IsNotEmpty()
   registreCommerce: string;
   @ApiProperty()
