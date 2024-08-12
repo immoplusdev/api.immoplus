@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { User } from "@/core/domain/users";
 import { UserEntity } from "@/infrastructure/features/users/users.entity";
 import { FileEntity } from "@/infrastructure/features/files";
@@ -20,10 +20,14 @@ export class UserDataEntity {
   @JoinColumn({ name: "photo_identite_id" })
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   photoIdentite?: File | string;
+  @RelationId((item: UserDataEntity) => item.photoIdentite)
+  photoIdentiteId?: string;
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "piece_identite_id" })
   pieceIdentite?: File | string;
+  @RelationId((item: UserDataEntity) => item.pieceIdentite)
+  pieceIdentiteId?: string;
 
   // Pro entreprise
   @Column({ name: "nom_entreprise", type: "varchar", nullable: true })
@@ -34,6 +38,9 @@ export class UserDataEntity {
   @JoinColumn({ name: "registre_commerce_id" })
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   registreCommerce?: File | string;
+  @RelationId((item: UserDataEntity) => item.registreCommerce)
+  registreCommerceId?: string;
+
 
   @Column({ name: "numero_contribuable", type: "varchar", nullable: true })
   numeroContribuable?: string;

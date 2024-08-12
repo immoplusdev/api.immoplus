@@ -3,11 +3,13 @@ import { TypeResidence } from "@/core/domain/residences/type-residence.enum";
 import { Commodite } from "@/core/domain/residences/commodite.model";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
-import { StatusValidationResidence } from "@/core/domain/residences/status-validation-residence.enum";
+import { StatusValidationResidence } from "@/core/domain/residences";
+import { File } from "@/core/domain/files";
 
 export class Residence {
   id: string;
-  miniature: string;
+  miniature: string | File;
+  miniatureId: string;
   nom: string;
   typeResidence: TypeResidence;
   description: string;

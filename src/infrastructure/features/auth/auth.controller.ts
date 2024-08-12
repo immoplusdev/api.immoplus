@@ -15,7 +15,7 @@ import {
   VerifyEmailCommandDto,
   VerifyPhoneNumberCommandDto,
   WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
-} from "src/infrastructure/features/auth/dto";
+} from "@/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
 import {

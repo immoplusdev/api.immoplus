@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 const {
-  inflect,
   camelize,
   pluralize,
   singularize,
@@ -21,8 +20,14 @@ module.exports = function(plop) {
   plop.setHelper("camelCase", (text) =>
     camelize(text.replaceAll("-", "_"), true),
   );
+
+
   plop.setHelper("plural", (text) => pluralize(text.replaceAll("-", "_")));
   plop.setHelper("singular", (text) => singularize(text.replaceAll("-", "_")));
+
+  plop.setHelper("dasherizePlural", (text) => dasherize(pluralize(text.replaceAll("-", "_"))));
+  plop.setHelper("dasherizeSingular", (text) => dasherize(singularize(text.replaceAll("-", "_"))));
+
   plop.setHelper("upperCaseFirst", (text) =>
     camelize(text.replaceAll("-", "_"), true),
   );
@@ -30,18 +35,19 @@ module.exports = function(plop) {
     camelize(text.replaceAll("-", "_"), false),
   );
   plop.setHelper("dasherize", (text) => dasherize(text.replaceAll("-", "_")));
-  plop.setHelper("dasherizeSingular", (text) =>
-    singularize(dasherize(text.replaceAll("-", "_"))),
-  );
   plop.setHelper("underscore", (text) => underscore(text.replaceAll("-", "_")));
   plop.setHelper("humanize", (text) => humanize(text.replaceAll("-", "_")));
   plop.setHelper("capitalize", (text) => capitalize(text.replaceAll("-", "_")));
   plop.setHelper("titleize", (text) => titleize(text.replaceAll("-", "_")));
   plop.setHelper("tableize", (text) => tableize(text.replaceAll("-", "_")));
   plop.setHelper("classify", (text) => classify(text.replaceAll("-", "_")));
+  plop.setHelper("classifyPlural", (text) => pluralize(classify(text.replaceAll("-", "_"))));
+  plop.setHelper("classifySingular", (text) => singularize(classify(text.replaceAll("-", "_"))));
+
   plop.setHelper("exceptionnify", (text) =>
     text.replaceAll("-", "_").toUpperCase(),
   );
+
   plop.setHelper("timestampify", () => moment().format("YYYYMMDDHHmmss"));
 
   const namePrompt = [
@@ -192,7 +198,6 @@ module.exports = function(plop) {
     },
   ];
 
-
   const generateCommand = [
     {
       type: "add",
@@ -258,6 +263,15 @@ module.exports = function(plop) {
       path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}-dto.mapper.ts",
       templateFile:
         "plop-templates/infrastructure/features/base/dto/base-dto.mapper.hbs",
+    },
+  ];
+
+  const generateEntityMapper = [
+    {
+      type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/{{dasherize name}}-entity.mapper.ts",
+      templateFile:
+        "plop-templates/infrastructure/features/base/base-entity.mapper.hbs",
     },
   ];
 
@@ -393,10 +407,16 @@ module.exports = function(plop) {
     actions: generateCUDto,
   });
 
-  plop.setGenerator("infra:mapper", {
+  plop.setGenerator("infra:dto-mapper", {
     description: "Generate dto mapper",
     prompts: groupPrompts,
     actions: generateDtoMapper,
+  });
+
+  plop.setGenerator("infra:entity-mapper", {
+    description: "Generate entity mapper",
+    prompts: groupPrompts,
+    actions: generateEntityMapper,
   });
 
   plop.setGenerator("infra:controller", {
@@ -417,6 +437,7 @@ module.exports = function(plop) {
     actions: [
       ...generateModel,
       ...generateEntity,
+      ...generateEntityMapper,
       ...generateRepositoryPort,
       ...generateRepository,
     ],
@@ -437,6 +458,7 @@ module.exports = function(plop) {
       ...generateDto,
       ...generateCUDto,
       ...generateDtoMapper,
+      ...generateEntityMapper,
       ...generateRepositoryPort,
       ...generateRepository,
       ...generateController,

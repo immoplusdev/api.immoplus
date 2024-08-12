@@ -1,0 +1,38 @@
+meta {
+  name: register-pro-particulier
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/auth/register-pro-particulier
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "firstName": "string",
+    "lastName": "string",
+    "email": "pro-particulier-{{proId}}@immoplus.ci",
+    "phoneNumber": "225-{{proId}}",
+    "password": "@Admin2019",
+    "activite": "Activite",
+    "photoIdentiteId": "{{DEFAULT_IMAGE_ID}}",
+    "pieceIdentiteId": "{{DEFAULT_IMAGE_ID}}"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setEnvVar("proId", faker.string.numeric(10));
+  
+}
+
+tests {
+  test("Should receive a not null pieceIdentiteId", function() {
+    const {data: { user: { additionalData }}} = res.getBody();
+  
+    expect(additionalData.pieceIdentiteId).to.be.a('string');
+  });
+}

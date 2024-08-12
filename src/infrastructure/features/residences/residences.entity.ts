@@ -1,10 +1,10 @@
 import {
   Column,
-  CreateDateColumn,
+  CreateDateColumn, DeleteDateColumn,
   Entity,
   JoinColumn, ManyToMany,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { FileEntity } from "@/infrastructure/features/files";
@@ -23,6 +23,8 @@ export class ResidenceEntity {
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "miniature_id" })
   miniature: string;
+  @RelationId((item: ResidenceEntity)=> item.miniature)
+  miniatureId: string
 
   @Column({ name: "nom", type: "varchar" })
   nom: string;
@@ -93,8 +95,8 @@ export class ResidenceEntity {
   createdAt?: Date;
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt?: Date;
-  // @DeleteDateColumn({ name: "deleted_at" })
-  // deletedAt?: Date;
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })

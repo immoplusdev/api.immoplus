@@ -22,16 +22,16 @@ export class CommuneEntity {
   ville: string;
 
 
-  // @CreateDateColumn({ name: "created_at" })
-  // createdAt?: Date;
-  // @UpdateDateColumn({ name: "updated_at" })
-  // updatedAt?: Date;
-  // @DeleteDateColumn({ name: "deleted_at" })
-  // deletedAt?: Date;
-  //
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "created_by" })
-  // createdBy?: string;
+  @CreateDateColumn({ name: "created_at" })
+  createdAt?: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt?: Date;
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
+
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  @JoinColumn({ name: "created_by" })
+  createdBy?: string;
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   // @JoinColumn({ name: "updated_by" })
   // updatedBy?: string;

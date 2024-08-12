@@ -34,11 +34,11 @@ export class RoleEntity {
   createdAt?: Date;
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt?: Date;
-  // @DeleteDateColumn({ name: "deleted_at" })
-  // deletedAt?: Date;
-  //
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
+
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @Column({ name: "created_by" })
+  // @JoinColumn({ name: "created_by" })
   // createdBy?: string;
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   // @JoinColumn({ name: "updated_by" })

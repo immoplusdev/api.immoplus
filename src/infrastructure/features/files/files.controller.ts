@@ -20,12 +20,12 @@ import {
   UploadFileCommandDto,
   WrapperResponseFileDto,
   WrapperResponseFileListDto,
-} from "src/infrastructure/features/files/dto";
+} from "@/infrastructure/features/files";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { fileUploadConfig } from "@/infrastructure/configs";
+import { fileUploadConfig } from "@/infrastructure/configs/file-management/file-upload.config";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { UploadFileCommand } from "@/core/application/features/files";
 import {
@@ -34,10 +34,10 @@ import {
 } from "@/infrastructure/features/files/dto/upload-file-command-response.dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
-import { JwtAuthGuard } from "src/infrastructure/auth/guards";
+import { JwtAuthGuard } from "@/infrastructure/auth/guards";
 import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/shared/ioc";
-import { File, IFileRepository } from "@/core/domain/files";
+import { IFileRepository } from "@/core/domain/files";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 
 
@@ -77,7 +77,7 @@ export class FileController {
   @UseInterceptors(
     FileInterceptor("file", {
       storage: diskStorage({
-        destination: fileUploadConfig.uploadPath,
+        destination: fileUploadConfig?.uploadPath,
         filename: (req, file, cb) => {
           const fileNameSplit = file.originalname.split(".");
           const fileExt = fileNameSplit[fileNameSplit.length - 1];

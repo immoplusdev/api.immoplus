@@ -1,5 +1,5 @@
 import { SearchItemsParams } from "@/core/domain/http";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 export interface IBaseRepository<
   Model,
@@ -7,21 +7,28 @@ export interface IBaseRepository<
   UpdateDto = Partial<Model>,
   KeyType = string,
 > {
+  // Create
   createMany(payload: CreateDto[], returnPayload?: boolean): Promise<Model[]>;
 
   createOne(payload: CreateDto, returnPayload?: boolean): Promise<Model>;
 
-  findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Model[]>>;
 
-  findOne(id: KeyType, fields?: KeyType[]): Promise<Model>;
+  // Read
+  findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<Model[]>>;
 
+  findOne(id: KeyType, options?: FindItemOptions): Promise<Model>;
+
+  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Model>;
+
+
+  // Update
   updateByQuery(query: SearchItemsParams, payload: UpdateDto): Promise<KeyType[]>;
 
   updateOne(id: KeyType, payload: UpdateDto): Promise<KeyType>;
 
+
+  // Delete
   deleteByQuery(query: SearchItemsParams): Promise<KeyType[]>;
 
   deleteOne(id: KeyType): Promise<KeyType>;
 }
-
-//TODO: edit plop controllers

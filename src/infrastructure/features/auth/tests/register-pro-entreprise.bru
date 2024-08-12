@@ -1,0 +1,38 @@
+meta {
+  name: register-pro-entreprise
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/auth/register-pro-entreprise
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "pro-enteprise-{{proId}}@immoplus.ci",
+    "phoneNumber": "225-{{proId}}",
+    "password": "@Admin2019",
+    "nomEntreprise": "NomEntreprise",
+    "emailEntreprise": "test@gmail.com",
+    "registreCommerceId": "{{DEFAULT_IMAGE_ID}}",
+    "numeroContribuable": "string",
+    "typeEntreprise": "string"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setEnvVar("proId", faker.string.numeric(10));
+  
+}
+
+tests {
+  test("Should receive a not null registreCommerceId", function() {
+    const {data: { user: { additionalData }}} = res.getBody();
+  
+    expect(additionalData.registreCommerceId).to.be.a('string');
+  });
+}

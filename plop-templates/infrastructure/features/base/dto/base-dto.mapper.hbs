@@ -1,14 +1,14 @@
-import { AutoMapper, IMapper } from "@/lib/ts-utilities";
+import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { {{classify name}} } from "@/core/domain/{{dasherize group}}";
 import { {{classify name}}Dto } from "./{{dasherize name}}.dto";
 
 
-export class {{classify name}}DtoMapper {
-  mapFrom(object: {{classify name}}): {{classify name}}Dto {
+export class {{classify name}}DtoMapper implements IMapper<{{classify name}}, {{classify name}}Dto> {
+  mapFrom(object: OmitMethods<{{classify name}}>): {{classify name}}Dto {
     return new {{classify name}}Dto(object);
   }
 
-  mapTo(object: {{classify name}}Dto): {{classify name}} {
+  mapTo(object: OmitMethods<{{classify name}}Dto>): {{classify name}} {
     return new {{classify name}}(object);
   }
 }

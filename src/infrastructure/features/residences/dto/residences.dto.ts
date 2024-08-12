@@ -13,7 +13,7 @@ export class ResidenceDto {
   @ApiProperty({ format: "uuid" })
   id: string;
   @ApiProperty({ format: "uuid" })
-  miniature: string;
+  miniatureId: string;
   @ApiProperty()
   nom: string;
   @ApiProperty({ enum: TypeResidence })

@@ -1,0 +1,14 @@
+import { IMapper, OmitMethods } from "@/lib/ts-utilities";
+import { {{classify name}} } from "@/core/domain/{{dasherize group}}";
+import { {{classify name}}Entity } from "./{{dasherize name}}.entity";
+
+
+export class {{classify name}}EntityMapper implements IMapper<{{classify name}}Entity, {{classify name}}> {
+  mapFrom(object: OmitMethods<{{classify name}}Entity>): {{classify name}} {
+    return new {{classify name}}(object);
+  }
+
+  mapTo(object: OmitMethods<{{classify name}}>): {{classify name}}Entity {
+    return new {{classify name}}Entity(object);
+  }
+}

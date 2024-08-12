@@ -25,7 +25,6 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
   AnnulerReservationByIdCommand,
-  AnnulerReservationByIdCommandResponse,
   CreateReservationCommand,
   EstimerPrixReservationQuery, GetReservationByIdQuery, GetResidenceOccupiedDatesQuery,
 } from "@/core/application/features/reservations";

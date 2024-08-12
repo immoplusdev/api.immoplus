@@ -1,0 +1,38 @@
+meta {
+  name: Test pro
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{API_URL}}/users/data/me
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{ACCESS_TOKEN}}
+}
+
+script:pre-request {
+  const axios = require("axios");
+  
+  const API_URL = bru.getEnvVar("API_URL");
+  const username = bru.getEnvVar("DEFAULT_USER_EMAIl");
+  const password = bru.getEnvVar("DEFAULT_USER_PASSWORD");
+  
+  const response = await axios.post(`${API_URL}/auth/login`, {
+    username,
+    password
+  });
+  
+  console.log(response)
+}
+
+tests {
+  // test("Should receive a not null pieceIdentiteId", function() {
+    // const { data } = res.getBody();
+    // console.log(data)
+    // expect(additionalData.pieceIdentiteId).to.be.a('string');
+  // });
+}

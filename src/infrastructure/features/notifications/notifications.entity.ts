@@ -1,9 +1,9 @@
 import {
-  Column,
+  Column, CreateDateColumn, DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, UpdateDateColumn,
 } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users";
 import { NotificationType } from "@/core/domain/notifications/notification-type.enum";
@@ -32,13 +32,13 @@ export class NotificationEntity {
   @JoinColumn({ name: "recipient_id" })
   recipient?: string;
 
-  // @CreateDateColumn({ name: "created_at" })
-  // createdAt?: Date;
-  // @UpdateDateColumn({ name: "updated_at" })
-  // updatedAt?: Date;
-  // @DeleteDateColumn({ name: "deleted_at" })
-  // deletedAt?: Date;
-  //
+  @CreateDateColumn({ name: "created_at" })
+  createdAt?: Date;
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt?: Date;
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
+
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;

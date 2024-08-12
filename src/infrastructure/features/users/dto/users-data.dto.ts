@@ -10,9 +10,9 @@ export class UserDataDto {
   @ApiProperty()
   activite?: string;
   @ApiProperty()
-  photoIdentite?: string;
+  photoIdentiteId?: string;
   @ApiProperty()
-  pieceIdentite?: string;
+  pieceIdentiteId?: string;
 
   // Pro entreprise
   @ApiProperty()
@@ -20,7 +20,7 @@ export class UserDataDto {
   @ApiProperty()
   emailEntreprise?: string;
   @ApiProperty()
-  registreCommerce?: string;
+  registreCommerceId?: string;
   @ApiProperty()
   numeroContribuable?: string;
   @ApiProperty()

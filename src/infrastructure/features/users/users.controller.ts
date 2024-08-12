@@ -14,20 +14,19 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
-import { JwtAuthGuard } from "src/infrastructure/auth/guards";
+import { JwtAuthGuard } from "@/infrastructure/auth/guards";
 import { Deps } from "@/core/domain/shared/ioc";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
-import { IUsersRepository, User } from "@/core/domain/users";
+import { IUsersRepository } from "@/core/domain/users";
+import { Role, UserRole } from "@/core/domain/roles";
 import {
+  UserDtoMapper,
   UpdateUserAdditionalDataCommandResponseDto,
   UpdateUserCommandDto,
-  UserDto,
   WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
   WrapperResponseUserDto,
   WrapperResponseUserListDto,
-} from "src/infrastructure/features/users/dto";
-import { Role, UserRole } from "@/core/domain/roles";
-import { UserDtoMapper } from "@/infrastructure/features/users";
+} from "@/infrastructure/features/users";
 import { UpdateUserAdditionalDataCommand } from "@/core/application/features/users";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
@@ -35,6 +34,9 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 @ApiTags("User")
 @Controller("users")
 export class UsersController {
+  private readonly dtoMapper = new UserDtoMapper();
+  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+
   constructor(
     readonly commandBus: CommandBus,
     @Inject(Deps.UsersRepository)
@@ -57,9 +59,6 @@ export class UsersController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<UserDto[]>();
-    console.log(userRole);
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "createdBy",
       _l_op: "and",
@@ -67,8 +66,7 @@ export class UsersController {
     }], params._where);
 
     const response = await this.usersRepository.findByQuery(params);
-    response.setData(UserDtoMapper.mapListFrom(response.data));
-    return responseMapper.mapFromQueryResult(response);
+    return this.responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
@@ -83,12 +81,9 @@ export class UsersController {
   async readOne(
     @Param("id") id: string,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
-
     const user = await this.usersRepository.findOne(id);
 
-    return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
+    return this.responseMapper.mapFrom(user);
   }
 
 
@@ -104,12 +99,9 @@ export class UsersController {
   async readCurrentUser(
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
 
     const user = await this.usersRepository.findOne(userId);
-
-
-    return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
+    return this.responseMapper.mapFrom(user);
   }
 
 
@@ -125,16 +117,11 @@ export class UsersController {
     @Param("id") id: string,
     @Body() payload: UpdateUserCommandDto,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
-
-    const user = await this.usersRepository.findOne(id);
-
-    await this.usersRepository.updateOne(user.id, payload);
+    await this.usersRepository.updateOne(id, payload);
 
     const response = await this.usersRepository.findOne(id);
 
-    return responseMapper.mapFrom(UserDtoMapper.mapFrom(response));
+    return this.responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
@@ -172,13 +159,11 @@ export class UsersController {
   async delete(
     @Param("id") id: string) {
 
-    const responseMapper = new WrapperResponseDtoMapper<UserDto>();
-
     const user = await this.usersRepository.findOne(id);
 
     await this.usersRepository.deleteOne(id);
 
-    return responseMapper.mapFrom(UserDtoMapper.mapFrom(user));
+    return this.responseMapper.mapFrom(user);
   }
 }
 

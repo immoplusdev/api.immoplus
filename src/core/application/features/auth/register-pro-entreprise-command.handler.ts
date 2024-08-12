@@ -34,7 +34,7 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
     const userData = await this.usersDataRepository.createOne({
       nomEntreprise: command.nomEntreprise,
       emailEntreprise: command.emailEntreprise,
-      registreCommerce: command.registreCommerce,
+      registreCommerce: command.registreCommerceId,
       numeroContribuable: command.numeroContribuable,
       typeEntreprise: command.typeEntreprise,
       user: userId,
@@ -46,7 +46,6 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
       phoneNumber: command.phoneNumber,
       password: this.passwordManagerService.encryptPassword(command.password),
       role: UserRole.ProEntreprise,
-      city: command.city || null,
       additionalData: userData.id,
       createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
     });

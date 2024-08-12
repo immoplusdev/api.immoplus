@@ -9,6 +9,8 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { mapQueryFieldsToTypeormSelection } from "@/infrastructure/http";
 import { WrapperResponse } from "@/core/domain/shared/models";
+import { UserEntityMapper } from "@/infrastructure/features/users/users-entity.mapper";
+import { tr } from "@faker-js/faker";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -22,7 +24,7 @@ export class UsersRepository implements IUsersRepository {
     @Inject(Deps.PermissionRepository)
     private readonly permissionRepository: IPermissionRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, UserEntity);
+    this.repository = new BaseRepository(dataSource, UserEntity, this.relations).setEntityMapper(new UserEntityMapper());
     this.userRepository = dataSource.getRepository(UserEntity);
   }
 
@@ -40,15 +42,10 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findOne(id: string, fields?: string[]): Promise<User> {
-    return await this.userRepository.findOne({
-      where: { id },
-      relations: this.relations,
-      select: mapQueryFieldsToTypeormSelection(fields),
-    });
+    return this.repository.findOne(id, fields);
   }
 
   async findPublicUserInfoByUserId(id: string): Promise<PublicUserInfo | null> {
-    // FIXME: Fix last bug here
     const result = await this.repository.findOne(id, ["email", "firstName", "lastName", "phoneNumber"]);
     return {
       id,
@@ -57,21 +54,26 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async findOneByEmail(email: string, fields?: string[]): Promise<User | null> {
-    return await this.userRepository.findOne({
+    const result = await this.userRepository.findOne({
       where: { email },
       relations: this.relations,
       select: mapQueryFieldsToTypeormSelection(fields),
+      // loadRelationIds: true
     });
+    return this.repository.mapResponse(result);
   }
 
   async findOneByPhoneNumber(phoneNumber: string, fields?: string[]): Promise<User | null> {
-    return await this.userRepository.findOne(
+    const result = await this.userRepository.findOne(
       {
         where: { phoneNumber },
         relations: this.relations,
         select: mapQueryFieldsToTypeormSelection(fields),
+        // loadRelationIds: true
       },
     );
+
+    return this.repository.mapResponse(result);
   }
 
   async findOneByUsername(username: string, fields?: string[]): Promise<User | null> {
@@ -93,6 +95,7 @@ export class UsersRepository implements IUsersRepository {
       },
       relations: this.relations,
       select: mapQueryFieldsToTypeormSelection(fields),
+      // loadRelationIds: true
     });
     if (!user) throw new UnauthorizedException();
 

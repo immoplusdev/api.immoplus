@@ -12,3 +12,4 @@ export * from './service-date.model';
 export * from './service-dates.model';
 export * from './service-metadata.model';
 export * from "./wrapper-response.model";
+export * from "./find-item-options.model";

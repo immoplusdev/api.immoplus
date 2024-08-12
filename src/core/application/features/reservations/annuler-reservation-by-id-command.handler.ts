@@ -16,7 +16,7 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
 
   async execute(command: AnnulerReservationByIdCommand): Promise<AnnulerReservationByIdCommandResponse> {
 
-    const reservation = await this.reservationRepository.findOne(command.reservationId, ["id", "statusReservation"]);
+    const reservation = await this.reservationRepository.findOne(command.reservationId, { fields: ["id", "statusReservation"] });
 
     this.verifyCanProceed(reservation.statusReservation, command.userId);
 

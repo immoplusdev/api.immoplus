@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, P
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IResidenceRepository } from "@/core/domain/residences";
+import { IResidenceRepository, Residence } from "@/core/domain/residences";
 import {
   CreateResidenceDto,
-  ResidenceDto,
+  ResidenceDtoMapper,
   UpdateResidenceDto,
   WrapperResponseResidenceDto,
   WrapperResponseResidenceListDto,
@@ -21,6 +21,9 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 @ApiTags("Residence")
 @Controller("residences")
 export class ResidenceController {
+  private readonly dtoMapper = new ResidenceDtoMapper();
+  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+
   constructor(
     @Inject(Deps.ResidenceRepository)
     private readonly repository: IResidenceRepository,
@@ -39,16 +42,13 @@ export class ResidenceController {
     @Body() payload: CreateResidenceDto,
     @CurrentUser() userId: string,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto>();
-
     const response = await this.repository.createOne({
       ...payload,
       createdBy: userId,
       proprietaire: payload.proprietaire || userId,
     });
 
-    return responseMapper.mapFrom(response);
+    return this.responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
@@ -65,9 +65,6 @@ export class ResidenceController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto[]>();
-
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "createdBy",
       _l_op: "and",
@@ -76,7 +73,7 @@ export class ResidenceController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -84,11 +81,8 @@ export class ResidenceController {
   })
   @Get("/data/public/")
   async readManyPublic(
-    @Query() params: SearchItemsParamsDto
+    @Query() params: SearchItemsParamsDto,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto[]>();
-
     // params._where = addConditionsToWhereClause([{
     //   _field: "createdBy",
     //   _l_op: "and",
@@ -97,9 +91,8 @@ export class ResidenceController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
-
 
 
   @ApiResponse({
@@ -115,11 +108,8 @@ export class ResidenceController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto>();
-
     const item = await this.repository.findOne(id, params?._select);
-
-    return responseMapper.mapFrom(item);
+    return this.responseMapper.mapFrom(item);
   }
 
 
@@ -131,11 +121,8 @@ export class ResidenceController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto>();
-
     const item = await this.repository.findOne(id, params?._select);
-
-    return responseMapper.mapFrom(item);
+    return this.responseMapper.mapFrom(item);
   }
 
 
@@ -153,7 +140,6 @@ export class ResidenceController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateResidenceDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto>();
     const query = {
       _where: [
         {
@@ -167,7 +153,7 @@ export class ResidenceController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
 
@@ -184,7 +170,6 @@ export class ResidenceController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role) {
 
-    const responseMapper = new WrapperResponseDtoMapper<ResidenceDto>();
     const query = {
       _where: [
         {
@@ -198,6 +183,6 @@ export class ResidenceController {
 
     await this.repository.deleteByQuery(query);
 
-    return responseMapper.mapFrom({ id } as never);
+    return this.responseMapper.mapFrom({ id } as never);
   }
 }

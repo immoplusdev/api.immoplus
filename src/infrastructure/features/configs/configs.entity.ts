@@ -1,5 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn, DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { FileEntity } from "@/infrastructure/features/files";
+import { UserEntity } from "@/infrastructure/features/users";
 
 @Entity('configurations')
 export class AppConfigsEntity {
@@ -36,6 +45,20 @@ export class AppConfigsEntity {
   @Column({ name: "contact_phone_number", type: "varchar", nullable: true })
   contactPhoneNumber: string;
 
+  @CreateDateColumn({ name: "created_at" })
+  createdAt?: Date;
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt?: Date;
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
+
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  @JoinColumn({ name: "created_by" })
+  createdBy?: string;
+  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  // @JoinColumn({ name: "updated_by" })
+  // updatedBy?: string;
+  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
+  // @JoinColumn({ name: "deleted_by" })
+  // deletedBy?: string;
 }

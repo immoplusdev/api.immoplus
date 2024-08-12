@@ -11,9 +11,6 @@ export class RegisterProParticulierCommandDto {
   @IsNotEmpty()
   lastName: string;
   @ApiProperty()
-  @IsOptional()
-  city?: string;
-  @ApiProperty()
   @IsEmail()
   email: string;
   @ApiProperty()
@@ -27,10 +24,10 @@ export class RegisterProParticulierCommandDto {
   activite: string;
   @ApiProperty()
   @IsNotEmpty()
-  photoIdentite: string;
+  photoIdentiteId: string;
   @ApiProperty()
   @IsNotEmpty()
-  pieceIdentite: string;
+  pieceIdentiteId: string;
   constructor(data?: OmitMethods<RegisterProParticulierCommandDto>) {
     Object.assign(this, data);
   }

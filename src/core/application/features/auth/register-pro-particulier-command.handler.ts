@@ -33,8 +33,8 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     const userId = generateUuid();
     const userData = await this.usersDataRepository.createOne({
       activite: command.activite,
-      photoIdentite: command.photoIdentite,
-      pieceIdentite: command.pieceIdentite,
+      photoIdentite: command.photoIdentiteId,
+      pieceIdentite: command.pieceIdentiteId,
       user: userId,
     });
 
@@ -46,7 +46,6 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
       firstName: command.firstName,
       lastName: command.lastName,
       role: UserRole.ProParticulier,
-      city: command.city || null,
       additionalData: userData.id,
       createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
     });

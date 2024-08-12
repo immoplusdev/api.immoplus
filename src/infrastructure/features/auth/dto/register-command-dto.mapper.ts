@@ -1,4 +1,4 @@
-import { RegisterCommand } from 'src/core/application/features/auth';
+import { RegisterCommand } from '@/core/application/features/auth';
 import { AutoMapper, IMapper } from "@/lib/ts-utilities";
 import { RegisterCommandDto } from '@/infrastructure/features/auth';
 

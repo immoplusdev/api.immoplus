@@ -46,7 +46,6 @@ export class RegisterCommandHandler
       firstName: command.firstName,
       lastName: command.lastName,
       role: UserRole.Customer,
-      city: command.city || null,
       additionalData: userData.id,
       createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
     });

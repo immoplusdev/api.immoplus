@@ -1,9 +1,9 @@
 import {
   Column,
-  CreateDateColumn,
+  CreateDateColumn, DeleteDateColumn,
   Entity, JoinColumn, ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { UserData, UserStatus } from "@/core/domain/users";
@@ -11,6 +11,7 @@ import { RoleEntity } from "@/infrastructure/features/roles";
 import { UserDataEntity } from "@/infrastructure/features/users/users-data.entity";
 import { Role } from "@/core/domain/roles";
 import { FileEntity } from "@/infrastructure/features/files";
+import { OmitMethods } from "@/lib/ts-utilities";
 
 @Entity("users")
 export class UserEntity {
@@ -80,26 +81,19 @@ export class UserEntity {
   })
   status: UserStatus;
 
-
+  // Tracking fields
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt?: Date;
-  // @DeleteDateColumn({ name: "deleted_at" })
-  // deletedAt?: Date;
-  //
+  @DeleteDateColumn({ name: "deleted_at" })
+  deletedAt?: Date;
+
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "updated_by" })
-  // updatedBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "deleted_by" })
-  // deletedBy?: string;
 
-  clearPassword() {
-    this.password = "********";
-    return this;
+  constructor(data?: OmitMethods<UserEntity>) {
+    if (data) Object.assign(this, data);
   }
 }

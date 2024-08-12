@@ -1,7 +1,7 @@
 import { INestMicroservice } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AppModule } from 'src/app.module';
+import { AppModule } from '@/app.module';
 
 export async function microserviceConfigs() {
   const app: INestMicroservice =

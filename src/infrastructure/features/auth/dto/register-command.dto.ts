@@ -12,9 +12,6 @@ export class RegisterCommandDto {
   @IsNotEmpty()
   lastName: string;
   @ApiProperty()
-  @IsOptional()
-  city?: string;
-  @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
   email: string;

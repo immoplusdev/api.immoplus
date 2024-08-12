@@ -1,6 +1,6 @@
 import { ItemsOperator, ItemsParamsCriterias, ItemsParamsCriteriasLogic, SearchItemsParams } from "@/core/domain/http";
 import { InvalidQueryException } from "@/core/domain/shared/exceptions";
-import { ItemsParamsCriteriasDto } from "src/infrastructure/http/dto";
+import { ItemsParamsCriteriasDto } from "@/infrastructure/http";
 import { And, Equal, Like, Or, Not, MoreThan, MoreThanOrEqual, LessThan, LessThanOrEqual, In } from "typeorm";
 
 export function parseHttpQuery(query: any): SearchItemsParams {

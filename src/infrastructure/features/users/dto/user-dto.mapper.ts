@@ -1,24 +1,25 @@
 import { User } from "@/core/domain/users";
 import { UserDto } from "./users.dto";
+import { IMapper } from "@/lib/ts-utilities";
 
 
-export class UserDtoMapper {
+export class UserDtoMapper implements IMapper<User, UserDto> {
 
-  static mapFrom(object: User): UserDto {
+  mapFrom(object: User): UserDto {
     const newObject = new UserDto({ ...object });
     newObject.clearPassword();
     return newObject;
   }
 
-  static mapListFrom(objects: User[]){
-    return objects.map((object) => UserDtoMapper.mapFrom(object));
+  mapListFrom(objects: User[]) {
+    return objects.map((object) => this.mapFrom(object));
   }
 
-  static mapTo(object: UserDto): User {
+  mapTo(object: UserDto): User {
     return new User({ ...object });
   }
 
-  static mapListTo(objects: UserDto[]){
-    return objects.map((object) => UserDtoMapper.mapTo(object));
+  mapListTo(objects: UserDto[]) {
+    return objects.map((object) => this.mapTo(object));
   }
 }
