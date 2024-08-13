@@ -28,6 +28,10 @@ script:pre-request {
       usernameEnvKey: "PRO_ENTREPRISE_USERNAME"
     },
     {
+      key: "proPerso",
+      usernameEnvKey: "PRO_PARTICULIER_USERNAME"
+    },
+    {
       key: "admin",
       usernameEnvKey: "ADMIN_USERNAME"
     }
@@ -38,8 +42,8 @@ script:pre-request {
   for(let credential of credentials){
       const username = bru.getEnvVar(`${credential.usernameEnvKey}`);
       const {id, token} = await getUserIdAndToken(username, password);
-      bru.setVar(`${credential.key}Token`, token)
-      bru.setVar(`${credential.key}Id`, id)
+      bru.setEnvVar(`${credential.key}Token`, token)
+      bru.setEnvVar(`${credential.key}Id`, id)
   }
   
   

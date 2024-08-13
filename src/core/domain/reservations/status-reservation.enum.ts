@@ -1,5 +1,5 @@
 export enum StatusReservation {
-  Rejecte = "rejecte",
+  Rejete = "rejete",
   Valide = "valide",
   EnCours = "en_cours",
   EnCoursValidationUser = "en_cours_validation_user",

@@ -1,0 +1,29 @@
+meta {
+  name: cancel-reservation-by-id
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{API_URL}}/reservations/action/annuler/{{DEFAULT_RESERVATION_ID}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "notes": "{{notes}}"
+  }
+}
+
+tests {
+  test("Should receive a none empty list of date objects", function() {
+    const {data: { statusReservation }} = res.getBody();
+      
+    expect(statusReservation == "rejete").to.be.equal(true);
+  });
+}

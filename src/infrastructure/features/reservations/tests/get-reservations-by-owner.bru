@@ -1,13 +1,17 @@
 meta {
-  name: list-villes
+  name: get-reservations-by-owner
   type: http
-  seq: 2
+  seq: 5
 }
 
 get {
-  url: {{API_URL}}/villes
+  url: {{API_URL}}/reservations/data/residence-owner/{{proId}}
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
 }
 
 tests {
@@ -17,7 +21,7 @@ tests {
     expect(Array.isArray(data)).to.be.equal(true);
     
     if(data.length != 0){
-      expect(data.at(0).name).to.be.a("string");
+      expect(data.at(0).id).to.be.a("string");
     }
   });
 }

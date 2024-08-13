@@ -18,14 +18,18 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
 
     const reservation = await this.reservationRepository.findOne(command.reservationId, { fields: ["id", "statusReservation"] });
 
-    this.verifyCanProceed(reservation.statusReservation, command.userId);
+    try {
+      this.verifyCanProceed(reservation.statusReservation, command.userId);
+    } catch (err) {
+      return await this.reservationRepository.findOne(command.reservationId);
+    }
+
 
     const payload: Partial<Reservation> = {
-      statusReservation: StatusReservation.Rejecte,
+      statusReservation: StatusReservation.Rejete,
     };
 
     if (command.notes) payload.notes = command.notes;
-
 
     await this.reservationRepository.updateOne(command.reservationId, payload);
 
@@ -34,6 +38,6 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
   }
 
   private verifyCanProceed(statusReservation: StatusReservation, _userId: string) {
-    if (statusReservation == StatusReservation.Valide || statusReservation == StatusReservation.Rejecte) throw new UnexpectedException();
+    if (statusReservation == StatusReservation.Valide || statusReservation == StatusReservation.Rejete) throw new UnexpectedException();
   }
 }
