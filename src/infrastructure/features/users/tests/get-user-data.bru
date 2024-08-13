@@ -1,0 +1,39 @@
+meta {
+  name: get-user-data
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{API_URL}}/users/data/me
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+script:pre-request {
+  const axios = require("axios");
+  const { getUserIdAndToken } = require("./environments/get-user-token.bru");
+  
+  
+  const username = bru.getEnvVar("CUSTOMER_USERNAME");
+  const password = bru.getEnvVar("DEFAULT_USER_PASSWORD");
+  const { token } = await getUserIdAndToken(username, password);
+  
+  bru.setVar("customerToken", token);
+  
+  
+  
+}
+
+tests {
+  test("Should return not null id and additionalData id", function() {
+    const {data} = res.getBody();
+  
+    expect(data?.additionalData.id).to.be.a('string');
+    expect(data.email).to.be.a('string');
+  });
+}

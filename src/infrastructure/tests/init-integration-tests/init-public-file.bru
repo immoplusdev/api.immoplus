@@ -1,7 +1,7 @@
 meta {
-  name: upload-public-file
+  name: init-public-file
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
@@ -16,6 +16,11 @@ auth:bearer {
 
 body:multipart-form {
   file: @file(./environments/image.png)
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_IMAGE_ID", id)
 }
 
 tests {

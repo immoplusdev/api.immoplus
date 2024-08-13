@@ -402,3 +402,5 @@ dist
 uploads/*
 credentials.txt
 environments/local.bru
+#environments/sandbox.bru
+environments/prod.bru
