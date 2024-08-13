@@ -5,7 +5,7 @@ import { {{classify name}}, I{{classify name}}Repository } from "@/core/domain/{
 import { {{classify name}}Entity } from '@/infrastructure/features/{{dasherize group}}';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class {{classify name}}Repository implements I{{classify name}}Repository{
@@ -29,8 +29,12 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
     return await this.repository.findByQuery(query);
   }
 
-  async findOne(id: string, fields?: string[]): Promise<{{classify name}}> {
-    return await this.repository.findOne(id, fields);
+  async findOne(id: string, options?: FindItemOptions): Promise<{{classify name}}> {
+    return this.repository.findOne(id, options);
+  }
+
+  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<{{classify name}}> {
+    return this.repository.findOneByQuery(query, options);
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<{{classify name}}>): Promise<string[]> {

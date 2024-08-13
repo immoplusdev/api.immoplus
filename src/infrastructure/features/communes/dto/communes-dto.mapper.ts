@@ -1,9 +1,9 @@
-import { AutoMapper, IMapper } from "@/lib/ts-utilities";
 import { Commune } from "@/core/domain/communes";
 import { CommuneDto } from "./communes.dto";
+import { IMapper } from "@/lib/ts-utilities";
 
 
-export class CommuneDtoMapper {
+export class CommuneDtoMapper implements IMapper<Commune, CommuneDto> {
   mapFrom(object: Commune): CommuneDto {
     return new CommuneDto(object);
   }

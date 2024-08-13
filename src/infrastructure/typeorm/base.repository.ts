@@ -2,7 +2,6 @@ import { DataSource, Repository } from "typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infrastructure/http";
 import { IBaseRepository } from "@/core/domain/shared/repositories";
-import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 import { FindOptionsRelations } from "typeorm/find-options/FindOptionsRelations";
@@ -20,12 +19,14 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     readonly dataSource: DataSource,
     entityClass: any,
     relations?: RepositoryRelations,
+    loadRelationIds?: boolean
   ) {
     this.repository = dataSource.getRepository(entityClass);
     this.relations = relations || undefined;
+    this.loadRelationIds = loadRelationIds || false;
   }
 
-  getRepositoryInstance(): never {
+  getRepositoryInstance(): BaseRepository<any, any, any, any> {
     // FIXME: allow this method to return an instance of the repository that can be called again in a chain
     return this as never;
   }

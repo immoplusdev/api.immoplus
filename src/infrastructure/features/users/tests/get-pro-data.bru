@@ -1,0 +1,34 @@
+meta {
+  name: get-pro-data
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{API_URL}}/users/data/me
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+script:pre-request {
+  const axios = require("axios");
+  const { getUserToken } = require("./environments/get-user-token.bru");
+  
+  const username = bru.getEnvVar("PRO_ENTREPRISE_USERNAME");
+  const password = bru.getEnvVar("DEFAULT_USER_PASSWORD");
+  
+  const token = await getUserToken(username, password);
+  bru.setVar("accessToken", token)
+}
+
+tests {
+  test("Should receive a not null registreCommerceId", function() {
+    const {data: { user: { additionalData }}} = res.getBody();
+  
+    expect(additionalData.registreCommerceId).to.be.a('string');
+  });
+}

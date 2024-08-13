@@ -108,7 +108,7 @@ export class ResidenceController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const item = await this.repository.findOne(id, params?._select);
+    const item = await this.repository.findOne(id, { fields: params?._select });
     return this.responseMapper.mapFrom(item);
   }
 
@@ -121,7 +121,7 @@ export class ResidenceController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const item = await this.repository.findOne(id, params?._select);
+    const item = await this.repository.findOne(id, { fields: params?._select });
     return this.responseMapper.mapFrom(item);
   }
 

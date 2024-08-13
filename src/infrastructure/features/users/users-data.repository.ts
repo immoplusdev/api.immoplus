@@ -6,7 +6,7 @@ import { UserDataEntity } from "@/infrastructure/features/users";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { File } from "@/core/domain/files";
 import { SearchItemsParams } from "@/core/domain/http";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -33,8 +33,14 @@ export class UsersDataRepository implements IUsersDataRepository {
     return await this.repository.findByQuery(query);
   }
 
-  async findOne(id: string, fields?: []): Promise<UserData> {
-    return await this.repository.findOne(id, fields);
+
+  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<UserData> {
+    return await this.repository.findOneByQuery(query, options);
+  }
+
+
+  async findOne(id: string, options?: FindItemOptions): Promise<UserData> {
+    return await this.repository.findOne(id, options);
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<UserData>): Promise<string[]> {

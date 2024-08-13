@@ -5,7 +5,7 @@ import { Role, IRoleRepository } from "@/core/domain/roles";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 
 @Injectable()
@@ -19,6 +19,7 @@ export class RoleRepository implements IRoleRepository {
     this.repository = new BaseRepository(dataSource, RoleEntity);
   }
 
+
   async createMany(payload: Partial<Role>[]): Promise<Role[]> {
     return await this.repository.createMany(payload);
   }
@@ -31,8 +32,12 @@ export class RoleRepository implements IRoleRepository {
     return await this.repository.findByQuery(query);
   }
 
-  async findOne(id: string, fields?: []): Promise<Role> {
-    return await this.repository.findOne(id, fields);
+  async findOne(id: string, options?: FindItemOptions): Promise<Role> {
+    return await this.repository.findOne(id, options);
+  }
+
+  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Role> {
+    return this.repository.findOneByQuery(query, options);
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<Role>): Promise<string[]> {

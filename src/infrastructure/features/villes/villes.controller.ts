@@ -10,7 +10,7 @@ import {
   WrapperResponseVilleDto,
   WrapperResponseVilleListDto,
 } from "@/infrastructure/features/villes";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
@@ -71,7 +71,7 @@ export class VilleController {
   ) {
     const responseMapper = new WrapperResponseDtoMapper<VilleDto>();
 
-    const item = await this.repository.findOne(id, params?._select);
+    const item = await this.repository.findOne(id, { fields: params?._select });
 
     return responseMapper.mapFrom(item);
   }

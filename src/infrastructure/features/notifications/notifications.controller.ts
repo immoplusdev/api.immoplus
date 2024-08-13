@@ -5,7 +5,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { INotificationRepository } from "@/core/domain/notifications";
 import {
   CreateNotificationDto,
-  NotificationDto, UpdateNotificationDto,
+  NotificationDto, NotificationDtoMapper, UpdateNotificationDto,
   WrapperResponseNotificationDto,
   WrapperResponseNotificationListDto,
 } from "@/infrastructure/features/notifications";
@@ -21,6 +21,9 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 @ApiTags("Notification")
 @Controller("notifications")
 export class NotificationController {
+  private readonly dtoMapper = new NotificationDtoMapper();
+  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+
   constructor(
     @Inject(Deps.NotificationRepository)
     private readonly repository: INotificationRepository,
@@ -39,12 +42,9 @@ export class NotificationController {
     @Body() payload: CreateNotificationDto,
     @CurrentUser() userId: string,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
-
     const response = await this.repository.createOne({ ...payload, createdBy: userId });
 
-    return responseMapper.mapFrom(response);
+    return this.responseMapper.mapFrom(response);
   }
 
 
@@ -62,9 +62,6 @@ export class NotificationController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<NotificationDto[]>();
-
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "createdBy",
       _l_op: "and",
@@ -73,7 +70,7 @@ export class NotificationController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -89,11 +86,9 @@ export class NotificationController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
+    const item = await this.repository.findOne(id, { fields: params?._select });
 
-    const item = await this.repository.findOne(id, params?._select);
-
-    return responseMapper.mapFrom(item);
+    return this.responseMapper.mapFrom(item);
   }
 
   @ApiResponse({
@@ -110,7 +105,6 @@ export class NotificationController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateNotificationDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
     const query = {
       _where: [
         {
@@ -124,7 +118,7 @@ export class NotificationController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
   @ApiResponse({
@@ -140,7 +134,6 @@ export class NotificationController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role) {
 
-    const responseMapper = new WrapperResponseDtoMapper<NotificationDto>();
     const query = {
       _where: [
         {
@@ -154,6 +147,6 @@ export class NotificationController {
 
     await this.repository.deleteByQuery(query);
 
-    return responseMapper.mapFrom({ id });
+    return this.responseMapper.mapFrom({ id });
   }
 }

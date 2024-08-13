@@ -1,21 +1,23 @@
-import { DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { AppConfigs, IAppConfigsRepository } from "@/core/domain/configs";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { AppConfigsEntity } from "@/infrastructure/features/configs";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
-export class AppConfigsRepository implements IAppConfigsRepository{
+export class AppConfigsRepository implements IAppConfigsRepository {
   private readonly repository: BaseRepository<AppConfigs>;
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
     this.repository = new BaseRepository(dataSource, AppConfigsEntity);
   }
+
 
   async createMany(payload: Partial<AppConfigs>[]): Promise<AppConfigs[]> {
     return await this.repository.createMany(payload);
@@ -29,8 +31,12 @@ export class AppConfigsRepository implements IAppConfigsRepository{
     return await this.repository.findByQuery(query);
   }
 
-  async findOne(id: string, fields?: string[]): Promise<AppConfigs> {
-    return await this.repository.findOne(id, fields);
+  async findOne(id: string, options?: FindItemOptions): Promise<AppConfigs> {
+    return await this.repository.findOne(id, options);
+  }
+
+  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<AppConfigs> {
+    return this.repository.findOneByQuery(query, options);
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<AppConfigs>): Promise<string[]> {

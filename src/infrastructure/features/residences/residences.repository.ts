@@ -5,7 +5,7 @@ import { Residence, IResidenceRepository } from "@/core/domain/residences";
 import { ResidenceEntity } from "@/infrastructure/features/residences";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
 export class ResidenceRepository implements IResidenceRepository {
@@ -17,6 +17,7 @@ export class ResidenceRepository implements IResidenceRepository {
   ) {
     this.repository = new BaseRepository(dataSource, ResidenceEntity);
   }
+
 
   async createMany(payload: Partial<Residence>[]): Promise<Residence[]> {
     return await this.repository.createMany(payload);
@@ -30,8 +31,12 @@ export class ResidenceRepository implements IResidenceRepository {
     return await this.repository.findByQuery(query);
   }
 
-  async findOne(id: string, fields?: string[]): Promise<Residence> {
-    return await this.repository.findOne(id, fields);
+  async findOne(id: string, options?: FindItemOptions): Promise<Residence> {
+    return await this.repository.findOne(id, options);
+  }
+
+  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Residence> {
+    return this.repository.findOneByQuery(query, options);
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<Residence>): Promise<string[]> {

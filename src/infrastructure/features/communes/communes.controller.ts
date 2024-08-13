@@ -5,10 +5,9 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { ICommuneRepository } from "@/core/domain/communes";
 import {
   CreateCommuneDto,
-  CommuneDto,
   UpdateCommuneDto,
   WrapperResponseCommuneDto,
-  WrapperResponseCommuneListDto,
+  WrapperResponseCommuneListDto, CommuneDtoMapper,
 } from "@/infrastructure/features/communes";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -16,11 +15,14 @@ import { PermissionAction, PermissionCollection } from "@/core/domain/permission
 import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
-import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
 @ApiTags("Commune")
 @Controller("communes")
 export class CommuneController {
+
+  private readonly dtoMapper = new CommuneDtoMapper();
+  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+
   constructor(
     @Inject(Deps.CommuneRepository)
     private readonly repository: ICommuneRepository,
@@ -39,12 +41,9 @@ export class CommuneController {
     @Body() payload: CreateCommuneDto,
     @CurrentUser() userId: string,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<CommuneDto>();
-
     const response = await this.repository.createOne({ ...payload, createdBy: userId });
 
-    return responseMapper.mapFrom(response);
+    return this.responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
@@ -52,14 +51,11 @@ export class CommuneController {
   })
   @Get()
   async readMany(
-    @Query() params: SearchItemsParamsDto
+    @Query() params: SearchItemsParamsDto,
   ) {
-
-    const responseMapper = new WrapperResponseDtoMapper<CommuneDto[]>();
-
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -70,11 +66,9 @@ export class CommuneController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<CommuneDto>();
+    const item = await this.repository.findOne(id, { fields: params?._select });
 
-    const item = await this.repository.findOne(id, params?._select);
-
-    return responseMapper.mapFrom(item);
+    return this.responseMapper.mapFrom(item);
   }
 
 
@@ -92,7 +86,6 @@ export class CommuneController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateCommuneDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<CommuneDto>();
     const query = {
       _where: [
         {
@@ -106,7 +99,7 @@ export class CommuneController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
 
@@ -122,8 +115,6 @@ export class CommuneController {
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role) {
-
-    const responseMapper = new WrapperResponseDtoMapper<CommuneDto>();
     const query = {
       _where: [
         {
@@ -137,6 +128,6 @@ export class CommuneController {
 
     await this.repository.deleteByQuery(query);
 
-    return responseMapper.mapFrom({ id } as never);
+    return this.responseMapper.mapFrom({ id } as never);
   }
 }

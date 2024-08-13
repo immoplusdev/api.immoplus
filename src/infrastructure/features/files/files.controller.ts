@@ -16,7 +16,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
-  FileDto,
+  FileDtoMapper,
   UploadFileCommandDto,
   WrapperResponseFileDto,
   WrapperResponseFileListDto,
@@ -44,6 +44,10 @@ import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/htt
 @ApiTags("File")
 @Controller("files")
 export class FileController {
+
+  private readonly dtoMapper = new FileDtoMapper();
+  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+
   constructor(
     readonly commandBus: CommandBus,
     @Inject(Deps.FileRepository)
@@ -181,8 +185,6 @@ export class FileController {
     @CurrentUser("role") userRole: Role,
   ) {
 
-    const responseMapper = new WrapperResponseDtoMapper<FileDto[]>();
-
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
       _field: "uploadedBy",
       _l_op: "and",
@@ -191,7 +193,7 @@ export class FileController {
 
     const items = await this.repository.findByQuery(params);
 
-    return responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -207,12 +209,9 @@ export class FileController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
+    const item = await this.repository.findOne(id, { fields: params?._select });
 
-    const responseMapper = new WrapperResponseDtoMapper<FileDto>();
-
-    const item = await this.repository.findOne(id, params?._select);
-
-    return responseMapper.mapFrom(item);
+    return this.responseMapper.mapFrom(item);
   }
 
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -260,7 +259,6 @@ export class FileController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role) {
 
-    const responseMapper = new WrapperResponseDtoMapper<FileDto>();
     const query = {
       _where: [
         {
@@ -274,7 +272,7 @@ export class FileController {
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
   @ApiResponse({
@@ -290,7 +288,6 @@ export class FileController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role) {
 
-    const responseMapper = new WrapperResponseDtoMapper<FileDto>();
     const query = {
       _where: [
         {
@@ -304,7 +301,7 @@ export class FileController {
 
     await this.repository.deleteByQuery(query);
 
-    return responseMapper.mapFrom({ id } as never);
+    return this.responseMapper.mapFrom({ id } as never);
   }
 }
 

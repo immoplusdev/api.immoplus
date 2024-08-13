@@ -50,7 +50,7 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserOtp(userId: string, otp: string, options?: VerifyOtpOptions) {
-    const user = await this.usersRepository.findOne(userId, ["id", "otp"]);
+    const user = await this.usersRepository.findOne(userId, { fields: ["id", "otp"]});
     if (!user) throw new UserNotFoundException();
 
     const otpIsValid = user.otp === otp;

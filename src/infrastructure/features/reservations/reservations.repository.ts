@@ -1,16 +1,16 @@
 import { DataSource, Equal, Repository } from "typeorm";
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { Reservation, IReservationRepository } from "@/core/domain/reservations";
-import { ReservationEntity } from '@/infrastructure/features/reservations';
+import { ReservationEntity } from "@/infrastructure/features/reservations";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 import { mapQueryToTypeormQuery } from "@/infrastructure/http";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 
 @Injectable()
-export class ReservationRepository implements IReservationRepository{
+export class ReservationRepository implements IReservationRepository {
   private readonly repository: BaseRepository<Reservation>;
   private readonly reservationRepository: Repository<ReservationEntity>;
   private readonly relations = ["residence"];
@@ -22,6 +22,7 @@ export class ReservationRepository implements IReservationRepository{
     this.repository = new BaseRepository(dataSource, ReservationEntity);
     this.reservationRepository = dataSource.getRepository(ReservationEntity);
   }
+
 
   async createMany(payload: Partial<Reservation>[]): Promise<Reservation[]> {
     return await this.repository.createMany(payload);
@@ -56,8 +57,13 @@ export class ReservationRepository implements IReservationRepository{
   }
 
 
-  async findOne(id: string, fields?: string[]): Promise<Reservation> {
-    return await this.repository.findOne(id, fields);
+  async findOne(id: string, options?: FindItemOptions): Promise<Reservation> {
+    return await this.repository.findOne(id, options);
+  }
+
+
+  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Reservation> {
+    return this.repository.findOneByQuery(query, options);
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<Reservation>): Promise<string[]> {

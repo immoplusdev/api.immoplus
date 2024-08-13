@@ -8,9 +8,8 @@ import { Role } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { mapQueryFieldsToTypeormSelection } from "@/infrastructure/http";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 import { UserEntityMapper } from "@/infrastructure/features/users/users-entity.mapper";
-import { tr } from "@faker-js/faker";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -24,7 +23,7 @@ export class UsersRepository implements IUsersRepository {
     @Inject(Deps.PermissionRepository)
     private readonly permissionRepository: IPermissionRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, UserEntity, this.relations).setEntityMapper(new UserEntityMapper());
+    this.repository = new BaseRepository(dataSource, UserEntity, this.relations).setEntityMapper(new UserEntityMapper()).setLoadRelationIds(true);
     this.userRepository = dataSource.getRepository(UserEntity);
   }
 
@@ -41,12 +40,19 @@ export class UsersRepository implements IUsersRepository {
     return await this.repository.findByQuery(query);
   }
 
-  async findOne(id: string, fields?: string[]): Promise<User> {
-    return this.repository.findOne(id, fields);
+  async findOne(id: string, options?: FindItemOptions): Promise<User> {
+    return this.repository.findOne(id, options);
+  }
+
+  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<User> {
+    return this.repository.findOneByQuery(query, options);
   }
 
   async findPublicUserInfoByUserId(id: string): Promise<PublicUserInfo | null> {
-    const result = await this.repository.findOne(id, ["email", "firstName", "lastName", "phoneNumber"]);
+    const result = await this.repository.findOne(id, {
+      fields: ["email", "firstName", "lastName", "phoneNumber"],
+      relations: this.relations,
+    });
     return {
       id,
       ...result,
