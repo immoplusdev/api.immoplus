@@ -19,7 +19,7 @@ export class VerifyEmailCommandHandler implements ICommandHandler<VerifyEmailCom
   async execute(command: VerifyEmailCommand): Promise<VerifyEmailCommandResponse> {
     await this.tfaService.verifyUserEmailOtp(command.email, command.otp, { throwException: true, resetIfValid: true });
 
-    const user = await this.usersRepository.findOneByEmail(command.email, ["id", "emailVerified"]);
+    const user = await this.usersRepository.findOneByEmail(command.email, { fields: ["id", "emailVerified"] });
     if (user.emailVerified) throw new UnexpectedException();
 
     await this.usersRepository.updateOne(user.id, { emailVerified: true });

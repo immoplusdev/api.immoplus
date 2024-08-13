@@ -3,3 +3,4 @@ export * from './users.repository';
 export * from './users.service';
 export * from './dto';
 export * from './users-data.entity';
+export * from "./users-entity.mapper"

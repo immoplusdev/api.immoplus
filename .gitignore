@@ -401,3 +401,4 @@ dist
 .serverless/**/*.zip
 uploads/*
 credentials.txt
+environments/local.bru

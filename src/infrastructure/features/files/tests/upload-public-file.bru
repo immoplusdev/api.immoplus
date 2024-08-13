@@ -4,8 +4,29 @@ meta {
   seq: 1
 }
 
-get {
-  url: 
-  body: none
-  auth: none
+post {
+  url: {{API_URL}}/files/public
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:multipart-form {
+  file: @file(/Users/macbookpro/Downloads/immoplus-1.webp)
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_IMAGE_ID", id)
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { id }} = res.getBody();
+  
+    expect(id).to.be.a('string');
+  });
 }

@@ -26,9 +26,10 @@ script:pre-request {
 }
 
 tests {
-  test("Should receive a not null registreCommerceId", function() {
-    const {data: { user: { additionalData }}} = res.getBody();
+  test("Should return not null id and additionalData id", function() {
+    const {data} = res.getBody();
   
-    expect(additionalData.registreCommerceId).to.be.a('string');
+    expect(data?.additionalData.id).to.be.a('string');
+    expect(data.email).to.be.a('string');
   });
 }

@@ -1,19 +1,16 @@
 import { IUsersRepository, PublicUserInfo, User, UserWithRoleAndPermissions } from "@/core/domain/users";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
-import { UserEntity } from "@/infrastructure/features/users/users.entity";
+import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
 import { Role } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { mapQueryFieldsToTypeormSelection } from "@/infrastructure/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
-import { UserEntityMapper } from "@/infrastructure/features/users/users-entity.mapper";
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
-  private readonly userRepository: Repository<UserEntity>;
   private readonly repository: BaseRepository<User>;
   private readonly relations = ["role", "additionalData"];
 
@@ -23,11 +20,10 @@ export class UsersRepository implements IUsersRepository {
     @Inject(Deps.PermissionRepository)
     private readonly permissionRepository: IPermissionRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, UserEntity, this.relations).setEntityMapper(new UserEntityMapper()).setLoadRelationIds(true);
-    this.userRepository = dataSource.getRepository(UserEntity);
+    this.repository = new BaseRepository(dataSource, UserEntity, this.relations).setEntityMapper(new UserEntityMapper()).setLoadRelationIds(false);
   }
 
-
+  // Create
   async createMany(payload: Partial<User>[]): Promise<User[]> {
     return await this.repository.createMany(payload);
   }
@@ -36,8 +32,9 @@ export class UsersRepository implements IUsersRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<User[]>> {
-    return await this.repository.findByQuery(query);
+  // Read
+  async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<User[]>> {
+    return await this.repository.findByQuery(query, options);
   }
 
   async findOne(id: string, options?: FindItemOptions): Promise<User> {
@@ -59,50 +56,28 @@ export class UsersRepository implements IUsersRepository {
     };
   }
 
-  async findOneByEmail(email: string, fields?: string[]): Promise<User | null> {
-    const result = await this.userRepository.findOne({
-      where: { email },
-      relations: this.relations,
-      select: mapQueryFieldsToTypeormSelection(fields),
-      // loadRelationIds: true
-    });
-    return this.repository.mapResponse(result);
+  async findOneByEmail(email: string, options?: FindItemOptions): Promise<User | null> {
+    return await this.findOneByQuery({ _where: [{ _field: "email", _val: email }] }, options);
   }
 
-  async findOneByPhoneNumber(phoneNumber: string, fields?: string[]): Promise<User | null> {
-    const result = await this.userRepository.findOne(
-      {
-        where: { phoneNumber },
-        relations: this.relations,
-        select: mapQueryFieldsToTypeormSelection(fields),
-        // loadRelationIds: true
-      },
-    );
-
-    return this.repository.mapResponse(result);
+  async findOneByPhoneNumber(phoneNumber: string, options?: FindItemOptions): Promise<User | null> {
+    return await this.findOneByQuery({ _where: [{ _field: "phoneNumber", _val: phoneNumber }] }, options);
   }
 
-  async findOneByUsername(username: string, fields?: string[]): Promise<User | null> {
+  async findOneByUsername(username: string, options?: FindItemOptions): Promise<User | null> {
     let user: User | null = null;
     try {
-      if (username.includes("@")) user = await this.findOneByEmail(username, fields);
-      if (!user) user = await this.findOneByPhoneNumber(username, fields);
+      if (username.includes("@")) user = await this.findOneByEmail(username, options);
+      if (!user) user = await this.findOneByPhoneNumber(username, options);
     } catch (error) {
       return null;
     }
     return user;
   }
 
-  async findOneByIdWithRoleAndPermissions(id: string, fields?: string[]): Promise<UserWithRoleAndPermissions | null> {
+  async findOneByIdWithRoleAndPermissions(id: string, options?: FindItemOptions): Promise<UserWithRoleAndPermissions | null> {
 
-    const user = await this.userRepository.findOne({
-      where: {
-        id,
-      },
-      relations: this.relations,
-      select: mapQueryFieldsToTypeormSelection(fields),
-      // loadRelationIds: true
-    });
+    const user = await this.findOne(id, options);
     if (!user) throw new UnauthorizedException();
 
     const permissions = await this.permissionRepository.findByRoleId((user.role as Role).id);
@@ -113,6 +88,7 @@ export class UsersRepository implements IUsersRepository {
     });
   }
 
+  // Update
   async updateByQuery(query: SearchItemsParams, payload: Partial<User>): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
@@ -122,6 +98,7 @@ export class UsersRepository implements IUsersRepository {
     return id;
   }
 
+  // Delete
   async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
     return await this.repository.deleteByQuery(query);
   }

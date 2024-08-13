@@ -1,0 +1,27 @@
+meta {
+  name: login-pro-entreprise
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "{{PRO_ENTREPRISE_USERNAME}}",
+    "password": "{{DEFAULT_USER_PASSWORD}}"
+  }
+}
+
+tests {
+  test("Should receive a not null additionalData id", function() {
+    const {data: { user: { additionalData }}} = res.getBody();
+    
+    expect(additionalData.id).to.be.a('string');
+  });
+  
+}

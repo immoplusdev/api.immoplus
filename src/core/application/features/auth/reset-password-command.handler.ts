@@ -20,10 +20,10 @@ export class ResetPasswordCommandHandler implements ICommandHandler<ResetPasswor
   async execute(command: ResetPasswordCommand): Promise<ResetPasswordCommandResponse> {
     await this.verifyOtp(command);
 
-    const user = await this.usersRepository.findOneByUsername(command.username, ["id"]);
+    const user = await this.usersRepository.findOneByUsername(command.username, { fields: ["id"] });
 
     await this.usersRepository.updateOne(user.id, { password: this.passwordManagerService.encryptPassword(command.newPassword) });
-    
+
     return new ResetPasswordCommandResponse();
   }
 

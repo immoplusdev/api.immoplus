@@ -23,7 +23,7 @@ export class TfaService implements ITfaService {
       const otp = this.generateOtp();
       await this.usersRepository.updateOne(userId, {
         otp,
-        authLoginAttempts: 0
+        authLoginAttempts: 0,
       });
       return otp;
     } catch (err) {
@@ -32,7 +32,7 @@ export class TfaService implements ITfaService {
   }
 
   async generateUserPhoneNumberOtp(phoneNumber: string) {
-    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, ["id"]);
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["id"] });
     if (!user) throw new UserNotFoundException();
 
     const otp = this.generateOtp();
@@ -41,7 +41,7 @@ export class TfaService implements ITfaService {
   }
 
   async generateUserEmailOtp(email: string) {
-    const user = await this.usersRepository.findOneByEmail(email, ["id"]);
+    const user = await this.usersRepository.findOneByEmail(email, { fields: ["id"] });
     if (!user) throw new UserNotFoundException();
 
     const otp = this.generateOtp();
@@ -50,7 +50,7 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserOtp(userId: string, otp: string, options?: VerifyOtpOptions) {
-    const user = await this.usersRepository.findOne(userId, { fields: ["id", "otp"]});
+    const user = await this.usersRepository.findOne(userId, { fields: ["id", "otp"] });
     if (!user) throw new UserNotFoundException();
 
     const otpIsValid = user.otp === otp;
@@ -63,7 +63,7 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserEmailOtp(email: string, otp: string, options?: VerifyOtpOptions) {
-    const user = await this.usersRepository.findOneByEmail(email, ["id", "otp"]);
+    const user = await this.usersRepository.findOneByEmail(email, { fields: ["id", "otp"] });
     if (!user) throw new UserNotFoundException();
 
     const otpIsValid = user.otp === otp;
@@ -76,7 +76,7 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserPhoneNumberOtp(phoneNumber: string, otp: string, options?: VerifyOtpOptions) {
-    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, ["id", "otp"]);
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["id", "otp"] });
     if (!user) throw new UserNotFoundException();
 
     const otpIsValid = user.otp === otp;

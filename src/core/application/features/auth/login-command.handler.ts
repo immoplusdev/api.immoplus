@@ -11,7 +11,6 @@ import {
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
-import { Role, UserRole } from "@/core/domain/roles";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {

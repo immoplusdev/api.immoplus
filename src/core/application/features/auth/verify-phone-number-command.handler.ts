@@ -22,7 +22,7 @@ export class VerifyPhoneNumberCommandHandler implements ICommandHandler<VerifyPh
       resetIfValid: true,
     });
 
-    const user = await this.usersRepository.findOneByPhoneNumber(command.phoneNumber, ["id", "phoneNumberVerified"]);
+    const user = await this.usersRepository.findOneByPhoneNumber(command.phoneNumber, { fields: ["id", "phoneNumberVerified"] });
     if (user.phoneNumberVerified) throw new UnexpectedException();
 
     await this.usersRepository.updateOne(user.id, { phoneNumberVerified: true });

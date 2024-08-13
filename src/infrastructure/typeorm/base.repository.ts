@@ -19,7 +19,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     readonly dataSource: DataSource,
     entityClass: any,
     relations?: RepositoryRelations,
-    loadRelationIds?: boolean
+    loadRelationIds?: boolean,
   ) {
     this.repository = dataSource.getRepository(entityClass);
     this.relations = relations || undefined;
@@ -27,7 +27,6 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   getRepositoryInstance(): BaseRepository<any, any, any, any> {
-    // FIXME: allow this method to return an instance of the repository that can be called again in a chain
     return this as never;
   }
 
@@ -54,30 +53,35 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<Model[]>> {
+
+    const paginationOptions = {
+      currentPage: query?._page || DEFAULT_PAGE,
+      pageSize: query?._per_page || DEFAULT_PAGE_SIZE,
+    };
+
+    const queryOptions = {
+      relations: options?.loadRelationIds || this.relations,
+      loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
+    } as any;
+
     if (query) {
       const typeormQuery = query ? mapQueryToTypeormQuery(query) : undefined;
       const [data, total] = await this.repository.findAndCount({
         ...typeormQuery,
-        relations: options?.loadRelationIds && this.relations,
-        loadRelationIds: options?.loadRelationIds && this.loadRelationIds,
+        ...queryOptions,
       });
       // result = await this.repository.find(typeormQuery);
       // total = await this.repository.count(typeormQuery.where);
       return new WrapperResponse(this.mapResponse(data)).paginate({
+        ...paginationOptions,
         totalCount: total,
-        currentPage: query?._page || DEFAULT_PAGE,
-        pageSize: query?._per_page || DEFAULT_PAGE_SIZE,
       });
     } else {
-      const [data, total] = await this.repository.findAndCount({
-        relations: options?.loadRelationIds && this.relations,
-        loadRelationIds: options?.loadRelationIds && this.loadRelationIds,
-      });
+      const [data, total] = await this.repository.findAndCount(queryOptions);
 
       return new WrapperResponse(this.mapResponse(data)).paginate({
+        ...paginationOptions,
         totalCount: total,
-        currentPage: query?._page || DEFAULT_PAGE,
-        pageSize: query?._per_page || DEFAULT_PAGE_SIZE,
       });
     }
   }
@@ -86,8 +90,8 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     const item = await this.repository.findOne({
       where: { id },
       select: mapQueryFieldsToTypeormSelection(options?.fields),
-      relations: options?.loadRelationIds && this.relations,
-      loadRelationIds: options?.loadRelationIds && this.loadRelationIds,
+      relations: (options?.loadRelationIds || this.relations) as never,
+      loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
     });
     if (!item) return null;
     return this.mapResponse(item);
@@ -95,7 +99,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
 
   async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Model> {
     const items = await this.findByQuery(query, options);
-    if(items.data.length === 0) return null;
+    if (items.data.length === 0) return null;
     return items.data[0];
   }
 
