@@ -47,7 +47,7 @@ export class UsersRepository implements IUsersRepository {
 
   async findPublicUserInfoByUserId(id: string): Promise<PublicUserInfo | null> {
     const result = await this.repository.findOne(id, {
-      fields: ["email", "firstName", "lastName", "phoneNumber"],
+      fields: ["id", "email", "firstName", "lastName", "phoneNumber"],
       relations: [],
     });
     return {

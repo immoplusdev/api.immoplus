@@ -1,0 +1,23 @@
+meta {
+  name: get-reservation-by-id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{API_URL}}/reservations/{{DEFAULT_RESERVATION_ID}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+tests {
+  test("Should receive a none empty list of date objects", function() {
+    const {data: { id }} = res.getBody();
+      
+    expect(id).to.be.a("string");
+  });
+}

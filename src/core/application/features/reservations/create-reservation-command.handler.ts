@@ -35,12 +35,12 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
 
     const calculationResult = await this.queryBus.execute(new EstimerPrixReservationQuery({ ...command }));
 
-    const residence = await this.residenceRepository.findOne(command.residence, { fields: ["proprietaire"] });
+    const residence = await this.residenceRepository.findOne(command.residence, { fields: ["id", "proprietaire"] });
     if (!residence) throw new ItemNotFoundException();
 
 
     if (!command.clientPhoneNumber) {
-      const client = await this.usersRepository.findOne(command.userId, { relations: [], fields: ["phoneNumber"] });
+      const client = await this.usersRepository.findOne(command.userId, { relations: [], fields: ["id", "phoneNumber"] });
       command.setClientPhoneNumber(client.phoneNumber);
     }
 
@@ -53,7 +53,7 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
       createdBy: command.userId,
     }, false);
 
-    console.log("We are at the end");
+
 
     return await this.queryBus.execute(new GetReservationByIdQuery({ id }));
   }

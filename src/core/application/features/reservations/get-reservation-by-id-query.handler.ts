@@ -23,7 +23,8 @@ export class GetReservationByIdQueryHandler
     const reservation = await this.reservationRepository.findOne(query.id);
     if (!reservation) throw new ItemNotFoundException();
 
-    const residence = await this.residenceRepository.findOne(reservation.residence as string, {fields: ["proprietaire"]});
+    console.log("in get reservation by id query handler");
+    const residence = await this.residenceRepository.findOne(reservation.residence as string, {fields: ["id", "proprietaire"]});
     if (!residence) throw new ItemNotFoundException();
 
     const client = await this.usersRepository.findPublicUserInfoByUserId(reservation.createdBy);
@@ -32,7 +33,7 @@ export class GetReservationByIdQueryHandler
     return new GetReservationByIdQueryResponse({
       ...reservation,
       residence,
-      client: client,
+      client,
       proprietaire,
     });
   }
