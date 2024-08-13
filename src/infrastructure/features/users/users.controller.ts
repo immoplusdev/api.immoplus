@@ -65,7 +65,10 @@ export class UsersController {
       _val: userId,
     }], params._where);
 
-    return await this.usersRepository.findByQuery(params);
+    const result = await this.usersRepository.findByQuery(params);
+
+  return this.responseMapper.mapFromQueryResult(result);
+
   }
 
   @ApiResponse({
