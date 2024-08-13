@@ -1,0 +1,45 @@
+meta {
+  name: estimer-prix-reservation
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/reservations/estimer-prix
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "residence": "{{DEFAULT_RESIDENCE_ID}}",
+    "datesReservation": [
+      {
+        "date": "{{date}}"
+      }
+    ]
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("date", faker.datatype.datetime().toISOString());
+  
+  
+  
+  
+  
+  
+}
+
+tests {
+  test("Should receive montantTotalReservation > 0", function() {
+    const {data: { montantTotalReservation }} = res.getBody();
+  
+    expect(montantTotalReservation > 0).to.be.equal(true);
+  });
+}

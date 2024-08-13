@@ -12,8 +12,8 @@ post {
 
 body:json {
   {
-    "email": "pro-enteprise-{{proId}}@immoplus.ci",
-    "phoneNumber": "225-{{proId}}",
+    "email": "pro-enteprise-{{userId}}@immoplus.ci",
+    "phoneNumber": "225-{{userId}}",
     "password": "@Admin2019",
     "nomEntreprise": "NomEntreprise",
     "emailEntreprise": "test@gmail.com",
@@ -25,7 +25,7 @@ body:json {
 
 script:pre-request {
   const { faker } = require('@faker-js/faker');
-  bru.setEnvVar("proId", faker.string.numeric(10));
+  bru.setEnvVar("userId", faker.string.numeric(10));
   
 }
 

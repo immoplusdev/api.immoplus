@@ -35,19 +35,25 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
 
     const calculationResult = await this.queryBus.execute(new EstimerPrixReservationQuery({ ...command }));
 
-    const residence = await this.residenceRepository.findOne(command.residence, {fields: ["proprietaire"]});
+    const residence = await this.residenceRepository.findOne(command.residence, { fields: ["proprietaire"] });
     if (!residence) throw new ItemNotFoundException();
 
 
-    const client = await this.usersRepository.findOne(command.userId, {fields: ["id", "phoneNumber"]});
+    if (!command.clientPhoneNumber) {
+      const client = await this.usersRepository.findOne(command.userId, { relations: [], fields: ["phoneNumber"] });
+      command.setClientPhoneNumber(client.phoneNumber);
+    }
+
 
     const { id } = await this.reservationRepository.createOne({
       ...command,
       montantTotalReservation: calculationResult.montantTotalReservation,
       montantReservationSansCommission: calculationResult.montantReservationSansCommission,
-      clientPhoneNumber: command.clientPhoneNumber || client.phoneNumber,
+      clientPhoneNumber: command.clientPhoneNumber,
       createdBy: command.userId,
     }, false);
+
+    console.log("We are at the end");
 
     return await this.queryBus.execute(new GetReservationByIdQuery({ id }));
   }

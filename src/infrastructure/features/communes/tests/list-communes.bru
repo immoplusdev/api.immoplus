@@ -1,0 +1,21 @@
+meta {
+  name: list-communes
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/communes
+  body: none
+  auth: none
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data} = res.getBody();
+    for(let commune of data){
+      console.log(commune.villeId)
+        expect(commune.villeId).to.be.a('string');
+    }
+  });
+}

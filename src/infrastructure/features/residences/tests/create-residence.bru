@@ -1,0 +1,84 @@
+meta {
+  name: create-residence
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/residences
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+body:json {
+  {
+    "miniature": "{{DEFAULT_IMAGE_ID}}",
+    "nom": "{{residenceName}}",
+    "typeResidence": "appartement",
+    "description": "{{residenceName}}",
+    "prixReservation": {{prixReservation}},
+    "adresse": "{{residenceName}}",
+    "ville": "{{DEFAULT_VILLE_ID}}",
+    "commune": "{{DEFAULT_COMMUNE_ID}}",
+    "position": {
+      "type": "Point",
+      "coordinates": [{{lat}}, {{long}}]
+    },
+    "video": "{{DEFAULT_IMAGE_ID}}",
+    "images": [
+      "{{DEFAULT_IMAGE_ID}}"
+    ],
+    "pieces": [
+      {
+        "nom": "{{word}}",
+        "nombre": 2
+      }
+    ],
+    "dureeMinSejour": 2,
+    "dureeMaxSejour": 3,
+     "metadata": { "ok": "ok"},
+    "heureEntree": "10:20",
+    "heureDepart": "22:30",
+    "nombreMaxOccupants": 20,
+    "animauxAutorises": true,
+    "fetesAutorises": true,
+    "reglesSupplementaires": "{{residenceName}}",
+    "residenceDisponible": true
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("residenceName", faker.company.name());
+  
+  bru.setVar("prixReservation", faker.finance.amount({ min: 1000, max: 20000, dec: 0 }))
+  
+  const [lat, long] = faker.location.nearbyGPSCoordinate();
+  bru.setVar("lat", lat);
+  bru.setVar("long", long);
+  
+  bru.setVar("word", faker.word.adjective())
+  
+  
+  
+  
+  
+  
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_RESIDENCE_ID", id)
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { id }} = res.getBody();
+  
+    expect(id).to.be.a('string');
+  });
+}

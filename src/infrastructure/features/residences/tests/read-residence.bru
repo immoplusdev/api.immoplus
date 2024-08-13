@@ -1,0 +1,23 @@
+meta {
+  name: read-residence
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/residences/{{DEFAULT_RESIDENCE_ID}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { id }} = res.getBody();
+  
+    expect(id).to.be.a('string');
+  });
+}

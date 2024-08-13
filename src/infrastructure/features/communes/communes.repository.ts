@@ -11,12 +11,12 @@ import { Residence } from "@/core/domain/residences";
 @Injectable()
 export class CommuneRepository implements ICommuneRepository {
   private readonly repository: BaseRepository<Commune>;
-
+  private readonly relations = ["ville"];
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, CommuneEntity);
+    this.repository = new BaseRepository(dataSource, CommuneEntity, this.relations).setLoadRelationIds(true);
   }
 
 

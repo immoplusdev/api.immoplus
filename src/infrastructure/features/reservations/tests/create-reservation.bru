@@ -1,0 +1,50 @@
+meta {
+  name: create-reservation
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/reservations
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "residence": "{{DEFAULT_RESIDENCE_ID}}",
+    "datesReservation": [
+      {
+        "date": "{{date}}"
+      }
+    ]
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("date", faker.datatype.datetime().toISOString());
+  
+  
+  
+  
+  
+  
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_RESERVATION_ID", id)
+}
+
+tests {
+  test("Should receive montantTotalReservation > 0", function() {
+    const {data: { montantTotalReservation }} = res.getBody();
+  
+    expect(montantTotalReservation > 0).to.be.equal(true);
+  });
+}

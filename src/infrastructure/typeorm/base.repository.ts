@@ -8,18 +8,23 @@ import { FindOptionsRelations } from "typeorm/find-options/FindOptionsRelations"
 import { IMapper } from "@/lib/ts-utilities";
 
 export type RepositoryRelations<Entity = any> = string[] | FindOptionsRelations<Entity>;
+export type LoadRelationIdsOptions = boolean | {
+  relations?: string[];
+  disableMixedMap?: boolean;
+};
+
 
 export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Partial<Model>, KeyType = string> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
   private readonly relations?: RepositoryRelations;
-  private loadRelationIds: boolean = true;
+  private loadRelationIds: LoadRelationIdsOptions = true;
   private entityMapper?: IMapper<any, any> = null;
 
   constructor(
     readonly dataSource: DataSource,
     entityClass: any,
     relations?: RepositoryRelations,
-    loadRelationIds?: boolean,
+    loadRelationIds?: LoadRelationIdsOptions,
   ) {
     this.repository = dataSource.getRepository(entityClass);
     this.relations = relations || undefined;
@@ -35,7 +40,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return this.getRepositoryInstance();
   }
 
-  setLoadRelationIds(loadRelationIds: boolean) {
+  setLoadRelationIds(loadRelationIds: LoadRelationIdsOptions) {
     this.loadRelationIds = loadRelationIds;
     return this.getRepositoryInstance();
   }
@@ -75,6 +80,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
       return new WrapperResponse(this.mapResponse(data)).paginate({
         ...paginationOptions,
         totalCount: total,
+
       });
     } else {
       const [data, total] = await this.repository.findAndCount(queryOptions);
@@ -119,7 +125,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   async deleteOne(id: KeyType): Promise<KeyType> {
-    await this.repository.softDelete(id);
+  await this.repository.softDelete(id);
     return id;
   }
 

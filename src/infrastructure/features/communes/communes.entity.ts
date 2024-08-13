@@ -4,11 +4,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users";
 import { VilleEntity } from "@/infrastructure/features/villes";
+import { Ville } from "@/core/domain/villes";
 
 @Entity("communes")
 export class CommuneEntity {
@@ -19,8 +20,7 @@ export class CommuneEntity {
 
   @ManyToOne(() => VilleEntity, (entity) => entity.id)
   @JoinColumn({ name: "ville_id" })
-  ville: string;
-
+  ville: Ville;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;

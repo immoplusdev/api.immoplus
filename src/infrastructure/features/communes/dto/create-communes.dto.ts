@@ -8,7 +8,7 @@ export class CreateCommuneDto {
   name: string;
   @ApiProperty()
   @IsNotEmpty()
-  ville: string;
+  villeId: string;
 
   constructor(data?: OmitMethods<CreateCommuneDto>) {
     Object.assign(this, data);

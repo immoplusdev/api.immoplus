@@ -41,7 +41,10 @@ export class CommuneController {
     @Body() payload: CreateCommuneDto,
     @CurrentUser() userId: string,
   ) {
-    const response = await this.repository.createOne({ ...payload, createdBy: userId });
+    const response = await this.repository.createOne({
+      name: payload.name,
+      ville: payload.villeId,
+    });
 
     return this.responseMapper.mapFrom(response);
   }

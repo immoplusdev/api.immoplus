@@ -1,0 +1,19 @@
+meta {
+  name: get-residence-occupied-dates
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/reservations/data/residence-occupied-dates/{{DEFAULT_RESIDENCE_ID}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Should receive a none empty list of date objects", function() {
+    const {data: { dates }} = res.getBody();
+      
+    expect(Array.isArray(dates)).to.be.equal(true);
+  });
+}

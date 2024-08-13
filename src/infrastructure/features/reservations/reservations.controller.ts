@@ -153,9 +153,13 @@ export class ReservationController {
     const responseMapper = new WrapperResponseDtoMapper<WrapperResponseGetResidenceOccupiedDatesQueryResponseDto>();
     const query = new GetResidenceOccupiedDatesQuery({ residenceId });
 
+
+
     const response = await this.queryBus.execute(query);
-    return responseMapper.mapFromQueryResult(response);
+
+    return responseMapper.mapFrom(response);
   }
+
 
 
   @ApiResponse({

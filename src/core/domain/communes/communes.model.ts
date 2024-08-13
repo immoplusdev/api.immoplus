@@ -1,9 +1,11 @@
 import { OmitMethods } from "@/lib/ts-utilities";
+import { Ville } from "@/core/domain/villes";
 
 export class Commune {
   id: string;
   name: string;
-  ville: string;
+  ville: Ville | string;
+  villeId: string;
   createdAt?: Date;
   createdBy?: string;
   updatedAt?: Date;
