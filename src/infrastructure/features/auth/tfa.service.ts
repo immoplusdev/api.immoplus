@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InvalidOtpException, ITfaService, VerifyOtpOptions } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersRepository, UserNotFoundException } from "@/core/domain/users";
+import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
 import { generateRandomString } from "@/lib/ts-utilities/strings";
 
 
@@ -10,7 +10,7 @@ export class TfaService implements ITfaService {
   // TODO: Implement account blocking mechanism for multiple failed otp validation attempts
   constructor(
     @Inject(Deps.UsersRepository)
-    private readonly usersRepository: IUsersRepository,
+    private readonly usersRepository: IUserRepository,
   ) {
   }
 

@@ -1,3 +1,3 @@
 export * from "./dto";
-export * from "./roles.module";
-export * from "./roles.entity";
+export * from "./role.module";
+export * from "./role.entity";

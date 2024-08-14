@@ -25,6 +25,7 @@ export enum Deps {
   AuthService = "AuthService",
   GlobalizationService = "GlobalizationService",
   ResidenceRepository = "ResidenceRepository",
+  BiensImmobiliesRepository = "BiensImmobiliesRepository",
 
   // Guards
   AppGuard = "AppGuard"

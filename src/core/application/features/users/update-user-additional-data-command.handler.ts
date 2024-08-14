@@ -3,16 +3,16 @@ import { UpdateUserAdditionalDataCommand } from "./update-user-additional-data.c
 import { UpdateUserAdditionalDataCommandResponse } from "./update-user-additional-data-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersDataRepository, IUsersRepository, User } from "@/core/domain/users";
+import { IUserDataRepository, IUserRepository, User } from "@/core/domain/users";
 import { AccountDataAlreadyVerifiedException } from "@/core/domain/users/account-data-already-verified.exception";
 
 @CommandHandler(UpdateUserAdditionalDataCommand)
 export class UpdateUserAdditionalDataCommandHandler implements ICommandHandler<UpdateUserAdditionalDataCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
-    private readonly usersRepository: IUsersRepository,
+    private readonly usersRepository: IUserRepository,
     @Inject(Deps.UsersDataRepository)
-    private readonly usersDataRepository: IUsersDataRepository,
+    private readonly usersDataRepository: IUserDataRepository,
   ) {
     //
   }

@@ -1,2 +1,2 @@
-export * from "./communes.model";
-export * from "./i-communes.repository";
+export * from "./commune.model";
+export * from "./i-commune.repository";

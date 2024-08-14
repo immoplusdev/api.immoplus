@@ -1,8 +1,4 @@
-export * from "./notifications.dto";
-export * from "./notifications-dto.mapper";
-export * from "./create-notifications.dto";
-export * from "./update-notifications.dto";
-// export * from "./notifications-command.dto";
-// export * from "./notifications-command-response.dto";
-// export * from "./notifications-query.dto";
-// export * from "./notifications-query-response.dto";
+export * from "./notification.dto";
+export * from "./notification-dto.mapper";
+export * from "./create-notification.dto";
+export * from "./update-notification.dto";

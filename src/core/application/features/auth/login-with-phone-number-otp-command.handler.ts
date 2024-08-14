@@ -3,7 +3,7 @@ import { LoginWithPhoneNumberOtpCommand } from "./login-with-phone-number-otp.co
 import { LoginWithPhoneNumberOtpCommandResponse } from "./login-with-phone-number-otp-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersRepository, User, UserNotFoundException, UserStatus } from "@/core/domain/users";
+import { IUserRepository, User, UserNotFoundException, UserStatus } from "@/core/domain/users";
 import {
   IAuthService,
   InvalidCredentialsException,
@@ -15,7 +15,7 @@ import { LoginCommandResponse } from "@/core/application/features/auth/login-com
 @CommandHandler(LoginWithPhoneNumberOtpCommand)
 export class LoginWithPhoneNumberOtpCommandHandler implements ICommandHandler<LoginWithPhoneNumberOtpCommand> {
   constructor(
-    @Inject(Deps.UsersRepository) private readonly userRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly userRepository: IUserRepository,
     @Inject(Deps.AuthService) private readonly authService: IAuthService,
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
   ) {

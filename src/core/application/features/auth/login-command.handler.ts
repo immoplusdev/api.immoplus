@@ -4,7 +4,7 @@ import { LoginCommandResponse } from "./login-command.response";
 import { Inject } from "@nestjs/common";
 import { ILoggerService } from "@/core/domain/logging";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersRepository, User } from "@/core/domain/users";
+import { IUserRepository, User } from "@/core/domain/users";
 import {
   IAuthService, InvalidCredentialsException,
   IPasswordManagerService,
@@ -16,7 +16,7 @@ import { UserStatus } from "@/core/domain/users";
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
-    @Inject(Deps.UsersRepository) private readonly userRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly userRepository: IUserRepository,
     @Inject(Deps.AuthService) private readonly authService: IAuthService,
     @Inject(Deps.PasswordManagerService) private readonly passwordManagerService: IPasswordManagerService,
   ) {

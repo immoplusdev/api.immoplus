@@ -6,5 +6,6 @@ export enum PermissionCollection {
   Villes = "villes",
   Communes = "communes",
   Reservations = "reservations",
-  Configurations = "configurations"
+  Configurations = "configurations",
+  BiensImmobilies = "biensImmobilies"
 }

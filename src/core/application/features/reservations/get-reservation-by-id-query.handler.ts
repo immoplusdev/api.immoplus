@@ -4,7 +4,7 @@ import { GetReservationByIdQuery } from "./get-reservation-by-id.query";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
-import { IUsersRepository } from "@/core/domain/users";
+import { IUserRepository } from "@/core/domain/users";
 import { IResidenceRepository } from "@/core/domain/residences";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 
@@ -13,7 +13,7 @@ export class GetReservationByIdQueryHandler
   implements IQueryHandler<GetReservationByIdQuery, GetReservationByIdQueryResponse> {
   constructor(
     @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
     @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
   ) {
     //
@@ -23,7 +23,6 @@ export class GetReservationByIdQueryHandler
     const reservation = await this.reservationRepository.findOne(query.id);
     if (!reservation) throw new ItemNotFoundException();
 
-    console.log("in get reservation by id query handler");
     const residence = await this.residenceRepository.findOne(reservation.residence as string, {fields: ["id", "proprietaire"]});
     if (!residence) throw new ItemNotFoundException();
 

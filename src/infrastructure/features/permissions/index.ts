@@ -1,3 +1,3 @@
 export * from "./dto";
-export * from "./permissions.module";
-export * from "./permissions.entity";
+export * from "./permission.module";
+export * from "./permission.entity";

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from '@/infrastructure/features/users/users.module';
+import { UserModule } from '@/infrastructure/features/users/user.module';
 import { AuthModule } from '@/infrastructure/features/auth/auth.module';
 import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/auth";
 import { PermissionModule } from "@/infrastructure/features/permissions";
@@ -13,7 +13,7 @@ import { VilleModule } from "@/infrastructure/features/villes";
 
 export const controllers = [];
 
-const modules = [UsersModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule, CommuneModule, ReservationModule, ResidenceModule];
+const modules = [UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule, CommuneModule, ReservationModule, ResidenceModule];
 
 @Module({
   providers: [

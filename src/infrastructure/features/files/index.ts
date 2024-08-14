@@ -1,4 +1,4 @@
 export * from "./dto";
-export * from "./files.module";
-export * from "./files.entity";
-export * from "./files.controller";
+export * from "./file.module";
+export * from "./file.entity";
+export * from "./file.controller";

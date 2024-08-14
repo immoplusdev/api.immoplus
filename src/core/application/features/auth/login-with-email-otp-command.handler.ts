@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { LoginWithEmailOtpCommand } from "./login-with-email-otp.command";
 import { LoginWithEmailOtpCommandResponse } from "./login-with-email-otp-command.response";
-import { IUsersRepository, User, UserNotFoundException, UserStatus } from "@/core/domain/users";
+import { IUserRepository, User, UserNotFoundException, UserStatus } from "@/core/domain/users";
 import { LoginCommandResponse } from "@/core/application/features/auth";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -10,7 +10,7 @@ import { IAuthService, ITfaService, UserCannotLoginException } from "@/core/doma
 @CommandHandler(LoginWithEmailOtpCommand)
 export class LoginWithEmailOtpCommandHandler implements ICommandHandler<LoginWithEmailOtpCommand> {
   constructor(
-    @Inject(Deps.UsersRepository) private readonly userRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly userRepository: IUserRepository,
     @Inject(Deps.AuthService) private readonly authService: IAuthService,
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
   ) {

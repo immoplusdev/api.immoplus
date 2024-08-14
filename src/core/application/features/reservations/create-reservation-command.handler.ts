@@ -10,7 +10,7 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IResidenceRepository } from "@/core/domain/residences";
 import { DateReservationDejaPriseException, IReservationRepository } from "@/core/domain/reservations";
-import { IUsersRepository } from "@/core/domain/users";
+import { IUserRepository } from "@/core/domain/users";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import { ServiceDates } from "@/core/domain/shared/models";
 import {
@@ -23,7 +23,7 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
   constructor(
     readonly queryBus: QueryBus,
     @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
     @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
   ) {
     //

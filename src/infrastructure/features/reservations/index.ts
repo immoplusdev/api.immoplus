@@ -1,3 +1,3 @@
 export * from "./dto";
-export * from "./reservations.module";
-export * from "./reservations.entity";
+export * from "./reservation.module";
+export * from "./reservation.entity";

@@ -1,8 +1,8 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Deps } from '@/core/domain/shared/ioc';
 import { {{classify name}}, I{{classify name}}Repository } from "@/core/domain/{{dasherize group}}";
-import { {{classify name}}Entity } from '@/infrastructure/features/{{dasherize group}}';
+import { {{classify name}}Entity, {{classify name}}EntityMapper } from '@/infrastructure/features/{{dasherize group}}';
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
@@ -14,7 +14,7 @@ export class {{classify name}}Repository implements I{{classify name}}Repository
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, {{classify name}}Entity);
+    this.repository = new BaseRepository(dataSource, {{classify name}}Entity).setEntityMapper(new {{classify name}}EntityMapper());
   }
 
   async createMany(payload: Partial<{{classify name}}>[]): Promise<{{classify name}}[]> {

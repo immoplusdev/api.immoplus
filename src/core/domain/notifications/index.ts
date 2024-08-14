@@ -1,5 +1,5 @@
-export * from "./notifications.model";
-export * from "./i-notifications.repository";
+export * from "./notification.model";
+export * from "./i-notification.repository";
 export * from "./notification-type.enum";
 export * from "./notification-status.enum";
 export * from "./i-sms.service";

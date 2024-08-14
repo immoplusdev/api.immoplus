@@ -1,5 +1,5 @@
 import { User } from "@/core/domain/users";
-import { UserDto } from "./users.dto";
+import { UserDto } from "./user.dto";
 import { IMapper } from "@/lib/ts-utilities";
 
 

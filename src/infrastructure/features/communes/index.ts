@@ -1,3 +1,3 @@
 export * from "./dto";
-export * from "./communes.module";
-export * from "./communes.entity";
+export * from "./commune.module";
+export * from "./commune.entity";

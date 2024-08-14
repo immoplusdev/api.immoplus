@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RegisterCommand } from "@/core/application/features/auth/register.command";
 import { RegisterCommandResponse } from "@/core/application/features/auth/register-command.response";
 import { Inject } from "@nestjs/common";
-import { IUsersDataRepository, IUsersRepository } from "@/core/domain/users";
+import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
 import { UserEmailAlreadyTakenException } from "@/core/application/features/auth/user-email-already-taken.exception";
 import {
   UserPhoneNumberAlreadyTakenException,
@@ -19,11 +19,11 @@ export class RegisterCommandHandler
   implements ICommandHandler<RegisterCommand, RegisterCommandResponse> {
   constructor(
     @Inject(Deps.UsersRepository)
-    private readonly usersRepository: IUsersRepository,
+    private readonly usersRepository: IUserRepository,
     @Inject(Deps.PasswordManagerService)
     private readonly passwordManagerService: IPasswordManagerService,
     @Inject(Deps.UsersDataRepository)
-    private readonly usersDataRepository: IUsersDataRepository,
+    private readonly usersDataRepository: IUserDataRepository,
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
   ) {

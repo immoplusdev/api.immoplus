@@ -7,7 +7,7 @@ import {
 } from "@/core/application/features/auth/user-phone-number-already-taken.exception";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersDataRepository, IUsersRepository } from "@/core/domain/users";
+import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
 import { IPasswordManagerService } from "@/core/domain/auth";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { UserRole } from "@/core/domain/roles";
@@ -17,11 +17,11 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 export class RegisterProParticulierCommandHandler implements ICommandHandler<RegisterProParticulierCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
-    private readonly usersRepository: IUsersRepository,
+    private readonly usersRepository: IUserRepository,
     @Inject(Deps.PasswordManagerService)
     private readonly passwordManagerService: IPasswordManagerService,
     @Inject(Deps.UsersDataRepository)
-    private readonly usersDataRepository: IUsersDataRepository,
+    private readonly usersDataRepository: IUserDataRepository,
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
   ) {

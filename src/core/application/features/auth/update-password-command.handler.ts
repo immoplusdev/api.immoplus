@@ -3,7 +3,7 @@ import { UpdatePasswordCommand } from "./update-password.command";
 import { UpdatePasswordCommandResponse } from "./update-password-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUsersRepository } from "@/core/domain/users";
+import { IUserRepository } from "@/core/domain/users";
 import { IPasswordManagerService } from "@/core/domain/auth";
 import { WrongPasswordException } from "@/core/domain/auth/wrong-password.exception";
 
@@ -11,7 +11,7 @@ import { WrongPasswordException } from "@/core/domain/auth/wrong-password.except
 export class UpdatePasswordCommandHandler implements ICommandHandler<UpdatePasswordCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
-    private readonly usersRepository: IUsersRepository,
+    private readonly usersRepository: IUserRepository,
     @Inject(Deps.PasswordManagerService)
     private readonly passwordManagerService: IPasswordManagerService,
   ) {

@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { CqrsModule } from "@nestjs/cqrs";
 import { RegisterCommandHandler } from "@/core/application/features/auth/register-command.handler";
-import { UsersModule } from "@/infrastructure/features/users/users.module";
+import { UserModule } from "@/infrastructure/features/users/user.module";
 import {
   LoginCommandHandler, LoginWithEmailOtpCommandHandler,
   RegisterProEntrepriseCommandHandler,
@@ -59,7 +59,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [AuthController],
-  imports: [CqrsModule, ConfigsModule, GlobalizationModule, LoggingModule, UsersModule, NotificationModule],
+  imports: [CqrsModule, ConfigsModule, GlobalizationModule, LoggingModule, UserModule, NotificationModule],
   providers: [...providers, ...commandHandlers, AuthService, JwtManagerService],
   exports: [...providers],
 })

@@ -1,2 +1,2 @@
-export * from "./villes.model";
-export * from "./i-villes.repository";
+export * from "./ville.model";
+export * from "./i-ville.repository";

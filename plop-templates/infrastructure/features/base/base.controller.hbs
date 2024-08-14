@@ -16,7 +16,7 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 @Controller('{{dasherize name}}')
 export class {{classify name}}Controller {
 
-  private readonly dtoMapper = new {{dasherize name}}DtoMapper();
+  private readonly dtoMapper = new {{classify name}}DtoMapper();
   private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
 
   constructor(

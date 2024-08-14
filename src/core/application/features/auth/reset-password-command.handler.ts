@@ -4,13 +4,13 @@ import { ResetPasswordCommandResponse } from "./reset-password-command.response"
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IPasswordManagerService, ITfaService } from "@/core/domain/auth";
-import { IUsersRepository } from "@/core/domain/users";
+import { IUserRepository } from "@/core/domain/users";
 
 @CommandHandler(ResetPasswordCommand)
 export class ResetPasswordCommandHandler implements ICommandHandler<ResetPasswordCommand> {
   constructor(
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
     @Inject(Deps.PasswordManagerService)
     private readonly passwordManagerService: IPasswordManagerService,
   ) {

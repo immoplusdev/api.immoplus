@@ -4,14 +4,14 @@ import { VerifyEmailCommandResponse } from "./verify-email-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { ITfaService } from "@/core/domain/auth";
-import { IUsersRepository } from "@/core/domain/users";
+import { IUserRepository } from "@/core/domain/users";
 import { UnexpectedException } from "@/core/domain/shared/exceptions";
 
 @CommandHandler(VerifyEmailCommand)
 export class VerifyEmailCommandHandler implements ICommandHandler<VerifyEmailCommand> {
   constructor(
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUsersRepository,
+    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
   ) {
     //
   }
