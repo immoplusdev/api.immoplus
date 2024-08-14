@@ -63,6 +63,9 @@ export class BienImmobilierDto {
   featured: boolean;
 
   @ApiProperty()
+  bienImmobilierDisponible: boolean;
+
+  @ApiProperty()
   nombreMaxOccupants: number;
 
   @ApiProperty()

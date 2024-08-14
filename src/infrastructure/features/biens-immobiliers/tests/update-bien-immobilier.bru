@@ -1,0 +1,45 @@
+meta {
+  name: update-bien-immobilier
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{API_URL}}/biens-immobiliers/{{DEFAULT_BIEN_IMMOBILIER_ID}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+body:json {
+  { 
+    "nom": "{{name}}"
+  } 
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.company.name());
+  
+  
+  
+  
+  
+  
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_BIEN_IMMOBILIER_ID", id)
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { nom }} = res.getBody();
+    const newName = bru.getVar("name");
+    expect(newName == nom).to.be.equal(true);
+  });
+}

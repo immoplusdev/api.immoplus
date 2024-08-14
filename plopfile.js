@@ -284,9 +284,21 @@ module.exports = function(plop) {
     },
     {
       type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/create-{{dasherize name}}-dto.mapper.ts",
+      templateFile:
+        "plop-templates/infrastructure/features/base/dto/create-base-dto.mapper.hbs",
+    },
+    {
+      type: "add",
       path: "src/infrastructure/features/{{dasherize group}}/dto/update-{{dasherize name}}.dto.ts",
       templateFile:
         "plop-templates/infrastructure/features/base/dto/update-base.dto.hbs",
+    },
+    {
+      type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/update-{{dasherize name}}-dto.mapper.ts",
+      templateFile:
+        "plop-templates/infrastructure/features/base/dto/update-base-dto.mapper.hbs",
     },
   ];
 

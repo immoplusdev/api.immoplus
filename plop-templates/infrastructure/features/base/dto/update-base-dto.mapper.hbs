@@ -1,0 +1,14 @@
+import { IMapper, OmitMethods } from "@/lib/ts-utilities";
+import { {{classify name}} } from "@/core/domain/{{dasherize group}}";
+import { Update{{classify name}}Dto } from "./update-{{dasherize name}}.dto";
+
+
+export class Update{{classify name}}DtoMapper implements IMapper<Update{{classify name}}Dto, {{classify name}}> {
+  mapFrom(object: OmitMethods<Update{{classify name}}Dto>): {{classify name}} {
+    return new {{classify name}}(object as never);
+  }
+
+  mapTo(object: Partial<{{classify name}}>): Update{{classify name}}Dto {
+    return new Update{{classify name}}Dto(object as never);
+  }
+}
