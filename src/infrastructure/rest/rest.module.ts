@@ -10,10 +10,11 @@ import { CommuneModule } from "@/infrastructure/features/communes";
 import { ReservationModule } from "@/infrastructure/features/reservations";
 import { ResidenceModule } from "@/infrastructure/features/residences";
 import { VilleModule } from "@/infrastructure/features/villes";
+import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 
 export const controllers = [];
 
-const modules = [UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule, CommuneModule, ReservationModule, ResidenceModule];
+const modules = [UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule, CommuneModule, ReservationModule, ResidenceModule, BienImmobilierModule];
 
 @Module({
   providers: [

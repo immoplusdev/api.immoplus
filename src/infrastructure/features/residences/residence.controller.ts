@@ -17,6 +17,7 @@ import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 
 @ApiTags("Residence")
 @Controller("residences")
@@ -83,12 +84,6 @@ export class ResidenceController {
   async readManyPublic(
     @Query() params: SearchItemsParamsDto,
   ) {
-    // params._where = addConditionsToWhereClause([{
-    //   _field: "createdBy",
-    //   _l_op: "and",
-    //   _val: userId,
-    // }], params._where);
-
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
@@ -109,6 +104,9 @@ export class ResidenceController {
     @Query() params?: SelectItemsParamsDto,
   ) {
     const item = await this.repository.findOne(id, { fields: params?._select });
+
+    if (item == null) throw new ItemNotFoundException();
+
     return this.responseMapper.mapFrom(item);
   }
 
@@ -122,6 +120,9 @@ export class ResidenceController {
     @Query() params?: SelectItemsParamsDto,
   ) {
     const item = await this.repository.findOne(id, { fields: params?._select });
+
+    if (item == null) throw new ItemNotFoundException();
+
     return this.responseMapper.mapFrom(item);
   }
 

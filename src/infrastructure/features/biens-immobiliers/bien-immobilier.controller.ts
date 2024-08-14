@@ -6,7 +6,9 @@ import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import {
   BienImmobilierDtoMapper,
   CreateBienImmobilierDto,
+  CreateBienImmobilierDtoMapper,
   UpdateBienImmobilierDto,
+  UpdateBienImmobilierDtoMapper,
   WrapperResponseBienImmobilierDto,
   WrapperResponseBienImmobilierListDto,
 } from "@/infrastructure/features/biens-immobiliers";
@@ -17,6 +19,8 @@ import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { WrapperResponseResidenceDto } from "@/infrastructure/features/residences";
+import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")
@@ -43,7 +47,9 @@ export class BienImmobilierController {
     @Body() payload: CreateBienImmobilierDto,
     @CurrentUser() userId: string,
   ) {
-    const response = await this.repository.createOne({ ...payload, createdBy: userId });
+    const payloadMapper = new CreateBienImmobilierDtoMapper();
+
+    const response = await this.repository.createOne({ ...payloadMapper.mapFrom(payload), createdBy: userId });
 
     return this.responseMapper.mapFrom(response);
   }
@@ -73,6 +79,19 @@ export class BienImmobilierController {
     return this.responseMapper.mapFromQueryResult(items);
   }
 
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierListDto,
+  })
+  @Get("/data/public/")
+  async readManyPublic(
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
@@ -86,11 +105,28 @@ export class BienImmobilierController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
+
     const item = await this.repository.findOne(id, { fields: params?._select });
 
+    if (item == null) throw new ItemNotFoundException();
+    
     return this.responseMapper.mapFrom(item);
   }
 
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierDto,
+  })
+  @Get("/data/public/:id")
+  async readOnePublic(
+    @Param("id") id: string,
+    @Query() params?: SelectItemsParamsDto,
+  ) {
+    const item = await this.repository.findOne(id, { fields: params?._select });
+
+    if (item == null) throw new ItemNotFoundException();
+
+    return this.responseMapper.mapFrom(item);
+  }
 
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
@@ -106,6 +142,10 @@ export class BienImmobilierController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateBienImmobilierDto,
   ) {
+
+
+    const payloadMapper = new UpdateBienImmobilierDtoMapper();
+
     const query = {
       _where: [
         {
@@ -117,7 +157,7 @@ export class BienImmobilierController {
 
     if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
-    await this.repository.updateByQuery(query, payload);
+    await this.repository.updateByQuery(query, { ...payloadMapper.mapFrom(payload), createdBy: userId });
 
     return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }

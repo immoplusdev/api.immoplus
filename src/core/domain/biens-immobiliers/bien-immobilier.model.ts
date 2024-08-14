@@ -29,6 +29,8 @@ export class BienImmobilier {
 
   animauxAutorises: boolean;
 
+  bienImmobilierDisponible: boolean;
+
   fetesAutorises: boolean;
 
   reglesSupplementaires?: string;
@@ -41,7 +43,7 @@ export class BienImmobilier {
 
   createdBy?: string;
 
-  constructor(data?: OmitMethods<BienImmobilier>) {
+  constructor(data?: Partial<OmitMethods<BienImmobilier>>) {
     if (data) Object.assign(this, data);
   }
 }

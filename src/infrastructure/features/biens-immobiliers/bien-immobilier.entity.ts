@@ -77,6 +77,9 @@ export class BienImmobilierEntity {
   @Column({ name: "featured", type: "bool", default: false })
   featured: boolean;
 
+  @Column({ name: "bien_immobilier_disponible", type: "bool", default: false })
+  bienImmobilierDisponible: boolean;
+
   @Column({ name: "nombre_max_occupants", type: "int", default: 10 })
   nombreMaxOccupants: number;
 
