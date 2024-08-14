@@ -1,0 +1,43 @@
+meta {
+  name: 3-init-villes
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/villes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "name": "{{name}}"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.location.city());
+  
+  
+  
+  
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_VILLE_ID", id)
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { id }} = res.getBody();
+  
+    expect(id).to.be.a('string');
+  });
+}

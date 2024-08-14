@@ -1,0 +1,44 @@
+meta {
+  name: 4-init-communes
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{API_URL}}/communes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "villeId": "{{DEFAULT_VILLE_ID}}"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.location.city());
+  
+  
+  
+  
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_COMMUNE_ID", id)
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { id }} = res.getBody();
+  
+    expect(id).to.be.a('string');
+  });
+}

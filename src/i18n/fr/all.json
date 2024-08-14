@@ -32,9 +32,9 @@
 
   },
   "enum": {
-    "Appartement": "Appartement",
-    "Maison": "Maison",
-    "Villa": "Villa"
+    "appartement": "Appartement",
+    "maison": "Maison",
+    "villa": "Villa"
   }
 } 
 
