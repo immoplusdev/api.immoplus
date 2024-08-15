@@ -126,7 +126,7 @@ export class ReservationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
-  @Get("data/residence-owner/:id")
+  @Get("data/residence/owner/:id")
   async readManyByOwnerId(
     @Param("id") ownerId: string,
     @Query() params: SearchItemsParamsDto,
@@ -146,7 +146,7 @@ export class ReservationController {
   @ApiResponse({
     type: WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   })
-  @Get("data/residence-occupied-dates/:residence")
+  @Get("data/residence/occupied-dates/:residence")
   async getResidenceOccupiedDates(
     @Param("residence") residenceId: string,
   ) {

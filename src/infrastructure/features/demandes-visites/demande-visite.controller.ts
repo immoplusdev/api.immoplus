@@ -5,8 +5,6 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import {
   DemandeVisiteDtoMapper,
-  CreateDemandeVisiteDto,
-  CreateDemandeVisiteDtoMapper,
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
   WrapperResponseDemandeVisiteDto,
@@ -31,6 +29,13 @@ import {
   WrapperResponseEstimerPrixDemandeVisiteQueryResponse,
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import {
+  CreateDemandeVisiteCommandDto
+} from "@/infrastructure/features/demandes-visites/dto/create-demande-visite-command.dto";
+import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
+import {
+  WrapperResponseCreateDemandeVisiteCommandResponseDto
+} from "@/infrastructure/features/demandes-visites/dto/create-demande-visite-command-response.dto";
 
 @ApiTags("DemandeVisite")
 @Controller("demande-visite")
@@ -75,13 +80,12 @@ export class DemandeVisiteController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
-    @Body() payload: CreateDemandeVisiteDto,
+    @Body() payload: CreateDemandeVisiteCommandDto,
     @CurrentUser() userId: string,
   ) {
+    const command = new CreateDemandeVisiteCommand({...payload, userId});
 
-    const payloadMapper = new CreateDemandeVisiteDtoMapper();
-
-    const response = await this.repository.createOne({ ...payloadMapper.mapTo(payload), createdBy: userId });
+    const response = await this.commandBus.execute(command);
 
     return this.responseMapper.mapFrom(response);
   }
