@@ -12,7 +12,9 @@ export enum Deps {
   CommuneRepository = "CommuneRepository",
   ReservationRepository = "ReservationRepository",
   AppConfigsRepository = "AppConfigsRepository",
-
+  ResidenceRepository = "ResidenceRepository",
+  BiensImmobiliesRepository = "BiensImmobiliesRepository",
+  DemandeVisiteRepository = "DemandeVisiteRepository",
 
   // Services
   LoggerService = "LoggerService",
@@ -24,8 +26,6 @@ export enum Deps {
   TfaService = "TfaService",
   AuthService = "AuthService",
   GlobalizationService = "GlobalizationService",
-  ResidenceRepository = "ResidenceRepository",
-  BiensImmobiliesRepository = "BiensImmobiliesRepository",
 
   // Guards
   AppGuard = "AppGuard"

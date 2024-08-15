@@ -404,3 +404,4 @@ credentials.txt
 environments/local.bru
 environments/dev.bru
 environments/prod.bru
+perf-tests/env.js

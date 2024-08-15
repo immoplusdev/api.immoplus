@@ -2,7 +2,8 @@
 
 if [ -f .env ]; then
     export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
-    sudo docker run -ti -v "$(pwd)":/apps -w /apps alpine/bruno run --env=prod
+    sudo docker run -ti -v "$(pwd)/perf-tests":/apps -w /apps grafana/k6 run ./login.k6.js
 fi
+
 
 

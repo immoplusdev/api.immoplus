@@ -41,7 +41,7 @@ async create(
 
 const payloadMapper = new Create{{classify name}}DtoMapper();
 
-const response = await this.repository.createOne({ ...payloadMapper.mapFrom(payload), createdBy: userId });
+const response = await this.repository.createOne({ ...payloadMapper.mapTo(payload), createdBy: userId });
 
 return this.responseMapper.mapFrom(response);
 }
@@ -118,7 +118,7 @@ _val: id,
 
 if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
-await this.repository.updateByQuery(query, { ...payloadMapper.mapFrom(payload), createdBy: userId });
+await this.repository.updateByQuery(query, { ...payloadMapper.mapTo(payload), createdBy: userId });
 
 return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
 }
