@@ -4,7 +4,7 @@ export function enumarableFromListEqual(
   value: any
 ): any[] {
   const subList: any[] = [];
-  if (list == null) {
+  if (!list) {
     return subList;
   }
   for (let i = 0; i < list.length; i++) {

@@ -17,6 +17,7 @@ export class PublicConfigs extends AppConfigs {
   defaultStatus: PublicConfigItem[];
   categories: PublicConfigItem[];
   typesResidence: PublicConfigItem[]
+  typesDemandeVisite: PublicConfigItem[];
 
   constructor(data?: OmitMethods<PublicConfigs>) {
     if (data) super(data);

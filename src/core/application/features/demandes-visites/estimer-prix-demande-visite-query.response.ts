@@ -1,17 +1,16 @@
-import { DocProperty, OmitMethods } from "@/lib/ts-utilities";
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ServiceDate, ServiceDates } from "@/core/domain/shared/models";
 import { WrapperResponseDto } from "@/lib/responses";
 import { ApiProperty } from "@nestjs/swagger";
-import { EstimerPrixDemandeVisiteQueryResponseDto } from "@/infrastructure/features/demandes-visites";
 
 export class EstimerPrixDemandeVisiteQueryResponse {
-  @DocProperty({ format: "uuid" })
+  @ApiProperty({ format: "uuid" })
   bienImmobilier: string;
-  @DocProperty({ type: ServiceDate, isArray: true })
+  @ApiProperty({ type: ServiceDate, isArray: true })
   datesDemandeVisite: ServiceDates;
-  @DocProperty()
+  @ApiProperty()
   montantTotalDemandeVisite: number;
-  @DocProperty()
+  @ApiProperty()
   montantDemandeVisiteSansCommission: number;
 
   constructor(data?: OmitMethods<EstimerPrixDemandeVisiteQueryResponse>) {

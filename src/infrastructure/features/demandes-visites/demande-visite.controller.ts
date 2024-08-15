@@ -10,7 +10,9 @@ import {
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
   WrapperResponseDemandeVisiteDto,
-  WrapperResponseDemandeVisiteListDto, WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
+  WrapperResponseDemandeVisiteListDto,
+  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
+  EstimerPrixDemandeVisiteQueryDto, EstimerPrixDemandeVisiteQueryResponseDto,
 } from "@/infrastructure/features/demandes-visites";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -47,17 +49,17 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseEstimerPrixDemandeVisiteQueryResponse,
+    type: WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
   })
   @Post("estimer-prix")
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
+  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async estimerPrixDemandeVisite(
-    @Body() payload: EstimerPrixDemandeVisiteQuery,
+    @Body() payload: EstimerPrixDemandeVisiteQueryDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponse>();
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponseDto>();
     const query = new EstimerPrixDemandeVisiteQuery(payload);
 
     const response = await this.queryBus.execute(query);

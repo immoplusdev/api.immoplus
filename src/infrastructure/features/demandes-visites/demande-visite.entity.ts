@@ -11,7 +11,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { UserEntity } from "@/infrastructure/features/users";
-import { StatusDemandeVisite } from "@/core/domain/demandes-visites";
+import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 
 @Entity("demandes_visites")
@@ -30,6 +30,15 @@ export class DemandeVisiteEntity {
     default: StatusDemandeVisite.EnCoursValidationAdmin,
   })
   statusDemandeVisite: StatusDemandeVisite;
+
+  @Column({
+    name: "type_demande_visite",
+    type: "varchar",
+    length: 30,
+    default: TypeDemandeVisite.Normal,
+  })
+  typeDemandeVisite: TypeDemandeVisite;
+
   @Column({ name: "dates_demande_visite", type: "json" })
   datesDemandeVisite: ServiceDates;
   @Column({ name: "status_facture", type: "varchar", length: 10, default: StatusFacture.NonPaye })

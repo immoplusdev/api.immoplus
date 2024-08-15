@@ -105,7 +105,7 @@ export class ResidenceController {
   ) {
     const item = await this.repository.findOne(id, { fields: params?._select });
 
-    if (item == null) throw new ItemNotFoundException();
+    if (!item) throw new ItemNotFoundException();
 
     return this.responseMapper.mapFrom(item);
   }
@@ -121,7 +121,7 @@ export class ResidenceController {
   ) {
     const item = await this.repository.findOne(id, { fields: params?._select });
 
-    if (item == null) throw new ItemNotFoundException();
+    if (!item) throw new ItemNotFoundException();
 
     return this.responseMapper.mapFrom(item);
   }

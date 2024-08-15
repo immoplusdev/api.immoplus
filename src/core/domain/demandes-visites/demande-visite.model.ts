@@ -3,11 +3,13 @@ import { StatusDemandeVisite } from "@/core/domain/demandes-visites/status-deman
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 
 export class DemandeVisite {
   id: string;
   bienImmobilier: BienImmobilier | string;
   statusDemandeVisite: StatusDemandeVisite;
+  typeDemandeVisite: TypeDemandeVisite;
   datesDemandeVisite: ServiceDates;
   statusFacture: StatusFacture;
   retraitProEffectue: boolean;

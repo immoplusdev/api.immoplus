@@ -9,6 +9,7 @@ import { enumToList } from "@/lib/ts-utilities";
 import { PublicConfigItem } from "@/core/domain/configs/public-config-item.model";
 import { TypeResidence } from "@/core/domain/residences";
 import { IGlobalizationService } from "@/core/domain/globalization";
+import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 
 
 @Injectable()
@@ -75,6 +76,7 @@ export class ConfigsManagerService implements IConfigsManagerService {
       shippingTypes: [],
       visitPaymentTypes: this.translatePublicConfigItems([]),
       typesResidence: this.enumToConfig(TypeResidence),
+      typesDemandeVisite: this.enumToConfig(TypeDemandeVisite)
     });
   }
 
