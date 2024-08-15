@@ -14,7 +14,6 @@ tests {
   test("Should receive a not null id", function() {
     const {data} = res.getBody();
     for(let commune of data){
-      console.log(commune.villeId)
         expect(commune.name).to.be.a('string');
     }
   });

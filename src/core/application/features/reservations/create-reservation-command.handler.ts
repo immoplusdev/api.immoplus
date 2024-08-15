@@ -16,6 +16,7 @@ import { ServiceDates } from "@/core/domain/shared/models";
 import {
   GetResidenceOccupiedDatesQueryResponse,
 } from "@/core/application/features/reservations";
+import { dateToString } from "@/lib/ts-utilities";
 
 
 @CommandHandler(CreateReservationCommand)
@@ -40,7 +41,10 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
 
 
     if (!command.clientPhoneNumber) {
-      const client = await this.usersRepository.findOne(command.userId, { relations: [], fields: ["id", "phoneNumber"] });
+      const client = await this.usersRepository.findOne(command.userId, {
+        relations: [],
+        fields: ["id", "phoneNumber"],
+      });
       command.setClientPhoneNumber(client.phoneNumber);
     }
 
@@ -52,7 +56,6 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
       clientPhoneNumber: command.clientPhoneNumber,
       createdBy: command.userId,
     }, false);
-
 
 
     return await this.queryBus.execute(new GetReservationByIdQuery({ id }));
@@ -75,14 +78,7 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
   }
 
   private serviceDatesToDates(serviceDates: ServiceDates) {
-    return serviceDates.map(serviceDate => this.dateToString(serviceDate.date));
+    return serviceDates.map(serviceDate => dateToString(serviceDate.date));
   }
 
-  private dateToString(date: Date) {
-    const dateTime = new Date(date);
-    const year = dateTime.getFullYear();
-    const month = dateTime.getMonth();
-    const day = dateTime.getDate();
-    return new Date(year, month, day).toISOString();
-  }
 }

@@ -154,12 +154,10 @@ export class ReservationController {
     const query = new GetResidenceOccupiedDatesQuery({ residenceId });
 
 
-
     const response = await this.queryBus.execute(query);
 
     return responseMapper.mapFrom(response);
   }
-
 
 
   @ApiResponse({
@@ -233,36 +231,4 @@ export class ReservationController {
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
   }
-
-
-  // @ApiResponse({
-  //   type: WrapperResponseReservationDto,
-  // })
-  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Delete])
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // @Delete(":id")
-  // async delete(
-  //   @Param("id") id: string,
-  //   @CurrentUser("id") userId: string,
-  //   @CurrentUser("role") userRole: Role) {
-  //
-  //   const responseMapper = new WrapperResponseDtoMapper<ReservationDto>();
-  //   const query = {
-  //     _where: [
-  //       {
-  //         _field: "id",
-  //         _val: id,
-  //       },
-  //     ],
-  //   };
-  //
-  //   if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
-  //
-  //   await this.repository.deleteByQuery(query);
-  //
-  //   return responseMapper.mapFrom({ id } as never);
-  // }
-
 }

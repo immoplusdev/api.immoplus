@@ -2,16 +2,15 @@ import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, P
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
-import { DemandeVisite, IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
+import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import {
   DemandeVisiteDtoMapper,
   CreateDemandeVisiteDto,
   CreateDemandeVisiteDtoMapper,
-  DemandeVisiteDto,
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
   WrapperResponseDemandeVisiteDto,
-  WrapperResponseDemandeVisiteListDto,
+  WrapperResponseDemandeVisiteListDto, WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
 } from "@/infrastructure/features/demandes-visites";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -20,6 +19,16 @@ import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import {
+  EstimerPrixReservationQueryDto, EstimerPrixReservationQueryResponseDto,
+  WrapperResponseEstimerPrixReservationQueryResponseDto,
+} from "@/infrastructure/features/reservations";
+import { EstimerPrixReservationQuery } from "@/core/application/features/reservations";
+import {
+  EstimerPrixDemandeVisiteQuery, EstimerPrixDemandeVisiteQueryResponse,
+  WrapperResponseEstimerPrixDemandeVisiteQueryResponse,
+} from "@/core/application/features/demandes-visites";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 
 @ApiTags("DemandeVisite")
 @Controller("demande-visite")
@@ -29,9 +38,30 @@ export class DemandeVisiteController {
   private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
 
   constructor(
+    readonly queryBus: QueryBus,
+    readonly commandBus: CommandBus,
     @Inject(Deps.DemandeVisiteRepository)
     private readonly repository: IDemandeVisiteRepository,
   ) {
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseEstimerPrixDemandeVisiteQueryResponse,
+  })
+  @Post("estimer-prix")
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async estimerPrixDemandeVisite(
+    @Body() payload: EstimerPrixDemandeVisiteQuery,
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponse>();
+    const query = new EstimerPrixDemandeVisiteQuery(payload);
+
+    const response = await this.queryBus.execute(query);
+    return responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
