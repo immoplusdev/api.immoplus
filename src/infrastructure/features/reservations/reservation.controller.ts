@@ -7,7 +7,7 @@ import {
   AnnulerReservationByIdCommandResponseDto,
   CreateReservationCommandDto,
   EstimerPrixReservationQueryDto,
-  EstimerPrixReservationQueryResponseDto,
+  EstimerPrixReservationQueryResponseDto, GetResidenceOccupiedDatesQueryResponseDto,
   ReservationDto,
   UpdateReservationDto,
   WrapperResponseEstimerPrixReservationQueryResponseDto,
@@ -48,23 +48,6 @@ export class ReservationController {
   ) {
   }
 
-  @ApiResponse({
-    type: WrapperResponseEstimerPrixReservationQueryResponseDto,
-  })
-  @Post("estimer-prix")
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  async estimerPrixReservation(
-    @Body() payload: EstimerPrixReservationQueryDto,
-  ) {
-    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponseDto>();
-    const query = new EstimerPrixReservationQuery(payload);
-
-    const response = await this.queryBus.execute(query);
-    return responseMapper.mapFrom(response);
-  }
 
   @ApiResponse({
     type: WrapperResponseGetReservationByIdQueryResponseDto,
@@ -150,7 +133,7 @@ export class ReservationController {
   async getResidenceOccupiedDates(
     @Param("residence") residenceId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<WrapperResponseGetResidenceOccupiedDatesQueryResponseDto>();
+    const responseMapper = new WrapperResponseDtoMapper<GetResidenceOccupiedDatesQueryResponseDto>();
     const query = new GetResidenceOccupiedDatesQuery({ residenceId });
 
 
@@ -212,6 +195,24 @@ export class ReservationController {
     return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
+
+  @ApiResponse({
+    type: WrapperResponseEstimerPrixReservationQueryResponseDto,
+  })
+  @Post("action/estimer-prix")
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async estimerPrixReservation(
+    @Body() payload: EstimerPrixReservationQueryDto,
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponseDto>();
+    const query = new EstimerPrixReservationQuery(payload);
+
+    const response = await this.queryBus.execute(query);
+    return responseMapper.mapFrom(response);
+  }
 
   @ApiResponse({
     type: WrapperResponseAnnulerReservationByIdCommandResponseDto,

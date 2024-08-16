@@ -19,13 +19,14 @@ export class WrapperResponseDto<T> {
 
   setData(data: T) {
     this.data = data;
-    return;
+    return this;
   }
 
   buildFromQueryResult(queryResult: WrapperResponse<T>) {
     Object.assign(this, queryResult);
     return this;
   }
+
 
   constructor(data?: T) {
     if (data) this.data = data;

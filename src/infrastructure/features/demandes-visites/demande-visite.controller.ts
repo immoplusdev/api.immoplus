@@ -20,25 +20,20 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import {
-  EstimerPrixReservationQueryDto, EstimerPrixReservationQueryResponseDto,
-  WrapperResponseEstimerPrixReservationQueryResponseDto,
+  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
 } from "@/infrastructure/features/reservations";
-import { EstimerPrixReservationQuery } from "@/core/application/features/reservations";
 import {
-  EstimerPrixDemandeVisiteQuery, EstimerPrixDemandeVisiteQueryResponse,
-  WrapperResponseEstimerPrixDemandeVisiteQueryResponse,
+  EstimerPrixDemandeVisiteQuery, GetBienImmobilierOccupiedDatesQuery,
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
-  CreateDemandeVisiteCommandDto
+  CreateDemandeVisiteCommandDto,
 } from "@/infrastructure/features/demandes-visites/dto/create-demande-visite-command.dto";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
-import {
-  WrapperResponseCreateDemandeVisiteCommandResponseDto
-} from "@/infrastructure/features/demandes-visites/dto/create-demande-visite-command-response.dto";
+
 
 @ApiTags("DemandeVisite")
-@Controller("demande-visite")
+@Controller("demandes-visites")
 export class DemandeVisiteController {
 
   private readonly dtoMapper = new DemandeVisiteDtoMapper();
@@ -54,24 +49,6 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
-  })
-  @Post("estimer-prix")
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Create])
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  async estimerPrixDemandeVisite(
-    @Body() payload: EstimerPrixDemandeVisiteQueryDto,
-  ) {
-    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponseDto>();
-    const query = new EstimerPrixDemandeVisiteQuery(payload);
-
-    const response = await this.queryBus.execute(query);
-    return responseMapper.mapFrom(response);
-  }
-
-  @ApiResponse({
     type: WrapperResponseDemandeVisiteDto,
   })
   @Post()
@@ -83,7 +60,7 @@ export class DemandeVisiteController {
     @Body() payload: CreateDemandeVisiteCommandDto,
     @CurrentUser() userId: string,
   ) {
-    const command = new CreateDemandeVisiteCommand({...payload, userId});
+    const command = new CreateDemandeVisiteCommand({ ...payload, userId });
 
     const response = await this.commandBus.execute(command);
 
@@ -114,6 +91,23 @@ export class DemandeVisiteController {
 
     return this.responseMapper.mapFromQueryResult(items);
   }
+
+
+  @ApiResponse({
+    type: WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
+  })
+  @Get("data/bien-immobilier/occupied-dates/:id")
+  async getResidenceOccupiedDates(
+    @Param("id") bienImmobilierId: string,
+  ) {
+    const responseMapper = new WrapperResponseGetResidenceOccupiedDatesQueryResponseDto();
+    const query = new GetBienImmobilierOccupiedDatesQuery({ bienImmobilierId });
+
+    const response = await this.queryBus.execute(query);
+
+    return responseMapper.setData(response);
+  }
+
 
   @ApiResponse({
     type: WrapperResponseDemandeVisiteDto,
@@ -167,33 +161,23 @@ export class DemandeVisiteController {
     return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
 
-
   @ApiResponse({
-    type: WrapperResponseDemandeVisiteDto,
+    type: WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
   })
+  @Post("action/estimer-prix")
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Delete])
+  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Delete(":id")
-  async delete(
-    @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
-    const query = {
-      _where: [
-        {
-          _field: "id",
-          _val: id,
-        },
-      ],
-    };
+  async estimerPrixDemandeVisite(
+    @Body() payload: EstimerPrixDemandeVisiteQueryDto,
+  ) {
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponseDto>();
+    const query = new EstimerPrixDemandeVisiteQuery(payload);
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
-
-    await this.repository.deleteByQuery(query);
-
-    return this.responseMapper.mapFrom({ id } as never);
+    const response = await this.queryBus.execute(query);
+    return responseMapper.mapFrom(response);
   }
+
 
 }

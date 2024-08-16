@@ -1,11 +1,11 @@
 meta {
-  name: get-residence-occupied-dates
+  name: get-bien-immobilier-occupied-dates
   type: http
   seq: 2
 }
 
 get {
-  url: {{API_URL}}/reservations/data/residence/occupied-dates/{{DEFAULT_RESIDENCE_ID}
+  url: {{API_URL}}/demandes-visites/data/bien-immobilier/occupied-dates/{{DEFAULT_BIEN_IMMOBILIER_ID}}
   body: none
   auth: none
 }
