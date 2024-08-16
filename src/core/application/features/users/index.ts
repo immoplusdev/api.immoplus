@@ -7,3 +7,5 @@ export * from "./update-user-additional-data-command.response";
 export * from "./update-user-additional-data.command";
 export * from "./update-user-command.handler";
 export * from "./update-user-command.response";
+export * from "./user.dto";
+export * from "./user-data.dto";

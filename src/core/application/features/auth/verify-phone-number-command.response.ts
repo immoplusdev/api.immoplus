@@ -1,7 +1,15 @@
 import { OmitMethods } from '@/lib/ts-utilities';
+import { WrapperResponseDto } from "@/lib/responses";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class VerifyPhoneNumberCommandResponse {
   constructor(data?: OmitMethods<VerifyPhoneNumberCommandResponse>) {
-    if(data) Object.assign(this, data);
+    Object.assign(this, data);
   }
 }
+
+export class WrapperResponseVerifyPhoneNumberCommandResponseDto extends WrapperResponseDto<VerifyPhoneNumberCommandResponse> {
+  @ApiProperty({ type: VerifyPhoneNumberCommandResponse })
+  data: VerifyPhoneNumberCommandResponse;
+}
+

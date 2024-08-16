@@ -386,13 +386,19 @@ module.exports = function(plop) {
   plop.setGenerator("app:query", {
     description: "Generate query",
     prompts: groupPrompts,
-    actions: [...generateQuery, ...generateQueryDto],
+    actions: [
+      ...generateQuery,
+      // ...generateQueryDto
+    ],
   });
 
   plop.setGenerator("app:command", {
     description: "Generate command",
     prompts: groupPrompts,
-    actions: [...generateCommand, ...generateCommandDto],
+    actions: [
+      ...generateCommand,
+      // ...generateCommandDto
+    ],
   });
 
   plop.setGenerator("infra:repository", {

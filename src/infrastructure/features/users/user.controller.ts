@@ -24,10 +24,12 @@ import {
   UpdateUserAdditionalDataCommandResponseDto,
   UpdateUserCommandDto,
   WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
+} from "@/infrastructure/features/users";
+import {
+  UpdateUserAdditionalDataCommand,
   WrapperResponseUserDto,
   WrapperResponseUserListDto,
-} from "@/infrastructure/features/users";
-import { UpdateUserAdditionalDataCommand } from "@/core/application/features/users";
+} from "@/core/application/features/users";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
 

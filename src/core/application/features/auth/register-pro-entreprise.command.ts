@@ -1,13 +1,32 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { IsValidPassword, IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class RegisterProEntrepriseCommand {
+  @ApiProperty()
+  @IsEmail()
   email: string;
+  @ApiProperty()
+  @IsValidPhoneNumber()
   phoneNumber: string;
+  @ApiProperty()
+  @IsValidPassword()
   password: string;
+  @ApiProperty()
+  @IsNotEmpty()
   nomEntreprise: string;
+  @ApiProperty()
+  @IsEmail()
+  @IsNotEmpty()
   emailEntreprise: string;
+  @ApiProperty({ format: "binary" })
+  @IsNotEmpty()
   registreCommerceId: string;
-  numeroContribuable: string
+  @ApiProperty()
+  @IsNotEmpty()
+  numeroContribuable: string;
+  @ApiProperty()
+  @IsNotEmpty()
   typeEntreprise: string;
   constructor(data?: OmitMethods<RegisterProEntrepriseCommand>) {
     if(data) Object.assign(this, data);

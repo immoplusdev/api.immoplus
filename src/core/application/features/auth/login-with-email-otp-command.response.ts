@@ -1,12 +1,23 @@
-import { OmitMethods } from '@/lib/ts-utilities';
-import { User } from "@/core/domain/users";
+import { ApiProperty } from "@nestjs/swagger";
+import { UserDto } from "@/core/application/features/users";
+import { OmitMethods } from "@/lib/ts-utilities";
+import { WrapperResponseDto } from "@/lib/responses";
 
 export class LoginWithEmailOtpCommandResponse {
+  @ApiProperty()
   accessToken: string;
+  @ApiProperty()
   expires: string;
+  @ApiProperty()
   refreshToken: string;
-  user: User;
+  @ApiProperty({ type: UserDto })
+  user: UserDto;
   constructor(data?: OmitMethods<LoginWithEmailOtpCommandResponse>) {
-    if(data) Object.assign(this, data);
+    Object.assign(this, data);
   }
+}
+
+export class WrapperResponseLoginWithEmailOtpCommandResponseDto extends WrapperResponseDto<LoginWithEmailOtpCommandResponse> {
+  @ApiProperty({ type: LoginWithEmailOtpCommandResponse })
+  data: LoginWithEmailOtpCommandResponse;
 }

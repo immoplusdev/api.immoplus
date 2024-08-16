@@ -1,45 +1,28 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiNoContentResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import {
-  LoginWithEmailOtpCommandDto, LoginWithEmailOtpCommandResponseDto,
-  LoginWithPhoneNumberOtpCommandDto,
-  LoginWithPhoneNumberOtpCommandResponseDto,
-  RegisterCommandDto,
-  RegisterProEntrepriseCommandDto,
-  RegisterProParticulierCommandDto,
-  ResetPasswordCommandDto,
-  SendEmailOtpCommandDto,
-  SendSmsOtpCommandDto,
-  UpdatePasswordCommandDto,
-  VerifyEmailCommandDto,
-  VerifyPhoneNumberCommandDto,
-  WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
-} from "@/infrastructure/features/auth/dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
 import {
-  LoginCommandResponseDto,
-  WrapperResponseLoginCommandResponseDto,
-} from "@/infrastructure/features/auth/dto/login-command-response.dto";
-import { LoginCommandDto } from "@/infrastructure/features/auth/dto/login-command.dto";
-import {
+  LoginCommandResponse,
   LoginWithEmailOtpCommand,
-  LoginWithPhoneNumberOtpCommand,
-  RegisterCommand,
+  LoginWithEmailOtpCommandResponse,
+  LoginWithPhoneNumberOtpCommand, LoginWithPhoneNumberOtpCommandResponse, RegisterCommand,
   RegisterProEntrepriseCommand,
-  RegisterProParticulierCommand, ResetPasswordCommand,
+  RegisterProParticulierCommand,
+  ResetPasswordCommand,
   SendEmailOtpCommand,
   SendSmsOtpCommand,
   UpdatePasswordCommand,
   VerifyEmailCommand,
   VerifyPhoneNumberCommand,
+  WrapperResponseLoginCommandResponseDto,
+  WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
 } from "@/core/application/features/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
-import { I18nService } from "nestjs-i18n";
 
 @ApiTags("Auth")
 @Controller("auth")
@@ -54,15 +37,14 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post("register-customer")
-  async registerCustomer(@Body() payload: RegisterCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
-    const registerCommand = new RegisterCommand(payload);
+  async registerCustomer(@Body() payload: RegisterCommand) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
     const loginCommand = new LoginCommand({
-      username: registerCommand.phoneNumber,
-      password: registerCommand.password,
+      username: payload.phoneNumber,
+      password: payload.password,
     });
 
-    await this.commandBus.execute(registerCommand);
+    await this.commandBus.execute(new RegisterCommand(payload));
     const response = await this.commandBus.execute(loginCommand);
     return responseMapper.mapFrom(response);
   }
@@ -72,8 +54,8 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post("register-pro-particulier")
-  async registerProParticulier(@Body() payload: RegisterProParticulierCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
+  async registerProParticulier(@Body() payload: RegisterProParticulierCommand) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
     const registerCommand = new RegisterProParticulierCommand(payload);
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
@@ -90,8 +72,8 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post("register-pro-entreprise")
-  async registerProEntreprise(@Body() payload: RegisterProEntrepriseCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
+  async registerProEntreprise(@Body() payload: RegisterProEntrepriseCommand) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
     const registerCommand = new RegisterProEntrepriseCommand(payload);
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
@@ -109,11 +91,10 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post("login")
-  async login(@Body() payload: LoginCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponseDto>();
-    const command = new LoginCommand(payload);
+  async login(@Body() payload: LoginCommand) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
 
-    const response = await this.commandBus.execute(command);
+    const response = await this.commandBus.execute(new LoginCommand(payload));
     return responseMapper.mapFrom(response);
   }
 
@@ -123,8 +104,8 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post("login-with-phone-number-otp")
-  async loginWithPhoneNumberOtp(@Body() payload: LoginWithPhoneNumberOtpCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberOtpCommandResponseDto>();
+  async loginWithPhoneNumberOtp(@Body() payload: LoginWithPhoneNumberOtpCommand) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberOtpCommandResponse>();
     const command = new LoginWithPhoneNumberOtpCommand(payload);
 
     const response = await this.commandBus.execute(command);
@@ -136,11 +117,10 @@ export class AuthController {
   })
   @HttpCode(200)
   @Post("login-with-email-otp")
-  async loginWithEmailOtp(@Body() payload: LoginWithEmailOtpCommandDto) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginWithEmailOtpCommandResponseDto>();
-    const command = new LoginWithEmailOtpCommand(payload);
+  async loginWithEmailOtp(@Body() payload: LoginWithEmailOtpCommand) {
+    const responseMapper = new WrapperResponseDtoMapper<LoginWithEmailOtpCommandResponse>();
 
-    const response = await this.commandBus.execute(command);
+    const response = await this.commandBus.execute(new LoginWithEmailOtpCommand(payload));
     return responseMapper.mapFrom(response);
   }
 
@@ -153,7 +133,7 @@ export class AuthController {
   @HttpCode(204)
   @Post("update-password")
   async updatePassword(
-    @Body() payload: UpdatePasswordCommandDto,
+    @Body() payload: UpdatePasswordCommand,
     @CurrentUser("id") userId: string) {
     const command = new UpdatePasswordCommand({ ...payload, userId });
     await this.commandBus.execute(command);
@@ -162,7 +142,7 @@ export class AuthController {
   @ApiNoContentResponse()
   @HttpCode(204)
   @Post("send-sms-otp")
-  async sendSmsOtp(@Body() payload: SendSmsOtpCommandDto) {
+  async sendSmsOtp(@Body() payload: SendSmsOtpCommand) {
     const command = new SendSmsOtpCommand(payload);
     await this.commandBus.execute(command);
   }
@@ -170,7 +150,7 @@ export class AuthController {
   @ApiNoContentResponse()
   @HttpCode(204)
   @Post("send-email-otp")
-  async sendEmailOtp(@Body() payload: SendEmailOtpCommandDto) {
+  async sendEmailOtp(@Body() payload: SendEmailOtpCommand) {
     const command = new SendEmailOtpCommand(payload);
     await this.commandBus.execute(command);
   }
@@ -178,7 +158,7 @@ export class AuthController {
   @ApiNoContentResponse()
   @HttpCode(204)
   @Post("verify-email")
-  async verifyEmail(@Body() payload: VerifyEmailCommandDto) {
+  async verifyEmail(@Body() payload: VerifyEmailCommand) {
     const command = new VerifyEmailCommand(payload);
     await this.commandBus.execute(command);
   }
@@ -186,7 +166,7 @@ export class AuthController {
   @ApiNoContentResponse()
   @HttpCode(204)
   @Post("verify-phone-number")
-  async verifyPhoneNumber(@Body() payload: VerifyPhoneNumberCommandDto) {
+  async verifyPhoneNumber(@Body() payload: VerifyPhoneNumberCommand) {
     const command = new VerifyPhoneNumberCommand(payload);
     await this.commandBus.execute(command);
   }
@@ -194,7 +174,7 @@ export class AuthController {
   @ApiNoContentResponse()
   @HttpCode(204)
   @Post("reset-password")
-  async resetPassword(@Body() payload: ResetPasswordCommandDto) {
+  async resetPassword(@Body() payload: ResetPasswordCommand) {
     const command = new ResetPasswordCommand(payload);
     await this.commandBus.execute(command);
   }
