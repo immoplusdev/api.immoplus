@@ -8,3 +8,5 @@ export * from "./create-demande-visite-command.dto";
 export * from "./create-demande-visite-command-response.dto";
 export * from "./get-bien-immobilier-occupied-dates-query.dto";
 export * from "./get-bien-immobilier-occupied-dates-query-response.dto";
+export * from "./get-demande-visite-by-id-query.dto";
+export * from "./get-demande-visite-by-id-query.dto";

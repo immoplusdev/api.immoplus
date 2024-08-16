@@ -7,3 +7,6 @@ export * from "./create-demande-visite-command.response";
 export * from "./get-bien-immobilier-occupied-dates.query";
 export * from "./get-bien-immobilier-occupied-dates-query.handler";
 export * from "./get-bien-immobilier-occupied-dates-query.response";
+export * from "./get-demande-visite-by-id.query";
+export * from "./get-demande-visite-by-id-query.response";
+export * from "./get-demande-visite-by-id-query.handler";
