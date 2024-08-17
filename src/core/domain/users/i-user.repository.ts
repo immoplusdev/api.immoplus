@@ -6,6 +6,7 @@ import { FindItemOptions } from "@/core/domain/shared/models";
 
 export interface IUserRepository
   extends IBaseRepository<User, Partial<User>, Partial<User>, string> {
+
   findOneByEmail(email: string, options?: FindItemOptions): Promise<User | null>;
 
   findOneByPhoneNumber(phoneNumber: string, options?: FindItemOptions): Promise<User | null>;

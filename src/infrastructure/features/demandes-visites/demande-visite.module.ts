@@ -1,18 +1,20 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
-import { DemandeVisiteController } from './demande-visite.controller';
-import { DemandeVisiteRepository } from './demande-visite.repository';
+import { DemandeVisiteController } from "./demande-visite.controller";
+import { DemandeVisiteRepository } from "./demande-visite.repository";
 import { CqrsModule } from "@nestjs/cqrs";
 import {
+  CreateDemandeVisiteCommandHandler,
   EstimerPrixDemandeVisiteQueryHandler,
-  GetBienImmobilierOccupiedDateQueryHandler,
+  GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler,
 } from "@/core/application/features/demandes-visites";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
+import { UserModule } from "@/infrastructure/features/users";
 
-const commandHandlers = [];
-const queryHandler = [ EstimerPrixDemandeVisiteQueryHandler, GetBienImmobilierOccupiedDateQueryHandler];
+const commandHandlers = [CreateDemandeVisiteCommandHandler];
+const queryHandler = [EstimerPrixDemandeVisiteQueryHandler, GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler];
 const providers: Provider[] = [
   {
     provide: Deps.DemandeVisiteRepository,
@@ -22,8 +24,9 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [DemandeVisiteController],
-  imports: [TypeormModule, CqrsModule, ConfigsModule, BienImmobilierModule],
+  imports: [TypeormModule, CqrsModule, ConfigsModule, BienImmobilierModule, UserModule],
   providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })
-export class DemandeVisiteModule {}
+export class DemandeVisiteModule {
+}

@@ -1,0 +1,45 @@
+meta {
+  name: create-demande-visite
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{API_URL}}/demandes-visites/action/estimer-prix
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "bienImmobilier": "{{DEFAULT_BIEN_IMMOBILIER_ID}}",
+    "datesDemandeVisite": [
+      {
+        "date": "{{date}}"
+      }
+    ]
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("date", faker.datatype.datetime().toISOString());
+  
+  
+  
+  
+  
+  
+}
+
+tests {
+  test("Should receive montantTotalDemandeVisite > 0", function() {
+    const {data: { montantTotalDemandeVisite }} = res.getBody();
+  
+    expect(montantTotalDemandeVisite > 0).to.be.equal(true);
+  });
+}

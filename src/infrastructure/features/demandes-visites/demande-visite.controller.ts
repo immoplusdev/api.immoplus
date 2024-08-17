@@ -19,8 +19,8 @@ import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/htt
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import {
   EstimerPrixDemandeVisiteQuery, EstimerPrixDemandeVisiteQueryResponse,
-  GetBienImmobilierOccupiedDatesQuery,
-  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
+  GetBienImmobilierOccupiedDatesQuery, GetDemandeVisiteByIdQuery,
+  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto, WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
@@ -33,6 +33,7 @@ export class DemandeVisiteController {
 
   private readonly dtoMapper = new DemandeVisiteDtoMapper();
   private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly autoMapper = new WrapperResponseDtoMapper();
 
   constructor(
     readonly queryBus: QueryBus,
@@ -53,7 +54,7 @@ export class DemandeVisiteController {
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateDemandeVisiteCommand,
-    @CurrentUser() userId: string,
+    @CurrentUser("id") userId: string,
   ) {
     const command = new CreateDemandeVisiteCommand({ ...payload, userId });
 
@@ -105,7 +106,7 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseDemandeVisiteDto,
+    type: WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Read])
@@ -117,9 +118,9 @@ export class DemandeVisiteController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const item = await this.repository.findOne(id, { fields: params?._select });
+    const item = await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
 
-    return this.responseMapper.mapFrom(item);
+    return this.autoMapper.mapFrom(item);
   }
 
 

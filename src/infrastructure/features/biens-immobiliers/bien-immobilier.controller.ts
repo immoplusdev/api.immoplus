@@ -3,15 +3,6 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
-import {
-  BienImmobilierDtoMapper,
-  CreateBienImmobilierDto,
-  CreateBienImmobilierDtoMapper,
-  UpdateBienImmobilierDto,
-  UpdateBienImmobilierDtoMapper,
-  WrapperResponseBienImmobilierDto,
-  WrapperResponseBienImmobilierListDto,
-} from "@/infrastructure/features/biens-immobiliers";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
@@ -21,6 +12,16 @@ import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/htt
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { WrapperResponseResidenceDto } from "@/infrastructure/features/residences";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import {
+  WrapperResponseBienImmobilierDto,
+  WrapperResponseBienImmobilierListDto,
+} from "@/core/application/features/biens-immobiliers/bien-immobilier.dto";
+import {
+  CreateBienImmobilierDto,
+  CreateBienImmobilierDtoMapper,
+  UpdateBienImmobilierDto, UpdateBienImmobilierDtoMapper,
+} from "@/core/application/features/biens-immobiliers";
+import { BienImmobilierDtoMapper } from "@/core/application/features/biens-immobiliers/bien-immobilier-dto.mapper";
 
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")

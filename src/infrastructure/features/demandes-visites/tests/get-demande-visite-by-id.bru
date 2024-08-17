@@ -1,0 +1,23 @@
+meta {
+  name: get-demande-visite-by-id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{API_URL}}/demandes-visites/{{DEFAULT_DEMANDE_VISITE_ID}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+tests {
+  test("Should receive a list of date objects", function() {
+    const {data: { datesDemandeVisite }} = res.getBody();
+      
+    expect(Array.isArray(datesDemandeVisite)).to.be.equal(true);
+  });
+}

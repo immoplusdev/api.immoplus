@@ -19,6 +19,10 @@ export class CreateDemandeVisiteCommand {
   @IsOptional()
   userId: string;
 
+  setClientPhoneNumber(phoneNumber: string) {
+    this.clientPhoneNumber = phoneNumber;
+  }
+
   constructor(data?: OmitMethods<CreateDemandeVisiteCommand>) {
     if (data) Object.assign(this, data);
   }

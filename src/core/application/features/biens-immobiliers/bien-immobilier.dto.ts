@@ -3,9 +3,9 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPoint } from "@/core/domain/map";
-import { AmentityDto } from "@/infrastructure/features/biens-immobiliers";
 import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
 import { File } from "@/core/domain/files";
+import { AmentityDto } from "@/core/application/features/biens-immobiliers/amentity.dto";
 
 export class BienImmobilierDto {
   @ApiProperty({ format: "uuid" })

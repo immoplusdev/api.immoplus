@@ -13,13 +13,14 @@ import { StatusFacture } from "@/core/domain/payments";
 import { UserEntity } from "@/infrastructure/features/users";
 import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import { BienImmobilierEntity } from "@/infrastructure/features/biens-immobiliers";
 
 @Entity("demandes_visites")
 export class DemandeVisiteEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => DemandeVisiteEntity, (item) => item.id, { nullable: true })
+  @ManyToOne(() => BienImmobilierEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "bien_immobilier_id" })
   bienImmobilier: BienImmobilier | string;
 

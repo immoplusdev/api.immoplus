@@ -1,0 +1,35 @@
+meta {
+  name: update-demande-visite
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{API_URL}}/demandes-visites/{{DEFAULT_DEMANDE_VISITE_ID}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "notes": "{{name}}"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.company.name());
+}
+
+tests {
+  test("Should return a none empty data list", function() {
+    const {data: { notes }} = res.getBody();
+    const name = bru.getVar("name")
+    
+    expect(notes == name).to.be.equal(true);
+  });
+}

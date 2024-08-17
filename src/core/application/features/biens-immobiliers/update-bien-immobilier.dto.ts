@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { Amentity, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
-import { AmentityDto } from "@/infrastructure/features/biens-immobiliers";
 import { IsOptional } from "class-validator";
 import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
+import { AmentityDto } from "@/core/application/features/biens-immobiliers";
 
 export class UpdateBienImmobilierDto {
   @ApiProperty({ format: "uuid" })
