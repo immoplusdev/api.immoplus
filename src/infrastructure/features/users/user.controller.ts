@@ -20,17 +20,14 @@ import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { IUserRepository } from "@/core/domain/users";
 import { Role, UserRole } from "@/core/domain/roles";
 import {
-  UserDtoMapper,
-  UpdateUserAdditionalDataCommandResponseDto,
-  UpdateUserCommandDto,
-  WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
-} from "@/infrastructure/features/users";
-import {
   UpdateUserAdditionalDataCommand,
+  UpdateUserAdditionalDataCommandResponse, UpdateUserCommand, UserDtoMapper,
+  WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
   WrapperResponseUserDto,
   WrapperResponseUserListDto,
 } from "@/core/application/features/users";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { AccessForbiddenException } from "@/core/domain/auth";
 
 
 @ApiTags("User")
@@ -69,7 +66,7 @@ export class UserController {
 
     const result = await this.usersRepository.findByQuery(params);
 
-  return this.responseMapper.mapFromQueryResult(result);
+    return this.responseMapper.mapFromQueryResult(result);
 
   }
 
@@ -86,7 +83,6 @@ export class UserController {
     @Param("id") id: string,
   ) {
     const user = await this.usersRepository.findOne(id);
-
     return this.responseMapper.mapFrom(user);
   }
 
@@ -103,7 +99,6 @@ export class UserController {
   async readCurrentUser(
     @CurrentUser("id") userId: string,
   ) {
-
     const user = await this.usersRepository.findOne(userId);
     return this.responseMapper.mapFrom(user);
   }
@@ -119,7 +114,7 @@ export class UserController {
   @Patch(":id")
   async update(
     @Param("id") id: string,
-    @Body() payload: UpdateUserCommandDto,
+    @Body() payload: UpdateUserCommand,
   ) {
     await this.usersRepository.updateOne(id, payload);
 
@@ -135,13 +130,17 @@ export class UserController {
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Patch("/data/additional")
+  @Patch("/action/additional-data/:user")
   async updateUserAdditionalData(
-    @CurrentUser("id") userId: string,
-    @Body() payload: UpdateUserAdditionalDataCommandResponseDto,
+    @Param("user") userId: string,
+    @CurrentUser("id") currentUserId: string,
+    @CurrentUser("role") userRole: Role,
+    @Body() payload: UpdateUserAdditionalDataCommand,
   ) {
 
-    const responseMapper = new WrapperResponseDtoMapper<UpdateUserAdditionalDataCommandResponseDto>();
+    if (!userRole.hasAdminAccess() && userId !== currentUserId) throw new AccessForbiddenException();
+
+    const responseMapper = new WrapperResponseDtoMapper<UpdateUserAdditionalDataCommandResponse>();
 
     const command = new UpdateUserAdditionalDataCommand({
       ...payload,

@@ -3,7 +3,7 @@ import {
   CreateDateColumn, DeleteDateColumn,
   Entity, JoinColumn, ManyToOne,
   OneToOne,
-  PrimaryGeneratedColumn, RelationId,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { UserData, UserStatus } from "@/core/domain/users";

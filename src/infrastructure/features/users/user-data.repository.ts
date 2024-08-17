@@ -2,22 +2,24 @@ import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { UserData, IUserDataRepository } from "@/core/domain/users";
-import { UserDataEntity } from "@/infrastructure/features/users";
+import { UserDataEntity, UserEntityMapper } from "@/infrastructure/features/users";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { File } from "@/core/domain/files";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { UserDataEntityMapper } from "@/infrastructure/features/users/user-data-entity.mapper";
 
 
 @Injectable()
 export class UserDataRepository implements IUserDataRepository {
   private readonly repository: BaseRepository<File>;
+  private readonly relations: ["photoIdentite", "pieceIdentite", "registreCommerce"];
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, UserDataEntity);
+    this.repository = new BaseRepository(dataSource, UserDataEntity, this.relations).setEntityMapper(new UserDataEntityMapper());
   }
 
 

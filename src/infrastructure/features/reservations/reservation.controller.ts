@@ -4,14 +4,8 @@ import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
 import {
-  AnnulerReservationByIdCommandResponseDto,
-  CreateReservationCommandDto,
-  EstimerPrixReservationQueryDto,
-  EstimerPrixReservationQueryResponseDto, GetResidenceOccupiedDatesQueryResponseDto,
   ReservationDto,
   UpdateReservationDto,
-  WrapperResponseEstimerPrixReservationQueryResponseDto,
-  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   WrapperResponseReservationDto,
   WrapperResponseReservationListDto,
 } from "@/infrastructure/features/reservations";
@@ -25,17 +19,21 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
   AnnulerReservationByIdCommand,
+  AnnulerReservationByIdCommandResponse,
   CreateReservationCommand,
-  EstimerPrixReservationQuery, GetReservationByIdQuery, GetResidenceOccupiedDatesQuery,
+  EstimerPrixReservationQuery,
+  EstimerPrixReservationQueryResponse,
+  GetReservationByIdQuery,
+  GetResidenceOccupiedDatesQuery, GetResidenceOccupiedDatesQueryResponse,
+  WrapperResponseAnnulerReservationByIdCommandResponseDto,
+  WrapperResponseEstimerPrixReservationQueryResponseDto,
+  WrapperResponseGetReservationByIdQueryResponseDto, WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
 } from "@/core/application/features/reservations";
-import {
-  GetReservationByIdQueryResponseDto,
-  WrapperResponseGetReservationByIdQueryResponseDto,
-} from "@/infrastructure/features/reservations/dto";
 import { UnauthorizedException } from "@/core/domain/auth";
 import {
-  WrapperResponseAnnulerReservationByIdCommandResponseDto,
-} from "@/infrastructure/features/reservations";
+  GetReservationByIdQueryResponseDto
+} from "../../../../dist/infrastructure/features/reservations/dto/get-reservation-by-id-query-response.dto";
+
 
 @ApiTags("Reservation")
 @Controller("reservations")
@@ -58,7 +56,7 @@ export class ReservationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
-    @Body() payload: CreateReservationCommandDto,
+    @Body() payload: CreateReservationCommand,
     @CurrentUser("id") userId: string,
   ) {
     const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponseDto>();
@@ -133,7 +131,7 @@ export class ReservationController {
   async getResidenceOccupiedDates(
     @Param("residence") residenceId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<GetResidenceOccupiedDatesQueryResponseDto>();
+    const responseMapper = new WrapperResponseDtoMapper<GetResidenceOccupiedDatesQueryResponse>();
     const query = new GetResidenceOccupiedDatesQuery({ residenceId });
 
 
@@ -205,9 +203,9 @@ export class ReservationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async estimerPrixReservation(
-    @Body() payload: EstimerPrixReservationQueryDto,
+    @Body() payload: EstimerPrixReservationQuery,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponseDto>();
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponse>();
     const query = new EstimerPrixReservationQuery(payload);
 
     const response = await this.queryBus.execute(query);
@@ -226,8 +224,8 @@ export class ReservationController {
     @Param("id") reservationId: string,
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<AnnulerReservationByIdCommandResponseDto>();
-    const command = new AnnulerReservationByIdCommand({ reservationId, userId });
+    const responseMapper = new WrapperResponseDtoMapper<AnnulerReservationByIdCommandResponse>();
+    const command = new AnnulerReservationByIdCommand({ reservation: reservationId, userId });
 
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);

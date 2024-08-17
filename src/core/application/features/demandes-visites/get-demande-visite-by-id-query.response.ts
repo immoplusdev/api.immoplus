@@ -1,14 +1,14 @@
-import { OmitMethods } from "@/lib/ts-utilities";
-import { PublicUserInfo } from "@/core/domain/users";
-import { DemandeVisite } from "@/core/domain/demandes-visites";
-import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import { OmitMethods } from '@/lib/ts-utilities';
+import { ApiProperty } from "@nestjs/swagger";
+import { WrapperResponseDto } from "@/lib/responses";
 
-export class GetDemandeVisiteByIdQueryResponse extends DemandeVisite {
-  bienImmobilier: BienImmobilier;
-  client: PublicUserInfo;
-  proprietaire: PublicUserInfo;
-
+export class GetDemandeVisiteByIdQueryResponse {
   constructor(data?: OmitMethods<GetDemandeVisiteByIdQueryResponse>) {
-    if (data) super(data);
+    if(data) Object.assign(this, data);
   }
+}
+
+export class WrapperResponseGetDemandeVisiteByIdQueryResponseDto extends WrapperResponseDto<GetDemandeVisiteByIdQueryResponse> {
+  @ApiProperty({ type: GetDemandeVisiteByIdQueryResponse })
+  data: GetDemandeVisiteByIdQueryResponse;
 }

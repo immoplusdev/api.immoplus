@@ -8,9 +8,7 @@ import {
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
   WrapperResponseDemandeVisiteDto,
-  WrapperResponseDemandeVisiteListDto,
-  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
-  EstimerPrixDemandeVisiteQueryDto, EstimerPrixDemandeVisiteQueryResponseDto,
+  WrapperResponseDemandeVisiteListDto
 } from "@/infrastructure/features/demandes-visites";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -20,16 +18,13 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import {
-  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
-} from "@/infrastructure/features/reservations";
-import {
-  EstimerPrixDemandeVisiteQuery, GetBienImmobilierOccupiedDatesQuery,
+  EstimerPrixDemandeVisiteQuery, EstimerPrixDemandeVisiteQueryResponse,
+  GetBienImmobilierOccupiedDatesQuery,
+  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import {
-  CreateDemandeVisiteCommandDto,
-} from "@/infrastructure/features/demandes-visites/dto/create-demande-visite-command.dto";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
+import { WrapperResponseGetResidenceOccupiedDatesQueryResponseDto } from "@/core/application/features/reservations";
 
 
 @ApiTags("DemandeVisite")
@@ -57,7 +52,7 @@ export class DemandeVisiteController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
-    @Body() payload: CreateDemandeVisiteCommandDto,
+    @Body() payload: CreateDemandeVisiteCommand,
     @CurrentUser() userId: string,
   ) {
     const command = new CreateDemandeVisiteCommand({ ...payload, userId });
@@ -170,9 +165,9 @@ export class DemandeVisiteController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async estimerPrixDemandeVisite(
-    @Body() payload: EstimerPrixDemandeVisiteQueryDto,
+    @Body() payload: EstimerPrixDemandeVisiteQuery,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponseDto>();
+    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixDemandeVisiteQueryResponse>();
     const query = new EstimerPrixDemandeVisiteQuery(payload);
 
     const response = await this.queryBus.execute(query);

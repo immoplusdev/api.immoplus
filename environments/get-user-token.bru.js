@@ -10,17 +10,19 @@ async function getUserTokenBru(username, password) {
   return response.data.data?.accessToken || null;
 }
 
-async function getUserIdAndToken(username, password) {
+async function getUserDataByLogin(username, password) {
   const response = await axios.post(`${API_URL}/auth/login`, {
     username,
     password,
   });
   const token = response.data.data?.accessToken;
   const id = response.data.data?.user?.id;
-  return id ? { id, token } : null;
+  const email = response.data.data?.user?.email;
+  const phoneNumber = response.data.data?.user?.phoneNumber;
+  return id ? { id, token, email, phoneNumber } : null;
 }
 
 module.exports = {
   getUserTokenBru: getUserTokenBru,
-  getUserIdAndToken: getUserIdAndToken,
+  getUserDataByLogin: getUserDataByLogin,
 };

@@ -16,7 +16,7 @@ auth:bearer {
 
 script:pre-request {
   const axios = require("axios");
-  const { getUserIdAndToken } = require("./environments/get-user-token.bru");
+  const { getUserDataByLogin } = require("./environments/get-user-token.bru");
   
   const credentials = [
     {
@@ -35,17 +35,18 @@ script:pre-request {
       key: "admin",
       usernameEnvKey: "ADMIN_USERNAME"
     }
-  ]
+  ];
   
   const password = bru.getEnvVar("DEFAULT_USER_PASSWORD");
   
   for(let credential of credentials){
       const username = bru.getEnvVar(`${credential.usernameEnvKey}`);
-      const {id, token} = await getUserIdAndToken(username, password);
-      bru.setEnvVar(`${credential.key}Token`, token)
-      bru.setEnvVar(`${credential.key}Id`, id)
+      const { id, token, email, phoneNumber } = await getUserDataByLogin(username, password);
+      bru.setEnvVar(`${credential.key}Token`, token);
+      bru.setEnvVar(`${credential.key}Id`, id);
+      bru.setEnvVar(`${credential.key}Email`, email);
+      bru.setEnvVar(`${credential.key}PhoneNumber`, phoneNumber);
   }
-  
   
 }
 

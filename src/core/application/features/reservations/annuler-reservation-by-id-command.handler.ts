@@ -16,12 +16,12 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
 
   async execute(command: AnnulerReservationByIdCommand): Promise<AnnulerReservationByIdCommandResponse> {
 
-    const reservation = await this.reservationRepository.findOne(command.reservationId, { fields: ["id", "statusReservation"] });
+    const reservation = await this.reservationRepository.findOne(command.reservation, { fields: ["id", "statusReservation"] });
 
     try {
       this.verifyCanProceed(reservation.statusReservation, command.userId);
     } catch (err) {
-      return await this.reservationRepository.findOne(command.reservationId);
+      return await this.reservationRepository.findOne(command.reservation);
     }
 
 
@@ -31,9 +31,9 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
 
     if (command.notes) payload.notes = command.notes;
 
-    await this.reservationRepository.updateOne(command.reservationId, payload);
+    await this.reservationRepository.updateOne(command.reservation, payload);
 
-    return await this.reservationRepository.findOne(command.reservationId);
+    return await this.reservationRepository.findOne(command.reservation);
 
   }
 

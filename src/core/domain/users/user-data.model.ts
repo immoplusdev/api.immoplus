@@ -7,12 +7,15 @@ export class UserData {
   lieuNaissance?: string;
   activite?: string;
   photoIdentite?: File | string;
+  photoIdentiteId?:  string;
   pieceIdentite?: File | string;
+  pieceIdentiteId?: string;
 
   // Pro entreprise
   nomEntreprise?: string;
   emailEntreprise?: string;
   registreCommerce?: File | string;
+  registreCommerceId?: string;
   numeroContribuable?: string;
   typeEntreprise?: string;
 

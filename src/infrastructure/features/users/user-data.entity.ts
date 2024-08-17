@@ -20,14 +20,10 @@ export class UserDataEntity {
   @JoinColumn({ name: "photo_identite_id" })
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   photoIdentite?: File | string;
-  @RelationId((item: UserDataEntity) => item.photoIdentite)
-  photoIdentiteId?: string;
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "piece_identite_id" })
   pieceIdentite?: File | string;
-  @RelationId((item: UserDataEntity) => item.pieceIdentite)
-  pieceIdentiteId?: string;
 
   // Pro entreprise
   @Column({ name: "nom_entreprise", type: "varchar", nullable: true })
@@ -46,4 +42,8 @@ export class UserDataEntity {
   numeroContribuable?: string;
   @Column({ name: "type_entreprise", type: "varchar", nullable: true })
   typeEntreprise?: string;
+
+  constructor(data?: Partial<UserDataEntity>) {
+    if (data) Object.assign(this, data);
+  }
 }

@@ -29,11 +29,6 @@ script:pre-request {
   
 }
 
-script:post-response {
-  const {data: { id }} = res.getBody();
-  bru.setEnvVar("DEFAULT_VILLE_ID", id)
-}
-
 tests {
   test("Should receive a not null id", function() {
     const {data: { id }} = res.getBody();

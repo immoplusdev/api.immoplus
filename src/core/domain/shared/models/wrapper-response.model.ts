@@ -20,7 +20,7 @@ export class WrapperResponse<T> {
   paginate(options: WrapperResponsePaginationOptions) {
     if (!Array.isArray(this.data)) return this;
     this.currentPage = options.currentPage;
-    const totalPages = Math.floor(options.totalCount / options.pageSize);
+    const totalPages = Math.ceil(options.totalCount / options.pageSize);
     this.totalPages = totalPages !== 0 ? totalPages : 1;
     this.pageSize = options.pageSize;
     this.totalCount = options.totalCount;

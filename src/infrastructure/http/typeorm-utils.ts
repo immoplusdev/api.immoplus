@@ -2,6 +2,7 @@ import { ItemsOperator, ItemsParamsCriterias, ItemsParamsCriteriasLogic, SearchI
 import { InvalidQueryException } from "@/core/domain/shared/exceptions";
 import { ItemsParamsCriteriasDto } from "@/infrastructure/http";
 import { And, Equal, Like, Or, Not, MoreThan, MoreThanOrEqual, LessThan, LessThanOrEqual, In } from "typeorm";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 
 export function parseHttpQuery(query: any): SearchItemsParams {
   const params: SearchItemsParams = {};
@@ -41,10 +42,14 @@ export function mapQueryToTypeormQuery(query: SearchItemsParams) {
 
   const whereConditions = query._where ? mapToTypeormWhere(query._where) : undefined;
 
+  const pageSize = !query._page || !query._per_page ? DEFAULT_PAGE_SIZE : parseInt(query._per_page as never);
+  const currentPage = query._page ? parseInt(query._page as never) || DEFAULT_PAGE : DEFAULT_PAGE;
+  const skip = currentPage - 1 > 0 ? (currentPage - 1) * pageSize: 0;
+
   const searchParams = {
     where: whereConditions,
-    skip: query._page && query._page - 1 > 0 ? (query._page - 1) * query._per_page : 0,
-    take: query._per_page,
+    skip,
+    take: pageSize,
     select: mapQueryFieldsToTypeormSelection(query._select),
     order: undefined,
   };

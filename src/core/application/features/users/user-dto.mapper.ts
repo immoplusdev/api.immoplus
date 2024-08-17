@@ -1,6 +1,6 @@
 import { User } from "@/core/domain/users";
 import { IMapper } from "@/lib/ts-utilities";
-import { UserDto } from "@/core/application/features/users";
+import { UserDto } from "@/core/application/features/users/index";
 
 
 export class UserDtoMapper implements IMapper<User, UserDto> {

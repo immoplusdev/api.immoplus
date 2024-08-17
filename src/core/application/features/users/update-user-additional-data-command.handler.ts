@@ -3,7 +3,7 @@ import { UpdateUserAdditionalDataCommand } from "./update-user-additional-data.c
 import { UpdateUserAdditionalDataCommandResponse } from "./update-user-additional-data-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IUserDataRepository, IUserRepository, User } from "@/core/domain/users";
+import { IUserDataRepository, IUserRepository, User, UserNotFoundException } from "@/core/domain/users";
 import { AccountDataAlreadyVerifiedException } from "@/core/domain/users/account-data-already-verified.exception";
 
 @CommandHandler(UpdateUserAdditionalDataCommand)
@@ -20,26 +20,35 @@ export class UpdateUserAdditionalDataCommandHandler implements ICommandHandler<U
   async execute(command: UpdateUserAdditionalDataCommand): Promise<UpdateUserAdditionalDataCommandResponse> {
 
     const user = await this.usersRepository.findOne(command.userId);
+    if(!user) throw new UserNotFoundException();
 
     this.ensureAccountDataNotVerified(user);
 
     const additionalDataId = (user.additionalData as User).id;
+    const additionalData = await this.usersDataRepository.findOne(additionalDataId);
+
+
+    delete command.userId;
+
+    console.log(additionalData);
+    console.log(command);
 
     await this.usersDataRepository.updateOne(
       additionalDataId,
       {
+        ...additionalData,
         // Pro particulier
-        lieuNaissance: command.lieuNaissance,
-        activite: command.activite,
-        photoIdentite: command.photoIdentite,
-        pieceIdentite: command.pieceIdentite,
+        lieuNaissance: command.lieuNaissance || undefined,
+        activite: command.activite || undefined,
+        photoIdentite: command.photoIdentite || undefined,
+        pieceIdentite: command.pieceIdentite || undefined,
 
         // Pro entreprise
-        nomEntreprise: command.nomEntreprise,
-        emailEntreprise: command.emailEntreprise,
-        registreCommerce: command.registreCommerce,
-        numeroContribuable: command.numeroContribuable,
-        typeEntreprise: command.typeEntreprise,
+        nomEntreprise: command.nomEntreprise || undefined,
+        emailEntreprise: command.emailEntreprise || undefined,
+        registreCommerce: command.registreCommerce || undefined,
+        numeroContribuable: command.numeroContribuable || undefined,
+        typeEntreprise: command.typeEntreprise || undefined,
       });
 
     return await this.usersDataRepository.findOne(additionalDataId) as never;

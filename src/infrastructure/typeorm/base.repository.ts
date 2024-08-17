@@ -16,7 +16,7 @@ export type LoadRelationIdsOptions = boolean | {
 
 export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Partial<Model>, KeyType = string> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
-  private readonly relations?: RepositoryRelations;
+  private relations?: RepositoryRelations;
   private loadRelationIds: LoadRelationIdsOptions = true;
   private entityMapper?: IMapper<any, any> = null;
 
@@ -45,6 +45,11 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return this.getRepositoryInstance();
   }
 
+  setRelations(relations: RepositoryRelations) {
+    this.relations = relations;
+    return this.getRepositoryInstance();
+  }
+
   async createMany(payload: CreateDto[], returnPayload: boolean = true): Promise<Model[]> {
     const result = await Promise.all(payload.map(async (item) => await this.createOne(item, returnPayload)));
     if (returnPayload) return result;
@@ -60,14 +65,15 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<Model[]>> {
 
     const paginationOptions = {
-      currentPage: query?._page || DEFAULT_PAGE,
-      pageSize: query?._per_page || DEFAULT_PAGE_SIZE,
+      currentPage: parseInt(query?._page as never) || DEFAULT_PAGE,
+      pageSize: parseInt(query?._per_page as never) || DEFAULT_PAGE_SIZE,
     };
 
     const queryOptions = {
       relations: options?.loadRelationIds || this.relations,
       loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
     } as any;
+
 
     if (query) {
       const typeormQuery = query ? mapQueryToTypeormQuery(query) : undefined;

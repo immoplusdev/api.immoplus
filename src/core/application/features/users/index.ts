@@ -9,3 +9,5 @@ export * from "./update-user-command.handler";
 export * from "./update-user-command.response";
 export * from "./user.dto";
 export * from "./user-data.dto";
+export * from "./public-user-info.dto";
+export * from "./user-dto.mapper";
