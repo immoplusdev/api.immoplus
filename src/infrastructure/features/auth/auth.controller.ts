@@ -4,7 +4,6 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/features/auth/login.command";
 import {
-  LoginCommandResponse,
   LoginWithEmailOtpCommand,
   LoginWithEmailOtpCommandResponse,
   LoginWithPhoneNumberOtpCommand, LoginWithPhoneNumberOtpCommandResponse, RegisterCommand,
@@ -16,7 +15,7 @@ import {
   UpdatePasswordCommand,
   VerifyEmailCommand,
   VerifyPhoneNumberCommand,
-  WrapperResponseLoginCommandResponseDto,
+  WrapperResponseLoginCommandResponseDto, WrapperResponseLoginCommandResponseDtoMapper,
   WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
 } from "@/core/application/features/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
@@ -38,7 +37,7 @@ export class AuthController {
   @HttpCode(200)
   @Post("register-customer")
   async registerCustomer(@Body() payload: RegisterCommand) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
+    const responseMapper = new WrapperResponseLoginCommandResponseDtoMapper();
     const loginCommand = new LoginCommand({
       username: payload.phoneNumber,
       password: payload.password,
@@ -55,7 +54,7 @@ export class AuthController {
   @HttpCode(200)
   @Post("register-pro-particulier")
   async registerProParticulier(@Body() payload: RegisterProParticulierCommand) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
+    const responseMapper = new WrapperResponseLoginCommandResponseDtoMapper();
     const registerCommand = new RegisterProParticulierCommand(payload);
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
@@ -73,7 +72,7 @@ export class AuthController {
   @HttpCode(200)
   @Post("register-pro-entreprise")
   async registerProEntreprise(@Body() payload: RegisterProEntrepriseCommand) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
+    const responseMapper = new WrapperResponseLoginCommandResponseDtoMapper();
     const registerCommand = new RegisterProEntrepriseCommand(payload);
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
@@ -92,7 +91,7 @@ export class AuthController {
   @HttpCode(200)
   @Post("login")
   async login(@Body() payload: LoginCommand) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginCommandResponse>();
+    const responseMapper = new WrapperResponseLoginCommandResponseDtoMapper();
 
     const response = await this.commandBus.execute(new LoginCommand(payload));
     return responseMapper.mapFrom(response);

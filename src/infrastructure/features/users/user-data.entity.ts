@@ -34,8 +34,6 @@ export class UserDataEntity {
   @JoinColumn({ name: "registre_commerce_id" })
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   registreCommerce?: File | string;
-  @RelationId((item: UserDataEntity) => item.registreCommerce)
-  registreCommerceId?: string;
 
 
   @Column({ name: "numero_contribuable", type: "varchar", nullable: true })

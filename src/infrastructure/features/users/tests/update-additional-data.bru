@@ -1,0 +1,35 @@
+meta {
+  name: update-additional-data
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{API_URL}}/users/action/additional-data/{{proPersoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proPersoToken}}
+}
+
+body:json {
+  {
+    "activite": "{{name}}"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.company.name());
+}
+
+tests {
+  test("Should return a none empty data list", function() {
+    const {data: { activite }} = res.getBody();
+    const name = bru.getVar("name")
+    
+    expect(activite == name).to.be.equal(true);
+  });
+}

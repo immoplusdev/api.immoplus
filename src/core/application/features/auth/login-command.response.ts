@@ -1,7 +1,7 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { ApiProperty } from "@nestjs/swagger";
-import { UserDto } from "@/core/application/features/users";
+import { UserDto, UserDtoMapper } from "@/core/application/features/users";
 
 export class LoginCommandResponse {
   @ApiProperty()
@@ -12,6 +12,7 @@ export class LoginCommandResponse {
   refreshToken: string;
   @ApiProperty({ type: UserDto })
   user: UserDto;
+
   constructor(data?: OmitMethods<LoginCommandResponse>) {
     Object.assign(this, data);
   }
@@ -20,5 +21,23 @@ export class LoginCommandResponse {
 export class WrapperResponseLoginCommandResponseDto extends WrapperResponseDto<LoginCommandResponse> {
   @ApiProperty({ type: LoginCommandResponse })
   data: LoginCommandResponse;
+
+  constructor(data?: OmitMethods<LoginCommandResponse>) {
+    if (data) super(data);
+  }
 }
+
+
+export class WrapperResponseLoginCommandResponseDtoMapper implements IMapper<LoginCommandResponse, WrapperResponseLoginCommandResponseDto> {
+
+  mapFrom(param: LoginCommandResponse): WrapperResponseLoginCommandResponseDto {
+    param.user = new UserDtoMapper().mapFrom(param.user);
+    return new WrapperResponseLoginCommandResponseDto(param);
+  }
+
+  mapTo(param: WrapperResponseLoginCommandResponseDto): LoginCommandResponse {
+    return param.data;
+  }
+}
+
 

@@ -31,6 +31,7 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     await this.validateInput(command);
 
     const userId = generateUuid();
+
     const userData = await this.usersDataRepository.createOne({
       activite: command.activite,
       photoIdentite: command.photoIdentiteId,
@@ -46,7 +47,7 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
       firstName: command.firstName,
       lastName: command.lastName,
       role: UserRole.ProParticulier,
-      additionalData: userData.id,
+      additionalData: userData.id as never,
       createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
     });
 

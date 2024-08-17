@@ -1,0 +1,30 @@
+meta {
+  name: send-sms-otp
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{API_URL}}/auth/send-sms-otp
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "phoneNumber": "{{customerPhoneNumber}}"
+  }
+}
+
+tests {
+  test("Should return 204 status code", function() {
+    const status = res.getStatus();
+    
+    expect(status == 204).to.be.equal(true);
+  });
+  
+}

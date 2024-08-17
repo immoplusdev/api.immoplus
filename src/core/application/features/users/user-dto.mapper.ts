@@ -1,25 +1,22 @@
-import { User } from "@/core/domain/users";
-import { IMapper } from "@/lib/ts-utilities";
-import { UserDto } from "@/core/application/features/users/index";
+import { User, UserData } from "@/core/domain/users";
+import { IMapper, omitObjectProperties } from "@/lib/ts-utilities";
+import { UserDto } from "./user.dto";
+import { UserDataDtoMapper } from "@/core/application/features/users/user-data-dto.mapper";
 
 
 export class UserDtoMapper implements IMapper<User, UserDto> {
 
   mapFrom(object: User): UserDto {
-    const newObject = new UserDto({ ...object });
+    const params = omitObjectProperties(object, ["additionalData"]);
+    const newObject = new UserDto({
+      ...params,
+      additionalData: new UserDataDtoMapper().mapFrom(object.additionalData as UserData),
+    });
     newObject.clearPassword();
     return newObject;
   }
 
-  // mapListFrom(objects: User[]) {
-  //   return objects.map((object) => this.mapFrom(object));
-  // }
-
   mapTo(object: UserDto): User {
-    return new User({ ...object });
+    return new User({ ...object, additionalData: object.additionalData as never });
   }
-
-  // mapListTo(objects: UserDto[]) {
-  //   return objects.map((object) => this.mapTo(object));
-  // }
 }

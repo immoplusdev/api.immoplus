@@ -1,0 +1,28 @@
+meta {
+  name: get-users
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/users
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+tests {
+  test("Should return a none empty data list", function() {
+    const {data} = res.getBody();
+  
+    expect(Array.isArray(data)).to.be.equal(true);
+  
+    if(data.length != 0){
+      const [{ id }] = data;
+      expect(id).to.be.a("string");
+    }
+  });
+}

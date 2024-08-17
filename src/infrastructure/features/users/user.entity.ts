@@ -60,7 +60,7 @@ export class UserEntity {
 
   @OneToOne(() => UserDataEntity, (userData) => userData.user)
   @JoinColumn({ name: "additional_data_id" })
-  additionalData?: UserData | string;
+  additionalData?: UserDataEntity | string;
 
   // Status and Dates
   @Column({ name: "identity_verified", type: "bool", default: false })

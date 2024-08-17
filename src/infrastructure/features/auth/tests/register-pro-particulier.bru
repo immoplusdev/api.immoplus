@@ -32,7 +32,7 @@ script:pre-request {
 tests {
   test("Should receive a not null pieceIdentiteId", function() {
     const {data: { user: { additionalData }}} = res.getBody();
-  
+    
     expect(additionalData.pieceIdentiteId).to.be.a('string');
   });
 }

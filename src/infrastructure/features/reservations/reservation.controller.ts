@@ -23,16 +23,14 @@ import {
   CreateReservationCommand,
   EstimerPrixReservationQuery,
   EstimerPrixReservationQueryResponse,
-  GetReservationByIdQuery,
+  GetReservationByIdQuery, GetReservationByIdQueryResponse,
   GetResidenceOccupiedDatesQuery, GetResidenceOccupiedDatesQueryResponse,
   WrapperResponseAnnulerReservationByIdCommandResponseDto,
   WrapperResponseEstimerPrixReservationQueryResponseDto,
   WrapperResponseGetReservationByIdQueryResponseDto, WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
 } from "@/core/application/features/reservations";
 import { UnauthorizedException } from "@/core/domain/auth";
-import {
-  GetReservationByIdQueryResponseDto
-} from "../../../../dist/infrastructure/features/reservations/dto/get-reservation-by-id-query-response.dto";
+
 
 
 @ApiTags("Reservation")
@@ -59,7 +57,7 @@ export class ReservationController {
     @Body() payload: CreateReservationCommand,
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponseDto>();
+    const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();
     const command = new CreateReservationCommand({
       ...payload,
       userId,
@@ -154,7 +152,7 @@ export class ReservationController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponseDto>();
+    const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();
     const query = new GetReservationByIdQuery(({ id }));
 
     const response = await this.queryBus.execute(query);

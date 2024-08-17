@@ -5,6 +5,7 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IUserDataRepository, IUserRepository, User, UserNotFoundException } from "@/core/domain/users";
 import { AccountDataAlreadyVerifiedException } from "@/core/domain/users/account-data-already-verified.exception";
+import { omitObjectProperties } from "@/lib/ts-utilities";
 
 @CommandHandler(UpdateUserAdditionalDataCommand)
 export class UpdateUserAdditionalDataCommandHandler implements ICommandHandler<UpdateUserAdditionalDataCommand> {
@@ -20,23 +21,17 @@ export class UpdateUserAdditionalDataCommandHandler implements ICommandHandler<U
   async execute(command: UpdateUserAdditionalDataCommand): Promise<UpdateUserAdditionalDataCommandResponse> {
 
     const user = await this.usersRepository.findOne(command.userId);
-    if(!user) throw new UserNotFoundException();
+    if (!user) throw new UserNotFoundException();
 
     this.ensureAccountDataNotVerified(user);
 
     const additionalDataId = (user.additionalData as User).id;
     const additionalData = await this.usersDataRepository.findOne(additionalDataId);
 
-
-    delete command.userId;
-
-    console.log(additionalData);
-    console.log(command);
-
     await this.usersDataRepository.updateOne(
       additionalDataId,
       {
-        ...additionalData,
+        ...omitObjectProperties(additionalData, ["userId"]),
         // Pro particulier
         lieuNaissance: command.lieuNaissance || undefined,
         activite: command.activite || undefined,

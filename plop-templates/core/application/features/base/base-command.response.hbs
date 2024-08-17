@@ -11,5 +11,18 @@ export class {{classify name}}CommandResponse {
   export class WrapperResponse{{classify name}}CommandResponseDto extends WrapperResponseDto<{{classify name}}CommandResponse> {
     @ApiProperty({ type: {{classify name}}CommandResponse })
     data: {{classify name}}CommandResponse;
+    constructor(data?: OmitMethods<{{classify name}}CommandResponse>) {
+      if (data) super(data);
+    }
   }
+      
+  export class WrapperResponse{{classify name}}CommandResponseDtoMapper implements IMapper<{{classify name}}CommandResponse, WrapperResponse{{classify name}}CommandResponseDto> {
+      mapFrom(param: {{classify name}}CommandResponse): WrapperResponse{{classify name}}CommandResponseDto {
+         return new WrapperResponse{{classify name}}CommandResponseDto(param);
+      }
 
+      mapTo(param: WrapperResponse{{classify name}}CommandResponseDto): {{classify name}}CommandResponse {
+         return param.data;
+      }
+  }
+      

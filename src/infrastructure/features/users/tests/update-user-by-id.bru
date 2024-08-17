@@ -1,0 +1,35 @@
+meta {
+  name: update-user-by-id
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{API_URL}}/users/{{customerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "firstName": "{{name}}"
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.company.name());
+}
+
+tests {
+  test("Should return a none empty data list", function() {
+    const {data: { firstName }} = res.getBody();
+    const name = bru.getVar("name")
+    
+    expect(firstName == name).to.be.equal(true);
+  });
+}

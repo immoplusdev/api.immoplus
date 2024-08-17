@@ -1,3 +1,8 @@
+export * from "./user.dto";
+export * from "./user-data.dto";
+export * from "./public-user-info.dto";
+export * from "./user-data-dto.mapper";
+export * from "./user-dto.mapper";
 export * from "./create-user.command";
 export * from "./create-user-command.handler";
 export * from "./create-user-command.response";
@@ -7,7 +12,3 @@ export * from "./update-user-additional-data-command.response";
 export * from "./update-user-additional-data.command";
 export * from "./update-user-command.handler";
 export * from "./update-user-command.response";
-export * from "./user.dto";
-export * from "./user-data.dto";
-export * from "./public-user-info.dto";
-export * from "./user-dto.mapper";
