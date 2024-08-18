@@ -4,11 +4,11 @@ import { {{classify name}}Entity } from "./{{dasherize name}}.entity";
 
 
 export class {{classify name}}EntityMapper implements IMapper<{{classify name}}Entity, {{classify name}}> {
-  mapFrom(object: OmitMethods<{{classify name}}Entity>): {{classify name}} {
-    return new {{classify name}}(object);
+  mapFrom(param: OmitMethods<{{classify name}}Entity>): {{classify name}} {
+    return new {{classify name}}(param);
   }
 
-  mapTo(object: OmitMethods<{{classify name}}>): {{classify name}}Entity {
-    return new {{classify name}}Entity(object);
+  mapTo(param: OmitMethods<{{classify name}}>): {{classify name}}Entity {
+    return new {{classify name}}Entity(param);
   }
 }

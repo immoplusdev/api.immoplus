@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler, IQueryBus, QueryBus } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "./create-demande-visite.command";
 import { CreateDemandeVisiteCommandResponse } from "./create-demande-visite-command.response";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
@@ -7,8 +7,7 @@ import { dateToString } from "@/lib/ts-utilities";
 import { Inject } from "@nestjs/common";
 import {
   DateDemandeVisiteDejaPriseException,
-  IDemandeVisiteRepository,
-  TypeDemandeVisite,
+  IDemandeVisiteRepository
 } from "@/core/domain/demandes-visites";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
@@ -18,9 +17,6 @@ import {
   EstimerPrixDemandeVisiteQuery,
   GetBienImmobilierOccupiedDatesQueryResponse, GetDemandeVisiteByIdQuery,
 } from "@/core/application/features/demandes-visites";
-import { ApiProperty } from "@nestjs/swagger";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
-import { IsOptional } from "class-validator";
 
 
 @CommandHandler(CreateDemandeVisiteCommand)

@@ -4,11 +4,11 @@ import { Update{{classify name}}Dto } from "./update-{{dasherize name}}.dto";
 
 
 export class Update{{classify name}}DtoMapper implements IMapper<Update{{classify name}}Dto, {{classify name}}> {
-  mapFrom(object: OmitMethods<Update{{classify name}}Dto>): {{classify name}} {
-    return new {{classify name}}(object as never);
+  mapFrom(param: OmitMethods<Update{{classify name}}Dto>): {{classify name}} {
+    return new {{classify name}}(param as never);
   }
 
-  mapTo(object: Partial<{{classify name}}>): Update{{classify name}}Dto {
-    return new Update{{classify name}}Dto(object as never);
+  mapTo(param: Partial<{{classify name}}>): Update{{classify name}}Dto {
+    return new Update{{classify name}}Dto(param as never);
   }
 }

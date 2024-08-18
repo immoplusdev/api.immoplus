@@ -4,11 +4,16 @@ import { DemandeVisiteEntity } from "./demande-visite.entity";
 
 
 export class DemandeVisiteEntityMapper implements IMapper<DemandeVisiteEntity, DemandeVisite> {
-  mapFrom(object: OmitMethods<DemandeVisiteEntity>): DemandeVisite {
-    return new DemandeVisite(object);
+  mapFrom(param: OmitMethods<DemandeVisiteEntity>): DemandeVisite {
+    const object = new DemandeVisite(param);
+    if (param.bienImmobilier && typeof param.bienImmobilier === "object") {
+      object.bienImmobilierId = param.bienImmobilier.id;
+    }
+
+    return object;
   }
 
-  mapTo(object: OmitMethods<DemandeVisite>): DemandeVisiteEntity {
-    return new DemandeVisiteEntity(object);
+  mapTo(param: OmitMethods<DemandeVisite>): DemandeVisiteEntity {
+    return new DemandeVisiteEntity(param);
   }
 }

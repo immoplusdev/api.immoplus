@@ -4,11 +4,11 @@ import { {{classify name}}Dto } from "./{{dasherize name}}.dto";
 
 
 export class {{classify name}}DtoMapper implements IMapper<{{classify name}}, {{classify name}}Dto> {
-  mapFrom(object: OmitMethods<{{classify name}}>): {{classify name}}Dto {
-    return new {{classify name}}Dto(object);
+  mapFrom(param: OmitMethods<{{classify name}}>): {{classify name}}Dto {
+    return new {{classify name}}Dto(param);
   }
 
-  mapTo(object: OmitMethods<{{classify name}}Dto>): {{classify name}} {
-    return new {{classify name}}(object);
+  mapTo(param: OmitMethods<{{classify name}}Dto>): {{classify name}} {
+    return new {{classify name}}(param);
   }
 }

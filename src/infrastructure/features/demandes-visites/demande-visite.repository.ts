@@ -1,21 +1,25 @@
-import { DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { DemandeVisite, IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
-import { DemandeVisiteEntity, DemandeVisiteEntityMapper } from '@/infrastructure/features/demandes-visites';
+import { DemandeVisiteEntity, DemandeVisiteEntityMapper } from "@/infrastructure/features/demandes-visites";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
-export class DemandeVisiteRepository implements IDemandeVisiteRepository{
+export class DemandeVisiteRepository implements IDemandeVisiteRepository {
   private readonly repository: BaseRepository<DemandeVisite>;
+  private readonly relations: RepositoryRelations = ["bienImmobilier"];
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
+    @Inject(Deps.BiensImmobiliesRepository) private readonly biensImmobiliesRepository: IDemandeVisiteRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, DemandeVisiteEntity).setEntityMapper(new DemandeVisiteEntityMapper());
+    this.repository = new BaseRepository(dataSource, DemandeVisiteEntity, this.relations).setEntityMapper(new DemandeVisiteEntityMapper());
   }
+
 
   async createMany(payload: Partial<DemandeVisite>[]): Promise<DemandeVisite[]> {
     return await this.repository.createMany(payload);
@@ -25,8 +29,8 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository{
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<DemandeVisite[]>> {
-    return await this.repository.findByQuery(query);
+  async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<DemandeVisite[]>> {
+    return await this.repository.findByQuery(query, options);
   }
 
   async findOne(id: string, options?: FindItemOptions): Promise<DemandeVisite> {
@@ -35,6 +39,32 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository{
 
   async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<DemandeVisite> {
     return this.repository.findOneByQuery(query, options);
+  }
+
+  async findByBienImmobilierOwnerId(ownerId: string, query?: SearchItemsParams): Promise<WrapperResponse<DemandeVisite[]>> {
+    const idsResponse = await this.biensImmobiliesRepository.findByQuery({
+      _where:
+        [
+          {
+            _field: "proprietaire",
+            _op: "eq",
+            _val: ownerId,
+          },
+        ],
+    }, { fields: ["id"], relations: [] });
+
+    const demandesVisites = await this.findByQuery({
+      _where: [
+        {
+          _field: "bienImmobilier",
+          _op: "in",
+          _val: idsResponse.data.map((item) => item.id),
+        },
+      ],
+    });
+
+    console.log(demandesVisites.data);
+    return demandesVisites;
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<DemandeVisite>): Promise<string[]> {

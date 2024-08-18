@@ -1,0 +1,27 @@
+meta {
+  name: get-demandes-visites-by-owner
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{API_URL}}/demandes-visites/data/bien-immobilier/owner/{{proId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+tests {
+  test("Should receive a none empty list of date objects", function() {
+    const { data } = res.getBody();
+      
+    expect(Array.isArray(data)).to.be.equal(true);
+    
+    if(data.length != 0){
+      expect(data.at(0).bienImmobilierId).to.be.a("string");
+    }
+  });
+}

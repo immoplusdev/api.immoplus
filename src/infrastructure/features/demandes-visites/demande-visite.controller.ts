@@ -4,11 +4,12 @@ import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import {
+  DemandeVisiteDto,
   DemandeVisiteDtoMapper,
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
   WrapperResponseDemandeVisiteDto,
-  WrapperResponseDemandeVisiteListDto
+  WrapperResponseDemandeVisiteListDto,
 } from "@/infrastructure/features/demandes-visites";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -24,6 +25,7 @@ import {
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
+import { UnauthorizedException } from "@/core/domain/auth";
 import { WrapperResponseGetResidenceOccupiedDatesQueryResponseDto } from "@/core/application/features/reservations";
 
 
@@ -90,7 +92,7 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
+    type: WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
   })
   @Get("data/bien-immobilier/occupied-dates/:id")
   async getResidenceOccupiedDates(
@@ -102,6 +104,29 @@ export class DemandeVisiteController {
     const response = await this.queryBus.execute(query);
 
     return responseMapper.setData(response);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseDemandeVisiteListDto,
+  })
+  @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
+  @Get("data/bien-immobilier/owner/:id")
+  async readManyByOwnerId(
+    @Param("id") ownerId: string,
+    @Query() params: SearchItemsParamsDto,
+    @CurrentUser("id") userId: string,
+  ) {
+
+    if (ownerId !== userId) throw new UnauthorizedException();
+
+    const items = await this.repository.findByBienImmobilierOwnerId(ownerId, params);
+
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
 

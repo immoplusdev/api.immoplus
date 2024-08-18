@@ -1,0 +1,27 @@
+meta {
+  name: list-demandes-visites
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{API_URL}}/demandes-visites
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+tests {
+  test("Should receive a none empty list of date objects", function() {
+    const { data } = res.getBody();
+      
+    expect(Array.isArray(data)).to.be.equal(true);
+    
+    if(data.length != 0){
+      expect(data.at(0).bienImmobilierId).to.be.a("string");
+    }
+  });
+}

@@ -4,11 +4,11 @@ import { Create{{classify name}}Dto } from "./create-{{dasherize name}}.dto";
 
 
 export class Create{{classify name}}DtoMapper implements IMapper<Create{{classify name}}Dto, {{classify name}}> {
-  mapFrom(object: OmitMethods<Create{{classify name}}Dto>): {{classify name}} {
-    return new {{classify name}}(object as never);
+  mapFrom(param: OmitMethods<Create{{classify name}}Dto>): {{classify name}} {
+    return new {{classify name}}(param as never);
   }
 
-  mapTo(object: Partial<{{classify name}}>): Create{{classify name}}Dto {
-    return new Create{{classify name}}Dto(object as never);
+  mapTo(param: Partial<{{classify name}}>): Create{{classify name}}Dto {
+    return new Create{{classify name}}Dto(param as never);
   }
 }

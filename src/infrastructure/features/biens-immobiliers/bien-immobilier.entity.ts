@@ -31,7 +31,7 @@ export class BienImmobilierEntity {
   @Column({ name: "nom", type: "varchar" })
   nom: string;
 
-  @Column({ name: "type_residence", type: "varchar" })
+  @Column({ name: "type_bien_immobilier", type: "varchar", nullable: true })
   typeBienImmobilier: TypeBienImmobilier;
 
   @Column({ name: "description", type: "text" })

@@ -4,7 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { OmitMethods } from "@/lib/ts-utilities";

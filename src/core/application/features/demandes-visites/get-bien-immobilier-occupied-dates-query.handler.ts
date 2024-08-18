@@ -12,7 +12,6 @@ export class GetBienImmobilierOccupiedDateQueryHandler
   constructor(
     @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
   ) {
-    //
   }
   async execute(query: GetBienImmobilierOccupiedDatesQuery): Promise<GetBienImmobilierOccupiedDatesQueryResponse> {
     const reservations = await this.demandeVisiteRepository.findByQuery({
@@ -23,7 +22,7 @@ export class GetBienImmobilierOccupiedDateQueryHandler
         },
       ],
       _select: ["datesDemandeVisite"],
-    });
+    }, { relations: [], loadRelationIds: true});
 
     const dates = reservations.data.map((demandeVisite) => demandeVisite.datesDemandeVisite).flat();
 

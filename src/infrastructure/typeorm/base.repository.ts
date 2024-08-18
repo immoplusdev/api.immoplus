@@ -2,12 +2,12 @@ import { DataSource, Repository } from "typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infrastructure/http";
 import { IBaseRepository } from "@/core/domain/shared/repositories";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 import { FindOptionsRelations } from "typeorm/find-options/FindOptionsRelations";
 import { IMapper } from "@/lib/ts-utilities";
 
-export type RepositoryRelations<Entity = any> = string[] | FindOptionsRelations<Entity>;
+// type TypeormRepositoryRelations<Entity = any> = string[] | FindOptionsRelations<Entity>;
 export type LoadRelationIdsOptions = boolean | {
   relations?: string[];
   disableMixedMap?: boolean;

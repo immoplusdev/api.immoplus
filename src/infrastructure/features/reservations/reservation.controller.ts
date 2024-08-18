@@ -30,12 +30,19 @@ import {
   WrapperResponseGetReservationByIdQueryResponseDto, WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
 } from "@/core/application/features/reservations";
 import { UnauthorizedException } from "@/core/domain/auth";
+import { DemandeVisiteDtoMapper } from "@/infrastructure/features/demandes-visites";
+import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
 
 
 
 @ApiTags("Reservation")
 @Controller("reservations")
 export class ReservationController {
+
+  private readonly dtoMapper = new ResidenceDtoMapper();
+  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly autoMapper = new WrapperResponseDtoMapper();
+
   constructor(
     readonly queryBus: QueryBus,
     readonly commandBus: CommandBus,
@@ -114,11 +121,9 @@ export class ReservationController {
 
     if (ownerId !== userId) throw new UnauthorizedException();
 
-    const responseMapper = new WrapperResponseDtoMapper<ReservationDto[]>();
-
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
-    return responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
 
