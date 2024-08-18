@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{API_URL}}/demandes-visites/action/estimer-prix
+  url: {{API_URL}}/demandes-visites/
   body: json
   auth: bearer
 }
@@ -33,7 +33,11 @@ script:pre-request {
   
   
   
-  
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_DEMANDE_VISITE_ID", id)
 }
 
 tests {
