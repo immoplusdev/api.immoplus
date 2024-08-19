@@ -4,14 +4,16 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { BienImmobilierDto } from "@/core/application/features/biens-immobiliers";
+import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class DemandeVisiteDto {
   @ApiProperty({ format: "uuid" })
   id: string;
 
-  @ApiProperty({ format: "uuid" })
-  bienImmobilier: string;
+  @ApiProperty({ type: () => BienImmobilierDto })
+  bienImmobilier: BienImmobilier;
 
   @ApiProperty({ enum: StatusDemandeVisite })
   statusDemandeVisite: StatusDemandeVisite;

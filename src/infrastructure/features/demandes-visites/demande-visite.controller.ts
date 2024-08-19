@@ -4,7 +4,6 @@ import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import {
-  DemandeVisiteDto,
   DemandeVisiteDtoMapper,
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
@@ -19,9 +18,14 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import {
-  EstimerPrixDemandeVisiteQuery, EstimerPrixDemandeVisiteQueryResponse,
-  GetBienImmobilierOccupiedDatesQuery, GetDemandeVisiteByIdQuery,
-  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto, WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
+  EstimerPrixDemandeVisiteQuery,
+  EstimerPrixDemandeVisiteQueryResponse,
+  GetBienImmobilierOccupiedDatesQuery,
+  GetDemandeVisiteByIdQuery,
+  WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper,
+  WrapperResponseCreateDemandeVisiteResponseDto,
+  WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
+  WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
@@ -47,7 +51,7 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseDemandeVisiteDto,
+    type: WrapperResponseCreateDemandeVisiteResponseDto,
   })
   @Post()
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -58,11 +62,13 @@ export class DemandeVisiteController {
     @Body() payload: CreateDemandeVisiteCommand,
     @CurrentUser("id") userId: string,
   ) {
+    const responseMapper = new WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper();
+
     const command = new CreateDemandeVisiteCommand({ ...payload, userId });
 
     const response = await this.commandBus.execute(command);
 
-    return this.responseMapper.mapFrom(response);
+    return responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
@@ -92,7 +98,7 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
+    type: WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   })
   @Get("data/bien-immobilier/occupied-dates/:id")
   async getResidenceOccupiedDates(
@@ -199,6 +205,4 @@ export class DemandeVisiteController {
     const response = await this.queryBus.execute(query);
     return responseMapper.mapFrom(response);
   }
-
-
 }

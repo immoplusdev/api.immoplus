@@ -2,7 +2,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 import { ApiProperty } from "@nestjs/swagger";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class EstimerPrixDemandeVisiteQuery {
   @ApiProperty({ format: "uuid" })

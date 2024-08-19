@@ -3,7 +3,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPoint } from "@/core/domain/map";
-import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
+import { GeoJsonPointDto } from "@/core/application/shared/dto";
 import { File } from "@/core/domain/files";
 import { AmentityDto } from "@/core/application/features/biens-immobiliers/amentity.dto";
 

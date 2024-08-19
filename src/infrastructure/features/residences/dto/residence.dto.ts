@@ -5,8 +5,8 @@ import { TypeResidence } from "@/core/domain/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
-import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
+import { GeoJsonPointDto } from "@/core/application/shared/dto";
 
 
 // TODO: Document later

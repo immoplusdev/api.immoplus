@@ -2,7 +2,7 @@ import { OmitMethods } from '@/lib/ts-utilities';
 import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
 import { IsNotEmpty, IsNumber } from "class-validator";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 import { ServiceDates } from "@/core/domain/shared/models";
 
 export class EstimerPrixReservationQueryResponse {

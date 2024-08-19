@@ -10,4 +10,6 @@ export * from "./get-bien-immobilier-occupied-dates-query.response";
 export * from "./get-demande-visite-by-id.query";
 export * from "./get-demande-visite-by-id-query.response";
 export * from "./get-demande-visite-by-id-query.handler";
+export * from "./demande-visite-details.dto";
+
 

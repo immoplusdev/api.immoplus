@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
 import { IsNotEmpty, IsNumber } from "class-validator";
 import { ServiceDates } from "@/core/domain/shared/models";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class EstimerPrixDemandeVisiteQueryResponse {
   @ApiProperty()

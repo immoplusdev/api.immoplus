@@ -2,7 +2,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
 import { ServiceDates } from "@/core/domain/shared/models";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class GetResidenceOccupiedDatesQueryResponse {
   @ApiProperty({ type: ServiceDateDto, isArray: true })

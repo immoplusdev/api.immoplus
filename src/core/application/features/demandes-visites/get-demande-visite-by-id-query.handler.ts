@@ -1,4 +1,4 @@
-import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
+import { QueryHandler, IQueryHandler } from "@nestjs/cqrs";
 import { GetDemandeVisiteByIdQueryResponse } from "./get-demande-visite-by-id-query.response";
 import { GetDemandeVisiteByIdQuery } from "./get-demande-visite-by-id.query";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
@@ -10,32 +10,33 @@ import { IUserRepository } from "@/core/domain/users";
 
 @QueryHandler(GetDemandeVisiteByIdQuery)
 export class GetDemandeVisiteByIdQueryHandler
-  implements IQueryHandler<GetDemandeVisiteByIdQuery, GetDemandeVisiteByIdQueryResponse>
-{
+  implements IQueryHandler<GetDemandeVisiteByIdQuery, GetDemandeVisiteByIdQueryResponse> {
   constructor(
     @Inject(Deps.DemandeVisiteRepository)
     private readonly demandeVisiteRepository: IDemandeVisiteRepository,
     @Inject(Deps.BiensImmobiliesRepository)
-     private readonly bienImmobilierRepository: IBienImmobilierRepository,
+    private readonly bienImmobilierRepository: IBienImmobilierRepository,
     @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
-    ) {
+  ) {
     //
   }
+
   async execute(query: GetDemandeVisiteByIdQuery): Promise<GetDemandeVisiteByIdQueryResponse> {
     const demandeVisite = await this.demandeVisiteRepository.findOne(query.id);
     if (!demandeVisite) throw new ItemNotFoundException();
 
-    const bienImmobilier = await this.bienImmobilierRepository.findOne(demandeVisite.bienImmobilier as string, {fields: ["id", "proprietaire"]});
+    const bienImmobilier = await this.bienImmobilierRepository.findOne(demandeVisite.bienImmobilierId);
     if (!bienImmobilier) throw new ItemNotFoundException();
 
     const client = await this.usersRepository.findPublicUserInfoByUserId(bienImmobilier.createdBy);
     const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(bienImmobilier.proprietaire);
 
-    return new GetDemandeVisiteByIdQueryResponse({
+    return {
       ...demandeVisite,
+      bienImmobilierId: bienImmobilier.id,
       bienImmobilier,
       client,
       proprietaire,
-    });
+    };
   }
 }

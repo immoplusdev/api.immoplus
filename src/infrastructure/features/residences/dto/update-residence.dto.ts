@@ -4,8 +4,8 @@ import { IsBoolean, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validat
 import { Commodite, TypeResidence } from "@/core/domain/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
-import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
+import { GeoJsonPointDto } from "@/core/application/shared/dto";
 
 export class UpdateResidenceDto {
 

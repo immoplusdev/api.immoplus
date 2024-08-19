@@ -4,7 +4,7 @@ import { Residence } from "@/core/domain/residences";
 import { PublicUserInfo } from "@/core/domain/users";
 import { ResidenceDto } from "@/infrastructure/features/residences";
 import { StatusReservation } from "@/core/domain/reservations";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 import { StatusFacture } from "@/core/domain/payments";
 import { PublicUserInfoDto } from "@/core/application/features/users";
 import { da } from "@faker-js/faker";

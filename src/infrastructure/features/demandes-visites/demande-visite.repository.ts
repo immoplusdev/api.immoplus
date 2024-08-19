@@ -63,7 +63,6 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
       ],
     });
 
-    console.log(demandesVisites.data);
     return demandesVisites;
   }
 

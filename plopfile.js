@@ -257,29 +257,42 @@ module.exports = function(plop) {
     },
   ];
 
-  const generateDto = [
-    // {
-    //   type: "add",
-    //   path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}.dto.ts",
-    //   templateFile:
-    //     "plop-templates/infrastructure/features/base/dto/base.dto.hbs",
-    // },
+  const generateAppDto = [
     {
       type: "add",
       path: "src/core/application/features/{{dasherize group}}/{{dasherize name}}.dto.ts",
+      templateFile:
+        "plop-templates/core/application/features/base/base.dto.hbs",
+    },
+  ];
+
+  const generateAppDtoMapper = [
+    {
+      type: "add",
+      path: "src/core/application/features/{{dasherize group}}/{{dasherize name}}-dto.mapper.ts",
+      templateFile:
+        "plop-templates/core/application/features/base/dto/base-dto.mapper.hbs",
+    },
+  ];
+
+  const generateInfraDtoMapper = [
+    {
+      type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/{{dasherize name}}-dto.mapper.ts",
+      templateFile:
+        "plop-templates/infrastructure/features/base/dto/base-dto.mapper.hbs",
+    },
+  ];
+
+  const generateInfraDto = [
+    {
+      type: "add",
+      path: "src/infrastructure/features/{{dasherize group}}/dto/{{dasherize name}}.dto.ts",
       templateFile:
         "plop-templates/infrastructure/features/base/dto/base.dto.hbs",
     },
   ];
 
-  const generateDtoMapper = [
-    {
-      type: "add",
-      path: "src/core/application/features/{{dasherize group}}/{{dasherize name}}-dto.mapper.ts",
-      templateFile:
-        "plop-templates/infrastructure/features/base/dto/base-dto.mapper.hbs",
-    },
-  ];
 
   const generateEntityMapper = [
     {
@@ -290,7 +303,7 @@ module.exports = function(plop) {
     },
   ];
 
-  const generateCUDto = [
+  const generateAppCUDto = [
     {
       type: "add",
       path: "src/core/application/features/{{dasherize group}}/create-{{dasherize name}}.dto.ts",
@@ -398,6 +411,30 @@ module.exports = function(plop) {
     actions: generateException,
   });
 
+  plop.setGenerator("app:dto", {
+    description: "Generate App dto",
+    prompts: groupPrompts,
+    actions: generateAppDto,
+  });
+
+  plop.setGenerator("app:dto-mapper", {
+    description: "Generate App dto mapper",
+    prompts: groupPrompts,
+    actions: generateAppDtoMapper,
+  });
+
+  plop.setGenerator("app:dto-and-mapper", {
+    description: "Generate App dto and mapper",
+    prompts: groupPrompts,
+    actions: [...generateAppDto, ...generateAppDtoMapper],
+  });
+
+  plop.setGenerator("app:cu-dto", {
+    description: "Generate App CU dto",
+    prompts: groupPrompts,
+    actions: generateAppCUDto,
+  });
+
   plop.setGenerator("app:query", {
     description: "Generate query",
     prompts: groupPrompts,
@@ -416,6 +453,20 @@ module.exports = function(plop) {
     ],
   });
 
+
+  plop.setGenerator("infra:dto", {
+    description: "Generate Infra dto",
+    prompts: groupPrompts,
+    actions: generateInfraDto,
+  });
+
+  plop.setGenerator("infra:dto-mapper", {
+    description: "Generate dto mapper",
+    prompts: groupPrompts,
+    actions: generateInfraDtoMapper,
+  });
+
+
   plop.setGenerator("infra:repository", {
     description: "Generate repository",
     prompts: groupPrompts,
@@ -426,24 +477,6 @@ module.exports = function(plop) {
     description: "Generate service",
     prompts: groupPrompts,
     actions: [...generateServicePort, ...generateService],
-  });
-
-  plop.setGenerator("infra:dto", {
-    description: "Generate dto",
-    prompts: groupPrompts,
-    actions: generateDto,
-  });
-
-  plop.setGenerator("infra:cu-dto", {
-    description: "Generate CU dto",
-    prompts: groupPrompts,
-    actions: generateCUDto,
-  });
-
-  plop.setGenerator("infra:dto-mapper", {
-    description: "Generate dto mapper",
-    prompts: groupPrompts,
-    actions: generateDtoMapper,
   });
 
   plop.setGenerator("infra:entity-mapper", {
@@ -488,16 +521,16 @@ module.exports = function(plop) {
     actions: [
       ...generateModel,
       ...generateEntity,
-      ...generateDto,
-      ...generateCUDto,
-      ...generateDtoMapper,
+      ...generateAppDto,
+      ...generateAppCUDto,
+      ...generateAppDtoMapper,
       ...generateEntityMapper,
       ...generateRepositoryPort,
       ...generateRepository,
       ...generateController,
       ...generateDomainExporter,
       ...generateInfraExporter,
-      ...generateApplicationExporter
+      ...generateApplicationExporter,
     ],
   });
 

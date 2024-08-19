@@ -102,7 +102,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     const item = await this.repository.findOne({
       where: { id },
       select: mapQueryFieldsToTypeormSelection(options?.fields),
-      relations: (options?.loadRelationIds || this.relations) as never,
+      relations: (options?.relations || this.relations) as never,
       loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
     });
     if (!item) return null;

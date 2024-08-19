@@ -7,7 +7,7 @@ import { dateToString } from "@/lib/ts-utilities";
 import { Inject } from "@nestjs/common";
 import {
   DateDemandeVisiteDejaPriseException,
-  IDemandeVisiteRepository
+  IDemandeVisiteRepository,
 } from "@/core/domain/demandes-visites";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
@@ -57,8 +57,8 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
       createdBy: command.userId,
     }, false);
 
-
-    return await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
+    const response = await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
+    return response;
   }
 
   private async verifyCanCreateDemandeVisite(command: CreateDemandeVisiteCommand) {

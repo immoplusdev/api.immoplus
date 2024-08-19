@@ -2,7 +2,7 @@ import { OmitMethods } from '@/lib/ts-utilities';
 import { ServiceDates } from "@/core/domain/shared/models";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class EstimerPrixReservationQuery {
   @ApiProperty()

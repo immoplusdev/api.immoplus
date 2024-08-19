@@ -1,15 +1,26 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { DemandeVisiteDetailsDto } from "./demande-visite-details.dto";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
+import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
-import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateDemandeVisiteCommandResponse {
+export class CreateDemandeVisiteCommandResponse extends OmitType(DemandeVisiteDetailsDto, ["deletedAt"] as const) {
   constructor(data?: OmitMethods<CreateDemandeVisiteCommandResponse>) {
-    if(data) Object.assign(this, data);
+    if (data) super(data);
   }
 }
 
-export class WrapperResponseCreateDemandeVisiteCommandResponseDto extends WrapperResponseDto<CreateDemandeVisiteCommandResponse> {
+
+export class WrapperResponseCreateDemandeVisiteResponseDto extends WrapperResponseDto<CreateDemandeVisiteCommandResponse> {
   @ApiProperty({ type: CreateDemandeVisiteCommandResponse })
   data: CreateDemandeVisiteCommandResponse;
 }
 
+export class WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper implements IMapper<CreateDemandeVisiteCommandResponse, WrapperResponseCreateDemandeVisiteResponseDto> {
+  mapFrom(param: CreateDemandeVisiteCommandResponse): WrapperResponseCreateDemandeVisiteResponseDto {
+    return new WrapperResponseCreateDemandeVisiteResponseDto(param);
+  }
+
+  mapTo(param: WrapperResponseCreateDemandeVisiteResponseDto): CreateDemandeVisiteCommandResponse {
+    return param.data;
+  }
+}

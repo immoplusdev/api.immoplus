@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { Amentity, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { IsOptional } from "class-validator";
-import { GeoJsonPointDto } from "@/infrastructure/shared/dto";
+import { GeoJsonPointDto } from "@/core/application/shared/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { AmentityDto } from "@/core/application/features/biens-immobiliers";
 

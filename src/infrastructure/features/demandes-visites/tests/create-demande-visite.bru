@@ -36,8 +36,8 @@ script:pre-request {
 }
 
 script:post-response {
-  // const {data: { id }} = res.getBody();
-  // bru.setEnvVar("DEFAULT_DEMANDE_VISITE_ID", id)
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_DEMANDE_VISITE_ID", id)
 }
 
 tests {

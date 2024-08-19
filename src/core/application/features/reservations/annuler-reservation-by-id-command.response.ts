@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Residence } from "@/core/domain/residences";
 import { StatusReservation } from "@/core/domain/reservations";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 import { StatusFacture } from "@/core/domain/payments";
 import { WrapperResponseDto } from "@/lib/responses";
 

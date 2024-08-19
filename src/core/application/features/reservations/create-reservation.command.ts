@@ -2,7 +2,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { IsNotEmpty, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { ServiceDateDto } from "@/infrastructure/shared/dto";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class CreateReservationCommand {
   @IsOptional()

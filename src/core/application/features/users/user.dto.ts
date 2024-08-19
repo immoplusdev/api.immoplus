@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
 import { RoleDto } from "@/infrastructure/features/roles";
 import { UserData } from "@/core/domain/users";
-import { UserDataDto } from "@/core/application/features/users/user-data.dto";
+import { UserDataDto } from "@/core/application/features/users";
 
 export class UserDto {
 

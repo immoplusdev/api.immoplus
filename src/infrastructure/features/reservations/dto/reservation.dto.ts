@@ -3,8 +3,8 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { StatusReservation } from "@/core/domain/reservations";
 import { StatusFacture } from "@/core/domain/payments";
-import { ServiceDateDto } from "@/infrastructure/shared/dto/service-date.dto";
 import { Residence } from "@/core/domain/residences";
+import { ServiceDateDto } from "@/core/application/shared/dto";
 
 export class ReservationDto {
   @ApiProperty({ format: "uuid"})
