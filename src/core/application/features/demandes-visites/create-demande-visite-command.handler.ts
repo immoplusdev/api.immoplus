@@ -57,8 +57,7 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
       createdBy: command.userId,
     }, false);
 
-    const response = await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
-    return response;
+    return await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
   }
 
   private async verifyCanCreateDemandeVisite(command: CreateDemandeVisiteCommand) {

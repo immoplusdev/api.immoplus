@@ -5,6 +5,7 @@ import { DemandeVisiteController } from "./demande-visite.controller";
 import { DemandeVisiteRepository } from "./demande-visite.repository";
 import { CqrsModule } from "@nestjs/cqrs";
 import {
+  AnnulerDemandeVisiteByIdCommandHandler,
   CreateDemandeVisiteCommandHandler,
   EstimerPrixDemandeVisiteQueryHandler,
   GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler,
@@ -13,7 +14,7 @@ import { ConfigsModule } from "@/infrastructure/features/configs";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 import { UserModule } from "@/infrastructure/features/users";
 
-const commandHandlers = [CreateDemandeVisiteCommandHandler];
+const commandHandlers = [CreateDemandeVisiteCommandHandler, AnnulerDemandeVisiteByIdCommandHandler];
 const queryHandler = [EstimerPrixDemandeVisiteQueryHandler, GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler];
 const providers: Provider[] = [
   {

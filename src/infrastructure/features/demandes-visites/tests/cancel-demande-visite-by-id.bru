@@ -1,0 +1,29 @@
+meta {
+  name: cancel-demande-visite-by-id
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{API_URL}}/demandes-visites/action/annuler/{{DEFAULT_DEMANDE_VISITE_ID}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "notes": "{{notes}}"
+  }
+}
+
+tests {
+  test("Should receive a list of date objects", function() {
+    const {data: { datesDemandeVisite }} = res.getBody();
+      
+    expect(Array.isArray(datesDemandeVisite)).to.be.equal(true);
+  });
+}

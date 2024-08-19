@@ -18,10 +18,13 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import {
+  AnnulerDemandeVisiteByIdCommand,
   EstimerPrixDemandeVisiteQuery,
   EstimerPrixDemandeVisiteQueryResponse,
   GetBienImmobilierOccupiedDatesQuery,
   GetDemandeVisiteByIdQuery,
+  WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto,
+  WrapperResponseAnnulerDemandeVisiteCommandResponseDtoMapper,
   WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper,
   WrapperResponseCreateDemandeVisiteResponseDto,
   WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
@@ -30,7 +33,12 @@ import {
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
 import { UnauthorizedException } from "@/core/domain/auth";
-import { WrapperResponseGetResidenceOccupiedDatesQueryResponseDto } from "@/core/application/features/reservations";
+import {
+  AnnulerReservationByIdCommand,
+  AnnulerReservationByIdCommandResponse,
+  WrapperResponseAnnulerReservationByIdCommandResponseDto,
+  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
+} from "@/core/application/features/reservations";
 
 
 @ApiTags("DemandeVisite")
@@ -203,6 +211,26 @@ export class DemandeVisiteController {
     const query = new EstimerPrixDemandeVisiteQuery(payload);
 
     const response = await this.queryBus.execute(query);
+    return responseMapper.mapFrom(response);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto,
+  })
+  @Post("action/annuler/:id")
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Delete])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async annulerDemandeVisiteById(
+    @Param("id") demandeVisiteId: string,
+    @CurrentUser("id") userId: string,
+  ) {
+    const responseMapper = new WrapperResponseAnnulerDemandeVisiteCommandResponseDtoMapper();
+    const command = new AnnulerDemandeVisiteByIdCommand({ demandeVisite: demandeVisiteId, userId });
+
+    const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
   }
 }
