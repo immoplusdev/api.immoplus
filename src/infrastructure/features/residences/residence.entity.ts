@@ -53,6 +53,7 @@ export class ResidenceEntity {
   //     referencedColumnName: "id",
   //   },
   // })
+  // TODO: Make it many to many
   @Column({ name: "images", type: "json", nullable: true })
   images?: string[];
 
