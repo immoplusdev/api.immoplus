@@ -2,8 +2,8 @@ import {
   Column,
   CreateDateColumn, DeleteDateColumn,
   Entity,
-  JoinColumn, ManyToMany,
-  ManyToOne,
+  JoinColumn, JoinTable, ManyToMany,
+  ManyToOne, OneToMany,
   PrimaryGeneratedColumn, RelationId,
   UpdateDateColumn,
 } from "typeorm";
@@ -41,9 +41,19 @@ export class ResidenceEntity {
   pieces?: Piece[];
 
 
-  @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
-  @JoinColumn({ name: "images" })
-    // @Column({ name: "images", type: "json", nullable: true })
+  // @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
+  // @JoinTable({
+  //   name: "residence_images",
+  //   joinColumn: {
+  //     name: "file_id",
+  //     referencedColumnName: "id",
+  //   },
+  //   inverseJoinColumn: {
+  //     name: "residence_id",
+  //     referencedColumnName: "id",
+  //   },
+  // })
+  @Column({ name: "images", type: "json", nullable: true })
   images?: string[];
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })

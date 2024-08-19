@@ -5,18 +5,20 @@ import { Residence, IResidenceRepository } from "@/core/domain/residences";
 import { ResidenceEntity } from "@/infrastructure/features/residences";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 
 @Injectable()
 export class ResidenceRepository implements IResidenceRepository {
   private readonly repository: BaseRepository<Residence>;
+  private readonly entityMapper: ResidenceEntityMapper;
+  private readonly relations: RepositoryRelations = undefined;
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, ResidenceEntity).setEntityMapper(new ResidenceEntityMapper());
+    this.repository = new BaseRepository(dataSource, ResidenceEntity, this.relations).setEntityMapper(new ResidenceEntityMapper());
   }
 
 

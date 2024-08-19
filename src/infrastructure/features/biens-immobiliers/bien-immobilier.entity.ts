@@ -43,8 +43,9 @@ export class BienImmobilierEntity {
   @Column({ name: "tags", type: "json", nullable: true })
   tags?: string[];
 
-  @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
-  @JoinColumn({ name: "images" })
+  // @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
+  // @JoinColumn({ name: "images" })
+  @Column({ name: "images", type: "json", nullable: true })
   images?: string[];
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
