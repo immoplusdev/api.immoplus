@@ -1,14 +1,16 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { AnnulerReservationByIdCommand } from "./annuler-reservation-by-id.command";
 import { AnnulerReservationByIdCommandResponse } from "./annuler-reservation-by-id-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository, Reservation, StatusReservation } from "@/core/domain/reservations";
 import { UnexpectedException } from "@/core/domain/shared/exceptions";
+import { GetReservationByIdQuery } from "@/core/application/features/reservations/get-reservation-by-id.query";
 
 @CommandHandler(AnnulerReservationByIdCommand)
 export class AnnulerReservationByIdCommandHandler implements ICommandHandler<AnnulerReservationByIdCommand> {
   constructor(
+    private readonly queryBus: QueryBus,
     @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
   ) {
     //
@@ -21,7 +23,7 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
     try {
       this.verifyCanProceed(reservation.statusReservation, command.userId);
     } catch (err) {
-      return await this.reservationRepository.findOne(command.reservation);
+      return await this.queryBus.execute(new GetReservationByIdQuery({ id: command.reservation }));
     }
 
 
@@ -33,8 +35,7 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
 
     await this.reservationRepository.updateOne(command.reservation, payload);
 
-    return await this.reservationRepository.findOne(command.reservation);
-
+    return await this.queryBus.execute(new GetReservationByIdQuery({ id: command.reservation }));
   }
 
   private verifyCanProceed(statusReservation: StatusReservation, _userId: string) {

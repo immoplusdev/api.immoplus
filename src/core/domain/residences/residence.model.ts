@@ -8,7 +8,7 @@ import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers"
 
 export class Residence {
   id: string;
-  miniature: string | File;
+  miniature: File | string;
   miniatureId: string;
   nom: string;
   typeResidence: TypeResidence;

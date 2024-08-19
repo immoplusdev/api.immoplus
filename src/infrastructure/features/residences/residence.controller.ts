@@ -43,10 +43,13 @@ export class ResidenceController {
     @Body() payload: CreateResidenceDto,
     @CurrentUser() userId: string,
   ) {
+
+    const proprietaire = payload.proprietaire ? payload.proprietaire : userId;
+
     const response = await this.repository.createOne({
       ...payload,
       createdBy: userId,
-      proprietaire: payload.proprietaire || userId,
+      proprietaire,
     });
 
     return this.responseMapper.mapFrom(response);

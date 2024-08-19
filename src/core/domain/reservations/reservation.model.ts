@@ -7,6 +7,7 @@ import { Residence } from "@/core/domain/residences";
 export class Reservation {
   id: string;
   residence: Residence | string;
+  residenceId: string;
   statusReservation: StatusReservation;
   datesReservation: ServiceDates;
   statusFacture: StatusFacture;

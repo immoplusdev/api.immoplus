@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 
 export class {{classify name}}Dto {
@@ -13,7 +13,18 @@ export class WrapperResponse{{classify name}}Dto extends WrapperResponseDto<{{cl
    data: {{classify name}}Dto;
 }
 
-export class WrapperResponse{{classify name}}ListDto extends WrapperResponseDto<{{classify name}}Dto[]> {
+export class WrapperResponse{{classify name}}DtoMapper implements IMapper<{{classify name}}Dto, WrapperResponse{{classify name}}Dto> {
+    mapFrom(param: {{classify name}}Dto): WrapperResponse{{classify name}}Dto {
+    return new WrapperResponse{{classify name}}Dto(param);
+    }
+
+    mapTo(param: WrapperResponse{{classify name}}Dto): {{classify name}}Dto {
+    return param.data;
+    }
+}
+
+
+    export class WrapperResponse{{classify name}}ListDto extends WrapperResponseDto<{{classify name}}Dto[]> {
    @ApiProperty({ type: [{{classify name}}Dto] })
    data: {{classify name}}Dto[];
    @ApiProperty()

@@ -5,12 +5,15 @@ import { StatusReservation } from "@/core/domain/reservations";
 import { StatusFacture } from "@/core/domain/payments";
 import { Residence } from "@/core/domain/residences";
 import { ServiceDateDto } from "@/core/application/shared/dto";
+import { ResidenceDto } from "@/infrastructure/features/residences";
 
 export class ReservationDto {
-  @ApiProperty({ format: "uuid"})
+  @ApiProperty({ format: "uuid" })
   id: string;
-  @ApiProperty({ type: "string", format: "uuid" })
+  @ApiProperty({ type: () => ResidenceDto })
   residence: Residence | string;
+  @ApiProperty({ type: "string", format: "uuid" })
+  residenceId: string;
   @ApiProperty({ enum: StatusReservation })
   statusReservation: StatusReservation;
   @ApiProperty({ type: ServiceDateDto, isArray: true })

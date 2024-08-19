@@ -6,16 +6,17 @@ import { ResidenceEntity } from "@/infrastructure/features/residences";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 
 @Injectable()
 export class ResidenceRepository implements IResidenceRepository {
   private readonly repository: BaseRepository<Residence>;
-  // TODO: Do the same here as in demande-visite.repository.ts
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, ResidenceEntity);
+    this.repository = new BaseRepository(dataSource, ResidenceEntity).setEntityMapper(new ResidenceEntityMapper());
   }
 
 

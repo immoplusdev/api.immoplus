@@ -53,7 +53,8 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
         ],
     }, { fields: ["id"], relations: [] });
 
-    const demandesVisites = await this.findByQuery({
+
+    return await this.findByQuery({
       _where: [
         {
           _field: "bienImmobilier",
@@ -62,8 +63,6 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
         },
       ],
     });
-
-    return demandesVisites;
   }
 
   async updateByQuery(query: SearchItemsParams, payload: Partial<DemandeVisite>): Promise<string[]> {

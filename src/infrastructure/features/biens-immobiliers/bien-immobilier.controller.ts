@@ -10,7 +10,6 @@ import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
-import { WrapperResponseResidenceDto } from "@/infrastructure/features/residences";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import {
   WrapperResponseBienImmobilierDto,
@@ -49,8 +48,13 @@ export class BienImmobilierController {
     @CurrentUser() userId: string,
   ) {
     const payloadMapper = new CreateBienImmobilierDtoMapper();
+    const proprietaire = payload.proprietaire ? payload.proprietaire : userId;
 
-    const response = await this.repository.createOne({ ...payloadMapper.mapTo(payload), createdBy: userId });
+    const response = await this.repository.createOne({
+      ...payloadMapper.mapTo(payload),
+      createdBy: userId,
+      proprietaire,
+    });
 
     return this.responseMapper.mapFrom(response);
   }
@@ -110,7 +114,7 @@ export class BienImmobilierController {
     const item = await this.repository.findOne(id, { fields: params?._select });
 
     if (!item) throw new ItemNotFoundException();
-    
+
     return this.responseMapper.mapFrom(item);
   }
 

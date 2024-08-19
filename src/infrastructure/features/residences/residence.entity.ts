@@ -15,6 +15,8 @@ import { VilleEntity } from "@/infrastructure/features/villes";
 import { CommuneEntity } from "@/infrastructure/features/communes";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
+import { OmitMethods } from "@/lib/ts-utilities";
+import { File } from "@/core/domain/files";
 
 @Entity("residences")
 export class ResidenceEntity {
@@ -23,9 +25,9 @@ export class ResidenceEntity {
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "miniature_id" })
-  miniature: string;
-  @RelationId((item: ResidenceEntity)=> item.miniature)
-  miniatureId: string
+  miniature: File | string;
+  @RelationId((item: ResidenceEntity) => item.miniature)
+  miniatureId: string;
 
   @Column({ name: "nom", type: "varchar" })
   nom: string;
@@ -41,7 +43,7 @@ export class ResidenceEntity {
 
   @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "images" })
-  // @Column({ name: "images", type: "json", nullable: true })
+    // @Column({ name: "images", type: "json", nullable: true })
   images?: string[];
 
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
@@ -88,7 +90,7 @@ export class ResidenceEntity {
   @Column({ name: "regles_supplementaires", type: "text", nullable: true })
   reglesSupplementaires?: string;
 
-  @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true})
+  @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "proprietaire_id" })
   proprietaire?: string;
 
@@ -108,4 +110,8 @@ export class ResidenceEntity {
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   // @JoinColumn({ name: "deleted_by" })
   // deletedBy?: string;
+
+  constructor(data?: OmitMethods<ResidenceEntity>) {
+    if (data) Object.assign(this, data);
+  }
 }

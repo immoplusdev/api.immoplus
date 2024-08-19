@@ -13,3 +13,4 @@ export * from "./get-residence-occupied-dates-query.response";
 export * from "./annuler-reservation-by-id.command";
 export * from "./annuler-reservation-by-id-command.handler";
 export * from "./annuler-reservation-by-id-command.response";
+export * from "./reservation-details.dto";

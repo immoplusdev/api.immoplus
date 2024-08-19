@@ -12,6 +12,8 @@ import { StatusReservation } from "@/core/domain/reservations";
 import { ServiceDates } from "@/core/domain/shared/models";
 import { StatusFacture } from "@/core/domain/payments/status-facture.enum";
 import { UserEntity } from "@/infrastructure/features/users";
+import { Residence } from "@/core/domain/residences";
+import { OmitMethods } from "@/lib/ts-utilities";
 
 @Entity("reservations")
 export class ReservationEntity {
@@ -20,9 +22,14 @@ export class ReservationEntity {
 
   @ManyToOne(() => ResidenceEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "residence_id" })
-  residence: string;
+  residence: Residence | string;
 
-  @Column({ name: "status_reservation", type: "varchar", length: 30, default: StatusReservation.EnCoursValidationAdmin })
+  @Column({
+    name: "status_reservation",
+    type: "varchar",
+    length: 30,
+    default: StatusReservation.EnCoursValidationAdmin,
+  })
   statusReservation: StatusReservation;
   @Column({ name: "dates_reservation", type: "json" })
   datesReservation: ServiceDates;
@@ -59,4 +66,8 @@ export class ReservationEntity {
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   // @JoinColumn({ name: "deleted_by" })
   // deletedBy?: string;
+
+  constructor(data?: OmitMethods<ReservationEntity>) {
+    if (data) Object.assign(this, data);
+  }
 }

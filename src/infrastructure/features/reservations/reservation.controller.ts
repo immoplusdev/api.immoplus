@@ -23,16 +23,18 @@ import {
   CreateReservationCommand,
   EstimerPrixReservationQuery,
   EstimerPrixReservationQueryResponse,
-  GetReservationByIdQuery, GetReservationByIdQueryResponse,
-  GetResidenceOccupiedDatesQuery, GetResidenceOccupiedDatesQueryResponse,
-  WrapperResponseAnnulerReservationByIdCommandResponseDto,
+  GetReservationByIdQuery,
+  GetReservationByIdQueryResponse,
+  GetResidenceOccupiedDatesQuery,
+  GetResidenceOccupiedDatesQueryResponse,
+  WrapperResponseAnnulerReservationByIdCommandResponseDto, WrapperResponseCreateReservationCommandResponseDto,
   WrapperResponseEstimerPrixReservationQueryResponseDto,
-  WrapperResponseGetReservationByIdQueryResponseDto, WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
+  WrapperResponseGetReservationByIdQueryResponseDto,
+  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
+  WrapperResponseReservationDetailsDtoMapper,
 } from "@/core/application/features/reservations";
 import { UnauthorizedException } from "@/core/domain/auth";
-import { DemandeVisiteDtoMapper } from "@/infrastructure/features/demandes-visites";
 import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
-
 
 
 @ApiTags("Reservation")
@@ -40,6 +42,7 @@ import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
 export class ReservationController {
 
   private readonly dtoMapper = new ResidenceDtoMapper();
+  private readonly detailsResponseDtoMapper = new WrapperResponseDtoMapper(new WrapperResponseReservationDetailsDtoMapper());
   private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
   private readonly autoMapper = new WrapperResponseDtoMapper();
 
@@ -53,7 +56,7 @@ export class ReservationController {
 
 
   @ApiResponse({
-    type: WrapperResponseGetReservationByIdQueryResponseDto,
+    type: WrapperResponseCreateReservationCommandResponseDto,
   })
   @Post()
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -137,9 +140,7 @@ export class ReservationController {
     const responseMapper = new WrapperResponseDtoMapper<GetResidenceOccupiedDatesQueryResponse>();
     const query = new GetResidenceOccupiedDatesQuery({ residenceId });
 
-
     const response = await this.queryBus.execute(query);
-
     return responseMapper.mapFrom(response);
   }
 
@@ -166,7 +167,7 @@ export class ReservationController {
 
 
   @ApiResponse({
-    type: WrapperResponseReservationDto,
+    type: WrapperResponseGetReservationByIdQueryResponseDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Update])
@@ -233,4 +234,5 @@ export class ReservationController {
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
   }
+
 }
