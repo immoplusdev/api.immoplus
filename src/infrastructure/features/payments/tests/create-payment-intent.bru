@@ -1,0 +1,36 @@
+meta {
+  name: create-payment-intent
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/payments/action/create-payment-intent
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "collection": "demandes_visites",
+    "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}",
+    "paymentMethod": "moov",
+    "paymentCredentials": "2250143881818"
+  }
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+}
+
+tests {
+  test("Should return a none empty hb2Token", function() {
+    const {data: { hub2Token }} = res.getBody();  
+    expect(hub2Token).to.be.a("string");
+  });
+}
