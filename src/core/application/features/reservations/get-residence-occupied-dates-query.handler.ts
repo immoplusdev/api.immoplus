@@ -22,8 +22,7 @@ export class GetResidenceOccupiedDateQueryHandler
           _val: query.residenceId,
         },
       ],
-      _select: ["datesReservation"],
-    });
+    }, { relations: [], fields: ["datesReservation"] });
     const dates = reservations.data.map((reservation) => reservation.datesReservation).flat();
     return new GetResidenceOccupiedDatesQueryResponse({ dates });
   }
