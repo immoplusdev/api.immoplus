@@ -1,0 +1,27 @@
+meta {
+  name: list-biens-immobiliers
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{API_URL}}/biens-immobiliers
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+tests {
+  test("Should receive a none empty list of objects", function() {
+    const { data } = res.getBody();
+      
+    expect(Array.isArray(data)).to.be.equal(true);
+    
+    if(data.length != 0){
+      expect(data.at(0).id).to.be.a("string");
+    }
+  });
+}

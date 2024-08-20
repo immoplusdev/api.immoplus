@@ -155,7 +155,7 @@ export class ResidenceController {
 
     if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
-    await this.repository.updateByQuery(query, payload);
+    await this.repository.updateByQuery(query, { ...payload, createdBy: userId });
 
     return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }
