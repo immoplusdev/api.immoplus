@@ -271,7 +271,7 @@ module.exports = function(plop) {
       type: "add",
       path: "src/core/application/features/{{dasherize group}}/{{dasherize name}}-dto.mapper.ts",
       templateFile:
-        "plop-templates/core/application/features/base/dto/base-dto.mapper.hbs",
+        "plop-templates/core/application/features/base/base-dto.mapper.hbs",
     },
   ];
 

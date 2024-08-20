@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { UserModule } from '@/infrastructure/features/users/user.module';
-import { AuthModule } from '@/infrastructure/features/auth/auth.module';
+import { Module } from "@nestjs/common";
+import { UserModule } from "@/infrastructure/features/users/user.module";
+import { AuthModule } from "@/infrastructure/features/auth/auth.module";
 import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/auth";
 import { PermissionModule } from "@/infrastructure/features/permissions";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -12,10 +12,15 @@ import { ResidenceModule } from "@/infrastructure/features/residences";
 import { VilleModule } from "@/infrastructure/features/villes";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
+import { PaymentModule } from "@/infrastructure/features/payments";
 
 export const controllers = [];
 
-const modules = [UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule, CommuneModule, ReservationModule, ResidenceModule, BienImmobilierModule, DemandeVisiteModule];
+const modules = [
+  UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule,
+  CommuneModule, ReservationModule, ResidenceModule, BienImmobilierModule, DemandeVisiteModule,
+  PaymentModule,
+];
 
 @Module({
   providers: [
@@ -30,4 +35,5 @@ const modules = [UserModule, PermissionModule, AuthModule, FileModule, Notificat
   exports: [...modules],
   imports: [...modules],
 })
-export class RestModule {}
+export class RestModule {
+}

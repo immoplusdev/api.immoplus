@@ -36,7 +36,7 @@ export class VilleController {
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateVilleDto,
-    @CurrentUser() userId: string,
+    @CurrentUser("id") userId: string,
   ) {
 
     const responseMapper = new WrapperResponseDtoMapper<VilleDto>();

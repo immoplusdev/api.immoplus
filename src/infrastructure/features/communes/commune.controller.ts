@@ -39,7 +39,7 @@ export class CommuneController {
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateCommuneDto,
-    @CurrentUser() userId: string,
+    @CurrentUser("id") userId: string,
   ) {
     const response = await this.repository.createOne({
       name: payload.name,

@@ -40,7 +40,7 @@ export class NotificationController {
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateNotificationDto,
-    @CurrentUser() userId: string,
+    @CurrentUser("id") userId: string,
   ) {
     const response = await this.repository.createOne({ ...payload, createdBy: userId });
 

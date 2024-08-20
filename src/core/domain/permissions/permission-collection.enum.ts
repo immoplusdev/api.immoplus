@@ -8,5 +8,6 @@ export enum PermissionCollection {
   Reservations = "reservations",
   Configurations = "configurations",
   BiensImmobilies = "biensImmobilies",
-  DemandesVisites = "DemandesVisites"
+  DemandesVisites = "demandesVisites",
+  Payments = "payments",
 }

@@ -45,7 +45,7 @@ export class BienImmobilierController {
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateBienImmobilierDto,
-    @CurrentUser() userId: string,
+    @CurrentUser("id") userId: string,
   ) {
     const payloadMapper = new CreateBienImmobilierDtoMapper();
     const proprietaire = payload.proprietaire ? payload.proprietaire : userId;

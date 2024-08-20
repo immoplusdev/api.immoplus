@@ -37,7 +37,7 @@ type: WrapperResponse{{classify name}}Dto,
 @ApiBearerAuth()
 async create(
 @Body() payload: Create{{classify name}}Dto,
-@CurrentUser() userId: string,
+@CurrentUser("id") userId: string,
 ) {
 
 const payloadMapper = new Create{{classify name}}DtoMapper();

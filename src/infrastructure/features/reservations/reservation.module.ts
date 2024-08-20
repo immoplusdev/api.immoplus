@@ -18,6 +18,7 @@ import { UserModule } from "@/infrastructure/features/users/user.module";
 
 const queryHandler = [EstimerPrixReservationQueryHandler, GetReservationByIdQueryHandler, GetResidenceOccupiedDateQueryHandler];
 const commandHandlers = [CreateReservationCommandHandler, AnnulerReservationByIdCommandHandler];
+
 const providers: Provider[] = [
   {
     provide: Deps.ReservationRepository,

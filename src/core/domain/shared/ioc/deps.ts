@@ -1,3 +1,5 @@
+import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
+
 export enum Deps {
   DataSource = "DataSource",
 
@@ -15,6 +17,7 @@ export enum Deps {
   ResidenceRepository = "ResidenceRepository",
   BiensImmobiliesRepository = "BiensImmobiliesRepository",
   DemandeVisiteRepository = "DemandeVisiteRepository",
+  PaymentRepository = "PaymentRepository",
 
   // Services
   LoggerService = "LoggerService",
@@ -26,7 +29,9 @@ export enum Deps {
   TfaService = "TfaService",
   AuthService = "AuthService",
   GlobalizationService = "GlobalizationService",
+  PaymentGatewayService = "PaymentGatewayService",
 
   // Guards
+
   AppGuard = "AppGuard"
 }

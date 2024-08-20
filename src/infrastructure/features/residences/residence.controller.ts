@@ -41,7 +41,7 @@ export class ResidenceController {
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateResidenceDto,
-    @CurrentUser() userId: string,
+    @CurrentUser("id") userId: string,
   ) {
 
     const proprietaire = payload.proprietaire ? payload.proprietaire : userId;
