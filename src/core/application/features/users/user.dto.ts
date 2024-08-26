@@ -77,8 +77,9 @@ export class UserDto {
   @ApiProperty()
   deletedBy?: string;
 
-  clearPassword() {
+  clearPrivateCredentials() {
     this.password = "********";
+    this.otp = "********";
     return this;
   }
 

@@ -10,7 +10,7 @@ export class Payment {
   amount: number;
   amountNoFees: number;
   customer?: User | string;
-  customerId?: string;
+  customerId: string;
   paymentType: PaymentType;
   collection: PaymentCollection;
   paymentStatus: PaymentStatus;

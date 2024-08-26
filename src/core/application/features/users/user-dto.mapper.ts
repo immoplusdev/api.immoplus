@@ -12,7 +12,7 @@ export class UserDtoMapper implements IMapper<User, UserDto> {
       ...params,
       additionalData: new UserDataDtoMapper().mapFrom(object.additionalData as UserData),
     });
-    newObject.clearPassword();
+    newObject.clearPrivateCredentials();
     return newObject;
   }
 

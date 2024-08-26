@@ -1,8 +1,6 @@
 import {
-  PaymentMethod,
-  CreatePaymentIntent,
-  CreatePaymentIntentResponse,
-  AttemptPaymentIntent,
+  PaymentMethod, CreatePaymentIntent,
+  CreatePaymentIntentResponse, AttemptPaymentIntent,
   PaymentStatus, AttemptPaymentIntentResponse,
   AuthenticatePaymentIntent, AuthenticatePaymentIntentResponse,
   IPaymentGatewayService,
@@ -92,6 +90,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
     payload: CreatePaymentIntent,
   ): Promise<CreatePaymentIntentResponse> {
     const amount = payload.amount + this.getPaymentMethodFees(payload.amount, payload.paymentMethod || PaymentMethod.Wave);
+
     try {
       const body = {
         customerReference: payload.customerId,
@@ -100,7 +99,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         currency: "XOF",
         overrideBusinessName: HUB2_OVERRIDE_BUSINESS_NAME,
       };
-      this.loggerService.warn("info => ", body);
+      // this.loggerService.info("info => ", body);
 
       const response = await axios.post<Hub2CreatePaymentIntentResponse>(
         `${HUB2_API_URL}/payment-intents`,
@@ -110,7 +109,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         },
       );
 
-      this.loggerService.info("info => ", response.data);
+      // this.loggerService.info("info => ", response.data);
 
       const { id, token, status } = response.data;
       return new CreatePaymentIntentResponse({
@@ -141,7 +140,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         country: "CI",
         provider: this.getProviderHub2(payload.paymentMethod),
         mobileMoney: {
-          msisdn: payload.paymentCredentials,
+          msisdn: payload.paymentCredentials.replace("-", ""),
           onSuccessRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Successful}`,
           onFailedRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Failed}`,
         },
@@ -163,7 +162,6 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
 
       // metadata?: Record<string, any>;
 
-      payment;
       return new AttemptPaymentIntentResponse({
         id,
         token,
@@ -171,7 +169,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         nextAction: payment.nextAction,
       });
     } catch (error) {
-      this.loggerService.warn("error => ", error);
+      this.loggerService.error("error => ", error);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();
@@ -186,7 +184,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
       };
 
       const response = await axios.post<Hub2AttemptPaymentResponse>(
-        `${HUB2_API_URL}/payment-intents/${payload.payment_id}/authentication`,
+        `${HUB2_API_URL}/payment-intents/${payload.paymentId}/authentication`,
         body,
         {
           headers: this.getHeaders(),
@@ -201,7 +199,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         status: status as PaymentStatus,
       });
     } catch (error) {
-      this.loggerService.warn("error => ", error);
+      this.loggerService.error("error => ", error);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();
@@ -210,6 +208,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
 
   calculatePaymentFees(amount: number, paymentMethod: PaymentMethod) {
     let feesPercentage = 0;
+
     switch (paymentMethod.toLocaleLowerCase()) {
       case PaymentMethod.Ecobank:
         feesPercentage = 0;

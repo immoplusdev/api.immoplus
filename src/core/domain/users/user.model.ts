@@ -41,7 +41,7 @@ export class User {
   deletedAt?: Date;
   deletedBy?: string;
 
-  clearPassword() {
+  clearPrivateCredentials() {
     this.password = "********";
     return this;
   }

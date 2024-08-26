@@ -2,6 +2,6 @@ import { BaseException } from "@/core/domain/shared/exceptions";
 
 export class {{classify name}}Exception extends BaseException {
   constructor() {
-    super("{{exceptionnify name}}", 400);
+    super("$t:all.exception.{{exceptionnify name}}", 400);
   }
 }

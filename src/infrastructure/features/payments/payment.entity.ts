@@ -52,7 +52,7 @@ export class PaymentEntity {
   hub2NextAction?: PaymentNextAction;
   @Column({ name: "hub2_token", type: "varchar", nullable: true })
   hub2Token?: string;
-  @Column({ name: "hub2_metadata", type: "varchar", length: 36, nullable: true })
+  @Column({ name: "hub2_metadata", type: "json", nullable: true })
   hub2Metadata?: Record<string, any>;
 
 

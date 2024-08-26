@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "api-testing",
+  "name": "immoplus-api-testing",
   "type": "collection",
   "ignore": [
     "node_modules",

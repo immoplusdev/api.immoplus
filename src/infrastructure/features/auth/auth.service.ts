@@ -20,7 +20,7 @@ export class AuthService implements IAuthService {
     const refreshToken = this.jwtManagerService.generateRefreshToken(payload);
 
     return new LoginResponse({
-      user: new User(user).clearPassword(),
+      user: new User(user).clearPrivateCredentials(),
       accessToken,
       expires,
       refreshToken,

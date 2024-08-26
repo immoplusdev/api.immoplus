@@ -15,3 +15,4 @@ export * from "./attempt-payment-intent-response.model";
 export * from "./authenticate-payment-intent.model";
 export * from "./authenticate-payment-response.model";
 export * from "./payment-collection-item-data.model";
+export * from "./invalid-payment-otp.exception";

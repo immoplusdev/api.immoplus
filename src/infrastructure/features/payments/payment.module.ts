@@ -6,11 +6,14 @@ import { PaymentRepository } from "./payment.repository";
 import { CqrsModule } from "@nestjs/cqrs";
 import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
 import { LoggingModule } from "@/infrastructure/features/logging";
-import { CreatePaymentIntentCommandHandler } from "@/core/application/features/payments";
+import {
+  CreatePaymentIntentCommandHandler,
+  GetPaymentCollectionItemDataQueryHandler,
+} from "@/core/application/features/payments";
 import { ReservationModule } from "@/infrastructure/features/reservations";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
 
-const queryHandler = [];
+const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
 const commandHandlers = [CreatePaymentIntentCommandHandler];
 
 const providers: Provider[] = [
@@ -27,7 +30,7 @@ const providers: Provider[] = [
 @Module({
   controllers: [PaymentController],
   imports: [TypeormModule, CqrsModule, LoggingModule, ReservationModule, DemandeVisiteModule],
-  providers: [...providers, ...commandHandlers],
+  providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })
 export class PaymentModule {

@@ -15,6 +15,9 @@ import {
   PaymentDtoMapper,
 } from "@/core/application/features/payments";
 import { CommandBus } from "@nestjs/cqrs";
+import {
+  AuthenticatePaymentIntentCommand,
+} from "@/core/application/features/payments/authenticate-payment-intent.command";
 
 @ApiTags("Payment")
 @Controller("payments")
@@ -46,6 +49,29 @@ export class PaymentController {
     const responseMapper = new WrapperResponseCreatePaymentIntentCommandResponseDtoMapper();
 
     const response = await this.commandBus.execute(new CreatePaymentIntentCommand({ ...payload, userId: userId }));
+
+    return responseMapper.mapFrom(response);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseCreatePaymentIntentCommandResponseDto,
+  })
+  @Post("action/authenticate-payment-intent")
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Create])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async authenticatePaymentIntent(
+    @Body() payload: AuthenticatePaymentIntentCommand,
+    @CurrentUser("id") userId: string,
+  ) {
+    const responseMapper = new WrapperResponseCreatePaymentIntentCommandResponseDtoMapper();
+
+    const response = await this.commandBus.execute(new AuthenticatePaymentIntentCommand({
+      ...payload,
+      userId: userId,
+    }));
 
     return responseMapper.mapFrom(response);
   }

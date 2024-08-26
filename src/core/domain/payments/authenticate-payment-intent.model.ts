@@ -1,6 +1,6 @@
 export class AuthenticatePaymentIntent {
   otp: string;
-  payment_id: string;
+  paymentId: string;
   token: string;
 
   constructor(data?: AuthenticatePaymentIntent) {

@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { CreatePaymentIntentCommand } from "./create-payment-intent.command";
 import { CreatePaymentIntentCommandResponse } from "./create-payment-intent-command.response";
 import { Inject } from "@nestjs/common";
@@ -6,19 +6,20 @@ import {
   AttemptPaymentIntent,
   IPaymentGatewayService,
   IPaymentRepository,
-  Payment,
-  PaymentCollection, PaymentStatus,
+  Payment, PaymentStatus,
   PaymentToken,
-  PaymentCollectionItemDataModel,
+  PaymentCollectionItemData,
 } from "@/core/domain/payments";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import { GetPaymentCollectionItemDataQuery } from "./get-payment-collection-item-data.query";
 
 @CommandHandler(CreatePaymentIntentCommand)
 export class CreatePaymentIntentCommandHandler implements ICommandHandler<CreatePaymentIntentCommand> {
   constructor(
+    private readonly queryBus: QueryBus,
     @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
     @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
     @Inject(Deps.PaymentRepository) private readonly paymentRepository: IPaymentRepository,
@@ -29,7 +30,10 @@ export class CreatePaymentIntentCommandHandler implements ICommandHandler<Create
 
   async execute(command: CreatePaymentIntentCommand): Promise<CreatePaymentIntentCommandResponse> {
 
-    const itemData = await this.getItemData(command);
+    const itemData = await this.queryBus.execute(new GetPaymentCollectionItemDataQuery({
+      itemId: command.itemId,
+      collection: command.collection,
+    }));
     if (!itemData) throw new ItemNotFoundException();
 
     const paymentIntent = await this.initializePayment(command, itemData);
@@ -57,33 +61,10 @@ export class CreatePaymentIntentCommandHandler implements ICommandHandler<Create
     };
   }
 
-  async getItemData(command: CreatePaymentIntentCommand): Promise<PaymentCollectionItemDataModel> {
-    const itemData = new PaymentCollectionItemDataModel();
-
-    if (command.collection == PaymentCollection.Reservation) {
-      const data = await this.reservationRepository.findOne(command.itemId);
-      itemData.setData({
-        itemId: data.id,
-        collection: PaymentCollection.Reservation,
-        amount: data.montantTotalReservation,
-      });
-    } else {
-      const data = await this.demandeVisiteRepository.findOne(command.itemId);
-      itemData.setData({
-        itemId: data.id,
-        collection: PaymentCollection.Reservation,
-        amount: data.montantTotalDemandeVisite,
-      });
-    }
-
-    return itemData;
-  }
-
   async initializePayment(
     command: CreatePaymentIntentCommand,
-    serviceData: PaymentCollectionItemDataModel,
+    serviceData: PaymentCollectionItemData,
   ): Promise<Payment> {
-
 
     const fees = this.paymentGatewayService.calculatePaymentFees(serviceData.amount, command.paymentMethod);
     const amountNoFees = serviceData.amount;
@@ -122,7 +103,7 @@ export class CreatePaymentIntentCommandHandler implements ICommandHandler<Create
       hub2NextAction: response.nextAction,
       paymentStatus: response?.status as PaymentStatus,
       hub2Token: response.token,
-      hub2Metadata: response.metadata,
+      hub2Metadata: response.metadata ? response.metadata : JSON.stringify(response) as never,
     });
 
     return await this.paymentRepository.findOne(paymentId);

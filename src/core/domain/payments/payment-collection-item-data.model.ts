@@ -1,17 +1,21 @@
 import { PaymentCollection } from "./payment-collection.enum";
 import { OmitMethods } from "@/lib/ts-utilities";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class PaymentCollectionItemDataModel {
+export class PaymentCollectionItemData {
+  @ApiProperty({ format: "uuid" })
   itemId: string;
+  @ApiProperty({ enum: PaymentCollection })
   collection: PaymentCollection;
+  @ApiProperty()
   amount: number;
 
-  setData(data: OmitMethods<PaymentCollectionItemDataModel>) {
+  setData(data: OmitMethods<PaymentCollectionItemData>) {
     Object.assign(this, data);
     return this;
   }
 
-  constructor(data?: OmitMethods<PaymentCollectionItemDataModel>) {
+  constructor(data?: OmitMethods<PaymentCollectionItemData>) {
     if (data) Object.assign(this, data);
   }
 }

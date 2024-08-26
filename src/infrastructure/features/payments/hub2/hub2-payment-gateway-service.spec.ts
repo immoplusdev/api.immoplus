@@ -50,7 +50,6 @@ describe("createNewPayment", () => {
       paymentId: "random-payment-id",
       token: "random-payment-token",
       itemId: "random-product-id",
-      // product_type: ProductType.Reservation,
       collection: "",
     });
 
@@ -58,8 +57,8 @@ describe("createNewPayment", () => {
     hub2PaymentGatewayService.attemptPayment(paymentData).then((result) => {
       // Assert
       expect(result).not.toBeNull();
-    }).catch((e: unknown) => {
-      console.log(e);
+    }).catch((_e: unknown) => {
+      //
     });
   });
 });
