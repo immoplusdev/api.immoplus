@@ -55,7 +55,7 @@ script:pre-request {
   const { faker } = require('@faker-js/faker');
   bru.setVar("residenceName", faker.company.name());
   
-  bru.setVar("prixReservation", faker.finance.amount({ min: 1000, max: 20000, dec: 0 }))
+  bru.setVar("prixReservation", faker.finance.amount({ min: 1, max: 6, dec: 0 }))
   
   const [lat, long] = faker.location.nearbyGPSCoordinate();
   bru.setVar("lat", lat);

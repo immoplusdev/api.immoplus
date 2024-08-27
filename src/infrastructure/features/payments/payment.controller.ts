@@ -1,10 +1,10 @@
-import { Body, Controller, Post, Inject, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IPaymentRepository } from "@/core/domain/payments";
-import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
-import { UserRole } from "@/core/domain/roles";
+import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
@@ -13,11 +13,18 @@ import {
   WrapperResponseCreatePaymentIntentCommandResponseDto,
   WrapperResponseCreatePaymentIntentCommandResponseDtoMapper,
   PaymentDtoMapper,
+  WrapperResponsePaymentListDto,
+  WrapperResponsePaymentDto,
+  WrapperResponseGetPaymentProviderQueryResponseDto,
+  WrapperResponseGetPaymentProviderQueryResponseDtoMapper,
+  GetPaymentProviderQuery,
 } from "@/core/application/features/payments";
-import { CommandBus } from "@nestjs/cqrs";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
   AuthenticatePaymentIntentCommand,
 } from "@/core/application/features/payments/authenticate-payment-intent.command";
+import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 
 @ApiTags("Payment")
 @Controller("payments")
@@ -29,6 +36,7 @@ export class PaymentController {
 
   constructor(
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     @Inject(Deps.PaymentRepository)
     private readonly repository: IPaymentRepository,
   ) {
@@ -76,68 +84,63 @@ export class PaymentController {
     return responseMapper.mapFrom(response);
   }
 
-  // @ApiResponse({
-  //   type: WrapperResponsePaymentDto,
-  // })
-  // @Post()
-  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Create])
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // async create(
-  //   @Body() payload: CreatePaymentDto,
-  //   @CurrentUser("id") userId: string,
-  // ) {
-  //
-  //   const payloadMapper = new CreatePaymentDtoMapper();
-  //
-  //   const response = await this.repository.createOne({ ...payloadMapper.mapTo(payload), createdBy: userId });
-  //
-  //   return this.responseMapper.mapFrom(response);
-  // }
-  //
-  // @ApiResponse({
-  //   type: WrapperResponsePaymentListDto,
-  // })
-  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Read])
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // @OwnerAccessRequired("createdBy")
-  // @Get()
-  // async readMany(
-  //   @Query() params: SearchItemsParamsDto,
-  //   @CurrentUser("id") userId: string,
-  //   @CurrentUser("role") userRole: Role,
-  // ) {
-  //   if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-  //     _field: "createdBy",
-  //     _l_op: "and",
-  //     _val: userId,
-  //   }], params._where);
-  //
-  //   const items = await this.repository.findByQuery(params);
-  //
-  //   return this.responseMapper.mapFromQueryResult(items);
-  // }
-  //
-  // @ApiResponse({
-  //   type: WrapperResponsePaymentDto,
-  // })
-  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Read])
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // @OwnerAccessRequired("createdBy")
-  // @Get(":id")
-  // async readOne(
-  //   @Param("id") id: string,
-  //   @Query() params?: SelectItemsParamsDto,
-  // ) {
-  //   const item = await this.repository.findOne(id, { fields: params?._select });
-  //
-  //   return this.responseMapper.mapFrom(item);
-  // }
+  @ApiResponse({
+    type: WrapperResponsePaymentListDto,
+  })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
+  @Get()
+  async readMany(
+    @Query() params: SearchItemsParamsDto,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+  ) {
+    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
+      _field: "customer",
+      _l_op: "and",
+      _val: userId,
+    }], params._where);
+
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponsePaymentDto,
+  })
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("customerId")
+  @Get(":id")
+  async readOne(
+    @Param("id") id: string,
+    @Query() params?: SelectItemsParamsDto,
+  ) {
+    const item = await this.repository.findOne(id, { fields: params?._select });
+
+    return this.responseMapper.mapFrom(item);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseGetPaymentProviderQueryResponseDto,
+  })
+  @Get("data/providers")
+  async getPaymentsProviders() {
+    const responseMapper = new WrapperResponseGetPaymentProviderQueryResponseDtoMapper();
+
+    const response = await this.queryBus.execute(new GetPaymentProviderQuery());
+
+    return responseMapper.mapFrom(response);
+  }
+
   //
   //
   // @ApiResponse({

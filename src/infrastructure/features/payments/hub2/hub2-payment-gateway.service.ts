@@ -145,6 +145,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
           onFailedRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Failed}`,
         },
       };
+      console.log(body)
 
       const response = await axios.post<Hub2AttemptPaymentResponse>(
         `${HUB2_API_URL}/payment-intents/${payload.paymentId}/payments`,

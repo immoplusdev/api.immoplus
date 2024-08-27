@@ -11,11 +11,12 @@ import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 @Injectable()
 export class PaymentRepository implements IPaymentRepository{
   private readonly repository: BaseRepository<Payment>;
+  private readonly relations = ['customer'];
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, PaymentEntity).setEntityMapper(new PaymentEntityMapper());
+    this.repository = new BaseRepository(dataSource, PaymentEntity, this.relations).setEntityMapper(new PaymentEntityMapper());
   }
 
   async createMany(payload: Partial<Payment>[]): Promise<Payment[]> {
