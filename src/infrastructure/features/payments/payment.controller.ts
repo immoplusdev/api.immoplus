@@ -1,9 +1,15 @@
-import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param, HttpCode } from "@nestjs/common";
+import { ApiBearerAuth, ApiNoContentResponse, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IPaymentRepository } from "@/core/domain/payments";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  ReqHeaders,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/auth";
@@ -17,7 +23,7 @@ import {
   WrapperResponsePaymentDto,
   WrapperResponseGetPaymentProviderQueryResponseDto,
   WrapperResponseGetPaymentProviderQueryResponseDtoMapper,
-  GetPaymentProviderQuery,
+  GetPaymentProviderQuery, InterceptPaymentWebhookCommand,
 } from "@/core/application/features/payments";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
@@ -25,6 +31,7 @@ import {
 } from "@/core/application/features/payments/authenticate-payment-intent.command";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
 
 @ApiTags("Payment")
 @Controller("payments")
@@ -139,6 +146,30 @@ export class PaymentController {
     const response = await this.queryBus.execute(new GetPaymentProviderQuery());
 
     return responseMapper.mapFrom(response);
+  }
+
+  @Post("webhook")
+  @ApiNoContentResponse()
+  @HttpCode(204)
+  public async webhook(
+    @Body() payload: Record<string, any>,
+    @ReqHeaders() headers: Record<string, string>,
+  ): Promise<void> {
+    const json = JSON.stringify(payload);
+    const webHookSignature = Hub2PaymentGatewayService.getWebhookSignatureFromHeaders(headers);
+
+    const command = new InterceptPaymentWebhookCommand({
+      type: payload?.type,
+      signature: webHookSignature,
+      json,
+      payments: payload?.data?.payments,
+      amount: payload?.data?.amount,
+      token: payload?.data?.token,
+      status: payload?.data?.status as never,
+      nextAction: payload?.data?.nextAction,
+    });
+
+    await this.commandBus.execute(command);
   }
 
   //

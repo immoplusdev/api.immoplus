@@ -1,0 +1,36 @@
+meta {
+  name: read-payment
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{API_URL}}/payments/{{DEFAULT_PAYMENT_ID}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+}
+
+tests {
+  const { z } = require("zod");
+  
+  const schema = z.object({
+    id: z.string(),
+    amount: z.number()
+  });
+  
+  test("Should match schema", function() {
+    
+    const { data } = res.getBody();
+    const result = schema.safeParse(data);
+    expect(result.success).to.be.equal(true);
+  });
+}

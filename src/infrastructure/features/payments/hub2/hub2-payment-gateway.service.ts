@@ -29,6 +29,14 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
   constructor(@Inject(Deps.LoggerService) private readonly loggerService: ILoggerService) {
   }
 
+  static getWebhookSignatureFromHeaders(headers: Record<string, any>) {
+    const header = headers["hub2-signature"]
+      ? headers["hub2-signature"]
+      : headers["Hub2-Signature"];
+    if (!header) return "";
+    return header.split(",s0=")[0]?.replace("s1=", "");
+  }
+
   getProviderHub2(paymentMethod: string) {
     switch (paymentMethod.toLocaleLowerCase()) {
       case PaymentMethod.Ecobank:
@@ -145,7 +153,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
           onFailedRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Failed}`,
         },
       };
-      console.log(body)
+      console.log(body);
 
       const response = await axios.post<Hub2AttemptPaymentResponse>(
         `${HUB2_API_URL}/payment-intents/${payload.paymentId}/payments`,

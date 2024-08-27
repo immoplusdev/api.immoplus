@@ -23,9 +23,14 @@ body:json {
   }
 }
 
+script:pre-request {
+    
+}
+
 script:post-response {
-  const {data: { id }} = res.getBody();
+  const {data: { id, hub2Token }} = res.getBody();
   bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+  bru.setEnvVar("HUB2_TOKEN", hub2Token)
 }
 
 tests {

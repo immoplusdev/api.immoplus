@@ -8,13 +8,13 @@ import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hu
 import { LoggingModule } from "@/infrastructure/features/logging";
 import {
   CreatePaymentIntentCommandHandler,
-  GetPaymentCollectionItemDataQueryHandler,
+  GetPaymentCollectionItemDataQueryHandler, InterceptPaymentWebhookCommandHandler,
 } from "@/core/application/features/payments";
 import { ReservationModule } from "@/infrastructure/features/reservations";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
 
 const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
-const commandHandlers = [CreatePaymentIntentCommandHandler];
+const commandHandlers = [CreatePaymentIntentCommandHandler, InterceptPaymentWebhookCommandHandler];
 
 const providers: Provider[] = [
   {
