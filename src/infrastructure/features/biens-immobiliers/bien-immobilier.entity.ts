@@ -14,10 +14,16 @@ import { VilleEntity } from "@/infrastructure/features/villes";
 import { CommuneEntity } from "@/infrastructure/features/communes";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { UserEntity } from "@/infrastructure/features/users";
-import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  Amentity,
+  StatusValidationBienImmobilier,
+  TypeBienImmobilier,
+  TypeLocationBienImmobilier,
+} from "@/core/domain/biens-immobiliers";
 import { File } from "@/core/domain/files";
+import { fa } from "@faker-js/faker";
 
-@Entity('biens_immobiliers')
+@Entity("biens_immobiliers")
 export class BienImmobilierEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -25,8 +31,8 @@ export class BienImmobilierEntity {
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "miniature_id" })
   miniature: File | string;
-  @RelationId((item: BienImmobilierEntity)=> item.miniature)
-  miniatureId: string
+  @RelationId((item: BienImmobilierEntity) => item.miniature)
+  miniatureId: string;
 
   @Column({ name: "nom", type: "varchar" })
   nom: string;
@@ -79,13 +85,19 @@ export class BienImmobilierEntity {
   @Column({ name: "featured", type: "bool", default: false })
   featured: boolean;
 
-  @Column({ name: "bien_immobilier_disponible", type: "bool", default: false })
+  @Column({ name: "a_louer", type: "bool", nullable: true, default: false })
+  aLouer: boolean;
+
+  @Column({ name: "type_location", type: "varchar", nullable: true })
+  typeLocation: TypeLocationBienImmobilier;
+
+  @Column({ name: "bien_immobilier_disponible", type: "bool", nullable: true })
   bienImmobilierDisponible: boolean;
 
   @Column({ name: "nombre_max_occupants", type: "int", default: 10 })
   nombreMaxOccupants: number;
 
-  @Column({ name: "animaux_autorises", type: "bool", default: false })
+  @Column({ name: "animaux_autorises", type: "bool", nullable: true })
   animauxAutorises: boolean;
 
   @Column({ name: "fetes_autorises", type: "bool", default: false })
@@ -94,7 +106,7 @@ export class BienImmobilierEntity {
   @Column({ name: "regles_supplementaires", type: "text", nullable: true })
   reglesSupplementaires?: string;
 
-  @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true})
+  @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "proprietaire_id" })
   proprietaire?: string;
 

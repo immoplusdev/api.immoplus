@@ -1,0 +1,52 @@
+meta {
+  name: programmer-demande-visite
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{API_URL}}/demandes-visites/action/programmer/{{DEFAULT_DEMANDE_VISITE_ID}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+body:json {
+  {
+    "datesDemandeVisite": [
+      {
+        "date": "{{date}}"
+      }
+    ]
+  }
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("date", faker.datatype.datetime().toISOString());
+  
+  
+  
+  
+  
+}
+
+tests {
+  const { z } = require("zod");
+  
+  const schema = z.object({
+    id: z.string(),
+  });
+  
+  test("Should match schema", function() {
+    
+    const { data } = res.getBody();
+    
+    const result = schema.safeParse(data);
+  
+    expect(result.success).to.be.equal(true);
+  });
+}

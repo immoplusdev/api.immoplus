@@ -8,13 +8,13 @@ import {
   AnnulerDemandeVisiteByIdCommandHandler,
   CreateDemandeVisiteCommandHandler,
   EstimerPrixDemandeVisiteQueryHandler,
-  GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler,
+  GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler, ProgrammerDemandeVisiteCommandHandler,
 } from "@/core/application/features/demandes-visites";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 import { UserModule } from "@/infrastructure/features/users";
 
-const commandHandlers = [CreateDemandeVisiteCommandHandler, AnnulerDemandeVisiteByIdCommandHandler];
+const commandHandlers = [CreateDemandeVisiteCommandHandler, AnnulerDemandeVisiteByIdCommandHandler, ProgrammerDemandeVisiteCommandHandler];
 const queryHandler = [EstimerPrixDemandeVisiteQueryHandler, GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler];
 const providers: Provider[] = [
   {

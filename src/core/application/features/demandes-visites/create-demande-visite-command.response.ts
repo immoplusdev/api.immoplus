@@ -3,7 +3,7 @@ import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 
-export class CreateDemandeVisiteCommandResponse extends OmitType(DemandeVisiteDetailsDto, ["deletedAt"] as const) {
+export class CreateDemandeVisiteCommandResponse extends OmitType(DemandeVisiteDetailsDto, [] as const) {
   constructor(data?: OmitMethods<CreateDemandeVisiteCommandResponse>) {
     if (data) super(data);
   }

@@ -14,5 +14,7 @@ export * from "./demande-visite-details.dto";
 export * from "./annuler-demande-visite-by-id.command";
 export * from "./annuler-demande-visite-by-id-command.handler";
 export * from "./annuler-demande-visite-by-id-command.response";
-
+export * from "./programmer-demande-visite.command";
+export * from "./programmer-demande-visite-command.handler";
+export * from "./programmer-demande-visite-command.response";
 

@@ -18,7 +18,8 @@ export class ResidenceRepository implements IResidenceRepository {
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, ResidenceEntity, this.relations).setEntityMapper(new ResidenceEntityMapper());
+    this.repository = new BaseRepository(dataSource, ResidenceEntity, this.relations)
+      .setEntityMapper(new ResidenceEntityMapper());
   }
 
 

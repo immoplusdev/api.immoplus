@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
-import { Amentity, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
+import { Amentity, TypeBienImmobilier, TypeLocationBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
-import { IsOptional } from "class-validator";
+import { IsEnum, IsOptional } from "class-validator";
 import { AmentityDto } from "@/core/application/features/biens-immobiliers/amentity.dto";
 
 export class CreateBienImmobilierDto {
@@ -15,7 +15,17 @@ export class CreateBienImmobilierDto {
   nom: string;
 
   @ApiProperty({ enum: TypeBienImmobilier })
+  @IsEnum(TypeBienImmobilier)
   typeBienImmobilier: TypeBienImmobilier;
+
+  @ApiProperty({ enum: TypeLocationBienImmobilier })
+  @IsEnum(TypeLocationBienImmobilier)
+  @IsOptional()
+  typeLocation: TypeLocationBienImmobilier;
+
+  @ApiProperty()
+  @IsOptional()
+  aLouer: boolean;
 
   @ApiProperty()
   description: string;

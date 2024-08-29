@@ -22,6 +22,8 @@ body:json {
     "description": "{{name}}",
     "prix": {{prix}},
     "adresse": "{{name}}",
+    "aLouer": true,
+    "typeLocation": "jour",
     "ville": "{{DEFAULT_VILLE_ID}}",
     "commune": "{{DEFAULT_COMMUNE_ID}}",
     "position": {
@@ -35,11 +37,6 @@ body:json {
     "images": [
       "{{DEFAULT_IMAGE_ID}}"
     ],
-    "metadata": { "ok": "ok"},
-    "nombreMaxOccupants": 20,
-    "animauxAutorises": true,
-    "fetesAutorises": true,
-    "reglesSupplementaires": "{{name}}",
     "bienImmobilierDisponible": true
   }
 }
@@ -69,9 +66,18 @@ script:post-response {
 }
 
 tests {
-  test("Should receive a not null id", function() {
-    const {data: { id }} = res.getBody();
+  const { z } = require("zod");
   
-    expect(id).to.be.a('string');
+  const schema = z.object({
+    id: z.string(),
+  });
+  
+  test("Should match schema", function() {
+    
+    const { data } = res.getBody();
+    
+    const result = schema.safeParse(data);
+  
+    expect(result.success).to.be.equal(true);
   });
 }

@@ -19,7 +19,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   private relations?: RepositoryRelations;
   private loadRelationIds: LoadRelationIdsOptions = true;
   private entityMapper?: IMapper<any, any> = null;
-
+  private sortData: string[] = [];
   constructor(
     readonly dataSource: DataSource,
     entityClass: any,

@@ -22,13 +22,15 @@ import {
   EstimerPrixDemandeVisiteQuery,
   EstimerPrixDemandeVisiteQueryResponse,
   GetBienImmobilierOccupiedDatesQuery,
-  GetDemandeVisiteByIdQuery,
+  GetDemandeVisiteByIdQuery, ProgrammerDemandeVisiteCommand,
   WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto,
   WrapperResponseAnnulerDemandeVisiteCommandResponseDtoMapper,
   WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper,
   WrapperResponseCreateDemandeVisiteResponseDto,
   WrapperResponseEstimerPrixDemandeVisiteQueryResponseDto,
   WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
+  WrapperResponseProgrammerDemandeVisiteCommandResponseDto,
+  WrapperResponseProgrammerDemandeVisiteCommandResponseDtoMapper,
 } from "@/core/application/features/demandes-visites";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
@@ -229,6 +231,25 @@ export class DemandeVisiteController {
   ) {
     const responseMapper = new WrapperResponseAnnulerDemandeVisiteCommandResponseDtoMapper();
     const command = new AnnulerDemandeVisiteByIdCommand({ demandeVisite: demandeVisiteId, userId });
+
+    const response = await this.commandBus.execute(command);
+    return responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseProgrammerDemandeVisiteCommandResponseDto,
+  })
+  @Post("action/programmer/:id")
+  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Update])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async programmerDemandeVisiteById(
+    @Param("id") demandeVisiteId: string,
+    @Body() payload: ProgrammerDemandeVisiteCommand,
+  ) {
+    const responseMapper = new WrapperResponseProgrammerDemandeVisiteCommandResponseDtoMapper();
+    const command = new ProgrammerDemandeVisiteCommand({ id: demandeVisiteId, datesDemandeVisite: payload.datesDemandeVisite });
 
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
