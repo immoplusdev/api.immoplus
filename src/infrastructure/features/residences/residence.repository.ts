@@ -12,7 +12,7 @@ import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 export class ResidenceRepository implements IResidenceRepository {
   private readonly repository: BaseRepository<Residence>;
   private readonly entityMapper: ResidenceEntityMapper;
-  private readonly relations: RepositoryRelations = undefined;
+  private readonly relations: RepositoryRelations = ["proprietaire"];
 
   constructor(
     @Inject(Deps.DataSource)

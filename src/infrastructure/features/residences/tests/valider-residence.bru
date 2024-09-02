@@ -1,0 +1,29 @@
+meta {
+  name: valider-residence
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{API_URL}}/residences/{{DEFAULT_RESIDENCE_ID}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  { 
+    "statusValidation": "valide"
+  } 
+}
+
+tests {
+  test("Should receive status validation valide", function() {
+    const {data: { statusValidation }} = res.getBody();
+  
+    expect(statusValidation).to.be.equal("valide");
+  });
+}

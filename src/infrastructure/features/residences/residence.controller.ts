@@ -6,7 +6,6 @@ import { IResidenceRepository, Residence } from "@/core/domain/residences";
 import {
   CreateResidenceDto,
   ResidenceDtoMapper,
-  UpdateResidenceDto,
   WrapperResponseResidenceDto,
   WrapperResponseResidenceListDto,
 } from "@/infrastructure/features/residences";
@@ -18,6 +17,8 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import { UpdateResidenceByIdCommand } from "@/core/application/features/residences";
+import { CommandBus } from "@nestjs/cqrs";
 
 @ApiTags("Residence")
 @Controller("residences")
@@ -28,6 +29,7 @@ export class ResidenceController {
   constructor(
     @Inject(Deps.ResidenceRepository)
     private readonly repository: IResidenceRepository,
+    private readonly commandBus: CommandBus,
   ) {
   }
 
@@ -45,7 +47,7 @@ export class ResidenceController {
   ) {
 
     const proprietaire = payload.proprietaire ? payload.proprietaire : userId;
-
+    console.log(proprietaire);
     const response = await this.repository.createOne({
       ...payload,
       createdBy: userId,
@@ -142,22 +144,16 @@ export class ResidenceController {
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
-    @Body() payload: UpdateResidenceDto,
+    @Body() payload: UpdateResidenceByIdCommand,
   ) {
-    const query = {
-      _where: [
-        {
-          _field: "id",
-          _val: id,
-        },
-      ],
-    };
+    const response = await this.commandBus.execute(new UpdateResidenceByIdCommand({
+      ...payload,
+      isAdmin: userRole.hasAdminAccess(),
+      userId,
+      residenceId: id,
+    }));
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
-
-    await this.repository.updateByQuery(query, { ...payload, createdBy: userId });
-
-    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom(response);
   }
 
 

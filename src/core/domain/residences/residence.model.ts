@@ -5,6 +5,7 @@ import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { File } from "@/core/domain/files";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
+import { User } from "@/core/domain/users";
 
 export class Residence {
   id: string;
@@ -33,7 +34,8 @@ export class Residence {
   animauxAutorises: boolean;
   fetesAutorises: boolean;
   reglesSupplementaires?: string;
-  proprietaire?: string;
+  proprietaire?: User | string;
+  proprietaireId: string;
 
   createdAt?: Date;
   createdBy?: string;

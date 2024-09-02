@@ -17,6 +17,7 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { File } from "@/core/domain/files";
+import { User } from "@/core/domain/users";
 
 @Entity("residences")
 export class ResidenceEntity {
@@ -103,7 +104,7 @@ export class ResidenceEntity {
 
   @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "proprietaire_id" })
-  proprietaire?: string;
+  proprietaire?: User | string;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;

@@ -3,9 +3,11 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { ResidenceRepository } from "./residence.repository";
 import { ResidenceController } from "@/infrastructure/features/residences/residence.controller";
+import { UpdateResidenceByIdCommandHandler } from "@/core/application/features/residences";
+import { CqrsModule } from "@nestjs/cqrs";
 
 const queryHandler = [];
-const commandHandlers = [];
+const commandHandlers = [UpdateResidenceByIdCommandHandler];
 
 const providers: Provider[] = [
   {
@@ -16,7 +18,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [ResidenceController],
-  imports: [TypeormModule],
+  imports: [TypeormModule, CqrsModule],
   providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })
