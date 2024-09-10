@@ -89,9 +89,9 @@ export class ResidenceEntity {
   dureeMaxSejour: number;
   @Column({ name: "metadata", type: "json", nullable: true })
   metadata?: Record<string, any>;
-  @Column({ name: "heure_entree", type: "varchar", length: 6, nullable: true })
+  @Column({ name: "heure_entree", type: "varchar", length: 10, nullable: true })
   heureEntree: string;
-  @Column({ name: "heure_depart", type: "varchar", length: 6, nullable: true })
+  @Column({ name: "heure_depart", type: "varchar", length: 10, nullable: true })
   heureDepart: string;
   @Column({ name: "nombre_max_occupants", type: "int", default: 10 })
   nombreMaxOccupants: number;

@@ -32,7 +32,7 @@ import {
   WrapperResponseProgrammerDemandeVisiteCommandResponseDto,
   WrapperResponseProgrammerDemandeVisiteCommandResponseDtoMapper,
 } from "@/core/application/features/demandes-visites";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { CommandBus, IQueryBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
 import { UnauthorizedException } from "@/core/domain/auth";
 import {
@@ -52,7 +52,7 @@ export class DemandeVisiteController {
   private readonly autoMapper = new WrapperResponseDtoMapper();
 
   constructor(
-    readonly queryBus: QueryBus,
+    readonly queryBus: IQueryBus,
     readonly commandBus: CommandBus,
     @Inject(Deps.DemandeVisiteRepository)
     private readonly repository: IDemandeVisiteRepository,
