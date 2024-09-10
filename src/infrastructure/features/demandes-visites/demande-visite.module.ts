@@ -29,5 +29,4 @@ const providers: Provider[] = [
   providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })
-export class DemandeVisiteModule {
-}
+export class DemandeVisiteModule {}

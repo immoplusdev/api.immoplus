@@ -52,7 +52,7 @@ export class DemandeVisiteController {
   private readonly autoMapper = new WrapperResponseDtoMapper();
 
   constructor(
-    readonly queryBus: IQueryBus,
+    readonly queryBus: QueryBus,
     readonly commandBus: CommandBus,
     @Inject(Deps.DemandeVisiteRepository)
     private readonly repository: IDemandeVisiteRepository,
