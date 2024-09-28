@@ -1,4 +1,4 @@
-import { BaseException } from '@/core/domain/shared/exceptions/base.exception';
+import { BaseException } from "./base.exception";
 
 
 export class FailedValidationException extends BaseException {

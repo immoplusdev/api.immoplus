@@ -1,4 +1,4 @@
-import { SetMetadata, applyDecorators, createParamDecorator } from "@nestjs/common"
+import { SetMetadata, applyDecorators } from "@nestjs/common"
 
 export const OWNER_ACCESS_REQUIRED_KEY = "OWNER_ACCESS_REQUIRED_KEY";
 export const OWNER_ACCESS_REQUIRED_FIELD_KEY = "OWNER_ACCESS_REQUIRED_FIELD_KEY";

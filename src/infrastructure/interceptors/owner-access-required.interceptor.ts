@@ -2,14 +2,10 @@ import {
   Injectable,
   NestInterceptor,
   ExecutionContext,
-  CallHandler, Inject,
+  CallHandler,
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
-import { Deps } from "@/core/domain/shared/ioc";
-import { IGlobalizationService } from "@/core/domain/globalization";
-import { ILoggerService } from "@/core/domain/logging";
-import { IConfigsManagerService } from "@/core/domain/configs";
 import { OWNER_ACCESS_REQUIRED_FIELD_KEY, OWNER_ACCESS_REQUIRED_KEY } from "@/infrastructure/decorators";
 import { Reflector } from "@nestjs/core";
 import { verifyResourceListOwnership, verifyResourceOwnership } from "@/infrastructure/features/auth/helpers";
@@ -17,15 +13,7 @@ import { verifyResourceListOwnership, verifyResourceOwnership } from "@/infrastr
 // TODO: Implement the OwnerAccessRequiredInterceptor
 @Injectable()
 export class OwnerAccessRequiredInterceptor implements NestInterceptor {
-  constructor(
-    @Inject(Deps.GlobalizationService)
-    private readonly globalizationService: IGlobalizationService,
-    @Inject(Deps.LoggerService)
-    private readonly loggerService: ILoggerService,
-    @Inject(Deps.ConfigsManagerService)
-    private readonly configsManagerService: IConfigsManagerService,
-    private readonly reflector: Reflector,
-  ) {
+  constructor(private readonly reflector: Reflector) {
     //
   }
 

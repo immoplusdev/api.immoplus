@@ -1,6 +1,5 @@
 import { DateString, Uuid } from "./global.model";
 
-
 export interface Files {
   id: Uuid;
   storage: string;

@@ -24,10 +24,11 @@ export class VilleController {
     @Inject(Deps.VilleRepository)
     private readonly repository: IVilleRepository,
   ) {
+    //
   }
 
   @ApiResponse({
-    type: WrapperResponseVilleDto,
+    type: () => WrapperResponseVilleDto,
   })
   @Post()
   @RequiredRoles(UserRole.Admin)

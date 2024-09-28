@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { AppConfigs } from "@/core/domain/configs/app-configs.model";
-import { PublicConfigItem } from "@/core/domain/configs/public-config-item.model";
+import { AppConfigs } from "./app-configs.model";
+import { PublicConfigItem } from "./public-config-item.model";
 
 export class PublicConfigs extends AppConfigs {
   productTypes: PublicConfigItem[];

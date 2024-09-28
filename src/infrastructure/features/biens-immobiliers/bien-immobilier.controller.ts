@@ -1,18 +1,18 @@
 import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags, OmitType } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
-import { WrapperResponseDtoMapper } from "@/lib/responses";
+import { WrapperResponseDto, WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import {
+  BienImmobilierDto, WrapperResponseBienImmobilierBatchDto,
   WrapperResponseBienImmobilierDto,
-  WrapperResponseBienImmobilierListDto,
 } from "@/core/application/features/biens-immobiliers/bien-immobilier.dto";
 import {
   CreateBienImmobilierDto,
@@ -36,7 +36,7 @@ export class BienImmobilierController {
   }
 
   @ApiResponse({
-    type: WrapperResponseBienImmobilierDto,
+    type: OmitType(WrapperResponseDto<BienImmobilierDto>, []),
   })
   @Post()
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -60,7 +60,7 @@ export class BienImmobilierController {
   }
 
   @ApiResponse({
-    type: WrapperResponseBienImmobilierListDto,
+    type: WrapperResponseBienImmobilierBatchDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Read])
@@ -86,7 +86,7 @@ export class BienImmobilierController {
 
 
   @ApiResponse({
-    type: WrapperResponseBienImmobilierListDto,
+    type: WrapperResponseBienImmobilierBatchDto,
   })
   @Get("/data/public/")
   async readManyPublic(

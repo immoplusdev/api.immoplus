@@ -4,23 +4,19 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
-import { File } from "@/core/domain/files";
-import { AmentityDto } from "@/core/application/features/biens-immobiliers/amentity.dto";
+import { AmentityDto } from "./amentity.dto";
 
 export class BienImmobilierDto {
   @ApiProperty({ format: "uuid" })
   id: string;
 
   @ApiProperty({ format: "uuid" })
-  miniature: File | string;
-
-  @ApiProperty({ format: "uuid" })
-  miniatureId: string;
+  miniature: string;
 
   @ApiProperty()
   nom: string;
 
-  @ApiProperty({ enum: TypeBienImmobilier })
+  @ApiProperty({ enum: TypeBienImmobilier, enumName: "TypeBienImmobilier" })
   typeBienImmobilier: TypeBienImmobilier;
 
   @ApiProperty()
@@ -50,7 +46,7 @@ export class BienImmobilierDto {
   @ApiProperty({ type: GeoJsonPointDto })
   position?: GeoJsonPoint;
 
-  @ApiProperty({ enum: StatusValidationBienImmobilier })
+  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: "StatusValidationBienImmobilier" })
   statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty()
@@ -77,7 +73,7 @@ export class BienImmobilierDto {
   @ApiProperty()
   reglesSupplementaires?: string;
 
-  @ApiProperty({format: "uuid"})
+  @ApiProperty({ format: "uuid" })
   proprietaire?: string;
 
   @ApiProperty()
@@ -102,20 +98,8 @@ export class WrapperResponseBienImmobilierDto extends WrapperResponseDto<BienImm
   data: BienImmobilierDto;
 }
 
-export class WrapperResponseBienImmobilierListDto extends WrapperResponseDto<BienImmobilierDto[]> {
+export class WrapperResponseBienImmobilierBatchDto extends WrapperResponseDto<BienImmobilierDto[]> {
   @ApiProperty({ type: [BienImmobilierDto] })
   data: BienImmobilierDto[];
-  @ApiProperty()
-  currentPage: number;
-  @ApiProperty()
-  totalPages: number;
-  @ApiProperty()
-  pageSize: number;
-  @ApiProperty()
-  totalCount: number;
-  @ApiProperty()
-  hasPrevious: boolean;
-  @ApiProperty()
-  hasNext: boolean;
 }
 

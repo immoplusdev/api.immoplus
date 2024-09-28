@@ -1,4 +1,4 @@
-import { BaseException } from '../shared/exceptions/base.exception';
+import { BaseException } from "@/core/domain/shared/exceptions";
 
 export class AccessForbiddenException extends BaseException {
   constructor() {

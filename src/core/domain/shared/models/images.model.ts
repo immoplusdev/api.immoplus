@@ -1,5 +1,5 @@
-import {DateString, Uuid} from "@/core/domain/shared/models/global.model";
-import {FileMetaData} from "@/core/domain/shared/models/files.model";
+import {DateString, Uuid} from "./global.model";
+import {FileMetaData} from "./files.model";
 
 export interface Image {
     id: Uuid;

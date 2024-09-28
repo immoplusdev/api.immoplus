@@ -1,4 +1,4 @@
-import { VerifyOtpOptions } from "@/core/domain/auth/verify-otp-options.model";
+import { VerifyOtpOptions } from "./verify-otp-options.model";
 
 export interface ITfaService {
   generateOtp(): string;

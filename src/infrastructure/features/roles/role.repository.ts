@@ -7,7 +7,6 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
-
 @Injectable()
 export class RoleRepository implements IRoleRepository {
   private readonly repository: BaseRepository<Role>;

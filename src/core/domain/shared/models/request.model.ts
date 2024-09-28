@@ -1,4 +1,3 @@
-// 
 export interface ReqError {
   message: string;
   extensions: {

@@ -2,20 +2,16 @@ import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "./create-demande-visite.command";
 import { CreateDemandeVisiteCommandResponse } from "./create-demande-visite-command.response";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
-import { ServiceDates } from "@/core/domain/shared/models";
-import { dateToString } from "@/lib/ts-utilities";
 import { Inject } from "@nestjs/common";
 import {
-  DateDemandeVisiteDejaPriseException,
   IDemandeVisiteRepository,
 } from "@/core/domain/demandes-visites";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { IUserRepository } from "@/core/domain/users";
 import {
-  GetBienImmobilierOccupiedDatesQuery,
   EstimerPrixDemandeVisiteQuery,
-  GetBienImmobilierOccupiedDatesQueryResponse, GetDemandeVisiteByIdQuery,
+  GetDemandeVisiteByIdQuery,
 } from "@/core/application/features/demandes-visites";
 
 
@@ -49,7 +45,8 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
     const { id } = await this.demandeVisiteRepository.createOne({
       bienImmobilier: command.bienImmobilier,
       typeDemandeVisite: command.typeDemandeVisite,
-      datesDemandeVisite: command.datesDemandeVisite,
+      // datesDemandeVisite: command.datesDemandeVisite || [],
+      datesDemandeVisite: [],
       notes: command.notes || null,
       montantTotalDemandeVisite: calculationResult.montantTotalDemandeVisite,
       montantDemandeVisiteSansCommission: calculationResult.montantDemandeVisiteSansCommission,
@@ -61,22 +58,22 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
   }
 
   private async verifyCanCreateDemandeVisite(command: CreateDemandeVisiteCommand) {
-    const occupiedDatesResponse = await this.queryBus.execute<GetBienImmobilierOccupiedDatesQuery, GetBienImmobilierOccupiedDatesQueryResponse>(
-      new GetBienImmobilierOccupiedDatesQuery({
-        bienImmobilierId: command.bienImmobilier,
-      }));
+    // const occupiedDatesResponse = await this.queryBus.execute<GetBienImmobilierOccupiedDatesQuery, GetBienImmobilierOccupiedDatesQueryResponse>(
+    //   new GetBienImmobilierOccupiedDatesQuery({
+    //     bienImmobilierId: command.bienImmobilier,
+    //   }));
 
-    const previousDates = this.serviceDatesToDates(occupiedDatesResponse.dates);
-    const newDates = this.serviceDatesToDates(command.datesDemandeVisite);
+    // const previousDates = this.serviceDatesToDates(occupiedDatesResponse.dates);
+    // const newDates = this.serviceDatesToDates(command.datesDemandeVisite);
 
-    for (const date of newDates) {
-      if (previousDates.includes(date)) {
-        throw new DateDemandeVisiteDejaPriseException(date);
-      }
-    }
+    // for (const date of newDates) {
+    //   if (previousDates.includes(date)) {
+    //     throw new DateDemandeVisiteDejaPriseException(date);
+    //   }
+    // }
   }
 
-  private serviceDatesToDates(serviceDates: ServiceDates) {
-    return serviceDates.map(serviceDate => dateToString(serviceDate.date));
-  }
+  // private serviceDatesToDates(serviceDates: ServiceDates) {
+  //   return serviceDates.map(serviceDate => dateToString(serviceDate.date));
+  // }
 }

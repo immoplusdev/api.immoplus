@@ -4,15 +4,12 @@ import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infr
 import { IBaseRepository } from "@/core/domain/shared/repositories";
 import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
-import { FindOptionsRelations } from "typeorm/find-options/FindOptionsRelations";
 import { IMapper } from "@/lib/ts-utilities";
 
-// type TypeormRepositoryRelations<Entity = any> = string[] | FindOptionsRelations<Entity>;
 export type LoadRelationIdsOptions = boolean | {
   relations?: string[];
   disableMixedMap?: boolean;
 };
-
 
 export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Partial<Model>, KeyType = string> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
@@ -20,6 +17,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   private loadRelationIds: LoadRelationIdsOptions = true;
   private entityMapper?: IMapper<any, any> = null;
   private sortData: string[] = [];
+
   constructor(
     readonly dataSource: DataSource,
     entityClass: any,
@@ -131,7 +129,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   async deleteOne(id: KeyType): Promise<KeyType> {
-  await this.repository.softDelete(id);
+    await this.repository.softDelete(id);
     return id;
   }
 

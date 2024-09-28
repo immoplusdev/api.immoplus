@@ -5,6 +5,7 @@ import { PaymentStatus } from "@/core/domain/payments/payment-status.enum";
 import { PaymentMethod } from "@/core/domain/payments/payment-method.enum";
 import { PaymentNextAction } from "@/core/domain/payments/payment-next-action.model";
 import { User } from "@/core/domain/users";
+
 export class Payment {
   id: string;
   amount: number;

@@ -1,8 +1,9 @@
-import { IBaseRepository } from "@/core/domain/shared/repositories";
-import { User } from "@/core/domain/users/user.model";
-import { UserWithRoleAndPermissions } from "@/core/domain/users/user-with-role-and-permissions.model";
-import { PublicUserInfo } from "@/core/domain/users/public-user-info.model";
 import { FindItemOptions } from "@/core/domain/shared/models";
+import { IBaseRepository } from "@/core/domain/shared/repositories";
+import { User } from "./user.model";
+import { PublicUserInfo } from "./public-user-info.model";
+import { UserWithRoleAndPermissions } from "./user-with-role-and-permissions.model";
+
 
 export interface IUserRepository
   extends IBaseRepository<User, Partial<User>, Partial<User>, string> {

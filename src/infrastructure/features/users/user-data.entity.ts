@@ -1,6 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "@/core/domain/users";
-import { UserEntity } from "@/infrastructure/features/users/user.entity";
+import { UserEntity } from "./user.entity";
 import { FileEntity } from "@/infrastructure/features/files";
 
 @Entity("users_data")

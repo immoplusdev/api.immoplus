@@ -6,18 +6,15 @@ import {
   Amentity,
   TypeLocationBienImmobilier,
 } from "@/core/domain/biens-immobiliers";
-import { File } from "@/core/domain/files";
 
 export class BienImmobilier {
   id: string;
-  miniature: File | string;
-  miniatureId: string;
+  miniature: string;
   nom: string;
   typeBienImmobilier: TypeBienImmobilier;
   description: string;
   typeLocation: TypeLocationBienImmobilier;
   aLouer: boolean;
-
   amentities?: Amentity[];
   tags?: string[];
   images?: string[];
@@ -26,28 +23,19 @@ export class BienImmobilier {
   commune?: string;
   adresse?: string;
   position?: GeoJsonPoint;
-
   statusValidation: StatusValidationBienImmobilier;
   prix: number;
   metadata?: Record<string, any>;
   featured: boolean;
-
   nombreMaxOccupants: number;
-
   animauxAutorises: boolean;
-
   bienImmobilierDisponible: boolean;
-
   fetesAutorises: boolean;
-
   reglesSupplementaires?: string;
-
   proprietaire?: string;
-
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-
   createdBy?: string;
 
   constructor(data?: Partial<OmitMethods<BienImmobilier>>) {

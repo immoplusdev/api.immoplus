@@ -31,7 +31,7 @@ export class EstimerPrixDemandeVisiteQueryHandler
 
     return new EstimerPrixDemandeVisiteQueryResponse({
       bienImmobilier: query.bienImmobilier,
-      datesDemandeVisite: query.datesDemandeVisite,
+      // datesDemandeVisite: query.datesDemandeVisite,
       montantDemandeVisiteSansCommission: prixDemandeVisite,
       montantTotalDemandeVisite: prixDemandeVisite,
     });

@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Post, Put, Query, Param } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ApiResponse } from '@nestjs/swagger';
+import { Controller } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 
-
-@ApiTags('Role')
-@Controller('roles')
+@ApiTags("Role")
+@Controller("roles")
 export class RoleController {
-  constructor() {}
+  constructor() {
+    //
+  }
 }

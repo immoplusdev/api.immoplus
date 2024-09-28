@@ -1,7 +1,7 @@
 import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { User, UserData } from "@/core/domain/users";
 import { UserEntity } from "./user.entity";
-import { UserDataEntityMapper } from "@/infrastructure/features/users/user-data-entity.mapper";
+import { UserDataEntityMapper } from "./user-data-entity.mapper";
 import { UserDataEntity } from "@/infrastructure/features/users";
 
 

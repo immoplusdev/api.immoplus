@@ -9,9 +9,9 @@ import {
 } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users";
 
-@Entity('villes')
+@Entity("villes")
 export class VilleEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
   @Column({ name: "name", type: "varchar" })
   name: string;
@@ -27,10 +27,4 @@ export class VilleEntity {
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "updated_by" })
-  // updatedBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "deleted_by" })
-  // deletedBy?: string;
 }

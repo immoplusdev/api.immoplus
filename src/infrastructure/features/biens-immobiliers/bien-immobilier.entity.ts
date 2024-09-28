@@ -3,7 +3,6 @@ import {
   CreateDateColumn, DeleteDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   RelationId, UpdateDateColumn,
@@ -21,7 +20,6 @@ import {
   TypeLocationBienImmobilier,
 } from "@/core/domain/biens-immobiliers";
 import { File } from "@/core/domain/files";
-import { fa } from "@faker-js/faker";
 
 @Entity("biens_immobiliers")
 export class BienImmobilierEntity {
@@ -31,8 +29,6 @@ export class BienImmobilierEntity {
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "miniature_id" })
   miniature: File | string;
-  @RelationId((item: BienImmobilierEntity) => item.miniature)
-  miniatureId: string;
 
   @Column({ name: "nom", type: "varchar" })
   nom: string;
@@ -120,12 +116,6 @@ export class BienImmobilierEntity {
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "updated_by" })
-  // updatedBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "deleted_by" })
-  // deletedBy?: string;
 
   constructor(data?: OmitMethods<BienImmobilierEntity>) {
     if (data) Object.assign(this, data);

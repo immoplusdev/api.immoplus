@@ -9,8 +9,8 @@ export class EstimerPrixDemandeVisiteQueryResponse {
   @ApiProperty()
   @IsNotEmpty()
   bienImmobilier: string;
-  @ApiProperty({ type: ServiceDateDto, isArray: true })
-  datesDemandeVisite: ServiceDates;
+  // @ApiProperty({ type: ServiceDateDto, isArray: true })
+  // datesDemandeVisite: ServiceDates;
   @ApiProperty()
   @IsNumber()
   montantTotalDemandeVisite: number;

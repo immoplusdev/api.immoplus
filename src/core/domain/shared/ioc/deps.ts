@@ -1,5 +1,3 @@
-import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
-
 export enum Deps {
   DataSource = "DataSource",
 

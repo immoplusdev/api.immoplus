@@ -1,5 +1,5 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { NotificationType } from "@/core/domain/notifications/notification-type.enum";
+import { NotificationType } from "./notification-type.enum";
 
 export class Notification {
   id: string;

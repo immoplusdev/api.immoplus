@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { LoginWithPhoneNumberOtpCommand } from "./login-with-phone-number-otp.command";
 import { LoginWithPhoneNumberOtpCommandResponse } from "./login-with-phone-number-otp-command.response";
 import { Inject } from "@nestjs/common";
@@ -6,8 +6,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { IUserRepository, User, UserNotFoundException, UserStatus } from "@/core/domain/users";
 import {
   IAuthService,
-  InvalidCredentialsException,
-  IPasswordManagerService, ITfaService,
+  ITfaService,
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { LoginCommandResponse } from "@/core/application/features/auth/login-command.response";

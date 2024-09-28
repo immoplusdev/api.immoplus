@@ -1,20 +1,22 @@
-import { DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { BienImmobilier, IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { BienImmobilierEntity, BienImmobilierEntityMapper } from "@/infrastructure/features/biens-immobiliers";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
-export class BienImmobilierRepository implements IBienImmobilierRepository{
+export class BienImmobilierRepository implements IBienImmobilierRepository {
   private readonly repository: BaseRepository<BienImmobilier>;
+  private readonly relations: RepositoryRelations = ["miniature", "video", "ville"];
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, BienImmobilierEntity).setEntityMapper(new BienImmobilierEntityMapper());
+    this.repository = new BaseRepository(dataSource, BienImmobilierEntity, this.relations).setEntityMapper(new BienImmobilierEntityMapper());
   }
 
   async createMany(payload: Partial<BienImmobilier>[]): Promise<BienImmobilier[]> {

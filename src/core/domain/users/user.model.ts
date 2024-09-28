@@ -1,7 +1,7 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { UserStatus } from "@/core/domain/users/user-status.enum";
-import { UserData } from "@/core/domain/users/user-data.model";
 import { Role } from "@/core/domain/roles";
+import { UserStatus } from "./user-status.enum";
+import { UserData } from "./user-data.model";
 
 export class User {
   // basic fields

@@ -1,4 +1,3 @@
-export * from "./dto";
 export * from "./guards";
 export * from "./strategies";
 export * from "./auth.module";

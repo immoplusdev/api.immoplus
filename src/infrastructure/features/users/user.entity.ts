@@ -6,12 +6,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { UserData, UserStatus } from "@/core/domain/users";
-import { RoleEntity } from "@/infrastructure/features/roles";
-import { UserDataEntity } from "@/infrastructure/features/users/user-data.entity";
-import { Role } from "@/core/domain/roles";
-import { FileEntity } from "@/infrastructure/features/files";
 import { OmitMethods } from "@/lib/ts-utilities";
+import { Role } from "@/core/domain/roles";
+import { UserStatus } from "@/core/domain/users";
+import { RoleEntity } from "@/infrastructure/features/roles";
+import { FileEntity } from "@/infrastructure/features/files";
+import { UserDataEntity } from "./user-data.entity";
 
 @Entity("users")
 export class UserEntity {
