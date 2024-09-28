@@ -1,4 +1,4 @@
-import { Module, Provider } from "@nestjs/common";
+import { forwardRef, Module, Provider } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { NotificationController } from "./notification.controller";
 import { NotificationRepository } from "./notification.repository";
@@ -20,12 +20,16 @@ const providers: Provider[] = [
   {
     provide: Deps.MailService,
     useClass: MailService,
-  }
+  },
 ];
 
 @Module({
   controllers: [NotificationController],
-  imports: [TypeormModule, ConfigsModule, LoggingModule],
+  imports: [
+    TypeormModule,
+    forwardRef(() => ConfigsModule),
+    forwardRef(() => LoggingModule),
+  ],
   providers: [...providers],
   exports: [...providers],
 })

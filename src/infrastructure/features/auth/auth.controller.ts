@@ -21,7 +21,7 @@ import {
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
-import { JwtAuthGuard } from "@/infrastructure/auth";
+import { JwtAuthGuard } from "@/infrastructure/features/auth/guards";
 
 @ApiTags("Auth")
 @Controller("auth")

@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { UserModule } from "@/infrastructure/features/users/user.module";
 import { AuthModule } from "@/infrastructure/features/auth/auth.module";
-import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/auth";
+
 import { PermissionModule } from "@/infrastructure/features/permissions";
 import { Deps } from "@/core/domain/shared/ioc";
 import { FileModule } from "@/infrastructure/features/files";
@@ -13,6 +13,7 @@ import { VilleModule } from "@/infrastructure/features/villes";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
 import { PaymentModule } from "@/infrastructure/features/payments";
+import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/features/auth";
 
 export const controllers = [];
 
@@ -35,5 +36,4 @@ const modules = [
   exports: [...modules],
   imports: [...modules],
 })
-export class RestModule {
-}
+export class RestModule {}

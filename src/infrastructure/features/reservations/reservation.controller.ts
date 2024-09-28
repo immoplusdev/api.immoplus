@@ -12,7 +12,6 @@ import {
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
-import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
@@ -35,6 +34,7 @@ import {
 } from "@/core/application/features/reservations";
 import { UnauthorizedException } from "@/core/domain/auth";
 import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
+import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
 
 @ApiTags("Reservation")

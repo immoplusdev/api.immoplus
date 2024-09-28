@@ -3,10 +3,10 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { ConfigsManagerService } from "./configs-manager.service";
 import { ConfigModule } from "@nestjs/config";
 import { AppConfigsRepository } from "@/infrastructure/features/configs/configs.repository";
-import { TypeormModule } from "@/infrastructure/typeorm";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ConfigController } from "@/infrastructure/features/configs/configs.controller";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import { TypeormModule } from "@/infrastructure/typeorm";
 
 const providers: Provider[] = [
   {
@@ -20,10 +20,16 @@ const providers: Provider[] = [
 ];
 
 @Module({
-  imports: [ConfigModule, TypeormModule, CqrsModule, GlobalizationModule],
+  imports: [
+    CqrsModule,
+    ConfigModule,
+    TypeormModule,
+    GlobalizationModule,
+  ],
   controllers: [ConfigController],
   providers: [...providers],
   exports: [...providers],
 })
 
-export class ConfigsModule {}
+export class ConfigsModule {
+}

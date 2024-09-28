@@ -1,4 +1,4 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { Residence, IResidenceRepository } from "@/core/domain/residences";

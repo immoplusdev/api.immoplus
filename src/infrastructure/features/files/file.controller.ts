@@ -34,11 +34,11 @@ import {
 } from "@/infrastructure/features/files/dto/upload-file-command-response.dto";
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
-import { JwtAuthGuard } from "@/infrastructure/auth/guards";
 import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IFileRepository } from "@/core/domain/files";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
 
 @ApiTags("File")

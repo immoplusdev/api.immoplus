@@ -12,7 +12,7 @@ import { ILoggerService } from "@/core/domain/logging";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { OWNER_ACCESS_REQUIRED_FIELD_KEY, OWNER_ACCESS_REQUIRED_KEY } from "@/infrastructure/decorators";
 import { Reflector } from "@nestjs/core";
-import { verifyResourceListOwnership, verifyResourceOwnership } from "@/infrastructure/auth/helpers";
+import { verifyResourceListOwnership, verifyResourceOwnership } from "@/infrastructure/features/auth/helpers";
 
 // TODO: Implement the OwnerAccessRequiredInterceptor
 @Injectable()

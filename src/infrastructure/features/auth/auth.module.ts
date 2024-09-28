@@ -1,4 +1,4 @@
-import { Module, Provider } from "@nestjs/common";
+import { forwardRef, Module, Provider } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { CqrsModule } from "@nestjs/cqrs";
@@ -34,7 +34,7 @@ const commandHandlers = [
   SendSmsOtpCommandHandler, SendEmailOtpCommandHandler,
   VerifyEmailCommandHandler, VerifyPhoneNumberCommandHandler,
   ResetPasswordCommandHandler, LoginWithPhoneNumberOtpCommandHandler,
-  LoginWithEmailOtpCommandHandler
+  LoginWithEmailOtpCommandHandler,
 ];
 
 const providers: Provider[] = [
@@ -59,7 +59,14 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [AuthController],
-  imports: [CqrsModule, ConfigsModule, GlobalizationModule, LoggingModule, UserModule, NotificationModule],
+  imports: [
+    forwardRef(() => ConfigsModule),
+    forwardRef(() => LoggingModule),
+    GlobalizationModule,
+    UserModule,
+    NotificationModule,
+    CqrsModule
+  ],
   providers: [...providers, ...commandHandlers, AuthService, JwtManagerService],
   exports: [...providers],
 })

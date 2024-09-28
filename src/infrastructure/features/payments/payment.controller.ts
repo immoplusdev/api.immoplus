@@ -12,7 +12,6 @@ import {
 } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
-import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   CreatePaymentIntentCommand,
@@ -32,6 +31,7 @@ import {
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
+import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
 @ApiTags("Payment")
 @Controller("payments")

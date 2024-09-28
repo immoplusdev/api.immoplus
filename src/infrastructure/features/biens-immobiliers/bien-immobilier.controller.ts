@@ -6,7 +6,6 @@ import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
-import { JwtAuthGuard } from "@/infrastructure/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
@@ -21,6 +20,7 @@ import {
   UpdateBienImmobilierDto, UpdateBienImmobilierDtoMapper,
 } from "@/core/application/features/biens-immobiliers";
 import { BienImmobilierDtoMapper } from "@/core/application/features/biens-immobiliers/bien-immobilier-dto.mapper";
+import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")

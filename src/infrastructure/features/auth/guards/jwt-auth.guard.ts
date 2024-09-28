@@ -1,16 +1,17 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { PERMISSIONS_KEY, ROLES_KEY } from '../../decorators';
-import { Reflector } from '@nestjs/core';
+import { ExecutionContext, Injectable } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { Reflector } from "@nestjs/core";
 import { AuthorizationManagerService } from "@/infrastructure/features/auth/authorization-manager.service";
 import { Role } from "@/core/domain/roles";
 import { User } from "@/core/domain/users";
 import { UnauthorizedException } from "@/core/domain/auth";
+import { PERMISSIONS_KEY, ROLES_KEY } from "@/infrastructure/decorators";
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
+export class JwtAuthGuard extends AuthGuard("jwt") {
   private requiredRoles: string[];
   private requiredPermissions: string[];
+
   constructor(private readonly reflector: Reflector) {
     super();
   }
@@ -46,7 +47,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     )
       throw new UnauthorizedException();
 
-    user.role = new Role(user.role)
+    user.role = new Role(user.role);
     return new User(user) as never;
   }
 }

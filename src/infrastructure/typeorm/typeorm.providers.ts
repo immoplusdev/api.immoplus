@@ -1,12 +1,15 @@
 import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Deps } from "@/core/domain/shared/ioc";
+import { forwardRef } from "@nestjs/common";
 
 
 export const typeormProviders = [
   {
     provide: Deps.DataSource,
-    imports: [ConfigModule],
+    imports: [
+      forwardRef(() => ConfigModule),
+    ],
     inject: [ConfigService],
     useFactory: async (config: ConfigService) => {
       const dataSource = new DataSource({
