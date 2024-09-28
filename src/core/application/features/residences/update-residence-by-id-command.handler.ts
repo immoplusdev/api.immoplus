@@ -31,7 +31,7 @@ export class UpdateResidenceByIdCommandHandler implements ICommandHandler<Update
 
   private verifyCanProceed(command: UpdateResidenceByIdCommand, residence: Residence): void {
     if (!residence) throw new ItemNotFoundException();
-    if (!command.isAdmin && residence.proprietaireId != command.userId) throw new AccessForbiddenException();
+    if (!command.isAdmin && residence.proprietaire != command.userId) throw new AccessForbiddenException();
   }
 
   private sanitizePayload(payload: UpdateResidenceByIdCommand): Partial<Residence> {

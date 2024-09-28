@@ -27,7 +27,7 @@ export class GetReservationByIdQueryHandler
     if (!residence) throw new ItemNotFoundException();
 
     const client = await this.usersRepository.findPublicUserInfoByUserId(reservation.createdBy);
-    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(residence.proprietaireId);
+    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(residence.proprietaire);
 
     return {
       ...reservation,

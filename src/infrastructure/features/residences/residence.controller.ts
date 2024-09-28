@@ -2,12 +2,12 @@ import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, P
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
-import { IResidenceRepository, Residence } from "@/core/domain/residences";
+import { IResidenceRepository } from "@/core/domain/residences";
 import {
   CreateResidenceDto,
   ResidenceDtoMapper,
   WrapperResponseResidenceDto,
-  WrapperResponseResidenceListDto,
+  WrapperResponseResidenceBatchDto,
 } from "@/infrastructure/features/residences";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -45,20 +45,17 @@ export class ResidenceController {
     @Body() payload: CreateResidenceDto,
     @CurrentUser("id") userId: string,
   ) {
-
-    const proprietaire = payload.proprietaire ? payload.proprietaire : userId;
-    console.log(proprietaire);
     const response = await this.repository.createOne({
       ...payload,
       createdBy: userId,
-      proprietaire,
+      proprietaire: payload.proprietaire ? payload.proprietaire : userId,
     });
 
     return this.responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
-    type: WrapperResponseResidenceListDto,
+    type: WrapperResponseResidenceBatchDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Read])
@@ -83,7 +80,7 @@ export class ResidenceController {
   }
 
   @ApiResponse({
-    type: WrapperResponseResidenceListDto,
+    type: WrapperResponseResidenceBatchDto,
   })
   @Get("/data/public/")
   async readManyPublic(
@@ -92,6 +89,22 @@ export class ResidenceController {
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseResidenceDto,
+  })
+  @Get("/data/public/:id")
+  async readOnePublic(
+    @Param("id") id: string,
+    @Query() params?: SelectItemsParamsDto,
+  ) {
+    const item = await this.repository.findOne(id, { fields: params?._select });
+
+    if (!item) throw new ItemNotFoundException();
+
+    return this.responseMapper.mapFrom(item);
   }
 
 
@@ -116,20 +129,6 @@ export class ResidenceController {
   }
 
 
-  @ApiResponse({
-    type: WrapperResponseResidenceDto,
-  })
-  @Get("/data/public/:id")
-  async readOnePublic(
-    @Param("id") id: string,
-    @Query() params?: SelectItemsParamsDto,
-  ) {
-    const item = await this.repository.findOne(id, { fields: params?._select });
-
-    if (!item) throw new ItemNotFoundException();
-
-    return this.responseMapper.mapFrom(item);
-  }
 
 
   @ApiResponse({

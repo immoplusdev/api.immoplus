@@ -1,16 +1,14 @@
-import { OmitMethods } from '@/lib/ts-utilities';
-import { TypeResidence } from "@/core/domain/residences/type-residence.enum";
-import { Commodite } from "@/core/domain/residences/commodite.model";
-import { Piece } from "@/core/domain/residences/piece.model";
-import { GeoJsonPoint } from "@/core/domain/map";
-import { File } from "@/core/domain/files";
+import { OmitMethods } from "@/lib/ts-utilities";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
-import { User } from "@/core/domain/users";
+import { GeoJsonPoint } from "@/core/domain/map";
+import { TypeResidence } from "./type-residence.enum";
+import { Commodite } from "./commodite.model";
+import { Piece } from "./piece.model";
+
 
 export class Residence {
   id: string;
-  miniature: File | string;
-  miniatureId: string;
+  miniature: string;
   nom: string;
   typeResidence: TypeResidence;
   description: string;
@@ -34,8 +32,7 @@ export class Residence {
   animauxAutorises: boolean;
   fetesAutorises: boolean;
   reglesSupplementaires?: string;
-  proprietaire?: User | string;
-  proprietaireId: string;
+  proprietaire?: string;
 
   createdAt?: Date;
   createdBy?: string;
@@ -43,8 +40,9 @@ export class Residence {
   updatedBy?: string;
   deletedAt?: Date;
   deletedBy?: string;
+
   constructor(data?: OmitMethods<Residence>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }
 

@@ -7,18 +7,15 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
-import { User } from "@/core/domain/users";
 
-
-// TODO: Document later
 export class ResidenceDto {
   @ApiProperty({ format: "uuid" })
   id: string;
   @ApiProperty({ format: "uuid" })
-  miniatureId: string;
+  miniature: string;
   @ApiProperty()
   nom: string;
-  @ApiProperty({ enum: TypeResidence })
+  @ApiProperty({ enum: TypeResidence, enumName: TypeResidence.toString() })
   typeResidence: TypeResidence;
   @ApiProperty()
   description: string;
@@ -37,8 +34,8 @@ export class ResidenceDto {
   @ApiProperty()
   adresse?: string;
 
-  @ApiProperty({ enum: StatusValidationBienImmobilier })
-  statusValidation?: StatusValidationBienImmobilier;
+  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: StatusValidationBienImmobilier.toString() })
+  statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty({ type: GeoJsonPointDto })
   position?: GeoJsonPoint;
@@ -64,10 +61,8 @@ export class ResidenceDto {
   fetesAutorises: boolean;
   @ApiProperty()
   reglesSupplementaires?: string;
-  // @ApiProperty()
-  // proprietaire?: User | string;
   @ApiProperty({ format: "uuid" })
-  proprietaireId?: string;
+  proprietaire?: string;
 
   @ApiProperty()
   createdAt?: Date;
@@ -91,7 +86,7 @@ export class WrapperResponseResidenceDto extends WrapperResponseDto<ResidenceDto
   data: ResidenceDto;
 }
 
-export class WrapperResponseResidenceListDto extends WrapperResponseDto<ResidenceDto[]> {
+export class WrapperResponseResidenceBatchDto extends WrapperResponseDto<ResidenceDto[]> {
   @ApiProperty({ type: [ResidenceDto] })
   data: ResidenceDto[];
 }

@@ -27,8 +27,6 @@ export class ResidenceEntity {
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "miniature_id" })
   miniature: File | string;
-  @RelationId((item: ResidenceEntity) => item.miniature)
-  miniatureId: string;
 
   @Column({ name: "nom", type: "varchar" })
   nom: string;

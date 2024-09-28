@@ -3,7 +3,7 @@ import { enumToList, OmitMethods } from "@/lib/ts-utilities";
 import { Commodite, TypeResidence } from "@/core/domain/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
-import {  IsBoolean, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsBoolean, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
 
@@ -11,15 +11,19 @@ export class CreateResidenceDto {
   @ApiProperty({ format: "uuid" })
   @IsNotEmpty()
   miniature: string;
+
   @ApiProperty()
   @IsNotEmpty()
   nom: string;
-  @ApiProperty({ enum: TypeResidence })
+
+  @ApiProperty({ enum: TypeResidence, enumName: "TypeResidence" })
   @IsIn(enumToList(TypeResidence))
   typeResidence: TypeResidence;
+
   @ApiProperty()
   @IsNotEmpty()
   description: string;
+
   @ApiProperty()
   @IsNumber()
   prixReservation: number;
@@ -43,6 +47,7 @@ export class CreateResidenceDto {
   @ApiProperty({ format: "uuid" })
   @IsOptional()
   video?: string;
+
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   @IsOptional()
   images?: string[];

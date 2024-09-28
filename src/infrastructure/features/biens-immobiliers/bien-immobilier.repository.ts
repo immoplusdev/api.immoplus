@@ -10,7 +10,7 @@ import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/do
 @Injectable()
 export class BienImmobilierRepository implements IBienImmobilierRepository {
   private readonly repository: BaseRepository<BienImmobilier>;
-  private readonly relations: RepositoryRelations = ["miniature", "video", "ville"];
+  private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune"];
 
   constructor(
     @Inject(Deps.DataSource)

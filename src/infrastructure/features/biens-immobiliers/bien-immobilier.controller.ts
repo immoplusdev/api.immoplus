@@ -36,7 +36,7 @@ export class BienImmobilierController {
   }
 
   @ApiResponse({
-    type: OmitType(WrapperResponseDto<BienImmobilierDto>, []),
+    type: WrapperResponseBienImmobilierDto,
   })
   @Post()
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -48,12 +48,11 @@ export class BienImmobilierController {
     @CurrentUser("id") userId: string,
   ) {
     const payloadMapper = new CreateBienImmobilierDtoMapper();
-    const proprietaire = payload.proprietaire ? payload.proprietaire : userId;
 
     const response = await this.repository.createOne({
       ...payloadMapper.mapTo(payload),
       createdBy: userId,
-      proprietaire,
+      proprietaire: payload.proprietaire ? payload.proprietaire : userId,
     });
 
     return this.responseMapper.mapFrom(response);
@@ -84,19 +83,6 @@ export class BienImmobilierController {
     return this.responseMapper.mapFromQueryResult(items);
   }
 
-
-  @ApiResponse({
-    type: WrapperResponseBienImmobilierBatchDto,
-  })
-  @Get("/data/public/")
-  async readManyPublic(
-    @Query() params: SearchItemsParamsDto,
-  ) {
-    const items = await this.repository.findByQuery(params);
-
-    return this.responseMapper.mapFromQueryResult(items);
-  }
-
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
@@ -116,6 +102,19 @@ export class BienImmobilierController {
     if (!item) throw new ItemNotFoundException();
 
     return this.responseMapper.mapFrom(item);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierBatchDto,
+  })
+  @Get("/data/public/")
+  async readManyPublic(
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
   }
 
   @ApiResponse({
@@ -147,8 +146,6 @@ export class BienImmobilierController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateBienImmobilierDto,
   ) {
-
-
     const payloadMapper = new UpdateBienImmobilierDtoMapper();
 
     const query = {
