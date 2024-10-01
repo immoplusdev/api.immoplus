@@ -6,12 +6,12 @@ import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
-import { WrapperResponseDto, WrapperResponseDtoMapper } from "@/lib/responses";
+import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import {
-  BienImmobilierDto, WrapperResponseBienImmobilierBatchDto,
+  WrapperResponseBienImmobilierBatchDto,
   WrapperResponseBienImmobilierDto,
 } from "@/core/application/features/biens-immobiliers/bien-immobilier.dto";
 import {

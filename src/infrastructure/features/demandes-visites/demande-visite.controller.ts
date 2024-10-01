@@ -8,7 +8,7 @@ import {
   UpdateDemandeVisiteDto,
   UpdateDemandeVisiteDtoMapper,
   WrapperResponseDemandeVisiteDto,
-  WrapperResponseDemandeVisiteListDto,
+  WrapperResponseDemandeVisiteBatchDto,
 } from "@/infrastructure/features/demandes-visites";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -82,7 +82,7 @@ export class DemandeVisiteController {
   }
 
   @ApiResponse({
-    type: WrapperResponseDemandeVisiteListDto,
+    type: WrapperResponseDemandeVisiteBatchDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Read])
@@ -124,7 +124,7 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
-    type: WrapperResponseDemandeVisiteListDto,
+    type: WrapperResponseDemandeVisiteBatchDto,
   })
   @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
   @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Read])

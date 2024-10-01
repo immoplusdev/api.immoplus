@@ -11,7 +11,7 @@ import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 @Injectable()
 export class ResidenceRepository implements IResidenceRepository {
   private readonly repository: BaseRepository<Residence>;
-  private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune"];
+  private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune", "proprietaire"];
 
   constructor(
     @Inject(Deps.DataSource)

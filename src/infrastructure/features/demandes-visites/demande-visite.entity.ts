@@ -4,7 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn, RelationId,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { OmitMethods } from "@/lib/ts-utilities";
@@ -69,12 +69,7 @@ export class DemandeVisiteEntity {
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "updated_by" })
-  // updatedBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "deleted_by" })
-  // deletedBy?: string;
+
   constructor(data?: OmitMethods<DemandeVisiteEntity>) {
     if (data) Object.assign(this, data);
   }

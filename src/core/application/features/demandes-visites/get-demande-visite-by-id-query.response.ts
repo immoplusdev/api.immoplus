@@ -3,7 +3,7 @@ import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { WrapperResponseDto } from "@/lib/responses";
 import { DemandeVisiteDetailsDto } from "./demande-visite-details.dto";
 
-export class GetDemandeVisiteByIdQueryResponse extends OmitType(DemandeVisiteDetailsDto, ["deletedAt"] as const){
+export class GetDemandeVisiteByIdQueryResponse extends OmitType(DemandeVisiteDetailsDto, [] as const){
   constructor(data?: OmitMethods<GetDemandeVisiteByIdQueryResponse>) {
     if (data) super(data);
   }

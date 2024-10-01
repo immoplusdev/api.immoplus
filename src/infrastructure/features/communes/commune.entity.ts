@@ -10,6 +10,7 @@ import {
 import { UserEntity } from "@/infrastructure/features/users";
 import { VilleEntity } from "@/infrastructure/features/villes";
 import { Ville } from "@/core/domain/villes";
+import { OmitMethods } from "@/lib/ts-utilities";
 
 @Entity("communes")
 export class CommuneEntity {
@@ -38,4 +39,8 @@ export class CommuneEntity {
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   // @JoinColumn({ name: "deleted_by" })
   // deletedBy?: string;
+
+  constructor(data?: OmitMethods<CommuneEntity>) {
+    if (data) Object.assign(this, data);
+  }
 }

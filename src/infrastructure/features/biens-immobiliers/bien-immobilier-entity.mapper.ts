@@ -1,8 +1,7 @@
 import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { BienImmobilierEntity } from "./bien-immobilier.entity";
-import { getIdFromObject } from "@/infrastructure/db/helpers";
-
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 export class BienImmobilierEntityMapper implements IMapper<BienImmobilierEntity, BienImmobilier> {
   mapFrom(object: OmitMethods<BienImmobilierEntity>): BienImmobilier {

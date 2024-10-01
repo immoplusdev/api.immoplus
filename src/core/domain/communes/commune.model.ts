@@ -4,8 +4,7 @@ import { Ville } from "@/core/domain/villes";
 export class Commune {
   id: string;
   name: string;
-  ville: Ville | string;
-  villeId: string;
+  ville: string;
   createdAt?: Date;
   createdBy?: string;
   updatedAt?: Date;

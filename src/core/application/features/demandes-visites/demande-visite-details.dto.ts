@@ -15,10 +15,10 @@ export class DemandeVisiteDetailsDto {
   @ApiProperty({ format: "uuid" })
   id: string;
 
-  @ApiProperty({ enum: StatusDemandeVisite })
+  @ApiProperty({ enum: StatusDemandeVisite, enumName: StatusDemandeVisite.toString() })
   statusDemandeVisite: StatusDemandeVisite;
 
-  @ApiProperty({ enum: TypeDemandeVisite })
+  @ApiProperty({ enum: TypeDemandeVisite, enumName: TypeDemandeVisite.toString() })
   typeDemandeVisite: TypeDemandeVisite;
 
   @ApiProperty({ type: ServiceDateDto, isArray: true })
@@ -44,8 +44,6 @@ export class DemandeVisiteDetailsDto {
 
   @ApiProperty({ type: () => BienImmobilierDto })
   bienImmobilier: BienImmobilier;
-  @ApiProperty({ format: "uuid" })
-  bienImmobilierId: string;
 
   @ApiProperty({ type: () => PublicUserInfoDto })
   client: PublicUserInfo;

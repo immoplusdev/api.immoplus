@@ -8,7 +8,7 @@ export class CommuneDto {
   @ApiProperty()
   name: string;
   @ApiProperty()
-  villeId: string;
+  ville: string;
   @ApiProperty()
   createdAt?: Date;
   @ApiProperty()

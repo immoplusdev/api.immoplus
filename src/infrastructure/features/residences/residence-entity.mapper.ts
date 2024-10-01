@@ -1,7 +1,8 @@
 import { IMapper } from "@/lib/ts-utilities";
 import { ResidenceEntity } from "./residence.entity";
 import { Residence } from "@/core/domain/residences";
-import { getIdFromObject } from "@/infrastructure/db/helpers";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
+
 
 export class ResidenceEntityMapper implements IMapper<ResidenceEntity, Residence> {
   mapFrom(param: ResidenceEntity): Residence {

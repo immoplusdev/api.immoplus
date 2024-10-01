@@ -8,7 +8,6 @@ import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 export class DemandeVisite {
   id: string;
   bienImmobilier: BienImmobilier | string;
-  bienImmobilierId?: string;
   statusDemandeVisite: StatusDemandeVisite;
   typeDemandeVisite: TypeDemandeVisite;
   datesDemandeVisite: ServiceDates;

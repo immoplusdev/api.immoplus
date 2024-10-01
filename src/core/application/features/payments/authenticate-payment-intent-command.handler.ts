@@ -17,6 +17,7 @@ import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import {
   GetPaymentCollectionItemDataQuery,
 } from "@/core/application/features/payments/get-payment-collection-item-data.query";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @CommandHandler(AuthenticatePaymentIntentCommand)
 export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<AuthenticatePaymentIntentCommand> {
@@ -45,7 +46,7 @@ export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<
       throw new InvalidPaymentOtpException();
     }
 
-    return payment;
+    return { ...payment, customer: getIdFromObject(payment.customer) };
   }
 
   async getPayment(command: AuthenticatePaymentIntentCommand): Promise<Payment> {

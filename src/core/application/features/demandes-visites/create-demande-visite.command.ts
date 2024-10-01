@@ -1,10 +1,9 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { ServiceDates } from "@/core/domain/shared/models";
 import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 import { ApiProperty } from "@nestjs/swagger";
 import { ServiceDateDto } from "@/core/application/shared/dto";
 import { IsOptional } from "class-validator";
-import { Optional } from "@nestjs/common";
+
 
 export class CreateDemandeVisiteCommand {
   @ApiProperty({ format: "uuid" })
@@ -12,10 +11,11 @@ export class CreateDemandeVisiteCommand {
   @ApiProperty({ enum: TypeDemandeVisite })
   typeDemandeVisite: TypeDemandeVisite;
   @ApiProperty({ type: ServiceDateDto, isArray: true })
-  // @Optional()
+  // @IsOptional()
   // datesDemandeVisite: ServiceDates;
   @ApiProperty()
   clientPhoneNumber: string;
+  @IsOptional()
   @ApiProperty()
   notes: string;
   @IsOptional()

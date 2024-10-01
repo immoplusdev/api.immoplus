@@ -15,10 +15,10 @@ export class DemandeVisiteDto {
   @ApiProperty({ type: () => BienImmobilierDto })
   bienImmobilier: BienImmobilier;
 
-  @ApiProperty({ enum: StatusDemandeVisite })
+  @ApiProperty({ enum: StatusDemandeVisite, enumName: StatusDemandeVisite.toString() })
   statusDemandeVisite: StatusDemandeVisite;
 
-  @ApiProperty({ enum: TypeDemandeVisite })
+  @ApiProperty({ enum: TypeDemandeVisite, enumName: TypeDemandeVisite.toString() })
   typeDemandeVisite: TypeDemandeVisite;
 
   @ApiProperty({ type: ServiceDateDto, isArray: true })
@@ -64,20 +64,8 @@ export class WrapperResponseDemandeVisiteDto extends WrapperResponseDto<DemandeV
   data: DemandeVisiteDto;
 }
 
-export class WrapperResponseDemandeVisiteListDto extends WrapperResponseDto<DemandeVisiteDto[]> {
+export class WrapperResponseDemandeVisiteBatchDto extends WrapperResponseDto<DemandeVisiteDto[]> {
   @ApiProperty({ type: [DemandeVisiteDto] })
   data: DemandeVisiteDto[];
-  @ApiProperty()
-  currentPage: number;
-  @ApiProperty()
-  totalPages: number;
-  @ApiProperty()
-  pageSize: number;
-  @ApiProperty()
-  totalCount: number;
-  @ApiProperty()
-  hasPrevious: boolean;
-  @ApiProperty()
-  hasNext: boolean;
 }
 

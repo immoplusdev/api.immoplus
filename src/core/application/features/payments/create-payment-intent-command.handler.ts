@@ -15,6 +15,7 @@ import { IReservationRepository } from "@/core/domain/reservations";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import { GetPaymentCollectionItemDataQuery } from "./get-payment-collection-item-data.query";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @CommandHandler(CreatePaymentIntentCommand)
 export class CreatePaymentIntentCommandHandler implements ICommandHandler<CreatePaymentIntentCommand> {
@@ -51,7 +52,7 @@ export class CreatePaymentIntentCommandHandler implements ICommandHandler<Create
 
     return {
       ...payment,
-      customerId: payment.customerId,
+      customer: getIdFromObject(payment.customer),
       amount: payment.amount,
       collection: command.collection,
       itemId: command.itemId,

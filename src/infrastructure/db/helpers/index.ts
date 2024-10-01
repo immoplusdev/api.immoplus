@@ -1,1 +1,1 @@
-export * from "./get-id-from-object";
+export {};

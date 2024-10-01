@@ -7,6 +7,7 @@ import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { IUserRepository } from "@/core/domain/users";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @QueryHandler(GetDemandeVisiteByIdQuery)
 export class GetDemandeVisiteByIdQueryHandler
@@ -25,7 +26,7 @@ export class GetDemandeVisiteByIdQueryHandler
     const demandeVisite = await this.demandeVisiteRepository.findOne(query.id);
     if (!demandeVisite) throw new ItemNotFoundException();
 
-    const bienImmobilier = await this.bienImmobilierRepository.findOne(demandeVisite.bienImmobilierId);
+    const bienImmobilier = await this.bienImmobilierRepository.findOne(getIdFromObject(demandeVisite.bienImmobilier));
     if (!bienImmobilier) throw new ItemNotFoundException();
 
     const client = await this.usersRepository.findPublicUserInfoByUserId(bienImmobilier.createdBy);
@@ -33,7 +34,6 @@ export class GetDemandeVisiteByIdQueryHandler
 
     return {
       ...demandeVisite,
-      bienImmobilierId: bienImmobilier.id,
       bienImmobilier,
       client,
       proprietaire,

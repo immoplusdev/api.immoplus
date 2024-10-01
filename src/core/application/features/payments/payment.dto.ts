@@ -17,7 +17,7 @@ export class PaymentDto {
   @ApiProperty()
   amountNoFees: number;
   @ApiProperty({ format: "uuid" })
-  customerId: string;
+  customer: string;
   @ApiProperty({ enum: PaymentType })
   paymentType: PaymentType;
   @ApiProperty({ enum: PaymentCollection })

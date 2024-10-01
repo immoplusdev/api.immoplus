@@ -46,6 +46,4 @@ export class UpdateResidenceByIdCommandHandler implements ICommandHandler<Update
   private isUpdatingOneField(residendeData: Partial<Residence>): boolean {
     return Object.keys(residendeData).length === 1;
   }
-
-
 }

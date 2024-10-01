@@ -42,7 +42,6 @@ export class PaymentEntity {
   @Column({ name: "item_id", type: "varchar", length: 36 })
   itemId: string;
 
-
   // Hub2 Fields
   @Column({ name: "hub2_payment_id", type: "varchar", length: 36, nullable: true })
   hub2PaymentId?: string;
@@ -66,12 +65,6 @@ export class PaymentEntity {
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "updated_by" })
-  // updatedBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "deleted_by" })
-  // deletedBy?: string;
 
   constructor(data?: OmitMethods<PaymentEntity>) {
     if (data) Object.assign(this, data);
