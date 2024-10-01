@@ -15,7 +15,7 @@ export class ResidenceDto {
   miniature: string;
   @ApiProperty()
   nom: string;
-  @ApiProperty({ enum: TypeResidence, enumName: TypeResidence.toString() })
+  @ApiProperty({ enum: TypeResidence, enumName: "TypeResidence" })
   typeResidence: TypeResidence;
   @ApiProperty()
   description: string;
@@ -34,7 +34,7 @@ export class ResidenceDto {
   @ApiProperty()
   adresse?: string;
 
-  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: StatusValidationBienImmobilier.toString() })
+  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: "StatusValidationBienImmobilier" })
   statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty({ type: GeoJsonPointDto })

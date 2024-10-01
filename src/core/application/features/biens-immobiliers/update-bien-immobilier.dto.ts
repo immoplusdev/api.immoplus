@@ -15,7 +15,7 @@ export class UpdateBienImmobilierDto {
   @IsOptional()
   nom: string;
 
-  @ApiProperty({ enum: TypeBienImmobilier })
+  @ApiProperty({ enum: TypeBienImmobilier, enumName: "TypeBienImmobilier" })
   @IsOptional()
   typeBienImmobilier: TypeBienImmobilier;
 

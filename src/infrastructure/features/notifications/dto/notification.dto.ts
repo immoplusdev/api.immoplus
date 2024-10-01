@@ -8,7 +8,7 @@ export class NotificationDto {
   @ApiProperty()
   @IsOptional()
   id?: string;
-  @ApiProperty()
+  @ApiProperty({ enum: NotificationType, enumName: "NotificationType" })
   @IsOptional()
   type?: NotificationType;
   @ApiProperty()

@@ -21,7 +21,7 @@ tests {
     expect(Array.isArray(data)).to.be.equal(true);
     
     if(data.length != 0){
-      expect(data.at(0).residenceId).to.be.a("string");
+      expect(data.at(0).residence.id).to.be.a("string");
     }
   });
 }

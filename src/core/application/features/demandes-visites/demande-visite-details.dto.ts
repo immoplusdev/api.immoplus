@@ -15,10 +15,10 @@ export class DemandeVisiteDetailsDto {
   @ApiProperty({ format: "uuid" })
   id: string;
 
-  @ApiProperty({ enum: StatusDemandeVisite, enumName: StatusDemandeVisite.toString() })
+  @ApiProperty({ enum: StatusDemandeVisite, enumName: "StatusDemandeVisite" })
   statusDemandeVisite: StatusDemandeVisite;
 
-  @ApiProperty({ enum: TypeDemandeVisite, enumName: TypeDemandeVisite.toString() })
+  @ApiProperty({ enum: TypeDemandeVisite, enumName: "TypeDemandeVisite" })
   typeDemandeVisite: TypeDemandeVisite;
 
   @ApiProperty({ type: ServiceDateDto, isArray: true })

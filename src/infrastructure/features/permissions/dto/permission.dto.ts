@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { Role } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
@@ -9,24 +9,25 @@ export class PermissionDto {
   id: string;
   @ApiProperty()
   role: Role | string;
-  @ApiProperty()
+  @ApiProperty({ enum: PermissionCollection, enumName: "PermissionCollection" })
   collectionName: PermissionCollection;
-  @ApiProperty()
+  @ApiProperty({ enum: PermissionAction, enumName: "PermissionAction" })
   action: PermissionAction;
   @ApiProperty()
   fields?: string[];
+
   constructor(data?: OmitMethods<PermissionDto>) {
     Object.assign(this, data);
   }
 }
 
 export class WrapperResponsePermissionDto extends WrapperResponseDto<PermissionDto> {
-   @ApiProperty({ type: PermissionDto })
-   data: PermissionDto;
+  @ApiProperty({ type: PermissionDto })
+  data: PermissionDto;
 }
 
 export class WrapperResponsePermissionListDto extends WrapperResponseDto<PermissionDto[]> {
-   @ApiProperty({ type: [PermissionDto] })
-   data: PermissionDto[];
+  @ApiProperty({ type: [PermissionDto] })
+  data: PermissionDto[];
 }
 

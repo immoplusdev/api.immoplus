@@ -7,6 +7,7 @@ import { IReservationRepository } from "@/core/domain/reservations";
 import { IUserRepository } from "@/core/domain/users";
 import { IResidenceRepository } from "@/core/domain/residences";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @QueryHandler(GetReservationByIdQuery)
 export class GetReservationByIdQueryHandler
@@ -23,7 +24,7 @@ export class GetReservationByIdQueryHandler
     const reservation = await this.reservationRepository.findOne(query.id);
     if (!reservation) throw new ItemNotFoundException();
 
-    const residence = await this.residenceRepository.findOne(reservation.residenceId);
+    const residence = await this.residenceRepository.findOne(getIdFromObject(reservation.residence));
     if (!residence) throw new ItemNotFoundException();
 
     const client = await this.usersRepository.findPublicUserInfoByUserId(reservation.createdBy);

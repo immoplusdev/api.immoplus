@@ -12,9 +12,7 @@ export class ReservationDto {
   id: string;
   @ApiProperty({ type: () => ResidenceDto })
   residence: Residence | string;
-  @ApiProperty({ type: "string", format: "uuid" })
-  residenceId: string;
-  @ApiProperty({ enum: StatusReservation })
+  @ApiProperty({ enum: StatusReservation, enumName: "StatusReservation" })
   statusReservation: StatusReservation;
   @ApiProperty({ type: ServiceDateDto, isArray: true })
   datesReservation: ServiceDateDto[];

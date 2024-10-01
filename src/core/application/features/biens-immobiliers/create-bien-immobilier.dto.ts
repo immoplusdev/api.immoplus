@@ -14,11 +14,11 @@ export class CreateBienImmobilierDto {
   @ApiProperty()
   nom: string;
 
-  @ApiProperty({ enum: TypeBienImmobilier })
+  @ApiProperty({ enum: TypeBienImmobilier, enumName: "TypeBienImmobilier" })
   @IsEnum(TypeBienImmobilier)
   typeBienImmobilier: TypeBienImmobilier;
 
-  @ApiProperty({ enum: TypeLocationBienImmobilier })
+  @ApiProperty({ enum: TypeLocationBienImmobilier, enumName: "TypeLocationBienImmobilier" })
   @IsEnum(TypeLocationBienImmobilier)
   @IsOptional()
   typeLocation: TypeLocationBienImmobilier;

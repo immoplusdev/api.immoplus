@@ -4,7 +4,7 @@ import { IsOptional } from "class-validator";
 import { NotificationType } from "@/core/domain/notifications";
 
 export class UpdateNotificationDto {
-  @ApiProperty()
+  @ApiProperty({ enum: NotificationType, enumName: "NotificationType" })
   @IsOptional()
   type: NotificationType;
   @ApiProperty()

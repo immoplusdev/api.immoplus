@@ -18,13 +18,13 @@ export class PaymentDto {
   amountNoFees: number;
   @ApiProperty({ format: "uuid" })
   customer: string;
-  @ApiProperty({ enum: PaymentType })
+  @ApiProperty({ enum: PaymentType, enumName: "PaymentType" })
   paymentType: PaymentType;
-  @ApiProperty({ enum: PaymentCollection })
+  @ApiProperty({ enum: PaymentCollection, enumName: "PaymentCollection" })
   collection: PaymentCollection;
-  @ApiProperty({ enum: PaymentStatus })
+  @ApiProperty({ enum: PaymentStatus, enumName: "PaymentStatus" })
   paymentStatus: PaymentStatus;
-  @ApiProperty({ enum: PaymentMethod })
+  @ApiProperty({ enum: PaymentMethod, enumName: "PaymentMethod" })
   paymentMethod: PaymentMethod;
   @ApiProperty({ format: "uuid" })
   itemId: string;

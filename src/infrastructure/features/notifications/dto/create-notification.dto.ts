@@ -4,7 +4,7 @@ import { IsNotEmpty, IsOptional } from "class-validator";
 import { NotificationType } from "@/core/domain/notifications";
 
 export class CreateNotificationDto {
-  @ApiProperty()
+  @ApiProperty({ enum: NotificationType, enumName: "NotificationType" })
   @IsNotEmpty()
   type: NotificationType;
   @ApiProperty()

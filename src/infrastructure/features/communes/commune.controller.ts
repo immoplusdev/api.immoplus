@@ -43,7 +43,7 @@ export class CommuneController {
   ) {
     const response = await this.repository.createOne({
       name: payload.name,
-      ville: payload.villeId,
+      ville: payload.ville,
     });
 
     return this.responseMapper.mapFrom(response);
