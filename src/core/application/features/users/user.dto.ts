@@ -61,7 +61,7 @@ export class UserDto {
   compteProValide: boolean;
   @ApiProperty()
   authLoginAttempts: number;
-  @ApiProperty()
+  @ApiProperty({enum: UserStatus, enumName: 'UserStatus'})
   status: UserStatus;
 
   @ApiProperty()
