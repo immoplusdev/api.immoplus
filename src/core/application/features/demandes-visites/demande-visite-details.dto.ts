@@ -24,7 +24,7 @@ export class DemandeVisiteDetailsDto {
   @ApiProperty({ type: ServiceDateDto, isArray: true })
   datesDemandeVisite: ServiceDates;
 
-  @ApiProperty({ enum: StatusFacture })
+  @ApiProperty({ enum: StatusFacture, enumName: "StatusFacture" })
   statusFacture: StatusFacture;
 
   @ApiProperty()

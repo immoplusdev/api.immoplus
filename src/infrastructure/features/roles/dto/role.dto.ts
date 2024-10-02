@@ -3,7 +3,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { UserRole } from "@/core/domain/roles";
 
 export class RoleDto {
-  @ApiProperty()
+  @ApiProperty({ enum: UserRole, enumName: "UserRole" })
   id: string;
   @ApiProperty()
   name: string;
