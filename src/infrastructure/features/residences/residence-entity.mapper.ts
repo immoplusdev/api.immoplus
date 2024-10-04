@@ -9,9 +9,10 @@ export class ResidenceEntityMapper implements IMapper<ResidenceEntity, Residence
     return new Residence({
       ...param,
       miniature: getIdFromObject(param.miniature),
-      proprietaire: getIdFromObject(param.proprietaire),
-      commune: getIdFromObject(param.commune),
+      video: getIdFromObject(param.video),
       ville: getIdFromObject(param.ville),
+      commune: getIdFromObject(param.commune),
+      proprietaire: getIdFromObject(param.proprietaire),
     });
   }
 
