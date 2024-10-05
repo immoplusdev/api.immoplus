@@ -11,7 +11,7 @@ import { Inject } from "@nestjs/common";
 import {
   IPaymentGatewayService,
   IPaymentRepository,
-  Payment, PaymentCollection,
+  PaymentCollection,
   PaymentStatus,
   StatusFacture,
 } from "@/core/domain/payments";
@@ -79,7 +79,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
         return PaymentStatus.Failed;
       case "processing":
         return PaymentStatus.Processing;
-        case "pending":
+      case "pending":
         return PaymentStatus.Processing;
       default:
         return PaymentStatus.Processing;
@@ -106,10 +106,12 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
 
     const localPayment = localPayments[localPayments.length - 1];
     const paymentStatus = this.getPaymentStatus(command.status);
+    const previousNextAction = localPayment.hub2NextAction ? JSON.stringify(localPayment.hub2NextAction) : null;
+    const nextAction = command.nextAction ? JSON.stringify(command.nextAction) : previousNextAction;
 
     await this.paymentRepository.updateOne(localPayment.id, {
       paymentStatus: paymentStatus,
-      hub2NextAction: command.nextAction ? JSON.stringify(command.nextAction) as never : null,
+      hub2NextAction: paymentStatus != PaymentStatus.Successful && paymentStatus != PaymentStatus.Failed ? nextAction as never : null,
       hub2Metadata: command.json as never,
     });
 

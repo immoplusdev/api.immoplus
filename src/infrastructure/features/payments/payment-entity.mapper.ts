@@ -8,6 +8,7 @@ export class PaymentEntityMapper implements IMapper<PaymentEntity, Payment> {
   mapFrom(param: OmitMethods<PaymentEntity>): Payment {
     return new Payment({
       ...param,
+      hub2NextAction: param.hub2NextAction ? JSON.parse(param.hub2NextAction as never) : null,
       customer: getIdFromObject(param.customer),
     });
   }

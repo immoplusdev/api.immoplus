@@ -6,20 +6,20 @@ import { AuthenticatePaymentIntent } from "./authenticate-payment-intent.model";
 import { AuthenticatePaymentIntentResponse } from "./authenticate-payment-response.model";
 import { PaymentMethod } from "./payment-method.enum";
 
-export abstract class IPaymentGatewayService {
-  abstract createPaymentIntent(
+export interface IPaymentGatewayService {
+  createPaymentIntent(
     payload: CreatePaymentIntent,
   ): Promise<CreatePaymentIntentResponse>;
 
-  abstract attemptPayment(
+  attemptPayment(
     command: AttemptPaymentIntent,
   ): Promise<AttemptPaymentIntentResponse>;
 
-  abstract authenticatePayment(
+  authenticatePayment(
     command: AuthenticatePaymentIntent,
   ): Promise<AuthenticatePaymentIntentResponse>;
 
-  abstract calculatePaymentFees(amount: number, paymentMethod: PaymentMethod): number;
+  calculatePaymentFees(amount: number, paymentMethod: PaymentMethod): number;
 
   // abstract getProviders(): Promise<PaymentProvider[]>;
 }

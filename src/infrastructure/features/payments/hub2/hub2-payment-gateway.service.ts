@@ -26,8 +26,7 @@ import { ConflictException } from "@/core/domain/shared/exceptions";
 @Injectable()
 export class Hub2PaymentGatewayService implements IPaymentGatewayService {
 
-  constructor(@Inject(Deps.LoggerService) private readonly loggerService: ILoggerService) {
-  }
+  constructor(@Inject(Deps.LoggerService) private readonly loggerService: ILoggerService) {}
 
   static getWebhookSignatureFromHeaders(headers: Record<string, any>) {
     const header = headers["hub2-signature"]
@@ -153,7 +152,6 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
           onFailedRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Failed}`,
         },
       };
-      console.log(body);
 
       const response = await axios.post<Hub2AttemptPaymentResponse>(
         `${HUB2_API_URL}/payment-intents/${payload.paymentId}/payments`,
@@ -241,4 +239,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
 
     return Math.ceil(amount * feesPercentage / 100);
   }
+
+
+
 }
