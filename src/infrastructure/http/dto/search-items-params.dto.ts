@@ -69,6 +69,12 @@ export class SearchItemsParamsDto {
     type: String,
   })
   _select?: string[];
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  _search?: string;
 }
 
 export class SelectItemsParamsDto {

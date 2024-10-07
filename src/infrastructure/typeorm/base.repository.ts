@@ -14,6 +14,7 @@ export type LoadRelationIdsOptions = boolean | {
 export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Partial<Model>, KeyType = string> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
   private relations?: RepositoryRelations;
+  private fullTextSearchFields?: string[];
   private loadRelationIds: LoadRelationIdsOptions = true;
   private entityMapper?: IMapper<any, any> = null;
   private sortData: string[] = [];
@@ -31,6 +32,13 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
 
   getRepositoryInstance(): BaseRepository<any, any, any, any> {
     return this as never;
+  }
+
+
+  setFullTextSearchFields(fields: string[]) {
+    // TODO: Finsh with full text search implementation
+    this.fullTextSearchFields = fields;
+    return this.getRepositoryInstance();
   }
 
   setEntityMapper(mapper: IMapper<any, any>) {
@@ -74,7 +82,7 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
 
 
     if (query) {
-      const typeormQuery = query ? mapQueryToTypeormQuery(query) : undefined;
+      const typeormQuery = query ? mapQueryToTypeormQuery(query, this.fullTextSearchFields) : undefined;
       const [data, total] = await this.repository.findAndCount({
         ...typeormQuery,
         ...queryOptions,

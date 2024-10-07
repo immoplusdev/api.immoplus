@@ -13,13 +13,7 @@ class IsValidPasswordValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return `The password should respect the following rules:
-    At least 8 characters long.
-    Contains at least one uppercase letter.
-    Contains at least one lowercase letter.
-    Contains at least one number.
-    Contains at least one special character.
-    `;
+    return `$t:all.exception.invalid_password_format_exception`;
   }
 }
 

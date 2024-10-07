@@ -10,8 +10,8 @@ export class RegisterCommand {
   @IsNotEmpty()
   lastName: string;
   @ApiProperty()
-  @IsNotEmpty()
-  @IsEmail()
+  @IsNotEmpty({ message: "$t:all.exception.invalid_email_format_exception" })
+  @IsEmail({}, { message: "$t:all.exception.invalid_email_format_exception" })
   email: string;
   @ApiProperty()
   @IsValidPhoneNumber()
@@ -20,6 +20,7 @@ export class RegisterCommand {
   @IsNotEmpty()
   @IsValidPassword()
   password: string;
+
   constructor(data?: OmitMethods<RegisterCommand>) {
     Object.assign(this, data);
   }

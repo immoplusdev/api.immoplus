@@ -1,7 +1,7 @@
 meta {
-  name: authenticate-payment-intent
+  name: create-moov-payment-intent
   type: http
-  seq: 4
+  seq: 3
 }
 
 post {
@@ -16,17 +16,21 @@ auth:bearer {
 
 body:json {
   {
-    "otp": 1677,
     "collection": "demandes_visites",
     "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}",
-    "paymentMethod": "wave",
+    "paymentMethod": "moov",
     "paymentCredentials": "2250143881818"
   }
 }
 
+script:pre-request {
+    
+}
+
 script:post-response {
-  const {data: { id }} = res.getBody();
+  const {data: { id, hub2Token }} = res.getBody();
   bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+  bru.setEnvVar("HUB2_TOKEN", hub2Token)
 }
 
 tests {

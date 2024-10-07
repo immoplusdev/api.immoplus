@@ -12,12 +12,18 @@ import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 export class ResidenceRepository implements IResidenceRepository {
   private readonly repository: BaseRepository<Residence>;
   private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune", "proprietaire"];
+  private readonly fullTextSearchFields: string[] = [
+    // "id", "nom",
+    "description",
+  ];
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, ResidenceEntity, this.relations).setEntityMapper(new ResidenceEntityMapper());
+    this.repository = new BaseRepository(dataSource, ResidenceEntity, this.relations)
+      .setEntityMapper(new ResidenceEntityMapper())
+      .setFullTextSearchFields(this.fullTextSearchFields);
   }
 
 

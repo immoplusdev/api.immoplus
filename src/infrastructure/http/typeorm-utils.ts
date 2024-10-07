@@ -3,6 +3,7 @@ import { InvalidQueryException } from "@/core/domain/shared/exceptions";
 import { ItemsParamsCriteriasDto } from "@/infrastructure/http";
 import { And, Equal, Like, Or, Not, MoreThan, MoreThanOrEqual, LessThan, LessThanOrEqual, In } from "typeorm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
+import { Contains } from "class-validator";
 
 export function parseHttpQuery(query: any): SearchItemsParams {
   const params: SearchItemsParams = {};
@@ -10,6 +11,7 @@ export function parseHttpQuery(query: any): SearchItemsParams {
   if (query._per_page) params._per_page = query._per_page;
   if (query._order_by) params._order_by = query._order_by;
   if (query._order_dir) params._order_dir = query._order_dir;
+  if (query._search) params._search = query._search;
   if (query._select) params._select = typeof query._select == "string" ? query._select.split(",") : query._select;
   if (query._where) {
     try {
@@ -38,13 +40,28 @@ export function mapQueryFieldsToTypeormSelection(fields?: any[]) {
   return typeormSelectFields;
 }
 
-export function mapQueryToTypeormQuery(query: SearchItemsParams) {
+export function mapQueryToTypeormQuery(query: SearchItemsParams, fullTextSearchFields?: string[]) {
 
-  const whereConditions = query._where ? mapToTypeormWhere(query._where) : undefined;
+  let whereConditions: ItemsParamsCriterias[] = [];
+  if (query._where) whereConditions = query._where;
+
+  if (query._search && fullTextSearchFields) {
+    fullTextSearchFields.forEach((field) => {
+      whereConditions.push({
+        _field: field,
+        _op: "like",
+        _val: query._search,
+        _l_op: "or",
+      });
+    });
+  }
+
+  whereConditions = mapToTypeormWhere(whereConditions);
+
 
   const pageSize = !query._page || !query._per_page ? DEFAULT_PAGE_SIZE : parseInt(query._per_page as never);
   const currentPage = query._page ? parseInt(query._page as never) || DEFAULT_PAGE : DEFAULT_PAGE;
-  const skip = currentPage - 1 > 0 ? (currentPage - 1) * pageSize: 0;
+  const skip = currentPage - 1 > 0 ? (currentPage - 1) * pageSize : 0;
 
   const searchParams = {
     where: whereConditions,
@@ -79,7 +96,7 @@ export function mapToTypeormWhere(criterias: ItemsParamsCriterias[]): any {
   }
 
   for (const key of Object.keys(filters)) {
-    typeormFilter[key] = getLOperator(filters[key]._op, filters[key].filters);
+    typeormFilter[key] = getLOperator(filters[key]._l_op, filters[key].filters);
   }
 
   return typeormFilter;
@@ -116,9 +133,11 @@ function getOperator(operator: ItemsOperator, value: any): any {
     case "nin":
       return In(Not(value));
     case "contains":
-      return Like(value);
+      return Contains(value);
     case "ncontains":
-      return Not(Like(value));
+      return Not(Contains(value));
+      case "like":
+      return Like(`%${value}%`);
     default:
       return Equal(value);
   }

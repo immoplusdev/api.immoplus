@@ -5,6 +5,7 @@ export interface SearchItemsParams {
   _order_dir?: ItemsParamsOrderDirection;
   _where?: ItemsParamsCriterias[];
   _select?: string[];
+  _search?: string;
 }
 
 
@@ -34,6 +35,7 @@ export type ItemsOperator =
   | "nin"
   | "contains"
   | "ncontains"
+  | "like"
 // | 'startswith'
 // | 'endswith'
 // | 'isnull'

@@ -11,12 +11,19 @@ import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/do
 export class BienImmobilierRepository implements IBienImmobilierRepository {
   private readonly repository: BaseRepository<BienImmobilier>;
   private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune"];
+  private readonly fullTextSearchFields: string[] = [
+    // "id", "nom",
+    "description",
+  ];
+
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, BienImmobilierEntity, this.relations).setEntityMapper(new BienImmobilierEntityMapper());
+    this.repository = new BaseRepository(dataSource, BienImmobilierEntity, this.relations)
+      .setEntityMapper(new BienImmobilierEntityMapper())
+      .setFullTextSearchFields(this.fullTextSearchFields);
   }
 
   async createMany(payload: Partial<BienImmobilier>[]): Promise<BienImmobilier[]> {

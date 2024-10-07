@@ -7,7 +7,7 @@ export class LoginCommand {
   @IsNotEmpty()
   username: string;
   @ApiProperty()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '$t:all.exception.invalid_password_format_exception' })
   password: string;
   constructor(data?: OmitMethods<LoginCommand>) {
     if(data) Object.assign(this, data);
