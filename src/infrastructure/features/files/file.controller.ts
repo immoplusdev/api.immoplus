@@ -225,7 +225,7 @@ export class FileController {
     @CurrentUser("role") userRole: Role,
   ):
     Promise<StreamableFile> {
-    const file = await this.repository.findOne(id);
+    const file = await this.repository.findOne(id.split(".")[0]);
     const filePath = getFilePath(file.fileNameDisk);
 
     const outputFile = createReadStream(filePath);
@@ -237,7 +237,7 @@ export class FileController {
   async getRawPublicFile(
     @Param("id") id: string,
   ): Promise<StreamableFile> {
-    const file = await this.repository.findOne(id);
+    const file = await this.repository.findOne(id.split(".")[0]);
     const filePath = getFilePath(file.fileNameDisk);
 
     const outputFile = createReadStream(filePath);

@@ -1,10 +1,11 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource, Raw, Repository } from "typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infrastructure/http";
 import { IBaseRepository } from "@/core/domain/shared/repositories";
 import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 import { IMapper } from "@/lib/ts-utilities";
+import { FindManyOptions } from "typeorm/find-options/FindManyOptions";
 
 export type LoadRelationIdsOptions = boolean | {
   relations?: string[];
@@ -17,7 +18,6 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   private fullTextSearchFields?: string[];
   private loadRelationIds: LoadRelationIdsOptions = true;
   private entityMapper?: IMapper<any, any> = null;
-  private sortData: string[] = [];
 
   constructor(
     readonly dataSource: DataSource,
@@ -36,7 +36,6 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
 
 
   setFullTextSearchFields(fields: string[]) {
-    // TODO: Finsh with full text search implementation
     this.fullTextSearchFields = fields;
     return this.getRepositoryInstance();
   }
@@ -75,20 +74,32 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
       pageSize: parseInt(query?._per_page as never) || DEFAULT_PAGE_SIZE,
     };
 
-    const queryOptions = {
-      relations: options?.loadRelationIds || this.relations,
+    const queryOptions: FindManyOptions<Model> = {
+      relations: (options?.loadRelationIds || this.relations) as never,
       loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
-    } as any;
+    };
 
 
     if (query) {
-      const typeormQuery = query ? mapQueryToTypeormQuery(query, this.fullTextSearchFields) : undefined;
-      const [data, total] = await this.repository.findAndCount({
-        ...typeormQuery,
+      const options = {
+        ...(query ? mapQueryToTypeormQuery(query) : {}),
         ...queryOptions,
-      });
-      // result = await this.repository.find(typeormQuery);
-      // total = await this.repository.count(typeormQuery.where);
+      };
+
+      if (query._search && this.fullTextSearchFields) {
+        const entityName = this.repository.metadata.targetName;
+        const firstField = this.fullTextSearchFields[0];
+        const otherFields = this.fullTextSearchFields.slice(1);
+        let rawSearchQuery = `${entityName}.${firstField} LIKE :pattern `;
+
+        otherFields.forEach(field => {
+          rawSearchQuery += `OR ${entityName}.${field} LIKE :pattern `;
+        });
+        options.where[firstField] = Raw(() => rawSearchQuery, { pattern: `%${query._search}%` });
+      }
+
+      const [data, total] = await this.repository.findAndCount(options);
+
       return new WrapperResponse(this.mapResponse(data)).paginate({
         ...paginationOptions,
         totalCount: total,

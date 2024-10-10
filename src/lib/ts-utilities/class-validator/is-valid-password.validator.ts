@@ -8,7 +8,7 @@ import {
 @ValidatorConstraint({ async: false })
 class IsValidPasswordValidator implements ValidatorConstraintInterface {
   validate(password: any) {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[\w\d\s]{8,}$/;
     return typeof password === "string" && passwordRegex.test(password);
   }
 
