@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{API_URL}}/payments/action/create-payment-intent
+  url: {{API_URL}}/payments/action/authenticate-payment-intent
   body: json
   auth: bearer
 }
@@ -16,11 +16,9 @@ auth:bearer {
 
 body:json {
   {
-    "otp": 1677,
+    "otp": 7677,
     "collection": "demandes_visites",
-    "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}",
-    "paymentMethod": "wave",
-    "paymentCredentials": "2250143881818"
+    "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}"
   }
 }
 

@@ -187,7 +187,7 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
     try {
       const body = {
         token: payload.token,
-        confirmationCode: payload.otp,
+        confirmationCode: `${payload.otp}`,
       };
 
       const response = await axios.post<Hub2AttemptPaymentResponse>(

@@ -12,9 +12,12 @@ import {
 } from "@/core/application/features/payments";
 import { ReservationModule } from "@/infrastructure/features/reservations";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
+import {
+  AuthenticatePaymentIntentCommandHandler
+} from "@/core/application/features/payments/authenticate-payment-intent-command.handler";
 
 const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
-const commandHandlers = [CreatePaymentIntentCommandHandler, InterceptPaymentWebhookCommandHandler];
+const commandHandlers = [CreatePaymentIntentCommandHandler, InterceptPaymentWebhookCommandHandler, AuthenticatePaymentIntentCommandHandler];
 
 const providers: Provider[] = [
   {

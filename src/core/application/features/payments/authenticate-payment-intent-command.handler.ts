@@ -1,13 +1,10 @@
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { AuthenticatePaymentIntentCommand } from "./authenticate-payment-intent.command";
 import { AuthenticatePaymentIntentCommandResponse } from "./authenticate-payment-intent-command.response";
-import { CreatePaymentIntentCommand } from "@/core/application/features/payments/create-payment-intent.command";
 import {
   AuthenticatePaymentIntent, InvalidPaymentOtpException,
   IPaymentGatewayService,
   IPaymentRepository, Payment,
-  PaymentCollection,
-  PaymentCollectionItemData,
 } from "@/core/domain/payments";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -35,7 +32,7 @@ export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<
     const payment = await this.getPayment(command);
 
     try {
-      await this.paymentGatewayService.authenticatePayment(
+      const response  = await this.paymentGatewayService.authenticatePayment(
         new AuthenticatePaymentIntent({
           otp: command.otp,
           paymentId: payment.hub2PaymentId,
