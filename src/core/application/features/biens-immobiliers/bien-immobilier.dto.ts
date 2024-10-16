@@ -5,6 +5,7 @@ import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/
 import { GeoJsonPoint } from "@/core/domain/map";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
 import { AmentityDto } from "./amentity.dto";
+import { IsOptional } from "class-validator";
 
 export class BienImmobilierDto {
   @ApiProperty({ format: "uuid" })
@@ -31,6 +32,7 @@ export class BienImmobilierDto {
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   images?: string[];
 
+  @IsOptional()
   @ApiProperty({ format: "uuid" })
   video?: string;
 

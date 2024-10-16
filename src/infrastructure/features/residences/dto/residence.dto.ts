@@ -7,6 +7,7 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
+import { IsOptional } from "class-validator";
 
 export class ResidenceDto {
   @ApiProperty({ format: "uuid" })
@@ -25,6 +26,7 @@ export class ResidenceDto {
   pieces?: Piece[];
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   images?: string[];
+  @IsOptional()
   @ApiProperty({ format: "uuid" })
   video?: string;
   @ApiProperty({ format: "uuid" })
