@@ -13,7 +13,7 @@ class IsValidPasswordValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return `$t:all.exception.invalid_password_format_exception`;
+    return `$t:all.exception.empty_password_exception`;
   }
 }
 
