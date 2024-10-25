@@ -17,7 +17,7 @@ export class RegisterCommand {
   @IsValidPhoneNumber()
   phoneNumber: string;
   @ApiProperty()
-  @IsNotEmpty({ message: "$t:all.exception.invalid_password_format_exception"})
+  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception"})
   @IsValidPassword()
   password: string;
 

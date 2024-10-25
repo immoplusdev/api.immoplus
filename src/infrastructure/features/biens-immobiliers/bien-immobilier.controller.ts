@@ -7,7 +7,11 @@ import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } 
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import {
+  GeolocalizedItemsSearchParamsQueryDto,
+  SearchItemsParamsDto,
+  SelectItemsParamsDto,
+} from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import {
@@ -21,6 +25,7 @@ import {
 } from "@/core/application/features/biens-immobiliers";
 import { BienImmobilierDtoMapper } from "@/core/application/features/biens-immobiliers/bien-immobilier-dto.mapper";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+
 
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")
@@ -113,6 +118,21 @@ export class BienImmobilierController {
     @Query() params: SearchItemsParamsDto,
   ) {
     const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierBatchDto,
+  })
+  @Get("/data/public/geolocalized")
+  async readManyPublicGeolocalized(
+    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+  ) {
+    delete params.lat;
+    delete params.long;
+    delete params.radius;
+    const items = await this.repository.findByQuery(params as never);
 
     return this.responseMapper.mapFromQueryResult(items);
   }

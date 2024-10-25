@@ -13,12 +13,17 @@ import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } 
 import { Role, UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import {
+  GeolocalizedItemsSearchParamsQueryDto,
+  SearchItemsParamsDto,
+  SelectItemsParamsDto,
+} from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
 import { UpdateResidenceByIdCommand } from "@/core/application/features/residences";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+
 
 @ApiTags("Residence")
 @Controller("residences")
@@ -91,6 +96,20 @@ export class ResidenceController {
     return this.responseMapper.mapFromQueryResult(items);
   }
 
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
+  @Get("/data/public/geolocalized")
+  async readManyPublicGeolocalized(
+    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+  ) {
+    delete params.lat;
+    delete params.long;
+    delete params.radius;
+    const items = await this.repository.findByQuery(params as never);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
 
   @ApiResponse({
     type: WrapperResponseResidenceDto,
@@ -127,8 +146,6 @@ export class ResidenceController {
 
     return this.responseMapper.mapFrom(item);
   }
-
-
 
 
   @ApiResponse({

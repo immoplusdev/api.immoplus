@@ -24,7 +24,7 @@
     "date_demande_visite_deja_prise": "Date de demande de visite déjà prise ({date}).",
     "invalid_payment_otp_exception": "Code otp invalide",
     "invalid_email_format_exception": "L'adresse e-mail doit être une adresse e-mail valide.",
-    "invalid_password_format_exception": "Le mot de passe doit respecter les règles suivantes :\n      Au moins 8 caractères de long.\n      Contient au moins une lettre majuscule.\n      Contient au moins une lettre minuscule.\n      Contient au moins un chiffre.\n      Contient au moins un caractère spécial."
+    "invalid_password_format_exception": "Le mot de passe doit respecter les règles suivantes :\n      Au moins 8 caractères de long.\n      Contient au moins une lettre majuscule.\n      Contient au moins une lettre minuscule.\n      Contient au moins un chiffre.\n      Contient au moins un caractère spécial.",
     "empty_password_exception": "Veuillez entrer un mot de passe correcte"
   },
   "validation": {
