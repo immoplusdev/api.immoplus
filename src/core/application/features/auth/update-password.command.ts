@@ -9,7 +9,9 @@ export class UpdatePasswordCommand {
   @IsNotEmpty()
   oldPassword: string;
   @ApiProperty()
-  @IsValidPassword()
+  @ApiProperty()
+  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception"})
+    // @IsValidPassword()
   newPassword: string;
   constructor(data?: OmitMethods<UpdatePasswordCommand>) {
     if(data) Object.assign(this, data);
