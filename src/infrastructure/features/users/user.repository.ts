@@ -12,7 +12,7 @@ import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 @Injectable()
 export class UserRepository implements IUserRepository {
   private readonly repository: BaseRepository<User>;
-  private readonly relations = ["role", "additionalData", "additionalData.photoIdentite", "additionalData.pieceIdentite", "additionalData.registreCommerce"];
+  private readonly relations = ["role", "additionalData", "additionalData.photoIdentite", "additionalData.pieceIdentite", "additionalData.registreCommerce", "avatar"];
 
   constructor(
     @Inject(Deps.DataSource)

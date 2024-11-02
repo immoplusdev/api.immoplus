@@ -10,6 +10,7 @@ export class UserEntityMapper implements IMapper<UserEntity, User> {
   mapFrom(object: OmitMethods<UserEntity>): User {
     return new User({
       ...object,
+      avatar: object.avatar ? (object.avatar as any).id : null,
       additionalData: new UserDataEntityMapper().mapFrom(object.additionalData as UserDataEntity),
     });
   }
@@ -17,6 +18,7 @@ export class UserEntityMapper implements IMapper<UserEntity, User> {
   mapTo(object: OmitMethods<User>): UserEntity {
     return new UserEntity({
       ...object,
+      avatar: object.avatar ? (object.avatar as any).id : null,
       additionalData: new UserDataEntityMapper().mapTo(object.additionalData as UserData),
     });
   }
