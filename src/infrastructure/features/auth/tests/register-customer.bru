@@ -1,25 +1,22 @@
 meta {
-  name: register-pro-entreprise
+  name: register-customer
   type: http
-  seq: 1
+  seq: 7
 }
 
 post {
-  url: {{API_URL}}/auth/register-pro-entreprise
+  url: {{API_URL}}/auth/register-customer
   body: json
   auth: none
 }
 
 body:json {
   {
-    "email": "pro-enteprise-{{userId}}@immoplus.ci",
+    "email": "customer-{{userId}}@immoplus.ci",
+    "firstName": "{{userId}}",
+    "lastName": "{{userId}}",
     "phoneNumber": "225-{{userId}}",
-    "password": "{{DEFAULT_USER_PASSWORD}}",
-    "nomEntreprise": "NomEntreprise",
-    "emailEntreprise": "test@gmail.com",
-    "registreCommerceId": "{{DEFAULT_IMAGE_ID}}",
-    "numeroContribuable": "string",
-    "typeEntreprise": "string"
+    "password": "{{DEFAULT_USER_PASSWORD}}"
   }
 }
 

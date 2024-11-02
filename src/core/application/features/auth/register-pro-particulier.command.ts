@@ -16,8 +16,7 @@ export class RegisterProParticulierCommand {
   @IsValidPhoneNumber()
   phoneNumber: string;
   @ApiProperty()
-  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception" })
-    // @IsValidPassword()
+  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception"})
   password: string;
   @ApiProperty()
   @IsNotEmpty()
