@@ -2,13 +2,13 @@ import { createReadStream } from "fs";
 import {
   Body,
   Controller, Delete,
-  Get,
+  Get, Header,
   Inject,
   Param,
   ParseFilePipe,
   Patch,
   Post,
-  Query, StreamableFile,
+  Query, Res, StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -235,6 +235,18 @@ export class FileController {
 
   @Get("raw/public/:id")
   async getRawPublicFile(
+    @Param("id") id: string,
+  ): Promise<StreamableFile> {
+    const file = await this.repository.findOne(id.split(".")[0]);
+    const filePath = getFilePath(file.fileNameDisk);
+
+    const outputFile = createReadStream(filePath);
+    return new StreamableFile(outputFile);
+  }
+
+  @Get("videos/raw/public/:id")
+  @Header("Content-Type", "video/mp4")
+  async getRawPublicVideo(
     @Param("id") id: string,
   ): Promise<StreamableFile> {
     const file = await this.repository.findOne(id.split(".")[0]);

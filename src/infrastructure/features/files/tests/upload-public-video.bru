@@ -1,0 +1,27 @@
+meta {
+  name: upload-public-video
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/files/public
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:multipart-form {
+  file: @file(./environments/image.png)
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { id }} = res.getBody();
+  
+    expect(id).to.be.a('string');
+  });
+}
