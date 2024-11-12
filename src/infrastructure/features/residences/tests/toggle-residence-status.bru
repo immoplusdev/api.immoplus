@@ -1,0 +1,41 @@
+meta {
+  name: toggle-residence-status
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{API_URL}}/residences/{{DEFAULT_RESIDENCE_ID}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+body:json {
+  { 
+    "nom": "{{name}}",
+    "residenceDisponible": false
+  } 
+}
+
+script:pre-request {
+  const { faker } = require('@faker-js/faker');
+  bru.setVar("name", faker.company.name());
+  
+  
+  
+  
+  
+  
+}
+
+tests {
+  test("Should receive a not null id", function() {
+    const {data: { nom }} = res.getBody();
+    const newName = bru.getVar("name");
+    expect(newName == nom).to.be.equal(true);
+  });
+}

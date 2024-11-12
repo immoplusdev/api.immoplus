@@ -4,7 +4,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { Reservation, IReservationRepository } from "@/core/domain/reservations";
 import { ReservationEntity } from "@/infrastructure/features/reservations";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { SearchItemsParams } from "@/core/domain/http";
+import { ItemsParamsCriterias, SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 import { ReservationEntityMapper } from "@/infrastructure/features/reservations/reservation-entity.mapper";
 
@@ -46,15 +46,17 @@ export class ReservationRepository implements IReservationRepository {
         ],
     }, { fields: ["id"], relations: [] });
 
+    const idFilter: ItemsParamsCriterias = {
+      _field: "residence",
+      _op: "in",
+      _val: idsResponse.data.map((item) => item.id),
+    };
+
+    const whereClause: ItemsParamsCriterias[] = query._where ? [...query._where, idFilter] : [idFilter];
 
     return await this.findByQuery({
-      _where: [
-        {
-          _field: "residence",
-          _op: "in",
-          _val: idsResponse.data.map((item) => item.id),
-        },
-      ],
+      ...(query || {}),
+      _where: whereClause,
     });
   }
 

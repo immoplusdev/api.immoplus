@@ -37,7 +37,7 @@ export class UpdateResidenceByIdCommandHandler implements ICommandHandler<Update
   private sanitizePayload(payload: UpdateResidenceByIdCommand): Partial<Residence> {
     const residenceData: Partial<Residence> = omitObjectProperties(payload, ["isAdmin", "residenceId", "userId"]);
     if (!payload.isAdmin) {
-      if (this.isUpdatingOneField(residenceData) && residenceData.residenceDisponible != undefined) return;
+      // if (this.isUpdatingOneField(residenceData) && residenceData.residenceDisponible != undefined) return;
       residenceData.statusValidation = StatusValidationBienImmobilier.EnAttenteValidation;
     }
     return residenceData;

@@ -4,7 +4,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { DemandeVisite, IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { DemandeVisiteEntity, DemandeVisiteEntityMapper } from "@/infrastructure/features/demandes-visites";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { SearchItemsParams } from "@/core/domain/http";
+import { ItemsParamsCriterias, ItemsParamsOrderDirection, SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
@@ -53,15 +53,17 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
         ],
     }, { fields: ["id"], relations: [] });
 
+    const idFilter: ItemsParamsCriterias = {
+      _field: "bienImmobilier",
+      _op: "in",
+      _val: idsResponse.data.map((item) => item.id),
+    };
+
+    const whereClause: ItemsParamsCriterias[] = query._where ? [...query._where, idFilter] : [idFilter];
 
     return await this.findByQuery({
-      _where: [
-        {
-          _field: "bienImmobilier",
-          _op: "in",
-          _val: idsResponse.data.map((item) => item.id),
-        },
-      ],
+      ...(query || {}),
+      _where: whereClause,
     });
   }
 
