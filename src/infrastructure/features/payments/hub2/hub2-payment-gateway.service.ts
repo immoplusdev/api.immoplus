@@ -148,8 +148,8 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         provider: this.getProviderHub2(payload.paymentMethod),
         mobileMoney: {
           msisdn: payload.paymentCredentials.replace("-", ""),
-          onSuccessRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Successful}`,
-          onFailedRedirectionUrl: `${HUB2_RETURN_URL}/order/${payload.itemId}/${payload.collection}?status=${PaymentStatus.Failed}`,
+          onSuccessRedirectionUrl: `${HUB2_RETURN_URL}/payment/${payload.collection}/${payload.itemId}?status=${PaymentStatus.Successful}`,
+          onFailedRedirectionUrl: `${HUB2_RETURN_URL}/payment/${payload.collection}/${payload.itemId}?status=${PaymentStatus.Failed}`,
         },
       };
 
