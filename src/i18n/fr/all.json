@@ -29,7 +29,7 @@
   },
   "validation": {
     "create_user_error": "Erreur lors de la création de l'utilisateur",
-    "is_valid_phone_number": "Phone number must be a valid phone number of the following format 225-0123456789"
+    "is_valid_phone_number": "Phone number must be a valid phone number of the following format 2250123456789"
   },
   "field": {
   },

@@ -8,7 +8,7 @@ import {
 @ValidatorConstraint({ async: false })
 class IsPhoneNumberConstraint implements ValidatorConstraintInterface {
   validate(phoneNumber: any) {
-    const phoneRegex = /^\d{1,3}-\d{4,14}$/; // E.164 format
+    const phoneRegex = /^\d{1,3}\d{4,14}$/; // E.164 format
     return typeof phoneNumber === "string" && phoneRegex.test(phoneNumber);
   }
 
