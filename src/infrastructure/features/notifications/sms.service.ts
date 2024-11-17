@@ -1,76 +1,44 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ISmsService } from "@/core/domain/notifications";
 import { Deps } from "@/core/domain/shared/ioc";
-import { ILoggerService } from "@/core/domain/logging";
-import axios from "axios";
+// import { ILoggerService } from "@/core/domain/logging";
+// import axios from "axios";
 import { IConfigsManagerService } from "@/core/domain/configs";
-import { generateUuid } from "@/lib/ts-utilities/db";
-import { AppProfile } from "@/core/domain/shared/enums";
+
+const twilio = require("twilio");
+// import { AppProfile } from "@/core/domain/shared/enums";
+import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 
 
 @Injectable()
 export class SmsService implements ISmsService {
   constructor(
     @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
-    @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
+    // @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
   ) {
     //
   }
 
   async sendSms(recipients: string[], message: string): Promise<void> {
-    const payload = {
-      step: null,
-      sender: this.configsManagerService.getEnvVariable("SMS_SENDER_NAME"),
-      name: `Campagne No${generateUuid()}`,
-      campaignType: "SIMPLE",
-      recipientSource: "CUSTOM",
-      groupId: null,
-      filename: null,
-      saveAsModel: false,
-      destination: "NAT_INTER",
-      message,
-      emailText: null,
-      recipients: this.sanitizeRecipients(recipients),
-      sendAt: [],
-      dlrUrl: "http://dlr.my.domain.com",
-      responseUrl: "http://res.my.domain.com",
-    };
-
-    if (this.isSandbox()) return this.loggerService.info(message, payload);
-
-    const headers = {
-      "Content-Type": "application/features/json",
-      Authorization: `Bearer ${process.env.LE_TEXTO_API_KEY}`,
-    };
-
-
-    const campainResponse = await this.createLeTextoCampain(payload, headers);
-    await this.scheduleLeTextoCampain(campainResponse.data.id, headers);
-  }
-
-  private isSandbox() {
-    return this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev;
-  }
-
-  private sanitizeRecipients(recipients: string[]) {
-    return recipients.map((recipient) => {
-      return {
-        phoneNumber: recipient.replace("-", ""),
-      };
-    });
-  }
-
-  private createLeTextoCampain(payload: unknown, headers: any) {
-    return axios.post("https://api.letexto.com/v1/campaigns", payload, {
-      headers,
-    });
-  }
-
-  private scheduleLeTextoCampain(campainId: unknown, headers: any) {
-    return axios.post(
-      `https://api.letexto.com/v1/campaigns/${campainId}/schedules`,
-      {},
-      { headers: headers },
+    const client = twilio(
+      this.configsManagerService.getEnvVariable("TWILIO_ACCOUNT_SID"),
+      this.configsManagerService.getEnvVariable("TWILIO_AUTH_TOKEN"),
     );
+
+    // if (this.isSandbox()) return this.loggerService.info(message);
+
+    await client.messages.create({
+      body: message,
+      messagingServiceSid: this.configsManagerService.getEnvVariable("TWILIO_MESSAGING_SERVICE_ID"),
+      to: this.sanitizeRecipients(recipients)[0],
+    });
   }
+
+  private sanitizeRecipients(recipients: string[]): string[] {
+    return recipients.map(recipient => sanitizePhoneNumber(recipient));
+  }
+
+  // private isSandbox() {
+  //   return this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev;
+  // }
 }

@@ -5,7 +5,7 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IUserRepository, User, UserNotFoundException, UserStatus } from "@/core/domain/users";
 import {
-  IAuthService,
+  IAuthService, InvalidOtpException,
   ITfaService,
   UserCannotLoginException,
 } from "@/core/domain/auth";
@@ -27,10 +27,8 @@ export class LoginWithPhoneNumberOtpCommandHandler implements ICommandHandler<Lo
 
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 
-    await this.tfaService.verifyUserPhoneNumberOtp(command.phoneNumber, command.otp, {
-      throwException: true,
-      resetIfValid: true,
-    });
+    const isOtpValid = await this.tfaService.isUserSmsOtpValid(command.phoneNumber, command.otp);
+    if (!isOtpValid) throw new InvalidOtpException();
 
     await this.createUserSession(user);
 

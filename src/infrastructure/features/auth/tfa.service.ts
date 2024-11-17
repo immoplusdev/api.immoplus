@@ -2,16 +2,32 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InvalidOtpException, ITfaService, VerifyOtpOptions } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
-import { generateRandomString } from "@/lib/ts-utilities/strings";
+import { generateRandomString, sanitizePhoneNumber, sanitizePhoneNumberIntl } from "@/lib/ts-utilities/strings";
+import { Twilio } from "twilio";
+import { IConfigsManagerService } from "@/core/domain/configs";
+import { ILoggerService } from "@/core/domain/logging";
 
+const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";
 
 @Injectable()
 export class TfaService implements ITfaService {
-  // TODO: Implement account blocking mechanism for multiple failed otp validation attempts
+
+  private readonly twilioService: Twilio;
+  private readonly messagingServiceSid: string;
+
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
+    @Inject(Deps.LoggerService)
+    private readonly loggerService: ILoggerService,
   ) {
+    this.twilioService = twilio(
+      this.configsManagerService.getEnvVariable("TWILIO_ACCOUNT_SID"),
+      this.configsManagerService.getEnvVariable("TWILIO_AUTH_TOKEN"),
+    );
+    this.messagingServiceSid = this.configsManagerService.getEnvVariable("TWILIO_VERIFY_SERVICE_ID");
   }
 
   generateOtp(): string {
@@ -47,6 +63,38 @@ export class TfaService implements ITfaService {
     const otp = this.generateOtp();
     await this.usersRepository.updateOne(user.id, { otp });
     return otp;
+  }
+
+  async sendUserSmsOtp(phoneNumber: string) {
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
+    if (!user) throw new UserNotFoundException();
+
+    const to = sanitizePhoneNumberIntl(user.phoneNumber);
+
+    await this.twilioService.verify.v2
+      .services(this.messagingServiceSid)
+      .verifications.create({
+        channel: "sms",
+        to,
+      });
+  }
+
+  async isUserSmsOtpValid(phoneNumber: string, otp: string) {
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
+    if (!user) throw new UserNotFoundException();
+
+    try {
+      const to = sanitizePhoneNumberIntl(user.phoneNumber);
+
+      const verificationCheck = await this.twilioService.verify.v2
+        .services(this.messagingServiceSid)
+        .verificationChecks.create({ code: otp, to });
+
+      return verificationCheck.status == "approved";
+    } catch (e) {
+      this.loggerService.error(e);
+      return false;
+    }
   }
 
   async verifyUserOtp(userId: string, otp: string, options?: VerifyOtpOptions) {

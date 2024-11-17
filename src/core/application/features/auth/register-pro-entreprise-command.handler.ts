@@ -42,6 +42,7 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
 
     const user = await this.usersRepository.createOne({
       id: userId,
+      avatar: command.avatar || null,
       email: command.email.toLowerCase(),
       phoneNumber: command.phoneNumber,
       password: this.passwordManagerService.encryptPassword(command.password),

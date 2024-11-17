@@ -1,8 +1,11 @@
 import { IsValidPassword, IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 
 export class RegisterCommand {
+  @ApiProperty()
+  @IsOptional()
+  avatar: string;
   @ApiProperty()
   @IsNotEmpty()
   firstName: string;
@@ -17,7 +20,7 @@ export class RegisterCommand {
   @IsValidPhoneNumber()
   phoneNumber: string;
   @ApiProperty()
-  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception"})
+  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception" })
   password: string;
 
   constructor(data?: OmitMethods<RegisterCommand>) {

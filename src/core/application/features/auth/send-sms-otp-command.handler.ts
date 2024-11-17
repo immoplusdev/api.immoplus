@@ -11,16 +11,12 @@ import { IGlobalizationService } from "@/core/domain/globalization";
 export class SendSmsOtpCommandHandler implements ICommandHandler<SendSmsOtpCommand> {
   constructor(
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
-    @Inject(Deps.SmsService) private readonly smsService: ISmsService,
-    @Inject(Deps.GlobalizationService) private  readonly  globalizationService: IGlobalizationService
   ) {
     //
   }
 
   async execute(command: SendSmsOtpCommand): Promise<SendSmsOtpCommandResponse> {
-    const otp = await this.tfaService.generateUserPhoneNumberOtp(command.phoneNumber);
-    const message = this.globalizationService.t("all.sms.otp_sent", { args: { otp } });
-    await this.smsService.sendSms([command.phoneNumber], message);
+    await this.tfaService.sendUserSmsOtp(command.phoneNumber);
     return new SendSmsOtpCommandResponse();
   }
 }

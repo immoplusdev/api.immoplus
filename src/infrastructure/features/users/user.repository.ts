@@ -8,6 +8,7 @@ import { Role } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -61,7 +62,12 @@ export class UserRepository implements IUserRepository {
   }
 
   async findOneByPhoneNumber(phoneNumber: string, options?: FindItemOptions): Promise<User | null> {
-    return await this.findOneByQuery({ _where: [{ _field: "phoneNumber", _val: phoneNumber }] }, options);
+    return await this.findOneByQuery({
+      _where: [{
+        _field: "phoneNumber",
+        _val: sanitizePhoneNumber(phoneNumber),
+      }],
+    }, options);
   }
 
   async findOneByUsername(username: string, options?: FindItemOptions): Promise<User | null> {
