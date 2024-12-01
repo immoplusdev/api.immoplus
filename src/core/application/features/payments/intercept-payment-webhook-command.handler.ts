@@ -1,9 +1,7 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
 import { InterceptPaymentWebhookCommand } from "./intercept-payment-webhook.command";
 import { InterceptPaymentWebhookCommandResponse } from "./intercept-payment-webhook-command.response";
 import crypto from "crypto";
-import { HUB2_ENVIRONMENT, HUB2_WEBHOOK_SECRET, SIMULATE_PAYMENT } from "@/infrastructure/configs/payments";
-import { PaymentEnv } from "@/core/domain/payments/payment-env.enum";
 import { ILoggerService } from "@/core/domain/logging";
 import { AccessForbiddenException } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -18,6 +16,10 @@ import {
 import { IReservationRepository } from "@/core/domain/reservations";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import {
+  PaymentDemandeVisiteValideEvent,
+} from "@/core/application/features/payments/payment-demande-visite-valide.event";
+import { PaymentReservationValideEvent } from "@/core/application/features/payments/payment-reservation-valide.event";
 
 @CommandHandler(InterceptPaymentWebhookCommand)
 export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<InterceptPaymentWebhookCommand> {
@@ -27,6 +29,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
     @Inject(Deps.PaymentRepository) private readonly paymentRepository: IPaymentRepository,
     @Inject(Deps.PaymentGatewayService) private readonly paymentGatewayService: IPaymentGatewayService,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
+    private readonly eventBus: EventBus,
   ) {
     //
   }
@@ -128,11 +131,14 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
         await this.reservationRepository.updateOne(itemId, {
           statusFacture,
         });
+        if (statusFacture == StatusFacture.Paye) this.eventBus.publish(new PaymentReservationValideEvent({ reservationId: itemId }));
+
         break;
       case PaymentCollection.DemandeDeVisite:
         await this.demandeVisiteRepository.updateOne(itemId, {
           statusFacture,
         });
+        if (statusFacture == StatusFacture.Paye) this.eventBus.publish(new PaymentDemandeVisiteValideEvent({ demandeVisiteId: itemId }));
         break;
       default:
         break;

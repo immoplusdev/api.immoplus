@@ -1,0 +1,27 @@
+meta {
+  name: create-demande-retrait-reservation
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{API_URL}}/payments/action/create-demande-retrait-reservation
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{proToken}}
+}
+
+body:json {
+  {
+    "reservationId": "{{DEFAULT_RESERVATION_ID}}",
+    "paymentMethod": "wave",
+    "paymentAddress": "2250143881818"
+  }
+}
+
+script:pre-request {
+    
+}

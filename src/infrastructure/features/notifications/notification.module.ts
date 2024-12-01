@@ -7,6 +7,8 @@ import { SmsService } from "@/infrastructure/features/notifications/sms.service"
 import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
 import { LoggingModule } from "@/infrastructure/features/logging";
 import { MailService } from "@/infrastructure/features/notifications/mail.service";
+import { NotificationService } from "./notification.service";
+import { UserModule, UserRepository } from "@/infrastructure/features/users";
 
 const providers: Provider[] = [
   {
@@ -18,20 +20,24 @@ const providers: Provider[] = [
     useClass: SmsService,
   },
   {
+    provide: Deps.NotificationService,
+    useClass: NotificationService,
+  },
+  {
     provide: Deps.MailService,
     useClass: MailService,
-  },
+  }
 ];
 
 @Module({
   controllers: [NotificationController],
   imports: [
     TypeormModule,
+    UserModule,
     forwardRef(() => ConfigsModule),
     forwardRef(() => LoggingModule),
   ],
   providers: [...providers],
   exports: [...providers],
 })
-export class NotificationModule {
-}
+export class NotificationModule {}

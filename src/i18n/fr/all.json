@@ -25,7 +25,9 @@
     "invalid_payment_otp_exception": "Code otp invalide",
     "invalid_email_format_exception": "L'adresse e-mail doit être une adresse e-mail valide.",
     "invalid_password_format_exception": "Le mot de passe doit respecter les règles suivantes :\n      Au moins 8 caractères de long.\n      Contient au moins une lettre majuscule.\n      Contient au moins une lettre minuscule.\n      Contient au moins un chiffre.\n      Contient au moins un caractère spécial.",
-    "empty_password_exception": "Veuillez entrer un mot de passe correcte"
+    "empty_password_exception": "Veuillez entrer un mot de passe correcte",
+    "existing_demande_retrait_reservation": "Une demande de retrait existe déjà pour cette réservation",
+    "reservation_pas_encore_validee": "La réservation n'est pas encore validée"
   },
   "validation": {
     "create_user_error": "Erreur lors de la création de l'utilisateur",
@@ -37,6 +39,32 @@
     "appartement": "Appartement",
     "maison": "Maison",
     "villa": "Villa"
+  },
+  "notifications": {
+    "demandes_visites": {
+      "paiement_valide_client": {
+        "subject": "\uD83D\uDE97 Visite Express confirmée !",
+        "message": "✅ Paiement validé ! Votre visite express a été programmée avec succès.\\n\uD83D\uDCC5 Date : Sous 24 heures (nous vous contacterons bientôt pour confirmer l’heure exacte).\\n\uD83D\uDE97 Service inclus : Un véhicule vous sera mis à disposition.\\n\\nPréparez-vous pour une expérience rapide et pratique ! \uD83C\uDFE1✨"
+      },
+      "paiement_valide_pro": {
+        "subject": "\uD83D\uDD14 Nouvelle demande de visite !",
+        "message": "Nouvelle demande de visite reçue, ouvrez l'application pour voir les détails."
+      },
+      "visite_programmee_client": {
+        "subject": "\uD83D\uDCC5 Votre visite est confirmée !",
+        "message": "✅ Bonne nouvelle ! Le propriétaire a validé votre demande de visite.\nMerci d’être à l’heure pour votre rendez-vous. On espère que ce sera un coup de cœur ! \uD83C\uDFE1✨"
+      }
+    },
+    "reservations": {
+      "paiement_valide_client": {
+        "subject": "\uD83C\uDF89 Réservation confirmée !",
+        "message": "Votre réservation a été validée avec succès ! \n Nous sommes impatients de vous accueillir ! Passez un excellent séjour ! ✨\uD83C\uDF34"
+      },
+      "paiement_valide_pro": {
+        "subject": "\uD83D\uDD14 Nouvelle réservation reçue !",
+        "message": "Nouvelle réservation reçue, ouvrez l'application pour voir les détails."
+      }
+    }
   }
 }
 

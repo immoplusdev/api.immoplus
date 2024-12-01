@@ -13,6 +13,8 @@ import {
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 import { UserModule } from "@/infrastructure/features/users";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import { NotificationModule } from "@/infrastructure/features/notifications";
 
 const commandHandlers = [CreateDemandeVisiteCommandHandler, AnnulerDemandeVisiteByIdCommandHandler, ProgrammerDemandeVisiteCommandHandler];
 const queryHandler = [EstimerPrixDemandeVisiteQueryHandler, GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler];
@@ -25,7 +27,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [DemandeVisiteController],
-  imports: [TypeormModule, CqrsModule, ConfigsModule, BienImmobilierModule, UserModule],
+  imports: [TypeormModule, CqrsModule, ConfigsModule, BienImmobilierModule, UserModule, GlobalizationModule, NotificationModule],
   providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })

@@ -136,7 +136,7 @@ function getOperator(operator: ItemsOperator, value: any): any {
       return Contains(value);
     case "ncontains":
       return Not(Contains(value));
-      case "like":
+    case "like":
       return Like(`%${value}%`);
     default:
       return Equal(value);

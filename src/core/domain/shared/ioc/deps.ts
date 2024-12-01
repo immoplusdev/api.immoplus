@@ -28,6 +28,7 @@ export enum Deps {
   AuthService = "AuthService",
   GlobalizationService = "GlobalizationService",
   PaymentGatewayService = "PaymentGatewayService",
+  NotificationService = "NotificationService",
 
   // Guards
 

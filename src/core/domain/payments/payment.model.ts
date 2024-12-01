@@ -16,6 +16,7 @@ export class Payment {
   paymentStatus: PaymentStatus;
   paymentMethod: PaymentMethod;
   itemId: string;
+  paymentAddress?: string;
 
 
   // Hub2 Fields

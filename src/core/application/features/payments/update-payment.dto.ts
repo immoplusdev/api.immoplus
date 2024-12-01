@@ -1,8 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
+import { PaymentStatus } from "@/core/domain/payments";
 
 export class UpdatePaymentDto {
-constructor(data?: OmitMethods<UpdatePaymentDto>) {
-  if(data) Object.assign(this, data);
+  @ApiProperty({ enum: PaymentStatus, enumName: "PaymentStatus" })
+  paymentStatus: PaymentStatus;
+  constructor(data?: OmitMethods<UpdatePaymentDto>) {
+    if (data) Object.assign(this, data);
   }
 }

@@ -28,6 +28,8 @@ export class PaymentDto {
   paymentMethod: PaymentMethod;
   @ApiProperty({ format: "uuid" })
   itemId: string;
+  @ApiProperty({ format: "uuid" })
+  paymentAddress?: string;
 
   // Hub2 Fields
   @ApiProperty({ format: "uuid" })

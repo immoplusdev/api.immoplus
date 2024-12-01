@@ -1,0 +1,63 @@
+meta {
+  name: simulate-successful-demandes-visite-payment
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{API_URL}}/payments/webhook
+  body: json
+  auth: none
+}
+
+headers {
+  ApiKey: {{HUB2_API_KEY}}
+  Environment: {{HUB2_ENVIRONMENT}}
+  MerchantId: {{HUB2_MERCHANT_ID}}
+  Hub2-Signature: s1=9401cc54dfed970e55112e7d0e6fc388c2a472a4dd82d73a7387bb3f996dfe64,s0=
+}
+
+body:json {
+  {
+    "owner": "xbBADB0y6sJ5CWLEhWYNf",
+    "type": "payment_intent.successful",
+    "data": {
+      "id": "pi_AyWFctplff3mOyP_epaaK",
+      "createdAt": "2024-01-26T13:35:36.926Z",
+      "updatedAt": "2024-01-26T13:36:27.218Z",
+      "merchantId": "xbBADB0y6sJ5CWLEhWYNf",
+      "purchaseReference": "to_order_d1e44f51-2084-4738-a215-a516e0d875de",
+      "customerReference": "7de00ed0-ea90-4ccf-9633-5fa99152414c",
+      "amount": 10000,
+      "currency": "XOF",
+      "token": "{{HUB2_TOKEN}}",
+      "status": "successful",
+      "overrideBusinessName": "immoplus",
+      "payments": [
+        {
+          "id": "pay_kl53t7wH0nBo8TsAXAGWS",
+          "intentId": "pi_KYzL39ymFMGXQjHHksq9O",
+          "createdAt": "2024-01-26T13:35:37.932Z",
+          "updatedAt": "2024-01-26T13:36:27.218Z",
+          "amount": 10000,
+          "currency": "XOF",
+          "status": "successful",
+          "method": "mobile_money",
+          "country": "CI",
+          "provider": "orange",
+          "number": "00000001"
+          }
+        ]
+    },
+    "test": false,
+    "id": "evt_mIw40K7a0cdb4Asmiowe9",
+    "createdAt": "2024-01-26T13:36:27.274Z"
+  }
+}
+
+tests {
+  test("Should return 204 statusCode reponse", function() {
+    const statusCode = res.getStatus();
+    expect(statusCode).to.be.equal(204);
+  });
+}

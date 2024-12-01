@@ -98,7 +98,9 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
         options.where[firstField] = Raw(() => rawSearchQuery, { pattern: `%${query._search}%` });
       }
 
-      const [data, total] = await this.repository.findAndCount(options);
+      const [data, total] = await this.repository.findAndCount({
+        ...options,
+      });
 
       return new WrapperResponse(this.mapResponse(data)).paginate({
         ...paginationOptions,

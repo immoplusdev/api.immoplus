@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param, HttpCode } from "@nestjs/common";
+import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param, HttpCode, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiNoContentResponse, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -22,7 +22,11 @@ import {
   WrapperResponsePaymentDto,
   WrapperResponseGetPaymentProviderQueryResponseDto,
   WrapperResponseGetPaymentProviderQueryResponseDtoMapper,
-  GetPaymentProviderQuery, InterceptPaymentWebhookCommand,
+  GetPaymentProviderQuery,
+  InterceptPaymentWebhookCommand,
+  CreateDemandeRetraitReservationCommand,
+  UpdatePaymentDto,
+  UpdatePaymentDtoMapper,
 } from "@/core/application/features/payments";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
@@ -68,6 +72,23 @@ export class PaymentController {
     return responseMapper.mapFrom(response);
   }
 
+
+  @Post("action/create-demande-retrait-reservation")
+  @ApiNoContentResponse()
+  @HttpCode(204)
+  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Create])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async createDemandeRetraitReservation(
+    @Body() payload: CreateDemandeRetraitReservationCommand,
+    @CurrentUser("id") userId: string,
+  ) {
+    await this.commandBus.execute(new CreateDemandeRetraitReservationCommand({
+      ...payload,
+      userId,
+    }));
+  }
 
   @ApiResponse({
     type: WrapperResponseCreatePaymentIntentCommandResponseDto,
@@ -172,40 +193,39 @@ export class PaymentController {
     await this.commandBus.execute(command);
   }
 
-  //
-  //
-  // @ApiResponse({
-  //   type: WrapperResponsePaymentDto,
-  // })
-  // @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Update])
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth()
-  // @Patch(":id")
-  // async update(
-  //   @Param("id") id: string,
-  //   @CurrentUser("id") userId: string,
-  //   @CurrentUser("role") userRole: Role,
-  //   @Body() payload: UpdatePaymentDto,
-  // ) {
-  //
-  //   const payloadMapper = new UpdatePaymentDtoMapper();
-  //
-  //   const query = {
-  //     _where: [
-  //       {
-  //         _field: "id",
-  //         _val: id,
-  //       },
-  //     ],
-  //   };
-  //
-  //   if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
-  //
-  //   await this.repository.updateByQuery(query, { ...payloadMapper.mapTo(payload), createdBy: userId });
-  //
-  //   return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
-  // }
+
+  @ApiResponse({
+    type: WrapperResponsePaymentDto,
+  })
+  @RequiredRoles(UserRole.Admin)
+  @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Update])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Patch(":id")
+  async update(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+    @Body() payload: UpdatePaymentDto,
+  ) {
+
+    const payloadMapper = new UpdatePaymentDtoMapper();
+
+    const query = {
+      _where: [
+        {
+          _field: "id",
+          _val: id,
+        },
+      ],
+    };
+
+    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+
+    await this.repository.updateByQuery(query, { ...payloadMapper.mapTo(payload), createdBy: userId });
+
+    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+  }
   //
   //
   // @ApiResponse({

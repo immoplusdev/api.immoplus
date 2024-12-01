@@ -16,11 +16,8 @@ export * from "./get-payment-providers-query.handler";
 export * from "./intercept-payment-webhook.command";
 export * from "./intercept-payment-webhook-command.handler";
 export * from "./intercept-payment-webhook-command.response";
-// export * from "./payment.command";
-// export * from "./payment.query";
-// export * from "./payment-command.handler";
-// export * from "./payment-command.response";
-// export * from "./payment-query.handler";
-// export * from "./payment-query.response";
+export * from "./payment-demande-visite-valide.event";
+export * from "./create-demande-retrait-reservation.command";
+export * from "./create-demande-retrait-reservation-command.handler";
 
 
