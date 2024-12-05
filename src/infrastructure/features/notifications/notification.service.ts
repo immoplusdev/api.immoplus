@@ -2,9 +2,7 @@ import {
   IMailService,
   INotificationService,
   ISmsService,
-  SendEmailNotificationParams,
   SendNotificationParams,
-  SendSmsNotificationParams,
 } from "@/core/domain/notifications";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/shared/ioc";
@@ -12,6 +10,7 @@ import axios from "axios";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { Role, UserRole } from "@/core/domain/roles";
 import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
+import { ILoggerService } from "@/core/domain/logging";
 
 export class NotificationService implements INotificationService {
   constructor(
@@ -19,6 +18,7 @@ export class NotificationService implements INotificationService {
     @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
     @Inject(Deps.MailService) private readonly mailService: IMailService,
     @Inject(Deps.SmsService) private readonly smsService: ISmsService,
+    @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
   ) {
   }
 
@@ -27,9 +27,6 @@ export class NotificationService implements INotificationService {
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
-    if (!params.skipInAppNotification) await this.sendOneSignalNotification(params, (user.role as Role)?.id as UserRole);
-
-
     if (params.sendMail) await this.mailService.sendMail({
       to: user.email,
       subject: params.subject,
@@ -37,6 +34,12 @@ export class NotificationService implements INotificationService {
     });
 
     if (params.sendSms) await this.smsService.sendSms([user.phoneNumber], params.message);
+
+    try {
+      if (!params.skipInAppNotification) await this.sendOneSignalNotification(params, (user.role as Role)?.id as UserRole);
+    } catch (error) {
+      this.loggerService.error(error);
+    }
   }
 
   private async sendOneSignalNotification(params: SendNotificationParams, userRole?: UserRole) {
@@ -47,8 +50,8 @@ export class NotificationService implements INotificationService {
     const data = {
       app_id: credentials.app_id,
       include_external_user_ids: [params.userId],
-      headings: { en: params.subject},
-      contents: { en: params.message},
+      headings: { en: params.subject },
+      contents: { en: params.message },
       url: returnUrl,
     };
 
@@ -71,5 +74,4 @@ export class NotificationService implements INotificationService {
       api_key: this.configsManagerService.getEnvVariable(`ONE_SIGNAL_${keyPrefix}_API_KEY`),
     };
   }
-
 }

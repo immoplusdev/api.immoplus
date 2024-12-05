@@ -10,36 +10,43 @@ const nodemailer = require("nodemailer");
 @Injectable()
 export class MailService implements IMailService {
   private readonly mailTransport: any;
+  private readonly mailingConfig: Record<string, any>;
 
   constructor(
     @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
   ) {
-    const mailingConfig = {
+    this.mailingConfig = {
       host: this.configsManagerService.getEnvVariable("NODE_MAILER_HOST"),
-      port: this.configsManagerService.getEnvVariable("NODE_MAILER_PORT"),
-      secure: this.configsManagerService.getEnvVariable("NODE_MAILER_SECURE"),
+      port: parseInt(this.configsManagerService.getEnvVariable("NODE_MAILER_PORT")),
+      // secure: this.configsManagerService.getEnvVariable("NODE_MAILER_SECURE") == "true",
       auth: {
         user: this.configsManagerService.getEnvVariable("NODE_MAILER_USER"),
         pass: this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD"),
       },
-      tls: {
-        rejectUnauthorized: this.configsManagerService.getEnvVariable("NODE_MAILER_IGNORE_TLS"),
-      },
+      // tls: {
+      //   rejectUnauthorized: this.configsManagerService.getEnvVariable("NODE_MAILER_IGNORE_TLS") == "true",
+      // },
     };
-
-    this.mailTransport = nodemailer.createTransport(mailingConfig);
+    this.mailTransport = nodemailer.createTransport(this.mailingConfig);
   }
 
 
   async sendMail(params: SendMailParams) {
 
-    if (this.isSandbox()) return this.loggerService.info(params.html || params.text, params);
 
-    await this.mailTransport.sendMail({
+    const mailParams = {
       ...params,
       from: params.from ? params.from : process.env.NODE_MAILER_FROM,
-    });
+    };
+
+    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
+      // this.loggerService.info(params.html || params.text, params);
+      // return;
+      mailParams.to = "mstx777@gmail.com";
+    }
+
+    this.mailTransport.sendMail(mailParams)
   }
 
   async isMailServerAlive(): Promise<boolean> {
@@ -57,8 +64,5 @@ export class MailService implements IMailService {
     });
   }
 
-  private isSandbox() {
-    return this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev;
-  }
 
 }

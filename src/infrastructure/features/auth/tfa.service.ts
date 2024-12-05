@@ -6,6 +6,7 @@ import { generateRandomString, sanitizePhoneNumber, sanitizePhoneNumberIntl } fr
 import { Twilio } from "twilio";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";
+import { AppProfile } from "@/core/domain/shared/enums";
 
 const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";
 
@@ -66,6 +67,7 @@ export class TfaService implements ITfaService {
   }
 
   async sendUserSmsOtp(phoneNumber: string) {
+    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) return;
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
     if (!user) throw new UserNotFoundException();
 
@@ -80,6 +82,11 @@ export class TfaService implements ITfaService {
   }
 
   async isUserSmsOtpValid(phoneNumber: string, otp: string) {
+    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
+      this.loggerService.info(otp);
+      return true;
+    }
+
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
     if (!user) throw new UserNotFoundException();
 

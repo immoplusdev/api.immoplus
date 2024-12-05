@@ -25,7 +25,7 @@ export class SmsService implements ISmsService {
       this.configsManagerService.getEnvVariable("TWILIO_AUTH_TOKEN"),
     );
 
-    // if (this.isSandbox()) return this.loggerService.info(message);
+    // if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) return this.loggerService.info(message);
 
     await client.messages.create({
       body: message,
@@ -38,7 +38,5 @@ export class SmsService implements ISmsService {
     return recipients.map(recipient => sanitizePhoneNumber(recipient));
   }
 
-  // private isSandbox() {
-  //   return this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev;
-  // }
+
 }

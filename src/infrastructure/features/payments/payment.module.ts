@@ -23,6 +23,7 @@ import {
   PaymentReservationValideEventHandler,
 } from "@/core/application/features/payments/payment-reservation-valide.event";
 import { GlobalizationModule, GlobalizationService } from "@/infrastructure/features/globalization";
+import { ConfigsModule } from "@/infrastructure/features/configs";
 
 const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
 const commandHandlers = [CreatePaymentIntentCommandHandler, InterceptPaymentWebhookCommandHandler, AuthenticatePaymentIntentCommandHandler, CreateDemandeRetraitReservationCommandHandler];
@@ -41,7 +42,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [PaymentController],
-  imports: [TypeormModule, CqrsModule, LoggingModule, ReservationModule, DemandeVisiteModule, NotificationModule, GlobalizationModule],
+  imports: [TypeormModule, CqrsModule,ConfigsModule, LoggingModule, ReservationModule, DemandeVisiteModule, NotificationModule, GlobalizationModule],
   providers: [...providers, ...queryHandler, ...commandHandlers, ...eventHandlers],
   exports: [...providers],
 })

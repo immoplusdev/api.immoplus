@@ -6,6 +6,7 @@ import { GeoJsonPointDto } from "@/core/application/shared/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
+import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
 
 export class UpdateResidenceByIdCommand {
   @IsOptional()
@@ -27,6 +28,11 @@ export class UpdateResidenceByIdCommand {
   @IsIn(enumToList(TypeResidence))
   @IsOptional()
   typeResidence: TypeResidence;
+
+  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: "StatusValidationBienImmobilier" })
+  @IsIn(enumToList(StatusValidationBienImmobilier))
+  @IsOptional()
+  statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty()
   @IsNotEmpty()

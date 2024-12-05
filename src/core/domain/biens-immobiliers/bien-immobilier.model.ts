@@ -6,6 +6,7 @@ import {
   Amentity,
   TypeLocationBienImmobilier,
 } from "@/core/domain/biens-immobiliers";
+import { User } from "@/core/domain/users";
 
 export class BienImmobilier {
   id: string;

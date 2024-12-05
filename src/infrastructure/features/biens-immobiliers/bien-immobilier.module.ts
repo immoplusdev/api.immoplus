@@ -1,8 +1,16 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
-import { BienImmobilierController } from './bien-immobilier.controller';
-import { BienImmobilierRepository } from './bien-immobilier.repository';
+import { BienImmobilierController } from "./bien-immobilier.controller";
+import { BienImmobilierRepository } from "./bien-immobilier.repository";
+import { CqrsModule } from "@nestjs/cqrs";
+import { NotificationModule } from "@/infrastructure/features/notifications";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import {
+  BienImmobilierStatusValidationUpdatedEventHandler,
+} from "@/core/application/features/demandes-visites";
+
+const eventHandlers = [BienImmobilierStatusValidationUpdatedEventHandler];
 
 const providers: Provider[] = [
   {
@@ -13,8 +21,8 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [BienImmobilierController],
-  imports: [TypeormModule],
-  providers: [...providers],
+  imports: [TypeormModule, CqrsModule, NotificationModule, GlobalizationModule],
+  providers: [...providers, ...eventHandlers],
   exports: [...providers],
 })
 export class BienImmobilierModule {}

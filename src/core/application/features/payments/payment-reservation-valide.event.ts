@@ -44,7 +44,7 @@ export class PaymentReservationValideEventHandler implements IEventHandler<Payme
     });
 
     await this.notificationService.sendNotification({
-      userId: (reservation.residence as Residence).proprietaire as string,
+      userId: (reservation.residence as Residence).proprietaire,
       subject: this.globalizationService.t("all.notifications.reservations.paiement_valide_pro.subject"),
       message: this.globalizationService.t("all.notifications.reservations.paiement_valide_pro.message"),
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,

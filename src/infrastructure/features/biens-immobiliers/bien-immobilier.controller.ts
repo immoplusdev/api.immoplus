@@ -25,6 +25,8 @@ import {
 } from "@/core/application/features/biens-immobiliers";
 import { BienImmobilierDtoMapper } from "@/core/application/features/biens-immobiliers/bien-immobilier-dto.mapper";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { EventBus } from "@nestjs/cqrs";
+import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/features/demandes-visites";
 
 
 @ApiTags("BienImmobilier")
@@ -37,6 +39,7 @@ export class BienImmobilierController {
   constructor(
     @Inject(Deps.BiensImmobiliesRepository)
     private readonly repository: IBienImmobilierRepository,
+    private readonly eventBus: EventBus,
   ) {
   }
 
@@ -180,6 +183,11 @@ export class BienImmobilierController {
     if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.updateByQuery(query, { ...payloadMapper.mapTo(payload), createdBy: userId });
+
+    if (payload.statusValidation && userRole.hasAdminAccess()) await this.eventBus.publish(new BienImmobilierStatusValidationUpdatedEvent({
+      id,
+      status: payload.statusValidation,
+    }));
 
     return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
   }

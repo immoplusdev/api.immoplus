@@ -15,13 +15,14 @@ import {
   GetPaymentCollectionItemDataQuery,
 } from "@/core/application/features/payments/get-payment-collection-item-data.query";
 import { getIdFromObject } from "@/lib/ts-utilities/mapping";
+import { AppProfile } from "@/core/domain/shared/enums";
+import { IConfigsManagerService } from "@/core/domain/configs";
 
 @CommandHandler(AuthenticatePaymentIntentCommand)
 export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<AuthenticatePaymentIntentCommand> {
   constructor(
     private readonly queryBus: QueryBus,
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
+    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.PaymentRepository) private readonly paymentRepository: IPaymentRepository,
     @Inject(Deps.PaymentGatewayService) private readonly paymentGatewayService: IPaymentGatewayService,
   ) {
@@ -30,9 +31,13 @@ export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<
 
   async execute(command: AuthenticatePaymentIntentCommand): Promise<AuthenticatePaymentIntentCommandResponse> {
     const payment = await this.getPayment(command);
+    const response = { ...payment, customer: getIdFromObject(payment.customer) };
+    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
+      return response;
+    }
 
     try {
-      const response  = await this.paymentGatewayService.authenticatePayment(
+      await this.paymentGatewayService.authenticatePayment(
         new AuthenticatePaymentIntent({
           otp: command.otp,
           paymentId: payment.hub2PaymentId,
@@ -43,7 +48,7 @@ export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<
       throw new InvalidPaymentOtpException();
     }
 
-    return { ...payment, customer: getIdFromObject(payment.customer) };
+    return response;
   }
 
   async getPayment(command: AuthenticatePaymentIntentCommand): Promise<Payment> {

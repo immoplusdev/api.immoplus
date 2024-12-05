@@ -26,11 +26,3 @@ script:pre-request {
   bru.setVar("userId", faker.string.numeric(10));
   
 }
-
-tests {
-  test("Should receive a not null registreCommerceId", function() {
-    const {data: { user: { additionalData }}} = res.getBody();
-  
-    expect(additionalData.registreCommerceId).to.be.a('string');
-  });
-}

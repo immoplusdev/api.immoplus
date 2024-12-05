@@ -4,6 +4,7 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { TypeResidence } from "./type-residence.enum";
 import { Commodite } from "./commodite.model";
 import { Piece } from "./piece.model";
+import { User } from "@/core/domain/users";
 
 
 export class Residence {

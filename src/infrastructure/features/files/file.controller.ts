@@ -226,8 +226,9 @@ export class FileController {
   ):
     Promise<StreamableFile> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    const filePath = getFilePath(file.fileNameDisk);
+    if(!file) return null;
 
+    const filePath = getFilePath(file?.fileNameDisk);
     const outputFile = createReadStream(filePath);
     return new StreamableFile(outputFile);
   }
@@ -238,8 +239,10 @@ export class FileController {
     @Param("id") id: string,
   ): Promise<StreamableFile> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    const filePath = getFilePath(file.fileNameDisk);
+    if(!file) return null;
 
+
+    const filePath = getFilePath(file?.fileNameDisk);
     const outputFile = createReadStream(filePath);
     return new StreamableFile(outputFile);
   }
@@ -250,8 +253,9 @@ export class FileController {
     @Param("id") id: string,
   ): Promise<StreamableFile> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    const filePath = getFilePath(file.fileNameDisk);
+    if(!file) return null;
 
+    const filePath = getFilePath(file?.fileNameDisk);
     const outputFile = createReadStream(filePath);
     return new StreamableFile(outputFile);
   }

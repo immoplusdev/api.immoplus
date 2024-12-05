@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OmitMethods } from "@/lib/ts-utilities";
-import { Amentity, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
-import { IsOptional } from "class-validator";
+import { enumToList, OmitMethods } from "@/lib/ts-utilities";
+import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
+import { IsIn, IsOptional } from "class-validator";
 import { GeoJsonPointDto } from "@/core/application/shared/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { AmentityDto } from "@/core/application/features/biens-immobiliers";
@@ -18,6 +18,11 @@ export class UpdateBienImmobilierDto {
   @ApiProperty({ enum: TypeBienImmobilier, enumName: "TypeBienImmobilier" })
   @IsOptional()
   typeBienImmobilier: TypeBienImmobilier;
+
+  @ApiProperty({ enum: StatusValidationBienImmobilier })
+  @IsIn(enumToList(StatusValidationBienImmobilier))
+  @IsOptional()
+  statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty()
   @IsOptional()

@@ -3,11 +3,17 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { ResidenceRepository } from "./residence.repository";
 import { ResidenceController } from "@/infrastructure/features/residences/residence.controller";
-import { UpdateResidenceByIdCommandHandler } from "@/core/application/features/residences";
+import {
+  ResidenceStatusUpdatedEventHandler,
+  UpdateResidenceByIdCommandHandler,
+} from "@/core/application/features/residences";
 import { CqrsModule } from "@nestjs/cqrs";
+import { NotificationModule } from "@/infrastructure/features/notifications";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
 
 const queryHandler = [];
 const commandHandlers = [UpdateResidenceByIdCommandHandler];
+const eventHandlers = [ResidenceStatusUpdatedEventHandler];
 
 const providers: Provider[] = [
   {
@@ -18,8 +24,9 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [ResidenceController],
-  imports: [TypeormModule, CqrsModule],
-  providers: [...providers, ...queryHandler, ...commandHandlers],
+  imports: [TypeormModule, CqrsModule, GlobalizationModule, NotificationModule],
+  providers: [...providers, ...queryHandler, ...commandHandlers, ...eventHandlers],
   exports: [...providers],
 })
-export class ResidenceModule {}
+export class ResidenceModule {
+}

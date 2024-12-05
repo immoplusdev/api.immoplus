@@ -11,6 +11,7 @@ export class BienImmobilierEntityMapper implements IMapper<BienImmobilierEntity,
       video: getIdFromObject(object.video),
       ville: getIdFromObject(object.ville),
       commune: getIdFromObject(object.commune),
+      proprietaire: getIdFromObject(object.proprietaire),
     });
   }
 
