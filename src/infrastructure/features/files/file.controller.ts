@@ -39,6 +39,7 @@ import { Deps } from "@/core/domain/shared/ioc";
 import { IFileRepository } from "@/core/domain/files";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { Response } from "express";
 
 
 @ApiTags("File")
@@ -219,45 +220,36 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get("raw/:id")
-  async getRawFile(
-    @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
-  ):
-    Promise<StreamableFile> {
+  async getRawFile(@Param("id") id: string, @Res() res: Response):
+    Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    if(!file) return null;
+    if (!file) return null;
 
-    const filePath = getFilePath(file?.fileNameDisk);
-    const outputFile = createReadStream(filePath);
-    return new StreamableFile(outputFile);
+    return res.sendFile(getFilePath(file?.fileNameDisk));
   }
 
 
   @Get("raw/public/:id")
   async getRawPublicFile(
     @Param("id") id: string,
-  ): Promise<StreamableFile> {
+    @Res() res: Response,
+  ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    if(!file) return null;
+    if (!file) return null;
 
-
-    const filePath = getFilePath(file?.fileNameDisk);
-    const outputFile = createReadStream(filePath);
-    return new StreamableFile(outputFile);
+    return res.sendFile(getFilePath(file?.fileNameDisk));
   }
 
   @Get("videos/raw/public/:id")
   @Header("Content-Type", "video/mp4")
   async getRawPublicVideo(
     @Param("id") id: string,
-  ): Promise<StreamableFile> {
+    @Res() res: Response,
+  ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    if(!file) return null;
+    if (!file) return null;
 
-    const filePath = getFilePath(file?.fileNameDisk);
-    const outputFile = createReadStream(filePath);
-    return new StreamableFile(outputFile);
+    return res.sendFile(getFilePath(file?.fileNameDisk));
   }
 
 

@@ -73,7 +73,6 @@ export class BienImmobilierController {
   @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get()
   async readMany(
     @Query() params: SearchItemsParamsDto,
@@ -81,7 +80,7 @@ export class BienImmobilierController {
     @CurrentUser("role") userRole: Role,
   ) {
     if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "createdBy",
+      _field: "proprietaire",
       _l_op: "and",
       _val: userId,
     }], params._where);
