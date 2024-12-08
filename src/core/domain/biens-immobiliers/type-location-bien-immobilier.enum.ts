@@ -2,5 +2,6 @@ export enum TypeLocationBienImmobilier {
   Heure = "heure",
   Jour = "jour",
   Mois = "mois",
-  Annee = "annee"
+  Annee = "annee",
+  Vente = "vente",
 }

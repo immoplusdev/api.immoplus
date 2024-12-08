@@ -14,7 +14,7 @@ const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";
 export class TfaService implements ITfaService {
 
   private readonly twilioService: Twilio;
-  private readonly messagingServiceSid: string;
+  private readonly verifyServiceSid: string;
 
   constructor(
     @Inject(Deps.UsersRepository)
@@ -28,7 +28,7 @@ export class TfaService implements ITfaService {
       this.configsManagerService.getEnvVariable("TWILIO_ACCOUNT_SID"),
       this.configsManagerService.getEnvVariable("TWILIO_AUTH_TOKEN"),
     );
-    this.messagingServiceSid = this.configsManagerService.getEnvVariable("TWILIO_VERIFY_SERVICE_ID");
+    this.verifyServiceSid = this.configsManagerService.getEnvVariable("TWILIO_VERIFY_SERVICE_ID");
   }
 
   generateOtp(): string {
@@ -67,14 +67,14 @@ export class TfaService implements ITfaService {
   }
 
   async sendUserSmsOtp(phoneNumber: string) {
-    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) return;
+    // if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) return;
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
     if (!user) throw new UserNotFoundException();
 
     const to = sanitizePhoneNumberIntl(user.phoneNumber);
 
     await this.twilioService.verify.v2
-      .services(this.messagingServiceSid)
+      .services(this.verifyServiceSid)
       .verifications.create({
         channel: "sms",
         to,
@@ -82,10 +82,10 @@ export class TfaService implements ITfaService {
   }
 
   async isUserSmsOtpValid(phoneNumber: string, otp: string) {
-    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
-      this.loggerService.info(otp);
-      return true;
-    }
+    // if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
+    //   this.loggerService.info(otp);
+    //   return true;
+    // }
 
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
     if (!user) throw new UserNotFoundException();
@@ -94,7 +94,7 @@ export class TfaService implements ITfaService {
       const to = sanitizePhoneNumberIntl(user.phoneNumber);
 
       const verificationCheck = await this.twilioService.verify.v2
-        .services(this.messagingServiceSid)
+        .services(this.verifyServiceSid)
         .verificationChecks.create({ code: otp, to });
 
       return verificationCheck.status == "approved";
