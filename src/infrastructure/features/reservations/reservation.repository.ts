@@ -12,13 +12,29 @@ import { ReservationEntityMapper } from "@/infrastructure/features/reservations/
 export class ReservationRepository implements IReservationRepository {
   private readonly repository: BaseRepository<Reservation>;
   private readonly relations = ["residence"];
+  private readonly fullTextSearchFields: string[] = [
+    "id",
+    "residence",
+    "statusReservation",
+    "datesReservation",
+    "statusFacture",
+    "montantTotalReservation",
+    "montantReservationSansCommission",
+    "notes",
+    "clientPhoneNumber",
+    "createdAt",
+    "updatedAt",
+    "createdBy",
+  ];
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
     @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IReservationRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, ReservationEntity, this.relations).setEntityMapper(new ReservationEntityMapper());
+    this.repository = new BaseRepository(dataSource, ReservationEntity, this.relations)
+      .setEntityMapper(new ReservationEntityMapper())
+      .setFullTextSearchFields(this.fullTextSearchFields);
   }
 
 

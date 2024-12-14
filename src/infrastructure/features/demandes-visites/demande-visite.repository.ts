@@ -11,13 +11,32 @@ import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/do
 export class DemandeVisiteRepository implements IDemandeVisiteRepository {
   private readonly repository: BaseRepository<DemandeVisite>;
   private readonly relations: RepositoryRelations = ["bienImmobilier"];
+  private readonly fullTextSearchFields: string[] = ["id",
+    "id",
+    "bienImmobilier",
+    "statusDemandeVisite",
+    "typeDemandeVisite",
+    "datesDemandeVisite",
+    "statusFacture",
+    "retraitProEffectue",
+    "montantTotalDemandeVisite",
+    "montantDemandeVisiteSansCommission",
+    "notes",
+    "clientPhoneNumber",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "createdBy",
+  ];
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
     @Inject(Deps.BiensImmobiliesRepository) private readonly biensImmobiliesRepository: IDemandeVisiteRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, DemandeVisiteEntity, this.relations).setEntityMapper(new DemandeVisiteEntityMapper());
+    this.repository = new BaseRepository(dataSource, DemandeVisiteEntity, this.relations)
+      .setEntityMapper(new DemandeVisiteEntityMapper())
+      .setFullTextSearchFields(this.fullTextSearchFields);
   }
 
 

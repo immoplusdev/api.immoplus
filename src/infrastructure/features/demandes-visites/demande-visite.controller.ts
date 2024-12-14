@@ -41,6 +41,8 @@ import {
   WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
 } from "@/core/application/features/reservations";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers";
+import { StatusFacture } from "@/core/domain/payments";
 
 
 @ApiTags("DemandeVisite")
@@ -147,6 +149,41 @@ export class DemandeVisiteController {
 
 
   @ApiResponse({
+    type: HistoriqueRetrait,
+  })
+  @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.DemandesVisites, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
+  @Get("data/historique-retrait/bien-immobilier/owner/:id")
+  async readManyFinancesByOwnerId(
+    @Param("id") ownerId: string,
+    @Query() params: SearchItemsParamsDto,
+    @CurrentUser("id") userId: string,
+  ) {
+
+    if (ownerId !== userId) throw new UnauthorizedException();
+
+    const items = await this.repository.findByBienImmobilierOwnerId(ownerId, params);
+
+    const montantNonRetire = items.data
+      .filter(item => item.statusFacture == StatusFacture.NonPaye)
+      .reduce((previousValue, currentValue) => previousValue + currentValue.montantDemandeVisiteSansCommission, 0);
+
+    const montantRetire = items.data
+      .filter(item => item.statusFacture == StatusFacture.Paye)
+      .reduce((previousValue, currentValue) => previousValue + currentValue.montantDemandeVisiteSansCommission, 0);
+
+    return new HistoriqueRetrait({
+      montantNonRetire,
+      montantRetire,
+      montantTotal: montantNonRetire + montantRetire,
+    });
+  }
+
+
+  @ApiResponse({
     type: WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
   })
   @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
@@ -249,7 +286,10 @@ export class DemandeVisiteController {
     @Body() payload: ProgrammerDemandeVisiteCommand,
   ) {
     const responseMapper = new WrapperResponseProgrammerDemandeVisiteCommandResponseDtoMapper();
-    const command = new ProgrammerDemandeVisiteCommand({ id: demandeVisiteId, datesDemandeVisite: payload.datesDemandeVisite });
+    const command = new ProgrammerDemandeVisiteCommand({
+      id: demandeVisiteId,
+      datesDemandeVisite: payload.datesDemandeVisite,
+    });
 
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);

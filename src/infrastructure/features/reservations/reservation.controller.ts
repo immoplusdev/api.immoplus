@@ -1,12 +1,10 @@
-import { Body, Controller, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { ApiResponse } from "@nestjs/swagger";
+import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/shared/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
 import {
   ReservationDto,
   UpdateReservationDto,
-  WrapperResponseReservationDto,
   WrapperResponseReservationListDto,
 } from "@/infrastructure/features/reservations";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
@@ -26,7 +24,8 @@ import {
   GetReservationByIdQueryResponse,
   GetResidenceOccupiedDatesQuery,
   GetResidenceOccupiedDatesQueryResponse,
-  WrapperResponseAnnulerReservationByIdCommandResponseDto, WrapperResponseCreateReservationCommandResponseDto,
+  WrapperResponseAnnulerReservationByIdCommandResponseDto,
+  WrapperResponseCreateReservationCommandResponseDto,
   WrapperResponseEstimerPrixReservationQueryResponseDto,
   WrapperResponseGetReservationByIdQueryResponseDto,
   WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
@@ -35,6 +34,8 @@ import {
 import { UnauthorizedException } from "@/core/domain/auth";
 import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { StatusFacture } from "@/core/domain/payments";
+import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers/historique-retrait.model";
 
 
 @ApiTags("Reservation")
@@ -127,6 +128,41 @@ export class ReservationController {
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
     return this.responseMapper.mapFromQueryResult(items);
+  }
+
+
+  @ApiResponse({
+    type: HistoriqueRetrait,
+  })
+  @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @OwnerAccessRequired("createdBy")
+  @Get("data/historique-retrait/residence/owner/:id")
+  async readManyFinancesByOwnerId(
+    @Param("id") ownerId: string,
+    @Query() params: SearchItemsParamsDto,
+    @CurrentUser("id") userId: string,
+  ) {
+
+    if (ownerId !== userId) throw new UnauthorizedException();
+
+    const items = await this.repository.findByResidenceOwnerId(ownerId, params);
+
+    const montantNonRetire = items.data
+      .filter(item => item.statusFacture == StatusFacture.NonPaye)
+      .reduce((previousValue, currentValue) => previousValue + currentValue.montantReservationSansCommission, 0);
+
+    const montantRetire = items.data
+      .filter(item => item.statusFacture == StatusFacture.Paye)
+      .reduce((previousValue, currentValue) => previousValue + currentValue.montantReservationSansCommission, 0);
+
+    return new HistoriqueRetrait({
+      montantNonRetire,
+      montantRetire,
+      montantTotal: montantNonRetire + montantRetire,
+    });
   }
 
 

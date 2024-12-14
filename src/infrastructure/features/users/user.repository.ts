@@ -14,6 +14,21 @@ import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 export class UserRepository implements IUserRepository {
   private readonly repository: BaseRepository<User>;
   private readonly relations = ["role", "additionalData", "additionalData.photoIdentite", "additionalData.pieceIdentite", "additionalData.registreCommerce", "avatar"];
+  private readonly fullTextSearchFields: string[] = [
+    "id",
+    "firstName",
+    "lastName",
+    "email",
+    "phoneNumber",
+    "address",
+    "address2",
+    "createdAt",
+    "createdBy",
+    "updatedAt",
+    "updatedBy",
+    "deletedAt",
+    "deletedBy",
+  ];
 
   constructor(
     @Inject(Deps.DataSource)
@@ -21,7 +36,10 @@ export class UserRepository implements IUserRepository {
     @Inject(Deps.PermissionRepository)
     private readonly permissionRepository: IPermissionRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, UserEntity, this.relations).setEntityMapper(new UserEntityMapper()).setLoadRelationIds(false);
+    this.repository = new BaseRepository(dataSource, UserEntity, this.relations)
+      .setEntityMapper(new UserEntityMapper())
+      .setFullTextSearchFields(this.fullTextSearchFields)
+      .setLoadRelationIds(false);
   }
 
   // Create

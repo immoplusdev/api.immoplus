@@ -13,9 +13,27 @@ export class ResidenceRepository implements IResidenceRepository {
   private readonly repository: BaseRepository<Residence>;
   private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune", "proprietaire"];
   private readonly fullTextSearchFields: string[] = [
+    "id",
     "nom",
-    "adresse",
+    "typeResidence",
     "description",
+    "commodites",
+    "pieces",
+    "statusValidation",
+    "prixReservation",
+    "dureeMinSejour",
+    "dureeMaxSejour",
+    "heureEntree",
+    "heureDepart",
+    "nombreMaxOccupants",
+    "reglesSupplementaires",
+    "proprietaire",
+    "createdAt",
+    "createdBy",
+    "updatedAt",
+    "updatedBy",
+    "deletedAt",
+    "deletedBy",
   ];
 
   constructor(

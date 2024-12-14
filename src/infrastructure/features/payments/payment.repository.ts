@@ -1,22 +1,41 @@
-import { DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { Deps } from "@/core/domain/shared/ioc";
 import { Payment, IPaymentRepository } from "@/core/domain/payments";
 
-import { PaymentEntity, PaymentEntityMapper } from '@/infrastructure/features/payments';
+import { PaymentEntity, PaymentEntityMapper } from "@/infrastructure/features/payments";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
 
 @Injectable()
-export class PaymentRepository implements IPaymentRepository{
+export class PaymentRepository implements IPaymentRepository {
   private readonly repository: BaseRepository<Payment>;
-  private readonly relations = ['customer'];
+  private readonly relations = ["customer"];
+  private readonly fullTextSearchFields: string[] = [
+    "id",
+    "amount",
+    "amountNoFees",
+    "customer",
+    "paymentType",
+    "collection",
+    "paymentStatus",
+    "paymentMethod",
+    "itemId",
+    "paymentAddress",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "createdBy",
+  ];
+
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, PaymentEntity, this.relations).setEntityMapper(new PaymentEntityMapper());
+    this.repository = new BaseRepository(dataSource, PaymentEntity, this.relations)
+      .setEntityMapper(new PaymentEntityMapper())
+      .setFullTextSearchFields(this.fullTextSearchFields);
   }
 
   async createMany(payload: Partial<Payment>[]): Promise<Payment[]> {

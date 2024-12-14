@@ -12,9 +12,35 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
   private readonly repository: BaseRepository<BienImmobilier>;
   private readonly relations: RepositoryRelations = ["miniature", "video", "ville", "commune", "proprietaire"];
   private readonly fullTextSearchFields: string[] = [
+    "id",
+    "miniature",
     "nom",
-    "adresse",
+    "typeBienImmobilier",
     "description",
+    "typeLocation",
+    "aLouer",
+    "amentities",
+    "tags",
+    "images",
+    "video",
+    "ville",
+    "commune",
+    "adresse",
+    "position",
+    "statusValidation",
+    "prix",
+    "metadata",
+    "featured",
+    "nombreMaxOccupants",
+    "animauxAutorises",
+    "bienImmobilierDisponible",
+    "fetesAutorises",
+    "reglesSupplementaires",
+    "proprietaire",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "createdBy"
   ];
 
 
