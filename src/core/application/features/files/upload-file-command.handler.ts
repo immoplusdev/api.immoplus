@@ -21,6 +21,7 @@ export class UploadFileCommandHandler implements ICommandHandler<UploadFileComma
     const fileUploadConfig = this.configsManagerService.getFileUploadConfigs();
 
     const payload: Partial<File> = {
+      id: command.file.filename.split(".")[0],
       type: command.file.mimetype,
       title: command.title,
       folder: command.folder,
