@@ -28,7 +28,7 @@ export class DemandeVisiteEntity {
     name: "status_demande_visite",
     type: "varchar",
     length: 30,
-    default: StatusDemandeVisite.EnCoursValidationAdmin,
+    default: StatusDemandeVisite.EnCours,
   })
   statusDemandeVisite: StatusDemandeVisite;
 

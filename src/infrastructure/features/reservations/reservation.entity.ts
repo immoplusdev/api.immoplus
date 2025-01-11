@@ -28,7 +28,7 @@ export class ReservationEntity {
     name: "status_reservation",
     type: "varchar",
     length: 30,
-    default: StatusReservation.EnCoursValidationAdmin,
+    default: StatusReservation.EnCours,
   })
   statusReservation: StatusReservation;
   @Column({ name: "dates_reservation", type: "json" })

@@ -37,10 +37,6 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
     "fetesAutorises",
     "reglesSupplementaires",
     "proprietaire",
-    "createdAt",
-    "updatedAt",
-    "deletedAt",
-    "createdBy"
   ];
 
 

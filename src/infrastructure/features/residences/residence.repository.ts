@@ -28,12 +28,6 @@ export class ResidenceRepository implements IResidenceRepository {
     "nombreMaxOccupants",
     "reglesSupplementaires",
     "proprietaire",
-    "createdAt",
-    "createdBy",
-    "updatedAt",
-    "updatedBy",
-    "deletedAt",
-    "deletedBy",
   ];
 
   constructor(
