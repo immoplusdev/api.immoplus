@@ -8,6 +8,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { GlobalInterceptorsModule } from "@/infrastructure/interceptors/global-interceptors.module";
 import { RestModule } from "@/infrastructure/presentation/rest/rest.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 const providers: Provider[] = [];
 
@@ -16,6 +17,7 @@ const providers: Provider[] = [];
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeormModule,
     GlobalizationModule,
     GlobalInterceptorsModule,

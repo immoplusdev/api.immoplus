@@ -1,3 +1,5 @@
+import { DemandesVisiteService } from "@/infrastructure/features/demandes-visites/demandes-visite.service";
+
 export enum Deps {
   DataSource = "DataSource",
 
@@ -29,6 +31,8 @@ export enum Deps {
   GlobalizationService = "GlobalizationService",
   PaymentGatewayService = "PaymentGatewayService",
   NotificationService = "NotificationService",
+  ReservationService = "ReservationService",
+  DemandesVisiteService = "DemandesVisiteService",
 
   // Guards
 

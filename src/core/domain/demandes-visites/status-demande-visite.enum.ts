@@ -2,6 +2,7 @@ export enum StatusDemandeVisite {
   Rejete = "rejete",
   Valide = "valide",
   EnCours = "en_cours",
+  Terminee = "terminee",
   EnCoursValidationUser = "en_cours_validation_user",
   EnCoursValidationAdmin = "en_cours_validation_admin"
 }
