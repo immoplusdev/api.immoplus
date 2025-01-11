@@ -9,6 +9,6 @@ services:
     ports:
       - '${NEST_PORT}:3000'
     volumes:
-      - ${NEST_UPLOAD_DIR}:/app/uploads
+      - ${NEST_UPLOAD_DIR}:/uploads
     env_file:
       - ./.env
