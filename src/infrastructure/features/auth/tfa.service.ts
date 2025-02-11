@@ -7,6 +7,7 @@ import { Twilio } from "twilio";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";
 import { AppProfile } from "@/core/domain/shared/enums";
+import { BYPASS_USER_EMAIL, BYPASS_USER_PHONE_NUMBER } from "@/infrastructure/configs";
 
 const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";
 
@@ -67,7 +68,11 @@ export class TfaService implements ITfaService {
   }
 
   async sendUserSmsOtp(phoneNumber: string) {
-    // if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) return;
+    if (
+      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev ||
+      phoneNumber == BYPASS_USER_PHONE_NUMBER
+    ) return;
+
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
     if (!user) throw new UserNotFoundException();
 
@@ -82,10 +87,10 @@ export class TfaService implements ITfaService {
   }
 
   async isUserSmsOtpValid(phoneNumber: string, otp: string) {
-    // if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
-    //   this.loggerService.info(otp);
-    //   return true;
-    // }
+    if (
+      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev ||
+      phoneNumber == BYPASS_USER_PHONE_NUMBER
+    ) return true;
 
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["phoneNumber"] });
     if (!user) throw new UserNotFoundException();
@@ -108,6 +113,12 @@ export class TfaService implements ITfaService {
     const user = await this.usersRepository.findOne(userId, { fields: ["id", "otp"] });
     if (!user) throw new UserNotFoundException();
 
+    if (
+      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev ||
+      user.phoneNumber == BYPASS_USER_PHONE_NUMBER ||
+      user.email == BYPASS_USER_EMAIL
+    ) return true;
+
     const otpIsValid = user.otp === otp;
 
     if (!otpIsValid && options?.throwException) throw new InvalidOtpException();
@@ -118,8 +129,16 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserEmailOtp(email: string, otp: string, options?: VerifyOtpOptions) {
+
+    if (
+      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev ||
+      email == BYPASS_USER_EMAIL
+    ) return true;
+
+
     const user = await this.usersRepository.findOneByEmail(email, { fields: ["id", "otp"] });
     if (!user) throw new UserNotFoundException();
+
 
     const otpIsValid = user.otp === otp;
 
@@ -131,6 +150,11 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserPhoneNumberOtp(phoneNumber: string, otp: string, options?: VerifyOtpOptions) {
+    if (
+      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev ||
+      phoneNumber == BYPASS_USER_PHONE_NUMBER
+    ) return true;
+
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["id", "otp"] });
     if (!user) throw new UserNotFoundException();
 

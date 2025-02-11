@@ -3,3 +3,4 @@ export * from "./mailing.configs";
 export * from "./meta.configs";
 export * from "./microservice.configs";
 export * from "./pagination.configs";
+export * from "./testing.configs";
