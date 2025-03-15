@@ -150,9 +150,7 @@ export class TfaService implements ITfaService {
   }
 
   async verifyUserPhoneNumberOtp(phoneNumber: string, otp: string, options?: VerifyOtpOptions) {
-    if (
-      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev ||
-      phoneNumber == BYPASS_USER_PHONE_NUMBER
+    if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev || phoneNumber == BYPASS_USER_PHONE_NUMBER
     ) return true;
 
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, { fields: ["id", "otp"] });
