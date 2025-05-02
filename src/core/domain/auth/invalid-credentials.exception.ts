@@ -1,4 +1,4 @@
-import { BaseException } from "@/core/domain/shared/exceptions";
+import { BaseException } from "@/core/domain/common/exceptions";
 
 export class InvalidCredentialsException extends BaseException {
   constructor() {

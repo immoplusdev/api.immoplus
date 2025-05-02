@@ -1,8 +1,8 @@
 import { Injectable, ConsoleLogger, Inject } from "@nestjs/common";
 import { ILoggerService } from "@/core/domain/logging";
 import { IConfigsManagerService } from "@/core/domain/configs";
-import { Deps } from "@/core/domain/shared/ioc";
-import { AppProfile } from "@/core/domain/shared/enums";
+import { Deps } from "@/core/domain/common/ioc";
+import { AppProfile } from "@/core/domain/common/enums";
 
 
 @Injectable()

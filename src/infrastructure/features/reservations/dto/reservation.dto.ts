@@ -1,10 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { StatusReservation } from "@/core/domain/reservations";
 import { StatusFacture } from "@/core/domain/payments";
 import { Residence } from "@/core/domain/residences";
-import { ServiceDateDto } from "@/core/application/shared/dto";
+import { ServiceDateDto } from "@/core/application/common/dto";
 import { ResidenceDto } from "@/infrastructure/features/residences";
 
 export class ReservationDto {

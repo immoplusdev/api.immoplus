@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { DemandeVisite, IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { DemandeVisiteEntity, DemandeVisiteEntityMapper } from "@/infrastructure/features/demandes-visites";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { ItemsParamsCriterias, ItemsParamsOrderDirection, SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
 
 @Injectable()
 export class DemandeVisiteRepository implements IDemandeVisiteRepository {

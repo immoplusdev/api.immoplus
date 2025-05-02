@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags, OmitType } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -13,20 +13,20 @@ import {
   SelectItemsParamsDto,
 } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
-import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
+import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import {
   WrapperResponseBienImmobilierBatchDto,
   WrapperResponseBienImmobilierDto,
-} from "@/core/application/features/biens-immobiliers/bien-immobilier.dto";
+} from "@/core/application/biens-immobiliers/bien-immobilier.dto";
 import {
   CreateBienImmobilierDto,
   CreateBienImmobilierDtoMapper,
   UpdateBienImmobilierDto, UpdateBienImmobilierDtoMapper,
-} from "@/core/application/features/biens-immobiliers";
-import { BienImmobilierDtoMapper } from "@/core/application/features/biens-immobiliers/bien-immobilier-dto.mapper";
+} from "@/core/application/biens-immobiliers";
+import { BienImmobilierDtoMapper } from "@/core/application/biens-immobiliers/bien-immobilier-dto.mapper";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { EventBus } from "@nestjs/cqrs";
-import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/features/demandes-visites";
+import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/demandes-visites";
 
 
 @ApiTags("BienImmobilier")

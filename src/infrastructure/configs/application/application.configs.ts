@@ -1,9 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "@/app.module";
-import {
-  compressionConfigs, swaggerConfigs, corsConfigs, globalInterceptorsConfig,
-  configureAutoValidation, configureI18n, configureEnv, globalPipesConfig, NEST_SWAGGER_ENABLED,
-} from "@/infrastructure/configs";
+import { compressionConfigs, swaggerConfigs, corsConfigs, globalInterceptorsConfig, configureAutoValidation, configureI18n, configureEnv, globalPipesConfig, NEST_SWAGGER_ENABLED } from "@/infrastructure/configs";
 
 
 export async function applicationConfigs() {

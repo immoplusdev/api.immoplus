@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { OmitMethods } from "@/lib/ts-utilities";
-import { ServiceDates } from "@/core/domain/shared/models";
+import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { UserEntity } from "@/infrastructure/features/users";
 import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";

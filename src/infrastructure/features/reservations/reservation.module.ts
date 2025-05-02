@@ -1,5 +1,5 @@
 import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/shared/ioc';
+import { Deps } from '@/core/domain/common/ioc';
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { ReservationController } from './reservation.controller';
 import { ReservationRepository } from './reservation.repository';
@@ -7,13 +7,13 @@ import {
   AnnulerReservationByIdCommandHandler,
   CreateReservationCommandHandler,
   EstimerPrixReservationQueryHandler, GetResidenceOccupiedDateQueryHandler,
-} from "@/core/application/features/reservations";
+} from "@/core/application/reservations";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { ResidenceModule } from "@/infrastructure/features/residences";
 import {
   GetReservationByIdQueryHandler
-} from "@/core/application/features/reservations/get-reservation-by-id-query.handler";
+} from "@/core/application/reservations/get-reservation-by-id-query.handler";
 import { UserModule } from "@/infrastructure/features/users/user.module";
 import { ReservationService } from "@/infrastructure/features/reservations/reservation.service";
 import { LoggingModule } from "@/infrastructure/features/logging";

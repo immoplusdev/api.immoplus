@@ -1,8 +1,8 @@
 import { DataSource, Raw, Repository } from "typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infrastructure/http";
-import { IBaseRepository } from "@/core/domain/shared/repositories";
-import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
+import { IBaseRepository } from "@/core/domain/common/repositories";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 import { IMapper } from "@/lib/ts-utilities";
 import { FindManyOptions } from "typeorm/find-options/FindManyOptions";

@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { ResidenceEntity } from "@/infrastructure/features/residences";
 import { StatusReservation } from "@/core/domain/reservations";
-import { ServiceDates } from "@/core/domain/shared/models";
+import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments/status-facture.enum";
 import { UserEntity } from "@/infrastructure/features/users";
 import { Residence } from "@/core/domain/residences";

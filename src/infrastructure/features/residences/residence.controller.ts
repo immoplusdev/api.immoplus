@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IResidenceRepository } from "@/core/domain/residences";
 import {
   CreateResidenceDto,
@@ -19,8 +19,8 @@ import {
   SelectItemsParamsDto,
 } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
-import { ItemNotFoundException } from "@/core/domain/shared/exceptions";
-import { UpdateResidenceByIdCommand } from "@/core/application/features/residences";
+import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import { UpdateResidenceByIdCommand } from "@/core/application/residences";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 

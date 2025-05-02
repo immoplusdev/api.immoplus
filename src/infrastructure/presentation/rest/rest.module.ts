@@ -3,7 +3,7 @@ import { UserModule } from "@/infrastructure/features/users/user.module";
 import { AuthModule } from "@/infrastructure/features/auth/auth.module";
 
 import { PermissionModule } from "@/infrastructure/features/permissions";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { FileModule } from "@/infrastructure/features/files";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { CommuneModule } from "@/infrastructure/features/communes";

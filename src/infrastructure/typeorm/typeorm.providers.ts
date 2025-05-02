@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { forwardRef } from "@nestjs/common";
 
 

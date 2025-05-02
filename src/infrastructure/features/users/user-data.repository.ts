@@ -1,12 +1,12 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { UserData, IUserDataRepository } from "@/core/domain/users";
 import { UserDataEntity } from "@/infrastructure/features/users";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { File } from "@/core/domain/files";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 import { UserDataEntityMapper } from "./user-data-entity.mapper";
 
 

@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { StatusDemandeVisite } from "./status-demande-visite.enum";
-import { ServiceDates } from "@/core/domain/shared/models";
+import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { TypeDemandeVisite } from "@/core/domain/demandes-visites";

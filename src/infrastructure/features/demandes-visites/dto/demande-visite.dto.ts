@@ -1,12 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
-import { ServiceDates } from "@/core/domain/shared/models";
+import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
-import { BienImmobilierDto } from "@/core/application/features/biens-immobiliers";
+import { BienImmobilierDto } from "@/core/application/biens-immobiliers";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
-import { ServiceDateDto } from "@/core/application/shared/dto";
+import { ServiceDateDto } from "@/core/application/common/dto";
 
 export class DemandeVisiteDto {
   @ApiProperty({ format: "uuid" })

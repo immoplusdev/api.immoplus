@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiNoContentResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { CommandBus } from "@nestjs/cqrs";
-import { LoginCommand } from "@/core/application/features/auth/login.command";
+import { LoginCommand } from "@/core/application/auth/login.command";
 import {
   LoginWithEmailOtpCommand,
   LoginWithEmailOtpCommandResponse,
@@ -17,7 +17,7 @@ import {
   VerifyPhoneNumberCommand,
   WrapperResponseLoginCommandResponseDto, WrapperResponseLoginCommandResponseDtoMapper,
   WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
-} from "@/core/application/features/auth";
+} from "@/core/application/auth";
 import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";

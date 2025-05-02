@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { Notification, INotificationRepository } from "@/core/domain/notifications";
 import { NotificationEntity } from "@/infrastructure/features/notifications";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 
 
 @Injectable()

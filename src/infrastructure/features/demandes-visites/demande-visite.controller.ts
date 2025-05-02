@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import {
   DemandeVisiteDtoMapper,
@@ -30,16 +30,16 @@ import {
   WrapperResponseGetDemandeVisiteByIdQueryResponseDto,
   WrapperResponseProgrammerDemandeVisiteCommandResponseDto,
   WrapperResponseProgrammerDemandeVisiteCommandResponseDtoMapper,
-} from "@/core/application/features/demandes-visites";
+} from "@/core/application/demandes-visites";
 import { CommandBus, IQueryBus, QueryBus } from "@nestjs/cqrs";
-import { CreateDemandeVisiteCommand } from "@/core/application/features/demandes-visites/create-demande-visite.command";
+import { CreateDemandeVisiteCommand } from "@/core/application/demandes-visites/create-demande-visite.command";
 import { UnauthorizedException } from "@/core/domain/auth";
 import {
   AnnulerReservationByIdCommand,
   AnnulerReservationByIdCommandResponse,
   WrapperResponseAnnulerReservationByIdCommandResponseDto,
   WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
-} from "@/core/application/features/reservations";
+} from "@/core/application/reservations";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers";
 import { StatusFacture } from "@/core/domain/payments";

@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from '@/lib/ts-utilities';
 
 export class PublicConfigItemDto {

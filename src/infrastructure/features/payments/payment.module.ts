@@ -1,5 +1,5 @@
 import { Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { PaymentController } from "./payment.controller";
 import { PaymentRepository } from "./payment.repository";
@@ -12,16 +12,16 @@ import {
   GetPaymentCollectionItemDataQueryHandler,
   InterceptPaymentWebhookCommandHandler,
   PaymentDemandeVisiteValideEventHandler,
-} from "@/core/application/features/payments";
+} from "@/core/application/payments";
 import { ReservationModule } from "@/infrastructure/features/reservations";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
 import {
   AuthenticatePaymentIntentCommandHandler,
-} from "@/core/application/features/payments/authenticate-payment-intent-command.handler";
+} from "@/core/application/payments/authenticate-payment-intent-command.handler";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import {
   PaymentReservationValideEventHandler,
-} from "@/core/application/features/payments/payment-reservation-valide.event";
+} from "@/core/application/payments/payment-reservation-valide.event";
 import { GlobalizationModule, GlobalizationService } from "@/infrastructure/features/globalization";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 

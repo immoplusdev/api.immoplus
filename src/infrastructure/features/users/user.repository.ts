@@ -2,12 +2,12 @@ import { IUserRepository, PublicUserInfo, User, UserWithRoleAndPermissions } fro
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { DataSource, Repository } from "typeorm";
 import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
 import { Role } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 
 @Injectable()

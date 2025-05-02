@@ -14,7 +14,7 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { IUserRepository } from "@/core/domain/users";
 import { Role, UserRole } from "@/core/domain/roles";
@@ -24,7 +24,7 @@ import {
   WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
   WrapperResponseUserDto,
   WrapperResponseUserListDto,
-} from "@/core/application/features/users";
+} from "@/core/application/users";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { AccessForbiddenException } from "@/core/domain/auth";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";

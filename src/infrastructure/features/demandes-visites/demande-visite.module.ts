@@ -1,5 +1,5 @@
 import { Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { DemandeVisiteController } from "./demande-visite.controller";
 import { DemandeVisiteRepository } from "./demande-visite.repository";
@@ -9,7 +9,7 @@ import {
   CreateDemandeVisiteCommandHandler,
   EstimerPrixDemandeVisiteQueryHandler,
   GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler, ProgrammerDemandeVisiteCommandHandler,
-} from "@/core/application/features/demandes-visites";
+} from "@/core/application/demandes-visites";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
 import { UserModule } from "@/infrastructure/features/users";

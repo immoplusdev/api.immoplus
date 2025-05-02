@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { BienImmobilier, IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { BienImmobilierEntity, BienImmobilierEntityMapper } from "@/infrastructure/features/biens-immobiliers";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
 
 @Injectable()
 export class BienImmobilierRepository implements IBienImmobilierRepository {

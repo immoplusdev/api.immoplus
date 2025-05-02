@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { StatusReservation } from "./status-reservation.enum";
-import { ServiceDates } from "@/core/domain/shared/models";
+import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { Residence } from "@/core/domain/residences";
 

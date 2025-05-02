@@ -1,5 +1,5 @@
-import { FindItemOptions } from "@/core/domain/shared/models";
-import { IBaseRepository } from "@/core/domain/shared/repositories";
+import { FindItemOptions } from "@/core/domain/common/models";
+import { IBaseRepository } from "@/core/domain/common/repositories";
 import { User } from "./user.model";
 import { PublicUserInfo } from "./public-user-info.model";
 import { UserWithRoleAndPermissions } from "./user-with-role-and-permissions.model";

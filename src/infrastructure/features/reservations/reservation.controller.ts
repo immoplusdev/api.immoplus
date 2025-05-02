@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
 import {
   ReservationDto,
@@ -30,7 +30,7 @@ import {
   WrapperResponseGetReservationByIdQueryResponseDto,
   WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   WrapperResponseReservationDetailsDtoMapper,
-} from "@/core/application/features/reservations";
+} from "@/core/application/reservations";
 import { UnauthorizedException } from "@/core/domain/auth";
 import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";

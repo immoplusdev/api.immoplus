@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { IsOptional } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { ItemsParamsCriteriasDto, ItemsParamsOrderDirectionDto } from "@/infrastructure/http";
 
 export class GeolocalizedItemsSearchParamsQueryDto {

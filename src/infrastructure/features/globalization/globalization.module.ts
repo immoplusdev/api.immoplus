@@ -1,5 +1,5 @@
 import { Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { GlobalizationService } from "@/infrastructure/features/globalization";
 import { I18nModule, I18nService } from "nestjs-i18n";
 import { i18Configs } from "@/infrastructure/configs";

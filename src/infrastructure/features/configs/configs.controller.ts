@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, UseGuards, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";

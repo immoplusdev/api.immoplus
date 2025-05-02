@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ISmsService } from "@/core/domain/notifications";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 // import { ILoggerService } from "@/core/domain/logging";
 // import axios from "axios";
 import { IConfigsManagerService } from "@/core/domain/configs";

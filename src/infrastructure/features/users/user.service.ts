@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { UserEntity } from "./user.entity";
-import { Deps } from '@/core/domain/shared/ioc';
+import { Deps } from '@/core/domain/common/ioc';
 
 @Injectable()
 export class UserService {

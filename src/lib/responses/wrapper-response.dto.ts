@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { ApiProperty } from "@/core/domain/common/docs";
+import { WrapperResponse } from "@/core/domain/common/models";
 
 export class WrapperResponseDto<T> {
   @ApiProperty()

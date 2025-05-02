@@ -1,5 +1,5 @@
 import { ItemsOperator, ItemsParamsCriterias, ItemsParamsCriteriasLogic, SearchItemsParams } from "@/core/domain/http";
-import { InvalidQueryException } from "@/core/domain/shared/exceptions";
+import { InvalidQueryException } from "@/core/domain/common/exceptions";
 import { ItemsParamsCriteriasDto } from "@/infrastructure/http";
 import { And, Equal, Like, Or, Not, MoreThan, MoreThanOrEqual, LessThan, LessThanOrEqual, In } from "typeorm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";

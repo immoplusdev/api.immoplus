@@ -1,12 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InvalidOtpException, ITfaService, VerifyOtpOptions } from "@/core/domain/auth";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
 import { generateRandomString, sanitizePhoneNumber, sanitizePhoneNumberIntl } from "@/lib/ts-utilities/strings";
 import { Twilio } from "twilio";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";
-import { AppProfile } from "@/core/domain/shared/enums";
+import { AppProfile } from "@/core/domain/common/enums";
 import { BYPASS_USER_EMAIL, BYPASS_USER_PHONE_NUMBER } from "@/infrastructure/configs";
 
 const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";

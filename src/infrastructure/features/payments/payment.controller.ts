@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param, HttpCode, Patch } from "@nestjs/common";
 import { ApiBearerAuth, ApiNoContentResponse, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IPaymentRepository } from "@/core/domain/payments";
 import {
   CurrentUser,
@@ -27,11 +27,11 @@ import {
   CreateDemandeRetraitReservationCommand,
   UpdatePaymentDto,
   UpdatePaymentDtoMapper,
-} from "@/core/application/features/payments";
+} from "@/core/application/payments";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
   AuthenticatePaymentIntentCommand,
-} from "@/core/application/features/payments/authenticate-payment-intent.command";
+} from "@/core/application/payments/authenticate-payment-intent.command";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";

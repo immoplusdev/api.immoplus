@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { Role, IRoleRepository } from "@/core/domain/roles";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 
 @Injectable()
 export class RoleRepository implements IRoleRepository {

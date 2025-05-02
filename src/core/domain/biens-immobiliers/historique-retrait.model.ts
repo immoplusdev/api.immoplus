@@ -1,5 +1,5 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 
 export class HistoriqueRetrait {
   @ApiProperty()

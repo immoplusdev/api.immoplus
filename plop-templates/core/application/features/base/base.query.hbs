@@ -1,8 +1,0 @@
-import { OmitMethods } from '@/lib/ts-utilities';
-import { ApiProperty } from "@nestjs/swagger";
-
-export class {{classify name}}Query {
-  constructor(data?: OmitMethods<{{classify name}}Query>) {
-    if(data) Object.assign(this, data);
-  }
-}

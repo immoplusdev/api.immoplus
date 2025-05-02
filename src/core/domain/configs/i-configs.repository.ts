@@ -1,4 +1,4 @@
-import { IBaseRepository } from '@/core/domain/shared/repositories';
+import { IBaseRepository } from '@/core/domain/common/repositories';
 import { AppConfigs } from "@/core/domain/configs";
 
 

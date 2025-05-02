@@ -1,11 +1,11 @@
 import { DataSource, Repository } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { Reservation, IReservationRepository } from "@/core/domain/reservations";
 import { ReservationEntity } from "@/infrastructure/features/reservations";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { ItemsParamsCriterias, SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 import { ReservationEntityMapper } from "@/infrastructure/features/reservations/reservation-entity.mapper";
 
 @Injectable()

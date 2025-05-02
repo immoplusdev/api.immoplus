@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { AppConfigs, IAppConfigsRepository } from "@/core/domain/configs";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { AppConfigsEntity } from "@/infrastructure/features/configs";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 
 @Injectable()
 export class AppConfigsRepository implements IAppConfigsRepository {

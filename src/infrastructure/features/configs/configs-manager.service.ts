@@ -3,8 +3,8 @@ import { AppConfigs, IAppConfigsRepository, IConfigsManagerService, PublicConfig
 import { ConfigService } from "@nestjs/config";
 import { fileUploadConfig } from "@/infrastructure/configs";
 import { IFileUploadConfig } from "@/core/domain/files";
-import { AppProfile } from "@/core/domain/shared/enums";
-import { Deps } from "@/core/domain/shared/ioc";
+import { AppProfile } from "@/core/domain/common/enums";
+import { Deps } from "@/core/domain/common/ioc";
 import { enumToList } from "@/lib/ts-utilities";
 import { PublicConfigItem } from "@/core/domain/configs/public-config-item.model";
 import { TypeResidence } from "@/core/domain/residences";

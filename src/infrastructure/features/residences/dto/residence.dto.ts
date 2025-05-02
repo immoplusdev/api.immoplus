@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { TypeResidence } from "@/core/domain/residences";
@@ -6,7 +6,7 @@ import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
-import { GeoJsonPointDto } from "@/core/application/shared/dto";
+import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { IsOptional } from "class-validator";
 
 export class ResidenceDto {

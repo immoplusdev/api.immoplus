@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { IMailService, SendMailParams } from "@/core/domain/notifications";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";
-import { AppProfile } from "@/core/domain/shared/enums";
+import { AppProfile } from "@/core/domain/common/enums";
 
 const nodemailer = require("nodemailer");
 

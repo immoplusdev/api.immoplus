@@ -1,11 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { enumToList, OmitMethods } from "@/lib/ts-utilities";
 import { Commodite, TypeResidence } from "@/core/domain/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { IsBoolean, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
-import { GeoJsonPointDto } from "@/core/application/shared/dto";
+import { GeoJsonPointDto } from "@/core/application/common/dto";
 
 export class CreateResidenceDto {
   @ApiProperty({ format: "uuid" })

@@ -27,7 +27,7 @@ import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { fileUploadConfig } from "@/infrastructure/configs/file-management/file-upload.config";
 import { generateUuid } from "@/lib/ts-utilities/db";
-import { UploadFileCommand } from "@/core/application/features/files";
+import { UploadFileCommand } from "@/core/application/files";
 import {
   UploadFileCommandResponseDto,
   WrapperResponseUploadFileCommandResponseDto,
@@ -35,7 +35,7 @@ import {
 import { CommandBus } from "@nestjs/cqrs";
 import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
 import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IFileRepository } from "@/core/domain/files";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";

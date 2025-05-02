@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { Residence, IResidenceRepository } from "@/core/domain/residences";
 import { ResidenceEntity } from "@/infrastructure/features/residences";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
 import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 
 @Injectable()

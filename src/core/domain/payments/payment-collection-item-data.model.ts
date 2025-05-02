@@ -1,6 +1,6 @@
 import { PaymentCollection } from "./payment-collection.enum";
 import { OmitMethods } from "@/lib/ts-utilities";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@/core/domain/common/docs";
 
 export class PaymentCollectionItemData {
   @ApiProperty({ format: "uuid" })

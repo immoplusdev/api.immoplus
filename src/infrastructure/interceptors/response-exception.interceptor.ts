@@ -6,9 +6,9 @@ import {
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
-import { BaseException, UnexpectedException } from "@/core/domain/shared/exceptions";
-import { FailedValidationException } from "@/core/domain/shared/exceptions/failed-validation.exception";
-import { Deps } from "@/core/domain/shared/ioc";
+import { BaseException, UnexpectedException } from "@/core/domain/common/exceptions";
+import { FailedValidationException } from "@/core/domain/common/exceptions/failed-validation.exception";
+import { Deps } from "@/core/domain/common/ioc";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { ILoggerService } from "@/core/domain/logging";
 import { IConfigsManagerService } from "@/core/domain/configs";

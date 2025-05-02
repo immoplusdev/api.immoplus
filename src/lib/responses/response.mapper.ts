@@ -1,6 +1,6 @@
 import { IMapper } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses/wrapper-response.dto";
-import { WrapperResponse } from "@/core/domain/shared/models";
+import { WrapperResponse } from "@/core/domain/common/models";
 
 export class WrapperResponseDtoMapper<T>
   implements IMapper<T, WrapperResponseDto<T>> {

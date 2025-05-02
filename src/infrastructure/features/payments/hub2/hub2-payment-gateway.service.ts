@@ -5,7 +5,7 @@ import {
   AuthenticatePaymentIntent, AuthenticatePaymentIntentResponse,
   IPaymentGatewayService,
 } from "@/core/domain/payments";
-import { UnexpectedException } from "@/core/domain/shared/exceptions";
+import { UnexpectedException } from "@/core/domain/common/exceptions";
 import { PaymentToken } from "@/core/domain/payments/payment-token.model";
 import {
   HUB2_API_KEY, HUB2_API_URL,
@@ -15,13 +15,13 @@ import {
 } from "@/infrastructure/configs/payments";
 import { ILoggerService } from "@/core/domain/logging";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import axios, { AxiosError } from "axios";
 import {
   Hub2AttemptPaymentResponse,
   Hub2CreatePaymentIntentResponse,
 } from "@/infrastructure/features/payments/hub2";
-import { ConflictException } from "@/core/domain/shared/exceptions";
+import { ConflictException } from "@/core/domain/common/exceptions";
 
 @Injectable()
 export class Hub2PaymentGatewayService implements IPaymentGatewayService {

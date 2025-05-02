@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { ILoggerService } from "@/core/domain/logging";
 import * as moment from "moment";
 import { StatusFacture } from "@/core/domain/payments";

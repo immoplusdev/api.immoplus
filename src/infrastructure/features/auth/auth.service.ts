@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { IAuthService, IJwtManagerService, LoginResponse } from "@/core/domain/auth";
 import { User } from "@/core/domain/users";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 
 @Injectable()

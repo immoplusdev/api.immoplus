@@ -1,5 +1,5 @@
 import { IFileUploadConfig } from "@/core/domain/files";
-import { AppProfile } from "@/core/domain/shared/enums";
+import { AppProfile } from "@/core/domain/common/enums";
 import { AppConfigs } from "@/core/domain/configs/app-configs.model";
 import { PublicConfigs } from "@/core/domain/configs/public-configs.model";
 

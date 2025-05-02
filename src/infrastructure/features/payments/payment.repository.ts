@@ -1,12 +1,12 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { Payment, IPaymentRepository } from "@/core/domain/payments";
 
 import { PaymentEntity, PaymentEntityMapper } from "@/infrastructure/features/payments";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, WrapperResponse } from "@/core/domain/shared/models";
+import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 
 @Injectable()
 export class PaymentRepository implements IPaymentRepository {

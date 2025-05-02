@@ -1,5 +1,5 @@
 import { forwardRef, Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { NotificationController } from "./notification.controller";
 import { NotificationRepository } from "./notification.repository";
 import { TypeormModule } from "@/infrastructure/typeorm";

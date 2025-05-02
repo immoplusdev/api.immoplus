@@ -1,9 +1,9 @@
 import { forwardRef, Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { FileController } from "./file.controller";
 import { FileRepository } from "./file.repository";
 import { TypeormModule } from "@/infrastructure/typeorm";
-import { UploadFileCommandHandler } from "@/core/application/features/files";
+import { UploadFileCommandHandler } from "@/core/application/files";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
 

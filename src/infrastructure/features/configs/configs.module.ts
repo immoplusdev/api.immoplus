@@ -1,5 +1,5 @@
 import { Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import { ConfigsManagerService } from "./configs-manager.service";
 import { ConfigModule } from "@nestjs/config";
 import { AppConfigsRepository } from "@/infrastructure/features/configs/configs.repository";

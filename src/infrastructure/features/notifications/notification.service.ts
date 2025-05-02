@@ -5,7 +5,7 @@ import {
   SendNotificationParams,
 } from "@/core/domain/notifications";
 import { Inject } from "@nestjs/common";
-import { Deps } from "@/core/domain/shared/ioc";
+import { Deps } from "@/core/domain/common/ioc";
 import axios from "axios";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { Role, UserRole } from "@/core/domain/roles";
