@@ -1,7 +1,7 @@
 meta {
-  name: success-webhook
+  name: failed-webhook
   type: http
-  seq: 9
+  seq: 5
 }
 
 post {
@@ -20,7 +20,7 @@ headers {
 body:json {
   {
     "owner": "xbBADB0y6sJ5CWLEhWYNf",
-    "type": "payment_intent.successful",
+    "type": "payment_intent.failed",
     "data": {
       "id": "pi_AyWFctplff3mOyP_epaaK",
       "createdAt": "2024-01-26T13:35:36.926Z",
@@ -31,7 +31,7 @@ body:json {
       "amount": 10000,
       "currency": "XOF",
       "token": "{{HUB2_TOKEN}}",
-      "status": "successful",
+      "status": "failed",
       "overrideBusinessName": "immoplus",
       "payments": [
         {
@@ -41,7 +41,7 @@ body:json {
           "updatedAt": "2024-01-26T13:36:27.218Z",
           "amount": 10000,
           "currency": "XOF",
-          "status": "successful",
+          "status": "failed",
           "method": "mobile_money",
           "country": "CI",
           "provider": "orange",

@@ -13,12 +13,10 @@ import {
   PaymentStatus,
   StatusFacture,
 } from "@/core/domain/payments";
-import { IReservationRepository } from "@/core/domain/reservations";
-import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
+import { IReservationRepository, StatusReservation } from "@/core/domain/reservations";
+import { IDemandeVisiteRepository, StatusDemandeVisite } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
-import {
-  PaymentDemandeVisiteValideEvent,
-} from "@/core/application/payments/payment-demande-visite-valide.event";
+import { PaymentDemandeVisiteValideEvent } from "@/core/application/payments/payment-demande-visite-valide.event";
 import { PaymentReservationValideEvent } from "@/core/application/payments/payment-reservation-valide.event";
 
 @CommandHandler(InterceptPaymentWebhookCommand)
@@ -121,15 +119,16 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
 
     if (paymentStatus == PaymentStatus.Successful || paymentStatus == PaymentStatus.Failed) {
       const statusFacture = paymentStatus == PaymentStatus.Successful ? StatusFacture.Paye : StatusFacture.NonPaye;
-      await this.updateItemStatusFacture(localPayment.itemId, localPayment.collection, statusFacture);
+      await this.updateItemStatusAndStatusFacture(localPayment.itemId, localPayment.collection, statusFacture);
     }
   }
 
-  async updateItemStatusFacture(itemId: string, collection: PaymentCollection, statusFacture: StatusFacture) {
+  async updateItemStatusAndStatusFacture(itemId: string, collection: PaymentCollection, statusFacture: StatusFacture) {
     switch (collection) {
       case PaymentCollection.Reservation:
         await this.reservationRepository.updateOne(itemId, {
           statusFacture,
+          statusReservation: StatusReservation.Valide
         });
         if (statusFacture == StatusFacture.Paye) this.eventBus.publish(new PaymentReservationValideEvent({ reservationId: itemId }));
 
@@ -137,6 +136,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
       case PaymentCollection.DemandeDeVisite:
         await this.demandeVisiteRepository.updateOne(itemId, {
           statusFacture,
+          statusDemandeVisite: StatusDemandeVisite.Valide
         });
         if (statusFacture == StatusFacture.Paye) this.eventBus.publish(new PaymentDemandeVisiteValideEvent({ demandeVisiteId: itemId }));
         break;

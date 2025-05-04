@@ -1,22 +1,22 @@
 meta {
-  name: list-payments
+  name: list-demande-retrait
   type: http
-  seq: 5
+  seq: 9
 }
 
 get {
-  url: {{API_URL}}/payments
+  url: {{API_URL}}/payments?_where={ "_field": "paymentType", "_op": "eq", "_val": "retrait" }&_where={"_field": "collection", "_op": "eq", "_val": "reservations"}
   body: none
   auth: bearer
 }
 
-auth:bearer {
-  token: {{customerToken}}
+params:query {
+  _where: { "_field": "paymentType", "_op": "eq", "_val": "retrait" }
+  _where: {"_field": "collection", "_op": "eq", "_val": "reservations"}
 }
 
-script:post-response {
-  const {data: { id }} = res.getBody();
-  bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+auth:bearer {
+  token: {{proToken}}
 }
 
 tests {

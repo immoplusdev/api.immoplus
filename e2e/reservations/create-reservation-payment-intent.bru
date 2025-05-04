@@ -1,7 +1,7 @@
 meta {
-  name: create-payment-intent
+  name: create-reservation-payment-intent
   type: http
-  seq: 3
+  seq: 9
 }
 
 post {
@@ -16,8 +16,8 @@ auth:bearer {
 
 body:json {
   {
-    "collection": "demandes_visites",
-    "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}",
+    "collection": "reservations",
+    "itemId": "{{DEFAULT_RESERVATION_ID}}",
     "paymentMethod": "moov",
     "paymentCredentials": "2250143881818"
   }

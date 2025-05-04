@@ -1,7 +1,7 @@
 import { Module, Provider } from "@nestjs/common";
 import { I18nModule } from "nestjs-i18n";
 import { ConfigModule } from "@nestjs/config";
-import { i18Configs, jwtonfigs } from "@/infrastructure/configs";
+import { i18Configs, jwtConfigs } from "@/infrastructure/configs";
 import { GlobalPipesModule } from "@/infrastructure/pipes";
 import { TypeormModule } from "@/infrastructure/typeorm";
 import { JwtModule } from "@nestjs/jwt";
@@ -23,7 +23,7 @@ const providers: Provider[] = [];
     GlobalInterceptorsModule,
     GlobalPipesModule,
     I18nModule.forRoot(i18Configs),
-    JwtModule.register(jwtonfigs),
+    JwtModule.register(jwtConfigs),
     RestModule,
 
   ],

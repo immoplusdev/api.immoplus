@@ -1,11 +1,11 @@
 meta {
-  name: authenticate-payment-intent
+  name: create-payment-intent
   type: http
-  seq: 4
+  seq: 8
 }
 
 post {
-  url: {{API_URL}}/payments/action/authenticate-payment-intent
+  url: {{API_URL}}/payments/action/create-payment-intent
   body: json
   auth: bearer
 }
@@ -16,15 +16,21 @@ auth:bearer {
 
 body:json {
   {
-    "otp": 8058,
     "collection": "demandes_visites",
-    "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}"
+    "itemId": "{{DEFAULT_DEMANDE_VISITE_ID}}",
+    "paymentMethod": "moov",
+    "paymentCredentials": "2250143881818"
   }
 }
 
+script:pre-request {
+    
+}
+
 script:post-response {
-  const {data: { id }} = res.getBody();
+  const {data: { id, hub2Token }} = res.getBody();
   bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+  bru.setEnvVar("HUB2_TOKEN", hub2Token)
 }
 
 tests {

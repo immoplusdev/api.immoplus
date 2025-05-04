@@ -1,16 +1,12 @@
-import {
-  IMailService,
-  INotificationService,
-  ISmsService,
-  SendNotificationParams,
-} from "@/core/domain/notifications";
+import axios from "axios";
+import { IMailService, INotificationService, ISmsService, SendNotificationParams } from "@/core/domain/notifications";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import axios from "axios";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { Role, UserRole } from "@/core/domain/roles";
 import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
 import { ILoggerService } from "@/core/domain/logging";
+
 
 export class NotificationService implements INotificationService {
   constructor(
@@ -44,15 +40,15 @@ export class NotificationService implements INotificationService {
 
   private async sendOneSignalNotification(params: SendNotificationParams, userRole?: UserRole) {
     const credentials = await this.getOneSignalCredentials(userRole);
-    let returnUrl = this.configsManagerService.getEnvVariable("ONE_SIGNAL_RETURN_URL");
-    if (params.returnUrl) returnUrl += `/${params.returnUrl}`;
+    // let returnUrl = this.configsManagerService.getEnvVariable("ONE_SIGNAL_RETURN_URL");
+    // if (params.returnUrl) returnUrl += `/${params.returnUrl}`;
 
     const data = {
       app_id: credentials.app_id,
-      include_external_user_ids: [params.userId],
       headings: { en: params.subject },
       contents: { en: params.message },
-      url: returnUrl,
+      include_external_user_ids: [params.userId],
+      // url: returnUrl,
     };
 
 

@@ -1,0 +1,41 @@
+meta {
+  name: list-payments
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/payments
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+script:post-response {
+  const {data: { id }} = res.getBody();
+  bru.setEnvVar("DEFAULT_PAYMENT_ID", id)
+}
+
+tests {
+  const { z } = require("zod");
+  
+  const schema = z.object({
+    id: z.string(),
+    amount: z.number()
+  });
+  
+  test("Should return a new array with items matching the schema", function() {
+    
+    const { data } = res.getBody();
+    
+    expect(Array.isArray(data)).to.be.equal(true);
+    
+    for(let item of data){
+     const result = schema.safeParse(item);
+     expect(result.success).to.be.equal(true)
+    }
+  });
+}

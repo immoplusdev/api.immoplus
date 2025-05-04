@@ -12,6 +12,8 @@ export class SeedUsers20240803105953 implements MigrationInterface {
       {
         id: adminId,
         email: "admin@example.com",
+        first_name: "Admin",
+        last_name: "Admin",
         role_id: UserRole.Admin,
         phone_number: "225-0123456789",
         password: passwordHash,
@@ -22,6 +24,8 @@ export class SeedUsers20240803105953 implements MigrationInterface {
       {
         id: generateUuid(),
         email: "customer@immoplus.ci",
+        first_name: "Customer",
+        last_name: "Customer",
         role_id: UserRole.Customer,
         phone_number: "225-0223456789",
         password: passwordHash,
@@ -32,6 +36,8 @@ export class SeedUsers20240803105953 implements MigrationInterface {
       {
         id: generateUuid(),
         email: "pro-entreprise@immoplus.ci",
+        first_name: "ProEntreprise",
+        last_name: "ProEntreprise",
         role_id: UserRole.ProEntreprise,
         phone_number: "225-0323456789",
         password: passwordHash,
@@ -42,6 +48,8 @@ export class SeedUsers20240803105953 implements MigrationInterface {
       {
         id: generateUuid(),
         email: "pro-particulier@immoplus.ci",
+        first_name: "ProParticulier",
+        last_name: "ProParticulier",
         role_id: UserRole.ProParticulier,
         phone_number: "225-0423456789",
         password: passwordHash,
@@ -56,7 +64,7 @@ export class SeedUsers20240803105953 implements MigrationInterface {
       );
 
       await queryRunner.query(
-        `INSERT INTO users (id, email, role_id, phone_number, password, status, created_by, additional_data_id) VALUES ('${user.id}', '${user.email}', '${user.role_id}', '${user.phone_number}', '${user.password}', '${user.status}', '${user.created_by}', '${user.additional_data_id}')`,
+        `INSERT INTO users (id, email, first_name, last_name, role_id, phone_number, password, status, created_by, additional_data_id) VALUES ('${user.id}', '${user.email}', '${user.first_name}', '${user.last_name}', '${user.role_id}', '${user.phone_number}', '${user.password}', '${user.status}', '${user.created_by}', '${user.additional_data_id}')`,
       );
     }
   }

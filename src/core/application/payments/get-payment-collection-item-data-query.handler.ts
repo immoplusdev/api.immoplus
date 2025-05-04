@@ -37,6 +37,8 @@ export class GetPaymentCollectionItemDataQueryHandler
         collection: PaymentCollection.DemandeDeVisite,
         amount: data.montantTotalDemandeVisite,
       });
+
+      // "statusReservation": "en_cours",
     }
 
     return itemData;

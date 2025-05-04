@@ -1,6 +1,6 @@
+import { IsOptional } from "class-validator";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from '@/lib/ts-utilities';
-import { IsOptional } from "class-validator";
 import { NotificationType } from "@/core/domain/notifications";
 
 export class UpdateNotificationDto {

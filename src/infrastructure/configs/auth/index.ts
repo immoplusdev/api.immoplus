@@ -1,1 +1,1 @@
-export * from "./jwt.configs";
+export * from "./jwtConfigs";

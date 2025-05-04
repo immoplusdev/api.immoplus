@@ -30,6 +30,9 @@ export class ResidenceStatusUpdatedEventHandler implements IEventHandler<Residen
     const residence = await this.residenceRepository.findOne(event.id, {
       relations: ["proprietaire"],
     });
+
+    console.log(residence);
+
     const proprietaire = castObject<User>(residence.proprietaire as never);
 
     const emailContent = `

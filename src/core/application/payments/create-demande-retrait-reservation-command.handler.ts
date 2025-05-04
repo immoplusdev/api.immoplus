@@ -38,7 +38,7 @@ export class CreateDemandeRetraitReservationCommandHandler implements ICommandHa
   private async ensureCanProceed(command: CreateDemandeRetraitReservationCommand, reservation: Reservation) {
 
     if (!reservation) throw new ItemNotFoundException();
-    if (reservation.statusReservation != StatusReservation.Valide) throw new ConflictException("$t:all.exception.reservation_pas_encore_validee");
+    if (reservation.statusReservation != StatusReservation.Terminee) throw new ConflictException("$t:all.exception.reservation_pas_encore_validee");
 
     const existingDemandesRetrait = await this.paymentRepository.findByQuery({
       _where: [

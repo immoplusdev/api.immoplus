@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-
+import { ConfigService } from "@nestjs/config";
 import { MailService } from "@/infrastructure/features/notifications";
 import { IMailService, SendMailParams } from "@/core/domain/notifications";
-import { ConfigService } from "@nestjs/config";
-import { LoggerService } from "@/infrastructure/features/logging/logger.service";
-import { ConfigsManagerService } from "@/infrastructure/features/configs/configs-manager.service";
+import { LoggerService } from "../logging/logger.service";
+import { ConfigsManagerService } from "../configs/configs-manager.service";
 
 const dotenv = require("dotenv");
 dotenv.config();
