@@ -18,6 +18,7 @@ import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers"
 import { OmitMethods } from "@/lib/ts-utilities";
 import { File } from "@/core/domain/files";
 import { User } from "@/core/domain/users";
+import { ReservationEntity } from "../reservations/reservation.entity";
 
 @Entity("residences")
 export class ResidenceEntity {
@@ -121,6 +122,9 @@ export class ResidenceEntity {
   // @JoinColumn({ name: "deleted_by" })
   // deletedBy?: string;
 
+
+  @OneToMany(() => ReservationEntity, (reservation) => reservation.residence)
+  reservations?: ReservationEntity[];
   constructor(data?: OmitMethods<ResidenceEntity>) {
     if (data) Object.assign(this, data);
   }

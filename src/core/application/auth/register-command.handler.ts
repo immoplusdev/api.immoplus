@@ -38,6 +38,7 @@ export class RegisterCommandHandler
       user: userId,
     });
 
+
     const user = await this.usersRepository.createOne({
       id: userId,
       email: command.email.toLowerCase(),
@@ -50,6 +51,8 @@ export class RegisterCommandHandler
       createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
       avatar: command.avatar || null,
     });
+
+    console.log("user : ",user);
 
     return new RegisterCommandResponse({
       user,

@@ -99,6 +99,19 @@ export class ResidenceController {
   @ApiResponse({
     type: WrapperResponseResidenceBatchDto,
   })
+  @Get("/find-available/public/")
+  async findAvailablePublic(
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    const items = await this.repository.findAvailableResidencesForToday(params);
+
+    return items;
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
   @Get("/data/public/geolocalized")
   async readManyPublicGeolocalized(
     @Query() params: GeolocalizedItemsSearchParamsQueryDto,

@@ -2,5 +2,6 @@ import { applicationConfigs } from '@/infrastructure/configs/application/applica
 
 async function bootstrap() {
   applicationConfigs();
+  
 }
 bootstrap();
