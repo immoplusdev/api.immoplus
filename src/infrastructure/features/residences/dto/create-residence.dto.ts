@@ -44,6 +44,14 @@ export class CreateResidenceDto {
   @IsOptional()
   position?: GeoJsonPoint;
 
+  @ApiProperty({ type: "number", format: "float", nullable: true })
+  @IsOptional()
+  latitude?: number;
+
+  @ApiProperty({ type: "number", format: "float", nullable: true })
+  @IsOptional()
+  longitude?: number;
+
   @ApiProperty({ format: "uuid" })
   @IsOptional()
   video?: string;
@@ -51,7 +59,6 @@ export class CreateResidenceDto {
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   @IsOptional()
   images?: string[];
-
 
   @ApiProperty({ type: () => CommoditeDto, isArray: true })
   @IsOptional()

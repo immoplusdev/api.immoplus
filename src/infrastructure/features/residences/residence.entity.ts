@@ -74,6 +74,13 @@ export class ResidenceEntity {
   adresse?: string;
   @Column({ name: "position", type: "json", nullable: true })
   position?: GeoJsonPoint;
+
+  @Column("double")
+  latitude?: number;
+
+  @Column("double")
+  longitude?: number;
+
   @Column({ name: "residence_disponible", type: "bool", default: true })
   residenceDisponible: boolean;
   @Column({ name: "status_validation", type: "varchar", default: StatusValidationBienImmobilier.EnAttenteValidation })

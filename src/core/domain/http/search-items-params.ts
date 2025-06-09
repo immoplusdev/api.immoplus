@@ -8,6 +8,21 @@ export interface SearchItemsParams {
   _search?: string;
 }
 
+export interface SearchGeolocalizedItemsParams {
+  lat: number
+  long: number;
+  radius?: number;
+  startDate?: Date;
+  endDate?: Date;
+  _page?: number;
+  _per_page?: number;
+  _order_by?: string;
+  _order_dir?: ItemsParamsOrderDirection;
+  _where?: ItemsParamsCriterias[];
+  _select?: string[];
+  _search?: string;
+}
+
 
 export interface SelectItemsParams {
   _select?: string[];

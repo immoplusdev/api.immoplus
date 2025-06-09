@@ -131,9 +131,7 @@ export class BienImmobilierController {
   async readManyPublicGeolocalized(
     @Query() params: GeolocalizedItemsSearchParamsQueryDto,
   ) {
-    delete params.lat;
-    delete params.long;
-    delete params.radius;
+   
     const items = await this.repository.findByQuery(params as never);
 
     return this.responseMapper.mapFromQueryResult(items);

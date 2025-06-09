@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch, UsePipes, ValidationPipe, Req } from "@nestjs/common";
+import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
 import { IResidenceRepository } from "@/core/domain/residences";
@@ -103,6 +103,7 @@ export class ResidenceController {
   async findAvailablePublic(
     @Query() params: SearchItemsParamsDto,
   ) {
+   
     const items = await this.repository.findAvailableResidencesForToday(params);
 
     return items;
@@ -116,13 +117,29 @@ export class ResidenceController {
   async readManyPublicGeolocalized(
     @Query() params: GeolocalizedItemsSearchParamsQueryDto,
   ) {
-    delete params.lat;
-    delete params.long;
-    delete params.radius;
-    const items = await this.repository.findByQuery(params as never);
+    console.log("params: ", params);
+    const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
   }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Get("/data/public/find-by-geolocation")
+  async findPublicByGeolocation(
+    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+    @Req() req,
+  ) 
+  {
+    params = req.query;
+    const items = await this.repository.findByGeolocation(params);
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+
+  
 
   @ApiResponse({
     type: WrapperResponseResidenceDto,

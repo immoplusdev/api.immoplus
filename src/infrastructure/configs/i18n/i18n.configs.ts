@@ -24,6 +24,12 @@ export const i18Configs: I18nOptions = {
 };
 
 export function configureI18n(app: INestApplication) {
-  app.useGlobalPipes(new I18nValidationPipe());
+  app.useGlobalPipes(new I18nValidationPipe({
+    transform: true,
+    whitelist: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+  }));
   app.useGlobalFilters(new I18nValidationExceptionFilter());
 }
