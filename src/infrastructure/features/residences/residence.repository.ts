@@ -8,6 +8,7 @@ import { SearchGeolocalizedItemsParams, SearchItemsParams } from "@/core/domain/
 import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
 import { ResidenceEntityMapper } from "@/infrastructure/features/residences";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers/status-validation-bien-immobilier.enum";
+import { GeoJsonType } from "@/core/domain/map/geo-json-type.enum";
 
 @Injectable()
 export class ResidenceRepository implements IResidenceRepository {
@@ -45,12 +46,34 @@ export class ResidenceRepository implements IResidenceRepository {
 
 
   async createMany(payload: Partial<Residence>[]): Promise<Residence[]> {
-    return await this.repository.createMany(payload);
+    // Convert GeoJson to longitude and latitude
+    const data = payload.map((item) => ({
+      ...item,
+      ...(item?.position?.coordinates?.length === 2 
+          && item?.position?.type === GeoJsonType.Point 
+          && {
+            longitude: item.position.coordinates[0],
+            latitude: item.position.coordinates[1],
+          })
+    }))
+    return await this.repository.createMany(data);
   }
 
   async createOne(payload: Partial<Residence>): Promise<Residence> {
-    return await this.repository.createOne(payload);
+
+    // Convert GeoJson to longitude and latitude
+    const data = {
+      ...payload,
+      ...(payload?.position?.coordinates?.length === 2 
+          && payload?.position?.type === GeoJsonType.Point 
+          && {
+            longitude: payload.position.coordinates[0],
+            latitude: payload.position.coordinates[1],
+          })
+    };
+    return await this.repository.createOne(data);
   }
+
 
   async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Residence[]>> {
     return await this.repository.findByQuery(query);
@@ -89,7 +112,7 @@ export class ResidenceRepository implements IResidenceRepository {
 
     const currentPage = query?._page ?? DEFAULT_PAGE;
     const pageSize = query?._per_page ?? DEFAULT_PAGE_SIZE;
-    const search = query?._search?.toLowerCase() || "";
+    const search = query?._search?.trim().toLowerCase() || "";
 
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0];
@@ -119,6 +142,7 @@ export class ResidenceRepository implements IResidenceRepository {
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
     // 🔍 Recherche plein texte
+
     if (search && this.fullTextSearchFields.length > 0) {
       const searchConditions = this.fullTextSearchFields.map(field => {
         return `LOWER(CAST(residence.${field} AS CHAR)) LIKE :pattern`;
@@ -211,6 +235,8 @@ export class ResidenceRepository implements IResidenceRepository {
       .andWhere("residence.status_validation = :status", { status: StatusValidationBienImmobilier.Valide })
       .andWhere("residence.residence_disponible = :dispo", { dispo: true })
       .andWhere("residence.deleted_at IS NULL")
+      .andWhere("residence.latitude IS NOT NULL")
+      .andWhere("residence.longitude IS NOT NULL")
       .setParameters({
         startDate: formattedStartDate,
         endDate: formattedEndDate,

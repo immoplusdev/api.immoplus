@@ -34,10 +34,10 @@ export class ReservationEntity {
   @Column({ name: "dates_reservation", type: "json" })
   datesReservation: ServiceDates;
 
-  @Column({ name: "dateDebut", nullable: true }) 
+  @Column({ name: "date_debut", nullable: true }) 
   dateDebut: Date;
   
-  @Column({ name: "dateFin", nullable: true })
+  @Column({ name: "date_fin", nullable: true })
   dateFin: Date;
 
   @Column({ name: "status_facture", type: "varchar", length: 10, default: StatusFacture.NonPaye })

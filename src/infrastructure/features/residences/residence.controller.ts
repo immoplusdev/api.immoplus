@@ -103,9 +103,7 @@ export class ResidenceController {
   async findAvailablePublic(
     @Query() params: SearchItemsParamsDto,
   ) {
-   
     const items = await this.repository.findAvailableResidencesForToday(params);
-
     return items;
   }
 
@@ -115,10 +113,10 @@ export class ResidenceController {
   })
   @Get("/data/public/geolocalized")
   async readManyPublicGeolocalized(
-    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+    @Query() params: GeolocalizedItemsSearchParamsQueryDto
   ) {
     console.log("params: ", params);
-    const items = await this.repository.findByQuery(params);
+    const items = await this.repository.findByQuery(params as never);
 
     return this.responseMapper.mapFromQueryResult(items);
   }
@@ -133,8 +131,7 @@ export class ResidenceController {
     @Req() req,
   ) 
   {
-    params = req.query;
-    const items = await this.repository.findByGeolocation(params);
+    const items = await this.repository.findByGeolocation(params as never);
     return this.responseMapper.mapFromQueryResult(items);
   }
 

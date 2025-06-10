@@ -6,20 +6,20 @@ import { IsNumber } from "class-validator";
 import { truncate } from "fs";
 
 export class GeolocalizedItemsSearchParamsQueryDto {
-  @ApiProperty({ required: true, type: Number})
-  lat: number;
+  @ApiProperty({ required: true})
+  _lat: number;
 
-  @ApiProperty({ required: true, type: Number })
-  long: number;
+  @ApiProperty({ required: true})
+  _long: number;
 
-  @ApiProperty({ required: false, type: Number})
-  radius?: number;
-
-  @ApiProperty({ required: false, type: Date})
-  startDate?: Date;
+  @ApiProperty({ required: false})
+  _radius?: number;
 
   @ApiProperty({ required: false, type: Date})
-  endDate?: Date;
+  _startDate?: Date;
+
+  @ApiProperty({ required: false, type: Date})
+  _endDate?: Date;
 
   @ApiProperty({ required: false })
   _page?: number;

@@ -6,6 +6,7 @@ import { BienImmobilierEntity, BienImmobilierEntityMapper } from "@/infrastructu
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
+import { GeoJsonType } from "@/core/domain/map/geo-json-type.enum";
 
 @Injectable()
 export class BienImmobilierRepository implements IBienImmobilierRepository {
@@ -50,11 +51,31 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
   }
 
   async createMany(payload: Partial<BienImmobilier>[]): Promise<BienImmobilier[]> {
-    return await this.repository.createMany(payload);
+    // Convert GeoJson to longitude and latitude
+    const data = payload.map((item) => ({
+      ...item,
+      ...(item?.position?.coordinates?.length === 2 
+          && item?.position?.type === GeoJsonType.Point 
+          && {
+            longitude: item.position.coordinates[0],
+            latitude: item.position.coordinates[1],
+          })
+    }))
+    return await this.repository.createMany(data);
   }
 
   async createOne(payload: Partial<BienImmobilier>): Promise<BienImmobilier> {
-    return await this.repository.createOne(payload);
+     // Convert GeoJson to longitude and latitude
+    const data = {
+      ...payload,
+      ...(payload?.position?.coordinates?.length === 2 
+          && payload?.position?.type === GeoJsonType.Point 
+          && {
+            longitude: payload.position.coordinates[0],
+            latitude: payload.position.coordinates[1],
+          })
+    };
+    return await this.repository.createOne(data);
   }
 
   async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<BienImmobilier[]>> {

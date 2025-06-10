@@ -18,6 +18,8 @@ export class BienImmobilier {
   commune?: string;
   adresse?: string;
   position?: GeoJsonPoint;
+  latitude?: number;
+  longitude?: number;
   statusValidation: StatusValidationBienImmobilier;
   prix: number;
   metadata?: Record<string, any>;
