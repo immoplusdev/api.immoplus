@@ -16,10 +16,10 @@ export class GeolocalizedItemsSearchParamsQueryDto {
   _radius?: number;
 
   @ApiProperty({ required: false, type: Date})
-  _startDate?: Date;
+  _start_date?: Date;
 
   @ApiProperty({ required: false, type: Date})
-  _endDate?: Date;
+  _end_date?: Date;
 
   @ApiProperty({ required: false })
   _page?: number;

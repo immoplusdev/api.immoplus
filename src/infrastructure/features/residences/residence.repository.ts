@@ -210,10 +210,10 @@ export class ResidenceRepository implements IResidenceRepository {
 
     const currentPage = query?._page ?? DEFAULT_PAGE;
     const pageSize = query?._per_page ?? DEFAULT_PAGE_SIZE;
-    const search = query?._search?.toLowerCase() || "";
+    const search = query?._search?.toLowerCase() || ""; 
 
-    const startDate = query?.startDate ?? new Date(); // Par défaut : aujourd'hui
-    const endDate = query?.endDate ?? new Date(); // Par défaut : aujourd'hui
+    const startDate = query?._start_date ?? new Date(); // Par défaut : aujourd'hui
+    const endDate = query?._end_date ?? new Date(); // Par défaut : aujourd'hui
     const formattedStartDate = new Date(startDate).toISOString().split("T")[0];
     const formattedEndDate = new Date(endDate).toISOString().split("T")[0];
 
@@ -252,8 +252,8 @@ export class ResidenceRepository implements IResidenceRepository {
     }
 
     // 📍 Filtre par géolocalisation (Haversine)
-    if (query?.lat && query?.long) {
-      const radiuis = query?.radius || 5; // Par défaut : 5km
+    if (query?._lat && query?._long) {
+      const radiuis = query?._radius || 5; // Par défaut : 5km
       qb.andWhere(`
         6371 * ACOS(
           COS(RADIANS(:lat)) * COS(RADIANS(residence.latitude)) *
@@ -261,8 +261,8 @@ export class ResidenceRepository implements IResidenceRepository {
           SIN(RADIANS(:lat)) * SIN(RADIANS(residence.latitude))
         ) <= :radius
       `, {
-        lat: query.lat,
-        long: query.long,
+        lat: query._lat,
+        long: query._long,
         radius: radiuis,
       });
     }
@@ -312,8 +312,7 @@ export class ResidenceRepository implements IResidenceRepository {
     // 📄 Pagination
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    // console.log(qb.getQuery());
-
+    // Exécution de la requête
     const [residences, total] = await qb.getManyAndCount();
 
     return new WrapperResponse(this.repository['mapResponse'](residences)).paginate({

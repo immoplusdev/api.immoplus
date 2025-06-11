@@ -9,11 +9,11 @@ export interface SearchItemsParams {
 }
 
 export interface SearchGeolocalizedItemsParams {
-  lat: number
-  long: number;
-  radius?: number;
-  startDate?: Date;
-  endDate?: Date;
+  _lat: number
+  _long: number;
+  _radius?: number;
+  _start_date?: Date;
+  _end_date?: Date;
   _page?: number;
   _per_page?: number;
   _order_by?: string;

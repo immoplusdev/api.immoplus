@@ -131,6 +131,7 @@ export class ResidenceController {
     @Req() req,
   ) 
   {
+    params = req.query as GeolocalizedItemsSearchParamsQueryDto;
     const items = await this.repository.findByGeolocation(params as never);
     return this.responseMapper.mapFromQueryResult(items);
   }
