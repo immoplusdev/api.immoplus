@@ -23,6 +23,7 @@ import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { UpdateResidenceByIdCommand } from "@/core/application/residences";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 
 
 @ApiTags("Residence")
@@ -111,13 +112,13 @@ export class ResidenceController {
   @ApiResponse({
     type: WrapperResponseResidenceBatchDto,
   })
-  @Get("/data/public/geolocalized")
-  async readManyPublicGeolocalized(
-    @Query() params: GeolocalizedItemsSearchParamsQueryDto
-  ) {
-    console.log("params: ", params);
-    const items = await this.repository.findByQuery(params as never);
-
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Get("data/public/geolocalized")
+  async findPublicByGeolocation(
+    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+  ) 
+  {
+    const items = await this.repository.findByGeolocation(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
 
@@ -125,14 +126,12 @@ export class ResidenceController {
     type: WrapperResponseResidenceBatchDto,
   })
   @UsePipes(new ValidationPipe({ transform: true }))
-  @Get("/data/public/find-by-geolocation")
-  async findPublicByGeolocation(
-    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
-    @Req() req,
+  @Get("data/filter/public")
+  async findByGeolocationFilter(
+    @Query() params: GeolocalizedItemsSearchFiltersParamsQueryDto,
   ) 
   {
-    params = req.query as GeolocalizedItemsSearchParamsQueryDto;
-    const items = await this.repository.findByGeolocation(params as never);
+    const items = await this.repository.findByGeolocationFilter(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
 

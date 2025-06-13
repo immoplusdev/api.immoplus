@@ -1,9 +1,6 @@
-import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { ItemsParamsCriteriasDto, ItemsParamsOrderDirectionDto } from "@/infrastructure/http";
-import { Type } from "class-transformer";
-import { IsNumber } from "class-validator";
-import { truncate } from "fs";
+
 
 export class GeolocalizedItemsSearchParamsQueryDto {
   @ApiProperty({ required: true})
@@ -60,3 +57,4 @@ export class GeolocalizedItemsSearchParamsQueryDto {
 
   
 }
+

@@ -1,7 +1,6 @@
 import { PipeTransform, Injectable, ArgumentMetadata } from "@nestjs/common";
 import { SearchItemsParams } from "@/core/domain/http";
 import { ItemsParamsCriteriasDto, parseHttpQuery } from "@/infrastructure/http";
-import { InvalidQueryException } from "@/core/domain/common/exceptions";
 
 @Injectable()
 export class QueryPipe implements PipeTransform {
