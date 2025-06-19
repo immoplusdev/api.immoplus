@@ -12,6 +12,8 @@ import { UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { FileEntity } from "@/infrastructure/features/files";
 import { UserDataEntity } from "./user-data.entity";
+import { Wallet } from "@/core/domain/wallet";
+import { WalletEntity } from "../wallets/wallet.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -80,6 +82,9 @@ export class UserEntity {
     default: UserStatus.Active,
   })
   status: UserStatus;
+
+  // @OneToOne(() => WalletEntity, wallet => wallet.owner, { nullable: true })
+  // wallet
 
   // Tracking fields
   @CreateDateColumn({ name: "created_at" })

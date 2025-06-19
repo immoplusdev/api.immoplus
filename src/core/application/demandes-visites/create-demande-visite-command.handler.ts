@@ -13,6 +13,9 @@ import {
   EstimerPrixDemandeVisiteQuery,
   GetDemandeVisiteByIdQuery,
 } from "@/core/application/demandes-visites";
+import { INotificationService } from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
+import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 
 
 @CommandHandler(CreateDemandeVisiteCommand)
@@ -22,6 +25,8 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
     @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
     @Inject(Deps.BiensImmobiliesRepository) private readonly biensImmobiliesRepository: IBienImmobilierRepository,
     @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
+    @Inject(Deps.NotificationService) private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
   ) {
   }
 
@@ -54,7 +59,7 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
       createdBy: command.userId,
     }, false);
 
-    return await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
+    return  await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
   }
 
   private async verifyCanCreateDemandeVisite(command: CreateDemandeVisiteCommand) {

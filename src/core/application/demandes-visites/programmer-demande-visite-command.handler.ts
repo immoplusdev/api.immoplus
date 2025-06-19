@@ -34,6 +34,9 @@ export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<Pr
       subject: this.globalizationService.t("all.notifications.demandes_visites.visite_programmee_client.subject"),
       message: this.globalizationService.t("all.notifications.demandes_visites.visite_programmee_client.message"),
       returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${command.id}`,
+      sendMail: true,
+      sendSms: true,
+      skipInAppNotification: false
     });
 
     return await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id: command.id }));

@@ -36,10 +36,15 @@ export class PaymentReservationValideEventHandler implements IEventHandler<Payme
     const reservation = await this.reservationRepository.findOne(event.reservationId);
     if (!reservation) throw new ItemNotFoundException();
 
+
+
     await this.notificationService.sendNotification({
       userId: reservation.createdBy as string,
       subject: this.globalizationService.t("all.notifications.reservations.paiement_valide_client.subject"),
       message: this.globalizationService.t("all.notifications.reservations.paiement_valide_client.message"),
+      skipInAppNotification: false,
+      sendMail: true,
+      sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
     });
 
@@ -47,6 +52,9 @@ export class PaymentReservationValideEventHandler implements IEventHandler<Payme
       userId: (reservation.residence as Residence).proprietaire,
       subject: this.globalizationService.t("all.notifications.reservations.paiement_valide_pro.subject"),
       message: this.globalizationService.t("all.notifications.reservations.paiement_valide_pro.message"),
+      skipInAppNotification: false,
+      sendMail: true,
+      sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
     });
   }

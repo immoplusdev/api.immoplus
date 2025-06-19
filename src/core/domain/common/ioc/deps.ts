@@ -16,6 +16,7 @@ export enum Deps {
   BiensImmobiliesRepository = "BiensImmobiliesRepository",
   DemandeVisiteRepository = "DemandeVisiteRepository",
   PaymentRepository = "PaymentRepository",
+  WalletRepository = "WalletRepository",
 
   // Services
   LoggerService = "LoggerService",
