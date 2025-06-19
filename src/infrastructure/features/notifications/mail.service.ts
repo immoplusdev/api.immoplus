@@ -43,7 +43,7 @@ export class MailService implements IMailService {
     if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
       // this.loggerService.info(params.html || params.text, params);
       // return;
-      mailParams.to = "mstx777@gmail.com";
+      mailParams.to = "dev.johnlight@gmail.com";
     }
 
     this.mailTransport.sendMail(mailParams)
