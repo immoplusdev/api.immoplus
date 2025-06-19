@@ -12,8 +12,8 @@ import { UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { FileEntity } from "@/infrastructure/features/files";
 import { UserDataEntity } from "./user-data.entity";
-import { Wallet } from "@/core/domain/wallet";
-import { WalletEntity } from "../wallets/wallet.entity";
+// import { Wallet } from "@/core/domain/wallet";
+// import { WalletEntity } from "../wallets/wallet.entity";
 
 @Entity("users")
 export class UserEntity {
