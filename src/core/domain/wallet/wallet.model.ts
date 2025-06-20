@@ -14,7 +14,6 @@ export class Wallet {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
-  createdBy?: string;
 
   constructor(data?: OmitMethods<Partial<Wallet>>) {
     if (data) Object.assign(this, data);

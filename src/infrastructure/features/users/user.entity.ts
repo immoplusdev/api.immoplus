@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn, DeleteDateColumn,
   Entity, JoinColumn, ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,8 +13,7 @@ import { UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { FileEntity } from "@/infrastructure/features/files";
 import { UserDataEntity } from "./user-data.entity";
-// import { Wallet } from "@/core/domain/wallet";
-// import { WalletEntity } from "../wallets/wallet.entity";
+import { WalletEntity } from "../wallets/wallet.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -83,8 +83,11 @@ export class UserEntity {
   })
   status: UserStatus;
 
-  // @OneToOne(() => WalletEntity, wallet => wallet.owner, { nullable: true })
-  // wallet
+  @OneToOne(() => WalletEntity, wallet => wallet.owner, { nullable: true })
+  wallet: WalletEntity | string;
+
+  @OneToMany(() => UserEntity, (user) => user.createdBy, { nullable: true })
+  withdrawalRequests?: string[]; // IDs of withdrawal requests associated with the user
 
   // Tracking fields
   @CreateDateColumn({ name: "created_at" })

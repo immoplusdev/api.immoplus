@@ -9,7 +9,7 @@ import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { GlobalInterceptorsModule } from "@/infrastructure/interceptors/global-interceptors.module";
 import { RestModule } from "@/infrastructure/presentation/rest/rest.module";
 import { ScheduleModule } from "@nestjs/schedule";
-import { WalletsModule } from './infrastructure/features/wallets/wallets.module';
+import { WalletsModule } from './infrastructure/features/wallets/wallet.module';
 
 const providers: Provider[] = [];
 
