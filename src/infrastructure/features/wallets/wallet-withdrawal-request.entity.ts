@@ -4,8 +4,8 @@ import { WithdrawalStatus } from "@/core/domain/wallet";
 import { Delete } from "@nestjs/common";
 import { User } from "@/core/domain/users";
 
-@Entity({ name: 'withdrawal_requests' })
-export class WalletWithdrawalRequest {
+@Entity({ name: 'wallet_withdrawal_requests' })
+export class WalletWithdrawalRequestEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 

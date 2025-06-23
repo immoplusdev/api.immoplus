@@ -1,3 +1,3 @@
-export class FindWalletByIdQuery {
+export class DeleteWalletTransactionCommand {
     constructor(public readonly id: string) {}
 }

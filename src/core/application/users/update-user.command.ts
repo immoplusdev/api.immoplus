@@ -5,7 +5,7 @@ import { IsOptional } from "class-validator";
 export class UpdateUserCommand {
   // basic fields
   @ApiProperty()
-  @IsOptional()
+  @IsOptional() 
   firstName?: string;
   @ApiProperty()
   @IsOptional()

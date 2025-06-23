@@ -84,7 +84,7 @@ export class UserEntity {
   status: UserStatus;
 
   @OneToOne(() => WalletEntity, wallet => wallet.owner, { nullable: true })
-  wallet: WalletEntity | string;
+  wallet?: WalletEntity | string;
 
   @OneToMany(() => UserEntity, (user) => user.createdBy, { nullable: true })
   withdrawalRequests?: string[]; // IDs of withdrawal requests associated with the user

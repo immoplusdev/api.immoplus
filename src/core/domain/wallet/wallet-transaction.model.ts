@@ -8,7 +8,7 @@ export class WalletTransaction {
   type: TransactionType;
   amount: number;
   currency: string;
-  reference: string;
+  reference?: string;
   note?: string;
 
   createdAt?: Date;

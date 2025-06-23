@@ -27,7 +27,8 @@
     "invalid_password_format_exception": "Le mot de passe doit respecter les règles suivantes :\n      Au moins 8 caractères de long.\n      Contient au moins une lettre majuscule.\n      Contient au moins une lettre minuscule.\n      Contient au moins un chiffre.\n      Contient au moins un caractère spécial.",
     "empty_password_exception": "Veuillez entrer un mot de passe correcte",
     "existing_demande_retrait_reservation": "Une demande de retrait existe déjà pour cette réservation",
-    "reservation_pas_encore_validee": "La réservation n'est pas encore validée"
+    "reservation_pas_encore_validee": "La réservation n'est pas encore validée",
+    "not_enought_money": "Solde insuffisant"
   },
   "validation": {
     "create_user_error": "Erreur lors de la création de l'utilisateur",

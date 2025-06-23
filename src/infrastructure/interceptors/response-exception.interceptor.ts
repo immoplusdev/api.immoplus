@@ -3,6 +3,7 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler, BadRequestException, Inject,
+  HttpException,
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
@@ -39,7 +40,7 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
             const errResponse = err.getResponse();
             const exception = new FailedValidationException((errResponse as any).message[0]);
             throw this.translateExceptionMessage(exception);
-          } else {
+          }else {
             if (!this.configsManagerService.isAppProfileProduction()) {
               this.loggerService.error("App Exception", err);
             }

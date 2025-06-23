@@ -3,6 +3,7 @@ import { WalletsService } from "./wallet.service";
 import { User } from "@/core/domain/users";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
+import { CreateWalletWithdrawalRequestCommand } from "@/core/application/wallet/commands/create-wallet-withdrawal-request.command";
 
 export class WalletsRepository implements IWalletRepository {
     constructor(
@@ -31,8 +32,8 @@ export class WalletsRepository implements IWalletRepository {
         return  this.walletService.findWalletTransactionById(id);
     }
 
-    findWalletTransactionsByWallet(ownerId: string): Promise<WalletTransaction[]> {
-        return this.walletService.findWalletTransactionsByWallet(ownerId);
+    findWalletTransactionsByOwner(ownerId: string): Promise<WalletTransaction[]> {
+        return this.walletService.findWalletTransactionsByOwner(ownerId);
     }
 
     
@@ -41,20 +42,20 @@ export class WalletsRepository implements IWalletRepository {
     }
    
 
-    createWithdrawalRequest(request: Partial<WalletWithDrawalRequest>): Promise<WalletWithDrawalRequest> {
-        return this.walletService.createWithdrawalRequest(request);
+    createWalletWithdrawalRequest(request: CreateWalletWithdrawalRequestCommand): Promise<WalletWithDrawalRequest> {
+        return this.walletService.createWalletWithdrawalRequest(request);
     }
-    updateWithdrawalRequest(id: string, request: Partial<WalletWithDrawalRequest>): Promise<WalletWithDrawalRequest> {
-        return this.walletService.updateWithdrawalRequest(id, request);
+    updateWalletWithdrawalRequest(id: string, request: Partial<WalletWithDrawalRequest>): Promise<WalletWithDrawalRequest> {
+        return this.walletService.updateWalletWithdrawalRequest(id, request);
     }
-    findWithdrawalRequestById(id: string): Promise<WalletWithDrawalRequest> {
-        return this.walletService.findWithdrawalRequestById(id);
+    findWalletWithdrawalRequestById(id: string): Promise<WalletWithDrawalRequest> {
+        return this.walletService.findWalletWithdrawalRequestById(id);
     }
-    findWithdrawalRequestsByOwner(owner: string): Promise<WalletWithDrawalRequest[]> {
-        return this.walletService.findWithdrawalRequestsByOwner(owner);
+    findWalletWithdrawalRequestsByOwner(owner: string): Promise<WalletWithDrawalRequest[]> {
+        return this.walletService.findWalletWithdrawalRequestsByOwner(owner);
     }
-    deleteWithdrawalRequest(id: string): Promise<void> {
-        return this.walletService.deleteWithdrawalRequest(id);
+    deleteWalletWithdrawalRequest(id: string): Promise<void> {
+        return this.walletService.deleteWalletWithdrawalRequest(id);
     }
    
 }
