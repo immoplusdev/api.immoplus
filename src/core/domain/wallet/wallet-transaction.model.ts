@@ -1,5 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { Wallet } from "./wallet.model";
+import { TransactionType } from "./wallet.enum";
 
 export class WalletTransaction {
   id: string;
@@ -7,7 +8,7 @@ export class WalletTransaction {
   type: TransactionType;
   amount: number;
   currency: string;
-  reference: string;
+  reference?: string;
   note?: string;
 
   createdAt?: Date;
@@ -20,10 +21,4 @@ export class WalletTransaction {
   }
 }
 
-export enum TransactionType {
-  CREDIT = 'CREDIT',
-  DEBIT = 'DEBIT',
-  BLOCK = 'BLOCK',
-  UNBLOCK = 'UNBLOCK',
-  WITHDRAWAL = 'WITHDRAWAL'
-}
+
