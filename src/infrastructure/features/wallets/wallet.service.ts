@@ -8,6 +8,7 @@ import { CreateWalletWithdrawalRequestCommand } from '@/core/application/wallet/
 import { WalletTransactionEntity } from './wallet-transaction.entity';
 import { NotEnoughtMoneyException } from '@/core/domain/wallet/exceptions/not-enought-money.exception';
 import { WalletWithdrawalRequestEntity } from './wallet-withdrawal-request.entity';
+import { min } from 'class-validator';
 
 @Injectable()
 export class WalletsService {
@@ -153,6 +154,9 @@ export class WalletsService {
 
     async createWalletWithdrawalRequest(request: CreateWalletWithdrawalRequestCommand): Promise<WalletWithDrawalRequest> {
         const wallet = await this.findWalletByOwner(request.owner);
+        if(wallet.availableBalance < +request.amount) {
+            throw new NotEnoughtMoneyException();
+        }
         const newRequest = new WalletWithDrawalRequest({
             ...request,
            wallet

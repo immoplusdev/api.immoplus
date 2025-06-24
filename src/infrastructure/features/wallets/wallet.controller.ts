@@ -1,8 +1,8 @@
 import { Deps } from '@/core/domain/common/ioc';
 import { PermissionAction, PermissionCollection } from '@/core/domain/permissions';
 import { UserRole } from '@/core/domain/roles';
-import { DEFAULT_CURRENCY, IWalletRepository, Wallet, WalletTransaction, WalletWithDrawalRequest } from '@/core/domain/wallet';
-import { RequiredPermissions, RequiredRoles } from '@/infrastructure/decorators';
+import { DEFAULT_CURRENCY, IWalletRepository, Wallet, WalletTransaction, WalletWithDrawalRequest, WithdrawalStatus } from '@/core/domain/wallet';
+import { CurrentUser, RequiredPermissions, RequiredRoles } from '@/infrastructure/decorators';
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth';
@@ -38,18 +38,16 @@ export class WalletsController {
     }
 
     // Define your controller methods here, for example:
-    @Get('owner/:owner')
-    @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-    @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Update])
+    @Get('my-wallet')
+    @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    async getWalletByOwner(@Param('owner') owner: string) {
-        return this.queryBus.execute(new FindWalletByOwnerQuery(owner));
+    async getWalletByOwner(@CurrentUser("id") userId: string) {
+        return this.queryBus.execute(new FindWalletByOwnerQuery(userId));
     }
 
-    @Post('credit')
-    @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-    @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Update])
+    @Post('admin/credit')
+    @RequiredRoles(UserRole.Admin)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     async creditWallet(@Body() data: CreditWalletDto): Promise<Wallet> {
@@ -61,7 +59,7 @@ export class WalletsController {
         ));
     }
 
-    @Post('debit')
+    @Post('admin/debit')
     @RequiredRoles(UserRole.Admin)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
@@ -74,7 +72,7 @@ export class WalletsController {
         ));
     }
 
-    @Post('release-funds')
+    @Post('admin/release-funds')
     @RequiredRoles(UserRole.Admin)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
@@ -95,12 +93,12 @@ export class WalletsController {
         return this.queryBus.execute(new FindWalletTransactionByIdQuery(id));
     }
 
-    @Get('transaction/owner/:id')
+    @Get('my-transactions')
     @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    async findWalletTransactionsByOwner(@Param('id') id: string): Promise<WalletTransaction> {
-        return this.queryBus.execute(new FindWalletTransactionsByOwnerQuery(id));
+    async findWalletTransactionsByOwner(@CurrentUser("id") userId: string): Promise<WalletTransaction> {
+        return this.queryBus.execute(new FindWalletTransactionsByOwnerQuery(userId));
     }
 
     @Delete('transaction/:id')
@@ -116,13 +114,13 @@ export class WalletsController {
     @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    async createWalletWithdrawalRequest(@Body() data: CreateWalletWithdrawalRequestDto): Promise<WalletWithDrawalRequest> 
+    async createWalletWithdrawalRequest(@CurrentUser("id") userId: string, @Body() data: CreateWalletWithdrawalRequestDto): Promise<WalletWithDrawalRequest> 
     {
         return this.commandBus.execute(new CreateWalletWithdrawalRequestCommand(
-            data.owner,
+            userId,
             data.amount,
             data.currency || DEFAULT_CURRENCY,
-            data.status,
+            WithdrawalStatus.PENDING,
             data.note
         ));
     }
@@ -152,13 +150,13 @@ export class WalletsController {
         return this.queryBus.execute(new FindWithdrawalRequestByIdQuery(id));
     }
 
-    @Get('withdrawal-request/owner/:id')
+    @Get('my-withdrawal-request')
     @RequiredRoles(UserRole.Admin,  UserRole.ProEntreprise, UserRole.ProParticulier)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
-    async findWalletWithdrawalRequestsByOwner(@Param('id') id: string): Promise<WalletWithDrawalRequest[]> 
+    async findWalletWithdrawalRequestsByOwner(@CurrentUser("id") userId: string,): Promise<WalletWithDrawalRequest[]> 
     {
-        return this.queryBus.execute(new FindWalletWithdrawalRequestsByOwnerQuery(id));
+        return this.queryBus.execute(new FindWalletWithdrawalRequestsByOwnerQuery(userId));
     }
 
     @Delete('withdrawal-request/:id')
