@@ -1,8 +1,6 @@
-import { Deps } from '@/core/domain/common/ioc';
-import { PermissionAction, PermissionCollection } from '@/core/domain/permissions';
 import { UserRole } from '@/core/domain/roles';
-import { DEFAULT_CURRENCY, IWalletRepository, Wallet, WalletTransaction, WalletWithDrawalRequest, WithdrawalStatus } from '@/core/domain/wallet';
-import { CurrentUser, RequiredPermissions, RequiredRoles } from '@/infrastructure/decorators';
+import { DEFAULT_CURRENCY, Wallet, WalletTransaction, WalletWithDrawalRequest, WithdrawalStatus } from '@/core/domain/wallet';
+import { CurrentUser, RequiredRoles } from '@/infrastructure/decorators';
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth';
@@ -30,7 +28,6 @@ import { FindWithdrawalRequestByIdQuery } from '@/core/application/wallet/querie
 @Controller('wallet')
 export class WalletsController {
     constructor(
-        @Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository,
         private readonly commandBus: CommandBus,
         private readonly queryBus: QueryBus,
     ) {

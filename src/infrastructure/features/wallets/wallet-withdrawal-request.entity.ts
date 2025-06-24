@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from "../users";
 import { WithdrawalStatus } from "@/core/domain/wallet";
-import { Delete } from "@nestjs/common";
 import { User } from "@/core/domain/users";
 
 @Entity({ name: 'wallet_withdrawal_requests' })

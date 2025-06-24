@@ -1,6 +1,5 @@
 import { DEFAULT_CURRENCY, IWalletRepository, Wallet, WalletTransaction, WalletWithDrawalRequest } from "@/core/domain/wallet";
 import { WalletsService } from "./wallet.service";
-import { User } from "@/core/domain/users";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { CreateWalletWithdrawalRequestCommand } from "@/core/application/wallet/commands/create-wallet-withdrawal-request.command";

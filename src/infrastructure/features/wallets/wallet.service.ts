@@ -8,7 +8,6 @@ import { CreateWalletWithdrawalRequestCommand } from '@/core/application/wallet/
 import { WalletTransactionEntity } from './wallet-transaction.entity';
 import { NotEnoughtMoneyException } from '@/core/domain/wallet/exceptions/not-enought-money.exception';
 import { WalletWithdrawalRequestEntity } from './wallet-withdrawal-request.entity';
-import { min } from 'class-validator';
 
 @Injectable()
 export class WalletsService {

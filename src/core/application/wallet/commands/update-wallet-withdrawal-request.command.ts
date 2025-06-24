@@ -1,4 +1,4 @@
-import { WalletWithDrawalRequest, WithdrawalStatus } from "@/core/domain/wallet"
+import { WithdrawalStatus } from "@/core/domain/wallet"
 
 export class UpdateWalletWithdrawalRequestCommand {
     constructor(
