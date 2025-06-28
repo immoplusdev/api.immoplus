@@ -12,3 +12,13 @@ export enum WithdrawalStatus {
   REJECTED = 'REJECTED',
   COMPLETED = 'COMPLETED',
 }
+
+
+export enum WalletOperators {
+  MoovMoney = "moov",
+  Wave = "wave",
+  OrangeMoney = "orange",
+  MtnMoney = "mtn",
+  Ecobank = "ecobank",
+  Cash = "cash",
+} 

@@ -117,6 +117,8 @@ export class WalletsController {
             userId,
             data.amount,
             data.currency || DEFAULT_CURRENCY,
+            data.phoneNumber,
+            data.operator,
             WithdrawalStatus.PENDING,
             data.note
         ));
@@ -132,6 +134,8 @@ export class WalletsController {
             id,
             data.amount,
             data.currency || DEFAULT_CURRENCY,
+            data.phoneNumber,
+            data.operator,
             data.status,
             data.note
         ));

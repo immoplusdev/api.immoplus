@@ -1,4 +1,4 @@
-import { WithdrawalStatus } from "@/core/domain/wallet";
+import { WalletOperators, WithdrawalStatus } from "@/core/domain/wallet";
 import { ApiProperty } from "@nestjsx/crud/lib/crud";
 import { IsNumber } from "class-validator";
 
@@ -8,6 +8,12 @@ export class UpdateWalletWithdrawalRequestDto {
 
     @ApiProperty({ required: false, default: "XOF" })
     currency: string;
+
+    @ApiProperty({ required: true })
+    phoneNumber: string;
+
+    @ApiProperty({ required: true, type: String, enum: WalletOperators})
+    operator: WalletOperators;
 
     @ApiProperty({ required: false, type: String, enum: WithdrawalStatus, default: WithdrawalStatus.PENDING })
     status: WithdrawalStatus;

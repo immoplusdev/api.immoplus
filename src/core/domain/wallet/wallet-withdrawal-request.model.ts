@@ -1,7 +1,7 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { User } from "../users";
 import { Wallet } from "./wallet.model";
-import { WithdrawalStatus } from "./wallet.enum";
+import { WalletOperators, WithdrawalStatus } from "./wallet.enum";
 
 export class WalletWithDrawalRequest {
   id: string;
@@ -9,6 +9,8 @@ export class WalletWithDrawalRequest {
   wallet: Wallet | string;
   amount: number;
   currency: string;
+  phoneNumber?: string;
+  operator?: WalletOperators;
   status: WithdrawalStatus;
   note?: string;
 
