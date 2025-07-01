@@ -47,18 +47,6 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
 
   hasAccess(json: string, reqHmac: string) {
     return true;
-    // if (SIMULATE_PAYMENT || HUB2_ENVIRONMENT == PaymentEnv.Sandbox) return true;
-    //
-    // try {
-    //   const hmac = this.createHmacSignature(
-    //     json,
-    //     HUB2_WEBHOOK_SECRET,
-    //   );
-    //   return this.compareSignatures(hmac, reqHmac);
-    // } catch (error) {
-    //   this.loggerService.error(error);
-    //   return false;
-    // }
   }
 
   createHmacSignature(json: string, secret: string) {

@@ -30,7 +30,7 @@ export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<
   }
 
   async execute(command: AuthenticatePaymentIntentCommand): Promise<AuthenticatePaymentIntentCommandResponse> {
-    const payment = await this.getPayment(command);
+    const payment = await this.                                                                                                                                                                                                                                                                                                                                                                         (command);
     const response = { ...payment, customer: getIdFromObject(payment.customer) };
     if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
       return response;

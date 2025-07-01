@@ -442,4 +442,19 @@ export class ResidenceRepository implements IResidenceRepository {
     });
   }
 
+  async updateAllCordonates(): Promise<WrapperResponse<Residence[]>> {
+    const residences = await this.repository.findByQuery();
+    for (const residence of residences.data) {
+      if(residence.position && residence.position.type === GeoJsonType.Point) {
+        let position = residence.position;
+        await this.repository.updateOne(residence.id, {
+          latitude: position.coordinates[1],
+          longitude: position.coordinates[0]
+        });
+      }
+      
+    }
+    return await this.repository.findByQuery();
+  }
+
 }

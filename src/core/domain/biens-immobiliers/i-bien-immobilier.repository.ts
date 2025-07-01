@@ -7,4 +7,5 @@ import { WrapperResponse } from '../common/models';
 export interface IBienImmobilierRepository extends IBaseRepository<BienImmobilier, Partial<BienImmobilier>, Partial<BienImmobilier>> {
     findByGeolocation(query: SearchBienImmobiliereGeoItemsParams): Promise<WrapperResponse<BienImmobilier[]>>;
     findByGeolocationFilter(query: SearchBienImmobiliereGeoItemsParams): Promise<WrapperResponse<BienImmobilier[]>>;
+    updateAllCordonates(): Promise<WrapperResponse<BienImmobilier[]>>;
 }

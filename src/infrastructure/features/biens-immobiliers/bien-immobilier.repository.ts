@@ -307,4 +307,19 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
           totalCount: total,
         });
   }
+
+  async updateAllCordonates(): Promise<WrapperResponse<BienImmobilier[]>> {
+    const biens = await this.repository.findByQuery();
+    for (const bien of biens.data) {
+      if(bien.position && bien.position.type === GeoJsonType.Point) {
+        let position = bien.position;
+        await this.repository.updateOne(bien.id, {
+          latitude: position.coordinates[1],
+          longitude: position.coordinates[0]
+        });
+      }
+      
+    }
+    return await this.repository.findByQuery();
+  }
 }

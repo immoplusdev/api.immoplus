@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch, Put } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
@@ -229,6 +229,15 @@ export class BienImmobilierController {
     await this.repository.deleteByQuery(query);
 
     return this.responseMapper.mapFrom({ id } as never);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierBatchDto,
+  })
+  @Put("data/update/coordonates")
+  async updateAllCordonates() {
+    return this.repository.updateAllCordonates();
   }
 
 }
