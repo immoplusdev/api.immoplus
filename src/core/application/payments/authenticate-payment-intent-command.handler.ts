@@ -8,8 +8,6 @@ import {
 } from "@/core/domain/payments";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { IReservationRepository } from "@/core/domain/reservations";
-import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import {
   GetPaymentCollectionItemDataQuery,
@@ -30,7 +28,7 @@ export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<
   }
 
   async execute(command: AuthenticatePaymentIntentCommand): Promise<AuthenticatePaymentIntentCommandResponse> {
-    const payment = await this.                                                                                                                                                                                                                                                                                                                                                                         (command);
+    const payment = await this.getPayment(command);
     const response = { ...payment, customer: getIdFromObject(payment.customer) };
     if (this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") == AppProfile.Dev) {
       return response;

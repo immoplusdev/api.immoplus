@@ -3,6 +3,7 @@ import { CreateReservationCommand } from "./create-reservation.command";
 import { CreateReservationCommandResponse } from "./create-reservation-command.response";
 import {
   EstimerPrixReservationQuery,
+  EstimerPrixReservationQueryResponse,
   GetReservationByIdQuery,
   GetResidenceOccupiedDatesQuery,
 } from "@/core/application/reservations";
@@ -34,7 +35,7 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
 
     await this.verifyCanCreateReservation(command);
 
-    const calculationResult = await this.queryBus.execute(new EstimerPrixReservationQuery({ ...command }));
+    const calculationResult: EstimerPrixReservationQueryResponse = await this.queryBus.execute(new EstimerPrixReservationQuery({ ...command }));
 
     const residence = await this.residenceRepository.findOne(command.residence, { fields: ["id", "proprietaire"] });
     if (!residence) throw new ItemNotFoundException();
@@ -52,7 +53,7 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
     const { id } = await this.reservationRepository.createOne({
       ...command,
       montantTotalReservation: calculationResult.montantTotalReservation,
-      montantReservationSansCommission: calculationResult.montantReservationSansCommission,
+      montantCommission: calculationResult.montantCommission,
       clientPhoneNumber: command.clientPhoneNumber,
       createdBy: command.userId,
     }, false);

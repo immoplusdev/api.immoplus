@@ -47,8 +47,7 @@ export class WalletsService {
         return wallet;
     }
 
-
-    async creditWallet(ownerId: string, amount: number, reservationId: string, currency=DEFAULT_CURRENCY): Promise<Wallet> {
+    async creditWallet(ownerId: string, amount: number, source=null, sourceId: string, releaseDate?: Date, currency=DEFAULT_CURRENCY, note?: string): Promise<Wallet> {
         const wallet = await this.findWalletByOwner(ownerId);
         const pendingBalance = +wallet.pendingBalance + amount;
 
@@ -57,16 +56,18 @@ export class WalletsService {
             type: TransactionType.BLOCK,
             amount,
             currency,
-            reference: "Ref reservation : " + reservationId,
-            note: 'Crédit bloqué en attente de fin de réservation',
-            createdBy: ownerId
+            source,
+            sourceId,
+            note: note || "Crédit bloqué en attente d'occupation de la résidence",
+            createdBy: ownerId,
+            releaseDate
         });
 
         await this.walletRepo.updateOne(wallet.id, { pendingBalance: pendingBalance});
         return this.walletRepo.findOne(wallet.id);
     }
 
-    async debitWallet(ownerId: string, amount: number, reservationId: string, currency=DEFAULT_CURRENCY): Promise<Wallet> {
+    async debitWallet(ownerId: string, amount: number, source = null, sourceId: string, currency=DEFAULT_CURRENCY, note?: string): Promise<Wallet> {
         const wallet = await this.findWalletByOwner(ownerId);
         if(wallet.availableBalance < amount) {
             throw new NotEnoughtMoneyException();
@@ -78,8 +79,9 @@ export class WalletsService {
             type: TransactionType.DEBIT,
             amount,
             currency,
-            reference:  reservationId,
-            note: 'Débit du compte',
+            source,
+            sourceId: sourceId,
+            note: note || 'Débit du compte',
             createdBy: ownerId
         });
 
@@ -87,7 +89,7 @@ export class WalletsService {
        return this.walletRepo.findOne(wallet.id);
     }
 
-    async releaseFunds(ownerId: string, amount: number, reservationId: string, currency=DEFAULT_CURRENCY): Promise<Wallet> {
+    async releaseFunds(ownerId: string, amount: number, source = null, sourceId: string, currency=DEFAULT_CURRENCY): Promise<Wallet> {
         const wallet = await this.findWalletByOwner(ownerId);
 
         if(wallet.pendingBalance < amount) {
@@ -103,7 +105,8 @@ export class WalletsService {
                 type: TransactionType.UNBLOCK,
                 amount,
                 currency,
-                reference: reservationId,
+                source,
+                sourceId,
                 note: 'Déblocage suite à fin de réservation',
                 createdBy: ownerId
             },
@@ -112,7 +115,8 @@ export class WalletsService {
                 type: TransactionType.CREDIT,
                 amount,
                 currency,
-                reference: reservationId,
+                source,
+                sourceId,
                 note: 'Crédit dans balance disponible',
                 createdBy: ownerId
             }

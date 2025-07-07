@@ -14,7 +14,7 @@ export class Reservation {
   statusFacture: StatusFacture;
   retraitProEffectue: boolean;
   montantTotalReservation: number;
-  montantReservationSansCommission: number;
+  montantCommission: number;
   notes: string;
   clientPhoneNumber: string;
   createdAt?: Date;

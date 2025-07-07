@@ -152,11 +152,11 @@ export class ReservationController {
 
     const montantNonRetire = items.data
       .filter(item => item.statusFacture == StatusFacture.NonPaye)
-      .reduce((previousValue, currentValue) => previousValue + currentValue.montantReservationSansCommission, 0);
+      .reduce((previousValue, currentValue) => previousValue + (currentValue.montantTotalReservation - currentValue.montantCommission), 0);
 
     const montantRetire = items.data
       .filter(item => item.statusFacture == StatusFacture.Paye)
-      .reduce((previousValue, currentValue) => previousValue + currentValue.montantReservationSansCommission, 0);
+      .reduce((previousValue, currentValue) => previousValue + (currentValue.montantTotalReservation - currentValue.montantCommission), 0);
 
     return new HistoriqueRetrait({
       montantNonRetire,

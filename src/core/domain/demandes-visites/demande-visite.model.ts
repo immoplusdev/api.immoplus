@@ -14,7 +14,7 @@ export class DemandeVisite {
   statusFacture: StatusFacture;
   retraitProEffectue: boolean;
   montantTotalDemandeVisite: number;
-  montantDemandeVisiteSansCommission: number;
+  montantCommission: number;
   notes: string;
   clientPhoneNumber: string;
   createdAt?: Date;

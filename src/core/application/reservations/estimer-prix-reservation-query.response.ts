@@ -16,7 +16,7 @@ export class EstimerPrixReservationQueryResponse {
   montantTotalReservation: number;
   @ApiProperty()
   @IsNumber()
-  montantReservationSansCommission: number;
+  montantCommission: number;
   constructor(data?: OmitMethods<EstimerPrixReservationQueryResponse>) {
     Object.assign(this, data);
   }

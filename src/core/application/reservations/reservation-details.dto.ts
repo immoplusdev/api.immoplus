@@ -23,7 +23,7 @@ export class ReservationDetailsDto {
   @ApiProperty()
   montantTotalReservation: number;
   @ApiProperty()
-  montantReservationSansCommission: number;
+  montantCommission: number;
   @ApiProperty()
   notes: string;
   @ApiProperty()

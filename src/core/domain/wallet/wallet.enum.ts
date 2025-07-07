@@ -22,3 +22,10 @@ export enum WalletOperators {
   Ecobank = "ecobank",
   Cash = "cash",
 } 
+
+export enum TransactionSource {
+   RESERVATION = 'RESERVATION',
+   DEMANDE_VISITE = 'DEMANDE_VISITE',
+   DEMANDE_RETRAIT = 'DEMANDE_RETRAIT',
+   DEMANDE_RETRAIT_ADMIN = 'DEMANDE_RETRAIT_ADMIN'
+}

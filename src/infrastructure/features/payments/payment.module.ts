@@ -24,6 +24,8 @@ import {
 } from "@/core/application/payments/payment-reservation-valide.event";
 import { GlobalizationModule, GlobalizationService } from "@/infrastructure/features/globalization";
 import { ConfigsModule } from "@/infrastructure/features/configs";
+import { ResidenceRepository } from "../residences/residence.repository";
+import { WalletsService } from "../wallets/wallet.service";
 
 const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
 const commandHandlers = [CreatePaymentIntentCommandHandler, InterceptPaymentWebhookCommandHandler, AuthenticatePaymentIntentCommandHandler, CreateDemandeRetraitReservationCommandHandler];
@@ -38,6 +40,15 @@ const providers: Provider[] = [
     provide: Deps.PaymentGatewayService,
     useClass: Hub2PaymentGatewayService,
   },
+  {
+    provide:Deps.ResidenceRepository,
+    useClass: ResidenceRepository,
+  },
+  {
+    provide:Deps.WalletsService,
+    useClass: WalletsService,
+  }
+
 ];
 
 @Module({
