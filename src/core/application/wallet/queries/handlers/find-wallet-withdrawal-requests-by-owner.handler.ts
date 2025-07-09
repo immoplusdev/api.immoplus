@@ -3,6 +3,7 @@ import { FindWalletWithdrawalRequestsByOwnerQuery } from "../find-wallet-withdra
 import { Inject } from "@nestjs/common";
 import { IWalletRepository, WalletWithDrawalRequest } from "@/core/domain/wallet";
 import { Deps } from "@/core/domain/common/ioc";
+import { WrapperResponse } from "@/core/domain/common/models";
 
 @QueryHandler(FindWalletWithdrawalRequestsByOwnerQuery)
 export class FindWithdrawalRequestsByOwnerHandler implements IQueryHandler<FindWalletWithdrawalRequestsByOwnerQuery> {
@@ -11,7 +12,7 @@ export class FindWithdrawalRequestsByOwnerHandler implements IQueryHandler<FindW
         @Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository
     ) {}
 
-    async execute(query: FindWalletWithdrawalRequestsByOwnerQuery): Promise<WalletWithDrawalRequest[]> {
-        return await this.walletRepository.findWalletWithdrawalRequestsByOwner(query.ownerId);
+    async execute(findWalletWithdrawalRequestsByOwnerQuery: FindWalletWithdrawalRequestsByOwnerQuery):Promise<WrapperResponse<WalletWithDrawalRequest[]>> {
+        return await this.walletRepository.findWalletWithdrawalRequestsByOwner(findWalletWithdrawalRequestsByOwnerQuery.query);
     }
 }

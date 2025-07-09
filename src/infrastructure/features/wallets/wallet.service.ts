@@ -8,6 +8,8 @@ import { CreateWalletWithdrawalRequestCommand } from '@/core/application/wallet/
 import { WalletTransactionEntity } from './wallet-transaction.entity';
 import { NotEnoughtMoneyException } from '@/core/domain/wallet/exceptions/not-enought-money.exception';
 import { WalletWithdrawalRequestEntity } from './wallet-withdrawal-request.entity';
+import { WrapperResponse } from '@/core/domain/common/models';
+import { SearchItemsParams } from '@/core/domain/http';
 
 @Injectable()
 export class WalletsService {
@@ -17,7 +19,7 @@ export class WalletsService {
     constructor(
         @Inject(Deps.DataSource) readonly dataSource: DataSource
     ) {
-        this.walletRepo = new BaseRepository(dataSource, WalletEntity).setLoadRelationIds(true);
+        this.walletRepo = new BaseRepository(dataSource, WalletEntity).setLoadRelationIds(false);
         this.walletTransactionRepo = new BaseRepository(dataSource, WalletTransactionEntity).setLoadRelationIds(true);
         this.walletWithdrawalRepo = new BaseRepository(dataSource, WalletWithdrawalRequestEntity).setLoadRelationIds(true);
     }
@@ -130,21 +132,8 @@ export class WalletsService {
         return transaction;
     }
 
-    async findWalletTransactionsByOwner(ownerId: string): Promise<WalletTransaction[]> {
-        const wallet = await this.findWalletByOwner(ownerId);
-        const transactions = await this.walletTransactionRepo.findByQuery({
-            _order_by: "created_at",
-            _where:
-                [
-                    {
-                        _field: "wallet",
-                        _op: "eq",
-                        _val: wallet.id,
-                    },
-                ],
-        });
-
-        return transactions.data;
+    async findWalletTransactionsByOwner(query: SearchItemsParams): Promise<WrapperResponse<WalletTransaction[]>> {
+        return this.walletTransactionRepo.findByQuery(query);
     }
 
     async deleteWalletTransaction(id: string): Promise<void> {
@@ -174,21 +163,8 @@ export class WalletsService {
         return walletWithdrawal;
     }
 
-    async findWalletWithdrawalRequestsByOwner(owner: string): Promise<WalletWithDrawalRequest[]> {
-        const requests = await this.walletWithdrawalRepo.findByQuery({
-            _where:
-            [
-                {
-                    _field: "owner",
-                    _op: "eq",
-                    _val: owner,
-                }
-            ],
-            _order_by: 'createdAt',
-            _order_dir: 'desc'
-        });
-
-        return requests.data;
+    async findWalletWithdrawalRequestsByOwner(query: SearchItemsParams): Promise<WrapperResponse<WalletWithDrawalRequest[]>> {
+        return this.walletWithdrawalRepo.findByQuery(query);
     }
 
     async deleteWalletWithdrawalRequest(id: string): Promise<void> {
