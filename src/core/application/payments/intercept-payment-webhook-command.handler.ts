@@ -22,6 +22,8 @@ import { IResidenceRepository, Residence } from "@/core/domain/residences";
 import {  TransactionSource } from "@/core/domain/wallet";
 import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import { INotificationService } from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
 
 @CommandHandler(InterceptPaymentWebhookCommand)
 export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<InterceptPaymentWebhookCommand> {
@@ -32,6 +34,8 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
     @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
     @Inject(Deps.WalletsService) private readonly walletService: WalletsService,
+    @Inject(Deps.NotificationService) private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
     private readonly eventBus: EventBus,
   ) {
     //
@@ -93,6 +97,9 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
       ],
     });
 
+    console.log("localPayments : ", localPayments);
+    console.log("Token: ", command.token)
+
     const paymentWebhookData = command.payments.sort((a, b) => {
       return (new Date(a.createdAt) as any) - (new Date(b.createdAt) as any);
     })[0];
@@ -103,6 +110,10 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
     const paymentStatus = this.getPaymentStatus(command.status);
     const previousNextAction = localPayment.hub2NextAction ? JSON.stringify(localPayment.hub2NextAction) : null;
     const nextAction = command.nextAction ? JSON.stringify(command.nextAction) : previousNextAction;
+
+    console.log("localPayment : ", localPayment);
+    console.log("paymentStatus : ", paymentStatus);
+    console.log("nextAction : ", nextAction);
 
     await this.paymentRepository.updateOne(localPayment.id, {
       paymentStatus: paymentStatus,
@@ -117,58 +128,13 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
 
     // Si payment de la reservation reussi, faire verfication pour crediter le wallet
     if (paymentStatus == PaymentStatus.Successful && localPayment.collection == PaymentCollection.Reservation) {
-        const reservation: Reservation = await this.reservationRepository.findOne(localPayment.itemId);
-
-        if(reservation) {
-          // Si le montant paye est superieur au 90% du montant total de la reservation
-          const amountPlusCommission = reservation.montantTotalReservation * 90 / 100;
-          if (amountPlusCommission <= command.amount) {
-              const residence : Residence = await this.residenceRepository.findOne(localPayment.itemId);
-              
-              if(residence){
-                
-                const refundDate = new Date(reservation.dateDebut); // Date de debut de la reservation
-                refundDate.setDate(refundDate.getDate() + 1);     // Ajouter 1 jour a la date
-
-                // Calcul montant à reverser
-                const amountToRefund = reservation.montantTotalReservation - reservation.montantCommission;
-                if(amountToRefund <= 0) return;
-
-                // Crediter le proprietaire
-                const proprietaireWallet = await this.walletService.creditWallet(residence.proprietaire, amountToRefund, TransactionSource.RESERVATION, reservation.id, refundDate);
-                if(proprietaireWallet) {
-                  // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
-
-                }
-                
-              }
-          }
-          
-        }
+        console.log("paymentStatus == PaymentStatus.Successful && localPayment.collection == PaymentCollection.Reservation")
+        await this.reservationWalletCredit(localPayment.itemId, command.amount);
     }
 
     // Si payment de la demande de visite reussi, faire verfication pour crediter le wallet
     if (paymentStatus == PaymentStatus.Successful && localPayment.collection == PaymentCollection.DemandeDeVisite) {
-      const demandeVisite: DemandeVisite = await this.demandeVisiteRepository.findOne(localPayment.itemId);
-      const bien : BienImmobilier = demandeVisite.bienImmobilier as BienImmobilier;;
-
-      if (!demandeVisite) throw new ItemNotFoundException();
-
-      const refundDate = new Date(); // Date du jour
-      refundDate.setDate(refundDate.getDate() + 1); // Date de demain
-
-      // Calcul montant à reverser
-      const amountToRefund = demandeVisite.montantTotalDemandeVisite - demandeVisite.montantCommission;
-      if(amountToRefund <= 0) return;
-      // Crediter le proprietaire
-      const proprietaireWallet = await this.walletService.creditWallet(bien.proprietaire, amountToRefund, TransactionSource.DEMANDE_VISITE, demandeVisite.id, refundDate);
-      if(proprietaireWallet) {
-        // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
-
-      }
-      
-
-
+        await this.demandeVisiteWalletCredit(localPayment.itemId);
     }
 
   }
@@ -195,6 +161,86 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
 
     }
 
+
+  async reservationWalletCredit(reservationId: string, paidAmount: number) {
+        const reservation: Reservation = await this.reservationRepository.findOne(reservationId);
+        console.log("reservation : ", reservation);
+
+        if(reservation) {
+          // Si le montant paye est superieur au 90% du montant total de la reservation
+          const amountPlusCommission = reservation.montantTotalReservation * 90 / 100;
+          console.log("amountPlusCommission : ", amountPlusCommission);
+          console.log("paidAmount : ", paidAmount);
+          if (amountPlusCommission <= paidAmount) {
+              console.log("ID residence : ", reservation.residence?.toString() as string)
+              const residence : Residence = await this.residenceRepository.findOne(reservation.residence?.toString() as string);
+              console.log("residence : ", residence);
+              
+              if(residence){
+                console.log("welcome : ", reservation.dateDebut)
+                const refundDate = new Date(reservation.dateDebut); // Date de debut de la reservation
+                refundDate.setDate(refundDate.getDate() + 1);     // Ajouter 1 jour a la date
+                console.log("refundDate : ", refundDate);
+
+                // Calcul montant à reverser
+                const amountToRefund = reservation.montantTotalReservation - reservation.montantCommission;
+                console.log("amountToRefund : ", amountToRefund);
+                if(amountToRefund <= 0) return;
+
+                // Crediter le proprietaire
+                const proprietaireWallet = await this.walletService.creditWallet(residence.proprietaire as string, amountToRefund, TransactionSource.RESERVATION, reservation.id, refundDate);
+                console.log("proprietaireWallet : ", proprietaireWallet);
+                if(proprietaireWallet) {
+                  // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
+                  await this.notificationService.sendNotification({
+                    userId: residence.proprietaire as string,
+                    subject: this.globalizationService.t("all.notifications.wallets.paiement_block_valide_pro.subject"),
+                    message: this.globalizationService.t("all.notifications.wallets.paiement_block_valide_pro.message"),
+                    skipInAppNotification: false,
+                    sendMail: false,
+                    sendSms: true,
+                    returnUrl: ``
+                  });
+                }
+                
+              }
+          }
+          
+        }
+  }
+
+  async demandeVisiteWalletCredit(demandeVisiteId: string) {
+    const demandeVisite: DemandeVisite = await this.demandeVisiteRepository.findOne(demandeVisiteId);
+      const bien : BienImmobilier = demandeVisite.bienImmobilier as BienImmobilier;;
+
+      if (!demandeVisite) throw new ItemNotFoundException();
+
+      const refundDate = new Date(); // Date du jour
+      refundDate.setDate(refundDate.getDate() + 1); // Date de demain
+
+      // Calcul montant à reverser
+      const amountToRefund = demandeVisite.montantTotalDemandeVisite - demandeVisite.montantCommission;
+      if(amountToRefund <= 0) return;
+      // Crediter le proprietaire
+      const proprietaireWallet = await this.walletService.creditWallet(bien.proprietaire, amountToRefund, TransactionSource.DEMANDE_VISITE, demandeVisite.id, refundDate);
+      if(proprietaireWallet) {
+        // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
+        // Crediter le proprietaire
+                const proprietaireWallet = await this.walletService.creditWallet(bien.proprietaire, amountToRefund, TransactionSource.DEMANDE_VISITE, bien.id, refundDate);
+                if(proprietaireWallet) {
+                  // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
+                  await this.notificationService.sendNotification({
+                    userId: bien.proprietaire as string,
+                    subject: this.globalizationService.t("all.notifications.wallets.paiement_block_valide_pro.subject"),
+                    message: this.globalizationService.t("all.notifications.wallets.paiement_block_valide_pro.message"),
+                    skipInAppNotification: false,
+                    sendMail: false,
+                    sendSms: true,
+                    returnUrl: ``
+                  });
+                }
+      }
+  }
 
   
 }

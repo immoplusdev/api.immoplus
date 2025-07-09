@@ -65,7 +65,23 @@
         "subject": "\uD83D\uDD14 Nouvelle réservation reçue !",
         "message": "Nouvelle réservation reçue, ouvrez l'application pour voir les détails."
       }
+    },
+    "wallets": {
+        "paiement_block_valide_pro": {
+          "subject": "\uD83D\uDD14 Compte bloqué crédité !",
+          "message": "Votre compte bloqué a été crédité, ouvrez l'application pour voir les détails!"
+        },
+        "paiement_unblock_valide_pro": {
+          "subject": "\uD83D\uDD14  Compte principal crédité !",
+          "message": "Vous avez reçu un reversement sur votre compte principal, ouvrez l'application pour voir les détails!"
+        },
+        "paiement_debit_pro": {
+          "subject": "\uD83D\uDD14 Nouveau retrait !",
+          "message": "Nouveau retrait reçu, ouvrez l'application pour voir les détails."
+        }    
     }
+
+
   }
 }
 
