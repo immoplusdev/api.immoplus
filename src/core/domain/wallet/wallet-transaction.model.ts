@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { Wallet } from "./wallet.model";
-import { TransactionSource, TransactionType } from "./wallet.enum";
+import { TransactionSource, TransactionType, WalletOperators } from "./wallet.enum";
 
 export class WalletTransaction {
   id: string;
@@ -10,6 +10,7 @@ export class WalletTransaction {
   currency: string;
   source?: TransactionSource;
   sourceId?: string;
+  operator?: WalletOperators;
   note?: string;
   releaseDate?: Date; // Date à laquelle il faut reversement de la transaction
   isRealeased?: boolean; // Indique si la transaction a deja ete reversee
