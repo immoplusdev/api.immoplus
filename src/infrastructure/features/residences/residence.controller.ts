@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch, UsePipes, ValidationPipe, Req } from "@nestjs/common";
+import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
 import { IResidenceRepository } from "@/core/domain/residences";
@@ -23,6 +23,7 @@ import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { UpdateResidenceByIdCommand } from "@/core/application/residences";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 
 
 @ApiTags("Residence")
@@ -99,17 +100,43 @@ export class ResidenceController {
   @ApiResponse({
     type: WrapperResponseResidenceBatchDto,
   })
-  @Get("/data/public/geolocalized")
-  async readManyPublicGeolocalized(
-    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+  @Get("/find-available/public/")
+  async findAvailablePublic(
+    @Query() params: SearchItemsParamsDto,
   ) {
-    delete params.lat;
-    delete params.long;
-    delete params.radius;
-    const items = await this.repository.findByQuery(params as never);
+    const items = await this.repository.findAvailableResidencesForToday(params);
+    return items;
+  }
 
+
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Get("data/public/geolocalized")
+  async findPublicByGeolocation(
+    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+  ) 
+  {
+    const items = await this.repository.findByGeolocation(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Get("data/filter/public")
+  async findByGeolocationFilter(
+    @Query() params: GeolocalizedItemsSearchFiltersParamsQueryDto,
+  ) 
+  {
+    const items = await this.repository.findByGeolocationFilter(params);
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+
+  
 
   @ApiResponse({
     type: WrapperResponseResidenceDto,

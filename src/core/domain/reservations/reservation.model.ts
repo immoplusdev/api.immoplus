@@ -9,6 +9,8 @@ export class Reservation {
   residence: Residence | string;
   statusReservation: StatusReservation;
   datesReservation: ServiceDates;
+  dateDebut: Date;
+  dateFin: Date;
   statusFacture: StatusFacture;
   retraitProEffectue: boolean;
   montantTotalReservation: number;

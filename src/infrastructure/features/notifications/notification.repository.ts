@@ -1,7 +1,7 @@
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { Notification, INotificationRepository } from "@/core/domain/notifications";
+import { Notification, INotificationRepository, INotificationService, SendNotificationParams } from "@/core/domain/notifications";
 import { NotificationEntity } from "@/infrastructure/features/notifications";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
@@ -17,6 +17,7 @@ export class NotificationRepository implements INotificationRepository {
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
+    @Inject(Deps.NotificationService) readonly notificationService: INotificationService
   ) {
     this.repository = new BaseRepository(dataSource, NotificationEntity);
     // this.notificationRepository = dataSource.getRepository(NotificationEntity);
@@ -57,5 +58,21 @@ export class NotificationRepository implements INotificationRepository {
 
   async deleteOne(id: string): Promise<string> {
     return await this.repository.deleteOne(id);
+  }
+
+  async sendTestNotification(params: SendNotificationParams): Promise<String> {
+     
+    await this.notificationService.sendNotification({
+        userId: params.userId,
+        sendMail: true,
+        sendSms: true,
+        skipInAppNotification: false,
+        subject: params.subject,
+        message: params.message,
+        htmlMessage: params.htmlMessage || params.message,
+        returnUrl: params.returnUrl || "localhost:3000/estate_detail/12",
+      });
+
+      return Promise.resolve("Notification sent successfully");
   }
 }

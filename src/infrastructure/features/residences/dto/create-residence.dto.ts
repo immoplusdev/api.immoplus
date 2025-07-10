@@ -52,7 +52,6 @@ export class CreateResidenceDto {
   @IsOptional()
   images?: string[];
 
-
   @ApiProperty({ type: () => CommoditeDto, isArray: true })
   @IsOptional()
   commodites?: Commodite[];

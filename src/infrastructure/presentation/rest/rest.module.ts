@@ -14,13 +14,14 @@ import { BienImmobilierModule } from "@/infrastructure/features/biens-immobilier
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
 import { PaymentModule } from "@/infrastructure/features/payments";
 import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/features/auth";
+import { WalletModule } from "@/infrastructure/features/wallets/wallet.module";
 
 export const controllers = [];
 
 const modules = [
   UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule,
   CommuneModule, ReservationModule, ResidenceModule, BienImmobilierModule, DemandeVisiteModule,
-  PaymentModule,
+  PaymentModule, WalletModule
 ];
 
 @Module({

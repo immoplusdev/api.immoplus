@@ -6,6 +6,7 @@ import { StatusFacture } from "@/core/domain/payments";
 import { Residence } from "@/core/domain/residences";
 import { ServiceDateDto } from "@/core/application/common/dto";
 import { ResidenceDto } from "@/infrastructure/features/residences";
+import { IsNotEmpty } from "class-validator";
 
 export class ReservationDto {
   @ApiProperty({ format: "uuid" })
@@ -16,6 +17,10 @@ export class ReservationDto {
   statusReservation: StatusReservation;
   @ApiProperty({ type: ServiceDateDto, isArray: true })
   datesReservation: ServiceDateDto[];
+  @ApiProperty({ type: Date, nullable: true })
+  dateDebut: Date;
+  @ApiProperty({ type: Date, nullable: true })
+  dateFin: Date;
   @ApiProperty({ enum: StatusFacture })
   statusFacture: StatusFacture;
   @ApiProperty()

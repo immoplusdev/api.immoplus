@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InvalidOtpException, ITfaService, VerifyOtpOptions } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
-import { generateRandomString, sanitizePhoneNumber, sanitizePhoneNumberIntl } from "@/lib/ts-utilities/strings";
+import { generateRandomString, sanitizePhoneNumberIntl } from "@/lib/ts-utilities/strings";
 import { Twilio } from "twilio";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";

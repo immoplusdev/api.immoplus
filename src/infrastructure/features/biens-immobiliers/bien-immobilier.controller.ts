@@ -27,6 +27,8 @@ import { BienImmobilierDtoMapper } from "@/core/application/biens-immobiliers/bi
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { EventBus } from "@nestjs/cqrs";
 import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/demandes-visites";
+import { BienImmobilierGeolocalisizeDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize.dto";
+import { BienImmobilierGeolocalisizeFilterDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize-filter.dto";
 
 
 @ApiTags("BienImmobilier")
@@ -129,13 +131,22 @@ export class BienImmobilierController {
   })
   @Get("/data/public/geolocalized")
   async readManyPublicGeolocalized(
-    @Query() params: GeolocalizedItemsSearchParamsQueryDto,
+    @Query() params: BienImmobilierGeolocalisizeDto,
   ) {
-    delete params.lat;
-    delete params.long;
-    delete params.radius;
-    const items = await this.repository.findByQuery(params as never);
 
+    const items = await this.repository.findByGeolocation(params);
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierBatchDto,
+  })
+  @Get("data/filter/public")
+  async readManyPublicGeolocalizedFilter(
+    @Query() params: BienImmobilierGeolocalisizeFilterDto
+  ) {
+    const items = await this.repository.findByGeolocationFilter(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
 

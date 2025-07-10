@@ -1,18 +1,22 @@
-import { OmitMethods } from "@/lib/ts-utilities";
-import { IsOptional } from "class-validator";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { ItemsParamsCriteriasDto, ItemsParamsOrderDirectionDto } from "@/infrastructure/http";
 
+
 export class GeolocalizedItemsSearchParamsQueryDto {
-  @ApiProperty()
-  lat: number;
+  @ApiProperty({ required: true})
+  _lat: number;
 
-  @ApiProperty()
-  long: number;
+  @ApiProperty({ required: true})
+  _long: number;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
-  radius: number;
+  @ApiProperty({ required: false})
+  _radius?: number;
+
+  @ApiProperty({ required: false, type: Date})
+  _start_date?: Date;
+
+  @ApiProperty({ required: false, type: Date})
+  _end_date?: Date;
 
   @ApiProperty({ required: false })
   _page?: number;
@@ -26,6 +30,7 @@ export class GeolocalizedItemsSearchParamsQueryDto {
   @ApiProperty({
     required: false,
     enum: ["asc", "desc"],
+    type: String
   })
   _order_dir?: ItemsParamsOrderDirectionDto;
 
@@ -50,7 +55,6 @@ export class GeolocalizedItemsSearchParamsQueryDto {
   })
   _search?: string;
 
-  constructor(data?: OmitMethods<GeolocalizedItemsSearchParamsQueryDto>) {
-    Object.assign(this, data);
-  }
+  
 }
+

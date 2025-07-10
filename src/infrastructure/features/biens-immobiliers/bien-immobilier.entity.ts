@@ -69,6 +69,12 @@ export class BienImmobilierEntity {
   @Column({ name: "position", type: "json", nullable: true })
   position?: GeoJsonPoint;
 
+  @Column("double")
+  latitude?: number;
+
+  @Column("double")
+  longitude?: number;
+
   @Column({ name: "status_validation", type: "varchar", default: StatusValidationBienImmobilier.EnAttenteValidation })
   statusValidation: StatusValidationBienImmobilier;
 

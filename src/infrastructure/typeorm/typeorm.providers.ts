@@ -21,9 +21,9 @@ export const typeormProviders = [
         database: config.get<string>("DB_DATABASE"),
         entities: [__dirname + "/../../**/*.entity{.ts,.js}"],
         migrations: [__dirname + "/../../**/*.migration{.ts,.js}"],
-        synchronize: true,
-        migrationsRun: true,
         migrationsTableName: "typeorm_migrations",
+        synchronize: config.get<string>("DB_SYNCHRONIZE") == "true",
+        migrationsRun: config.get<string>("DB_MIGRATION_RUN") == "true",
       });
 
       return dataSource.initialize();

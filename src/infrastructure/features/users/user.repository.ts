@@ -1,6 +1,6 @@
 import { IUserRepository, PublicUserInfo, User, UserWithRoleAndPermissions } from "@/core/domain/users";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, In, Repository } from "typeorm";
 import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
 import { Deps } from "@/core/domain/common/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
@@ -9,6 +9,7 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
+import { RoleRepository } from "../roles/role.repository";
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -35,6 +36,8 @@ export class UserRepository implements IUserRepository {
     readonly dataSource: DataSource,
     @Inject(Deps.PermissionRepository)
     private readonly permissionRepository: IPermissionRepository,
+    @Inject(Deps.RoleRepository)
+    private readonly roleRepository: RoleRepository,
   ) {
     this.repository = new BaseRepository(dataSource, UserEntity, this.relations)
       .setEntityMapper(new UserEntityMapper())
@@ -48,6 +51,12 @@ export class UserRepository implements IUserRepository {
   }
 
   async createOne(payload: Partial<User>): Promise<User> {
+      // console.log("payload : ",payload);
+      // const role =  await this.roleRepository.findOne("a9ff35cc-41da-11f0-8a97-6e5a18eac3d4");
+      // payload.role = role as Role;
+      // console.log("payload.role : ",payload.role);
+      // payload.createdBy = null;
+    
     return await this.repository.createOne(payload);
   }
 

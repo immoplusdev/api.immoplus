@@ -36,8 +36,9 @@ export class PaymentDemandeVisiteValideEventHandler implements IEventHandler<Pay
       subject: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_client.subject"),
       message: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_client.message"),
       returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
-      // skipInAppNotification: true,
-      // sendMail: true,
+      skipInAppNotification: false,
+      sendMail: true,
+      sendSms: true,
     });
 
     await this.notificationService.sendNotification({
@@ -45,8 +46,9 @@ export class PaymentDemandeVisiteValideEventHandler implements IEventHandler<Pay
       subject: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_pro.subject"),
       message: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_pro.message"),
       returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
-      // skipInAppNotification: true,
-      // sendMail: true,
+      skipInAppNotification: false,
+      sendMail: true,
+      sendSms: true,
     });
   }
 }

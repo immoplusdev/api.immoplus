@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, P
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
-import { INotificationRepository } from "@/core/domain/notifications";
+import { INotificationRepository, SendNotificationParams } from "@/core/domain/notifications";
 import {
   CreateNotificationDto,
   NotificationDto, NotificationDtoMapper, UpdateNotificationDto,
@@ -16,6 +16,7 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { SendTestNotificationDto } from "./dto/send-test-notification.dto";
 
 
 @ApiTags("Notification")
@@ -149,4 +150,45 @@ export class NotificationController {
 
     return this.responseMapper.mapFrom({ id });
   }
+
+  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("send-test-notification")
+  async sendTestNotification(
+    @Body() payload: SendTestNotificationDto, 
+    @CurrentUser("id") userId: string
+  ){
+    console.log("Sending test notification with payload:", payload);
+    const emailContent = `
+        Objet : Test de notification !
+
+        Bonjour,
+
+        Nous vous remercions de votre confiance et de votre soutien.
+        
+        Nous sommes ravis de vous informer que nous avons bien reçu votre demande de test de notification.
+        Nous avons effectué les vérifications nécessaires et nous sommes heureux de vous confirmer que tout fonctionne correctement.
+        
+        Cordialement,  
+        L'équipe de support technique
+      `;
+
+    const params  = new SendNotificationParams({
+      userId: userId || userId,
+      subject: payload.subject,
+      message: payload.message,
+      skipInAppNotification: payload.skipInAppNotification,
+      sendMail: payload.sendMail,
+      sendSms: payload.sendSms,
+      htmlMessage: payload.htmlMessage || emailContent,
+      returnUrl: payload.returnUrl || "localhost:3000/estate_detail/12",
+    }); 
+
+    console.log("Sending test notification with params:", params);
+
+   const result = await this.repository.sendTestNotification(params);
+
+   return result;
+}
 }

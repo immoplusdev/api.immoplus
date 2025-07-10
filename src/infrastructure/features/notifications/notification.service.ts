@@ -24,9 +24,9 @@ export class NotificationService implements INotificationService {
     if (!user) throw new UserNotFoundException();
 
     if (params.sendMail) await this.mailService.sendMail({
-      to: user.email,
-      subject: params.subject,
-      text: params.htmlMessage || params.message,
+        to: user.email,
+        subject: params.subject,
+        text: params.htmlMessage || params.message,
     });
 
     if (params.sendSms) await this.smsService.sendSms([user.phoneNumber], params.message);

@@ -8,7 +8,9 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "migrate": "npm run typeorm -- migration:run",
+    "typeorm": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migrate": "tsc && npm run typeorm -- migration:run",
+    "seeder": "typeorm schema:run seeder",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "node --inspect-brk -r ts-node/register -r tsconfig-paths/register ./src/main.ts",
@@ -69,7 +71,6 @@
     "rxjs": "^7.8.1",
     "swagger": "^0.7.5",
     "twilio": "^5.3.6",
-    "typeorm": "^0.3.20",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -100,6 +101,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "typeorm": "^0.3.24",
     "typescript": "^5.3.3",
     "zod": "^3.23.8"
   }

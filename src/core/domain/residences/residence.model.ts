@@ -21,6 +21,8 @@ export class Residence {
   commune?: string;
   adresse?: string;
   position?: GeoJsonPoint;
+  latitude?: number;
+  longitude?: number;
   residenceDisponible: boolean;
   statusValidation: StatusValidationBienImmobilier;
   prixReservation: number;

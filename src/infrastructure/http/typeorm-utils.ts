@@ -7,6 +7,11 @@ import { Contains } from "class-validator";
 
 export function parseHttpQuery(query: any): SearchItemsParams {
   const params: SearchItemsParams = {};
+  if (query._lat) params._lat = query._lat;
+  if (query._long) params._long = query._long;
+  if (query._radius) params._radius = query._radius;
+  if (query._start_date) params._start_date = query._start_date;
+  if (query._end_date) params._end_date = query._end_date;
   if (query._page) params._page = query._page;
   if (query._per_page) params._per_page = query._per_page;
   if (query._order_by) params._order_by = query._order_by;
