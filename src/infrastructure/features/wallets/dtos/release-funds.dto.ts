@@ -1,4 +1,5 @@
 import { ApiProperty } from "@/core/domain/common/docs";
+import { TransactionSource } from "@/core/domain/wallet";
 import { IsNumber, IsUUID } from "class-validator";
 
 export class ReleaseFundsDto {
@@ -10,10 +11,16 @@ export class ReleaseFundsDto {
     @IsNumber()
     amount: number;
 
+    @ApiProperty({ format: "string", required: false, default: "XOF" })
+    currency? : string;
+
+    @ApiProperty({type: "enum", required: false, enum: TransactionSource})
+    source?: TransactionSource;
+
     @ApiProperty({ format: "uuid", required: false })
     @IsUUID()
-    reservationId: string;
+    sourceId?: string;
 
-    @ApiProperty({ required: false, default: "XOF" })
-    currency?: string
+    @ApiProperty({ required: false })
+    note?: string;
 }

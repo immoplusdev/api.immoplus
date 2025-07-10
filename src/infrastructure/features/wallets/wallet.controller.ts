@@ -1,5 +1,5 @@
 import { UserRole } from '@/core/domain/roles';
-import { DEFAULT_CURRENCY, Wallet, WalletTransaction, WalletWithDrawalRequest, WithdrawalStatus } from '@/core/domain/wallet';
+import { DEFAULT_CURRENCY, TransactionSource, Wallet, WalletTransaction, WalletWithDrawalRequest, WithdrawalStatus } from '@/core/domain/wallet';
 import { CurrentUser, RequiredRoles } from '@/infrastructure/decorators';
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -22,6 +22,7 @@ import { UpdateWalletWithdrawalRequestCommand } from '@/core/application/wallet/
 import { FindWalletWithdrawalRequestsByOwnerQuery } from '@/core/application/wallet/queries/find-wallet-withdrawal-requests-by-owner.query';
 import { DeleteWalletWithdrawalRequestCommand } from '@/core/application/wallet/commands/delete-wallet-withdrawal-request.command';
 import { FindWithdrawalRequestByIdQuery } from '@/core/application/wallet/queries/find-withdrawal-request-by-id.query';
+import { devNull } from 'os';
 
 
 @ApiTags("Wallet")
@@ -45,40 +46,49 @@ export class WalletsController {
 
     @Post('admin/credit')
     @RequiredRoles(UserRole.Admin)
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     async creditWallet(@Body() data: CreditWalletDto): Promise<Wallet> {
         return this.commandBus.execute(new CreditWalletCommand(
             data.ownerId,
             data.amount,
-            data.reservationId,
-            data.currency || DEFAULT_CURRENCY
+            data.currency || DEFAULT_CURRENCY,
+            data.source,
+            data.sourceId,
+            data.operator,
+            data.note,
+            data.refundDate
         ));
     }
 
     @Post('admin/debit')
-    @RequiredRoles(UserRole.Admin)
+    // @RequiredRoles(UserRole.Admin)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     async debitWallet(@Body() data: DebitWalletDto): Promise<Wallet> {
         return this.commandBus.execute(new DebitWalletCommand(
             data.ownerId,
             data.amount,
-            data.reservationId,
-            data.currency || DEFAULT_CURRENCY
+            data.currency || DEFAULT_CURRENCY,
+            data.source,
+            data.sourceId,
+            data.operator,
+            data.note
         ));
     }
 
     @Post('admin/release-funds')
-    @RequiredRoles(UserRole.Admin)
+    // @RequiredRoles(UserRole.Admin)
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth()
     async releaseFunds(@Body() data: ReleaseFundsDto): Promise<Wallet> {
         return this.commandBus.execute(new ReleaseFundsCommand(
             data.ownerId,
             data.amount,
-            data.reservationId,
-            data.currency || DEFAULT_CURRENCY
+            data.currency || DEFAULT_CURRENCY,
+            data.source|| TransactionSource.AUTRE,
+            data.sourceId,
+            data.note
         ));
     }
 

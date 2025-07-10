@@ -9,7 +9,7 @@ export class ReleaseFundsHandler  implements ICommandHandler<ReleaseFundsCommand
     constructor(@Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository) {}
 
     execute(command: ReleaseFundsCommand): Promise<Wallet> {
-        return this.walletRepository.releaseFunds(command.ownerId, command.amount, command.reservationId, command.currency);
+        return this.walletRepository.releaseFunds(command.ownerId, command.amount, command.currency,command.source, command.sourceId, command.note);
     }
 
 }

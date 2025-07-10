@@ -19,7 +19,7 @@ export class NotificationService implements INotificationService {
   }
 
   async sendNotification(params: SendNotificationParams) {
-
+    console.log("params : ", params);
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
@@ -29,7 +29,7 @@ export class NotificationService implements INotificationService {
         text: params.htmlMessage || params.message,
     });
 
-    if (params.sendSms) await this.smsService.sendSms([user.phoneNumber], params.message);
+    // if (params.sendSms) await this.smsService.sendSms([user.phoneNumber], params.message);
 
     try {
       if (!params.skipInAppNotification) await this.sendOneSignalNotification(params, (user.role as Role)?.id as UserRole);
@@ -40,23 +40,17 @@ export class NotificationService implements INotificationService {
 
   private async sendOneSignalNotification(params: SendNotificationParams, userRole?: UserRole) {
     const credentials = await this.getOneSignalCredentials(userRole);
-    // let returnUrl = this.configsManagerService.getEnvVariable("ONE_SIGNAL_RETURN_URL");
-    // if (params.returnUrl) returnUrl += `/${params.returnUrl}`;
-
     const data = {
       app_id: credentials.app_id,
       headings: { en: params.subject },
       contents: { en: params.message },
       include_external_user_ids: [params.userId],
-      // url: returnUrl,
     };
-
 
     const config = {
       headers: {
         "Authorization": `Basic ${credentials.api_key}`,
         "Content-Type": "application/json",
-        // "Cookie": "__cf_bm=lam2Uza6BI0UtCAcHcwcSAjbL1FBh7dQfWFFs90PXDY-1732373822-1.0.1.1-q3GkVVp99tCpKqKZpX0cXQirBkJauZmgiiJY3WZxNLGdZz1YjpfnII7DwEZ9Qyrwy.8QRYTT1e_Eb_Z75ELW2A",
       },
     };
 
