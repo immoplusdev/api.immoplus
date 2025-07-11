@@ -3,6 +3,8 @@ import { WalletsService } from "./wallet.service";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { CreateWalletWithdrawalRequestCommand } from "@/core/application/wallet/commands/create-wallet-withdrawal-request.command";
+import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/common/models";
 
 export class WalletsRepository implements IWalletRepository {
     constructor(
@@ -31,8 +33,8 @@ export class WalletsRepository implements IWalletRepository {
         return  this.walletService.findWalletTransactionById(id);
     }
 
-    findWalletTransactionsByOwner(ownerId: string): Promise<WalletTransaction[]> {
-        return this.walletService.findWalletTransactionsByOwner(ownerId);
+    findWalletTransactionsByOwner(query: SearchItemsParams): Promise<WrapperResponse<WalletTransaction[]>> {
+        return this.walletService.findWalletTransactionsByOwner(query);
     }
 
     
@@ -50,8 +52,8 @@ export class WalletsRepository implements IWalletRepository {
     findWalletWithdrawalRequestById(id: string): Promise<WalletWithDrawalRequest> {
         return this.walletService.findWalletWithdrawalRequestById(id);
     }
-    findWalletWithdrawalRequestsByOwner(owner: string): Promise<WalletWithDrawalRequest[]> {
-        return this.walletService.findWalletWithdrawalRequestsByOwner(owner);
+    findWalletWithdrawalRequestsByOwner(query: SearchItemsParams): Promise<WrapperResponse<WalletWithDrawalRequest[]>> {
+        return this.walletService.findWalletWithdrawalRequestsByOwner(query);
     }
     deleteWalletWithdrawalRequest(id: string): Promise<void> {
         return this.walletService.deleteWalletWithdrawalRequest(id);

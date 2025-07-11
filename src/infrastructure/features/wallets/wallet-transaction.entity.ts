@@ -48,6 +48,7 @@ export class WalletTransactionEntity {
 
     @Column({ name: "release_date", type: "timestamp", nullable: true })
     releaseDate?: Date
+    
     @Column({ name: "is_realeased", type: "boolean", default: false })
     isRealeased?: boolean; // Indique si la transaction a deja ete 
     
