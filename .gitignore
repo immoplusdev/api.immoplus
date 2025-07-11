@@ -406,3 +406,4 @@ environments/dev.bru
 environments/prod.bru
 perf-tests/env.js
 data/
+mysql-data

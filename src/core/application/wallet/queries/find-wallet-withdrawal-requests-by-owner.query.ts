@@ -1,3 +1,5 @@
+import { SearchItemsParams } from "@/core/domain/http";
+
 export class FindWalletWithdrawalRequestsByOwnerQuery {
-    constructor(public readonly ownerId: string) {}
+    constructor(public readonly query: SearchItemsParams) {}
 }

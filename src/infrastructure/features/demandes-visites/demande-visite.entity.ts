@@ -50,7 +50,7 @@ export class DemandeVisiteEntity {
   @Column({ name: "montant_total_demande_visite", type: "int" })
   montantTotalDemandeVisite: number;
   @Column({ name: "montant_demande_visite_sans_commission", type: "int" })
-  montantDemandeVisiteSansCommission: number;
+  montantCommission: number;
 
 
   @Column({ name: "notes", type: "text", nullable: true })

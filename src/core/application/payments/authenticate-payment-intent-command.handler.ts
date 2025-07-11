@@ -8,8 +8,6 @@ import {
 } from "@/core/domain/payments";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { IReservationRepository } from "@/core/domain/reservations";
-import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import {
   GetPaymentCollectionItemDataQuery,

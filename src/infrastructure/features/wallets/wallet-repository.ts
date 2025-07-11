@@ -1,8 +1,10 @@
-import { DEFAULT_CURRENCY, IWalletRepository, Wallet, WalletTransaction, WalletWithDrawalRequest } from "@/core/domain/wallet";
+import { DEFAULT_CURRENCY, IWalletRepository, TransactionSource, Wallet, WalletOperators, WalletTransaction, WalletWithDrawalRequest } from "@/core/domain/wallet";
 import { WalletsService } from "./wallet.service";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { CreateWalletWithdrawalRequestCommand } from "@/core/application/wallet/commands/create-wallet-withdrawal-request.command";
+import { SearchItemsParams } from "@/core/domain/http";
+import { WrapperResponse } from "@/core/domain/common/models";
 
 export class WalletsRepository implements IWalletRepository {
     constructor(
@@ -13,26 +15,26 @@ export class WalletsRepository implements IWalletRepository {
         return this.walletService.findWalletByOwner(ownerId);
     }
 
-    creditWallet(ownerId: string, amount: number, reservationId: string, currency?: string): Promise<Wallet>
+    creditWallet(ownerId: string, amount: number, currency?: string, source?: TransactionSource, sourceId?: string , operator?: WalletOperators, note?: string, releaseDate?: Date): Promise<Wallet>
     {
-        return this.walletService.creditWallet(ownerId, amount, reservationId, currency||DEFAULT_CURRENCY);
+        return this.walletService.creditWallet(ownerId, amount, currency, source, sourceId, operator, note, releaseDate);
     }
-    debitWallet(ownerId: string, amount: number, reservationId: string, currency?: string): Promise<Wallet>
+    debitWallet(ownerId: string, amount: number, currency?: string, source?: TransactionSource, sourceId?: string , operator?: WalletOperators, note?: string): Promise<Wallet>
     {
-        return this.walletService.debitWallet(ownerId, amount, reservationId, currency);
+        return this.walletService.debitWallet(ownerId, amount, currency, source, sourceId, operator, note);
     }
 
-    releaseFunds(ownerId: string, amount: number, reservationId: string, currency?: string) : Promise<Wallet>
+    releaseFunds(ownerId: string, amount: number,currency=DEFAULT_CURRENCY, source?:TransactionSource, sourceId?: string, note?: string) : Promise<Wallet>
     {
-        return this.walletService.releaseFunds(ownerId, amount, reservationId, currency);
+        return this.walletService.releaseFunds(ownerId, amount, currency, source, sourceId, note );
     }
 
     findWalletTransactionById(id: string): Promise<WalletTransaction> {
         return  this.walletService.findWalletTransactionById(id);
     }
 
-    findWalletTransactionsByOwner(ownerId: string): Promise<WalletTransaction[]> {
-        return this.walletService.findWalletTransactionsByOwner(ownerId);
+    findWalletTransactionsByOwner(query: SearchItemsParams): Promise<WrapperResponse<WalletTransaction[]>> {
+        return this.walletService.findWalletTransactionsByOwner(query);
     }
 
     
@@ -50,8 +52,8 @@ export class WalletsRepository implements IWalletRepository {
     findWalletWithdrawalRequestById(id: string): Promise<WalletWithDrawalRequest> {
         return this.walletService.findWalletWithdrawalRequestById(id);
     }
-    findWalletWithdrawalRequestsByOwner(owner: string): Promise<WalletWithDrawalRequest[]> {
-        return this.walletService.findWalletWithdrawalRequestsByOwner(owner);
+    findWalletWithdrawalRequestsByOwner(query: SearchItemsParams): Promise<WrapperResponse<WalletWithDrawalRequest[]>> {
+        return this.walletService.findWalletWithdrawalRequestsByOwner(query);
     }
     deleteWalletWithdrawalRequest(id: string): Promise<void> {
         return this.walletService.deleteWalletWithdrawalRequest(id);

@@ -22,18 +22,21 @@ export class EstimerPrixReservationQueryHandler
     const configs = await this.configsManagerService.getAppConfigs();
 
     const pourcentageCommissionReservation = configs.pourcentageCommissionReservation;
-    const montantReservationSansCommission = residence.prixReservation * query.datesReservation.length;
+    const montantTotalReservation = residence.prixReservation * query.datesReservation.length;
 
-    if (montantReservationSansCommission == 0) throw new UnexpectedException();
-    const montantCommission = montantReservationSansCommission * pourcentageCommissionReservation / 100;
-    const montantTotalReservation = Math.round(montantReservationSansCommission + montantCommission);
+    if (montantTotalReservation == 0) throw new UnexpectedException();
+    const montantCommission = this.formatAmount(montantTotalReservation * pourcentageCommissionReservation / 100);
 
 
     return new EstimerPrixReservationQueryResponse({
       residence: query.residence,
       datesReservation: query.datesReservation,
       montantTotalReservation,
-      montantReservationSansCommission,
+      montantCommission,
     });
+  }
+
+  formatAmount(montant: number): number {
+    return Math.ceil(montant/5) * 5;
   }
 }

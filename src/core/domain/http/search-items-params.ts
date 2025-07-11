@@ -51,7 +51,7 @@ export type ItemsParamsOrderDirection = "asc" | "desc";
 export interface ItemsParamsCriterias {
   _field: string;
   _op?: ItemsOperator;
-  _val?: string | string[];
+  _val?: string | string[] | any;
   _l_op?: ItemsParamsCriteriasLogic;
 }
 

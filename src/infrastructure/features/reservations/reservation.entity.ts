@@ -47,9 +47,8 @@ export class ReservationEntity {
   retraitProEffectue: boolean;
   @Column({ name: "montant_total_reservation", type: "int" })
   montantTotalReservation: number;
-  @Column({ name: "montant_reservation_sans_commission", type: "int" })
-  montantReservationSansCommission: number;
-
+  @Column({ name: "montant_commission", type: "int" })
+  montantCommission: number;
 
   @Column({ name: "notes", type: "text", nullable: true })
   notes: string;
@@ -67,12 +66,6 @@ export class ReservationEntity {
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "created_by" })
   createdBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "updated_by" })
-  // updatedBy?: string;
-  // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  // @JoinColumn({ name: "deleted_by" })
-  // deletedBy?: string;
 
   constructor(data?: OmitMethods<ReservationEntity>) {
     if (data) Object.assign(this, data);

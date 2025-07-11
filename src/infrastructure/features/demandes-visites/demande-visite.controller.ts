@@ -169,11 +169,11 @@ export class DemandeVisiteController {
 
     const montantNonRetire = items.data
       .filter(item => item.statusFacture == StatusFacture.NonPaye)
-      .reduce((previousValue, currentValue) => previousValue + currentValue.montantDemandeVisiteSansCommission, 0);
+      .reduce((previousValue, currentValue) => previousValue + (currentValue.montantTotalDemandeVisite- currentValue.montantCommission), 0);
 
     const montantRetire = items.data
       .filter(item => item.statusFacture == StatusFacture.Paye)
-      .reduce((previousValue, currentValue) => previousValue + currentValue.montantDemandeVisiteSansCommission, 0);
+      .reduce((previousValue, currentValue) => previousValue + (currentValue.montantTotalDemandeVisite- currentValue.montantCommission), 0);
 
     return new HistoriqueRetrait({
       montantNonRetire,

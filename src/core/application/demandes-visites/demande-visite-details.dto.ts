@@ -34,7 +34,7 @@ export class DemandeVisiteDetailsDto {
   montantTotalDemandeVisite: number;
 
   @ApiProperty()
-  montantDemandeVisiteSansCommission: number;
+  montantCommission: number;
 
   @ApiProperty()
   notes: string;
