@@ -11,17 +11,8 @@ export enum WithdrawalStatus {
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
   COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED'
 }
-
-
-export enum WalletOperators {
-  MoovMoney = "moov",
-  Wave = "wave",
-  OrangeMoney = "orange",
-  MtnMoney = "mtn",
-  Ecobank = "ecobank",
-  Cash = "cash",
-} 
 
 export enum TransactionSource {
    RESERVATION = 'RESERVATION',

@@ -1,10 +1,9 @@
 import "reflect-metadata";
 import { PaymentStatus } from "@/core/domain/payments/payment-status.enum";
-import { PaymentMethod } from "@/core/domain/payments/payment-method.enum";
 import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
 import { LoggerService } from "@/infrastructure/features/logging/logger.service";
-// import { ConfigsManagerService } from "@/infrastructure/features/configs/configs-manager.service";
 import { AttemptPaymentIntent } from "@/core/domain/payments";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 jest.mock("axios", () => {
   return {

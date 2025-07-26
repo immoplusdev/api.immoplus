@@ -77,7 +77,7 @@
         },
         "paiement_debit_pro": {
           "subject": "\uD83D\uDD14 Nouveau retrait !",
-          "message": "Nouveau retrait reçu, ouvrez l'application pour voir les détails."
+          "message": "Nouveau retrait effectué sur votre compte, ouvrez l'application pour voir les détails."
         }    
     }
 

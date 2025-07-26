@@ -1,4 +1,5 @@
-import { TransactionSource, WalletOperators } from "@/core/domain/wallet";
+import { PaymentMethod } from "@/core/domain/common/enums";
+import { TransactionSource } from "@/core/domain/wallet";
 
 export class DebitWalletCommand {
     constructor(
@@ -7,7 +8,7 @@ export class DebitWalletCommand {
         public currency?: string,
         public source?: TransactionSource, 
         public sourceId?: string,
-        public operator?: WalletOperators,
+        public operator?: PaymentMethod,
         public note?: string 
     ) {}
 }

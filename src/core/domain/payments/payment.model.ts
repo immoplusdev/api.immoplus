@@ -2,9 +2,9 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { PaymentType } from "@/core/domain/payments/payment-type.enum";
 import { PaymentCollection } from "@/core/domain/payments/payment-collection.enum";
 import { PaymentStatus } from "@/core/domain/payments/payment-status.enum";
-import { PaymentMethod } from "@/core/domain/payments/payment-method.enum";
 import { PaymentNextAction } from "@/core/domain/payments/payment-next-action.model";
 import { User } from "@/core/domain/users";
+import { PaymentMethod } from "../common/enums";
 
 export class Payment {
   id: string;

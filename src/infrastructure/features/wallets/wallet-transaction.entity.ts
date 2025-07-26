@@ -1,7 +1,8 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { WalletEntity } from "./wallet.entity";
-import { TransactionSource, TransactionType, Wallet, WalletOperators } from "@/core/domain/wallet";
+import { TransactionSource, TransactionType, Wallet } from "@/core/domain/wallet";
 import { UserEntity } from "../users";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Entity("wallet_transactions")
 export class WalletTransactionEntity {
@@ -27,8 +28,8 @@ export class WalletTransactionEntity {
     @Column({ name: "source_id", nullable: true })
     sourceId?: string; // ID de la réservation, ou du retrait
 
-    @Column({ name: "operator", type: 'enum', enum: WalletOperators, nullable: true })
-    operator?: WalletOperators;
+    @Column({ name: "operator", type: 'enum', enum: PaymentMethod, nullable: true })
+    operator?: PaymentMethod;
 
     @Column({ nullable: true })
     note?: string;

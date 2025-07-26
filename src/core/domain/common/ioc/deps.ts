@@ -17,6 +17,8 @@ export enum Deps {
   DemandeVisiteRepository = "DemandeVisiteRepository",
   PaymentRepository = "PaymentRepository",
   WalletRepository = "WalletRepository",
+  TransferRepository = "TransferRepository",
+  GatewayRepository = "GatewayRepository",
 
   // Services
   LoggerService = "LoggerService",
@@ -33,6 +35,8 @@ export enum Deps {
   ReservationService = "ReservationService",
   DemandesVisiteService = "DemandesVisiteService",
   WalletsService = "WalletsService",
+  TransfertService = "TransfertService",
+  GatewayService = "GatewayService",
 
   // Guards
 

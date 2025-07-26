@@ -1,4 +1,5 @@
-import { WalletOperators, WithdrawalStatus } from "@/core/domain/wallet"
+import { PaymentMethod } from "@/core/domain/common/enums";
+import { WithdrawalStatus } from "@/core/domain/wallet"
 
 export class UpdateWalletWithdrawalRequestCommand {
     constructor(
@@ -6,7 +7,7 @@ export class UpdateWalletWithdrawalRequestCommand {
         public amount: number,
         public currency: string,
         public phoneNumber: string,
-        public operator: WalletOperators,
+        public operator: PaymentMethod,
         public status: WithdrawalStatus,
         public note?: string
     ) {}

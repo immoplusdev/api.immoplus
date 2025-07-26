@@ -1,5 +1,6 @@
 import { ApiProperty } from "@/core/domain/common/docs";
-import { TransactionSource, WalletOperators } from "@/core/domain/wallet";
+import { PaymentMethod } from "@/core/domain/common/enums";
+import { TransactionSource } from "@/core/domain/wallet";
 import { IsNumber, IsUUID } from "class-validator";
 
 export class CreditWalletDto {
@@ -21,8 +22,8 @@ export class CreditWalletDto {
     @ApiProperty({ required: false, default: "XOF" })
     currency?: string;
 
-    @ApiProperty({ type: "enum", enum: WalletOperators,  required: false })
-    operator?: WalletOperators;
+    @ApiProperty({ type: "enum", enum: PaymentMethod,  required: false })
+    operator?: PaymentMethod;
 
     @ApiProperty({type: String, required: false })
     note?: string;
