@@ -11,6 +11,7 @@ import { WrapperResponseDtoMapper } from '@/lib/responses';
 import { SearchItemsParamsDto, SelectItemsParamsDto } from '@/infrastructure/http';
 import { UpdateTransferDto } from './dto/update-transfer.dto';
 import { WrapperResponseTransferDto, WrapperResponseTransferListDto } from './dto/transfer.dto';
+import { addConditionsToWhereClause } from '@/infrastructure/helpers';
 
 @ApiTags('Transfers')
 @Controller('transfers')
@@ -47,7 +48,15 @@ export class TransfersController {
       @Get()
       async readMany(
         @Query() params: SearchItemsParamsDto,
+        @CurrentUser("id") userId: string
       ) {
+         params._where = addConditionsToWhereClause([
+              {
+                  _field: "customer",
+                  _op: "eq",
+                  _val: userId,
+              }
+          ], params._where);
         const items = await this.repository.findByQuery(params);
         return this.responseMapper.mapFromQueryResult(items);
       }
