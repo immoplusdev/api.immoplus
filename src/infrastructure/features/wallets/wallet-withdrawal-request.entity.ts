@@ -1,7 +1,8 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from "../users";
-import { WalletOperators, WithdrawalStatus } from "@/core/domain/wallet";
+import { WithdrawalStatus } from "@/core/domain/wallet";
 import { User } from "@/core/domain/users";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Entity({ name: 'wallet_withdrawal_requests' })
 export class WalletWithdrawalRequestEntity {
@@ -21,8 +22,8 @@ export class WalletWithdrawalRequestEntity {
   @Column({ name: "phone_number", type: "varchar" })
   phoneNumber?: string;
 
-  @Column({ name: "operator", type: 'enum', enum: WalletOperators, nullable: true })
-  operator?: WalletOperators;
+  @Column({ name: "operator", type: 'enum', enum: PaymentMethod, nullable: true })
+  operator?: PaymentMethod;
 
   @Column({ type: 'enum', enum: WithdrawalStatus, default: WithdrawalStatus.PENDING })
   status: WithdrawalStatus;

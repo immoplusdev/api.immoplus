@@ -1,4 +1,5 @@
-import { WalletOperators, WithdrawalStatus } from "@/core/domain/wallet";
+import { PaymentMethod } from "@/core/domain/common/enums";
+import { WithdrawalStatus } from "@/core/domain/wallet";
 import { ApiProperty } from "@nestjs/swagger"
 import { IsNumber, IsUUID } from "class-validator";
 
@@ -17,8 +18,8 @@ export class CreateWalletWithdrawalRequestDto {
    @ApiProperty({ required: true })
    phoneNumber: string;
 
-   @ApiProperty({ required: true, type: String, enum: WalletOperators})
-   operator: WalletOperators;
+   @ApiProperty({ required: true, type: String, enum: PaymentMethod})
+   operator: PaymentMethod;
 
    @ApiProperty({ required: false, type: String, enum: WithdrawalStatus, default: WithdrawalStatus.PENDING })
    status: WithdrawalStatus;

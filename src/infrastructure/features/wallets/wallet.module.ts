@@ -28,6 +28,7 @@ import { FindWithdrawalRequestByIdQuery } from '@/core/application/wallet/querie
 import { FindWithdrawalRequestByIdHandler } from '@/core/application/wallet/queries/handlers/find-withdrawal-request-by-id.handler';
 import { FindWithdrawalRequestsByOwnerHandler } from '@/core/application/wallet/queries/handlers/find-wallet-withdrawal-requests-by-owner.handler';
 import { DeleteWalletWithdrawalRequestHandler } from '@/core/application/wallet/commands/handlers/delete-wallet-withdrawal-request.handler';
+import { ReservationModule } from '../reservations';
 
 const providers: Provider[] = [
     {
@@ -37,36 +38,36 @@ const providers: Provider[] = [
     {
         provide: Deps.WalletsService,
         useClass: WalletsService,
-    }
+    },
+    FindWalletByOwnerHandler,
+    CreditWalletCommand,
+    CreditWalletHandler,
+    DebitWalletCommand,
+    DebitWalletHandler,
+    ReleaseFundsCommand,
+    ReleaseFundsHandler,
+    FindWalletTransactionByIdQuery,
+    FindWalletTransactionByIdHandler,
+    FindWalletTransactionsByOwnerQuery,
+    FindWalletTransactionByOwnerHandler,
+    DeleteWalletTransactionCommand,
+    DeleteWalletTransactionHandler,
+    CreateWalletWithdrawalRequestCommand,
+    CreateWalletWithdrawalRequestHandler,
+    UpdateWalletWithdrawalRequestCommand,
+    UpdateWalletWithdrawalRequestHandler,
+    FindWalletWithdrawalRequestsByOwnerQuery,
+    FindWithdrawalRequestsByOwnerHandler,
+    DeleteWalletWithdrawalRequestCommand,
+    DeleteWalletWithdrawalRequestHandler,
+    FindWithdrawalRequestByIdQuery,
+    FindWithdrawalRequestByIdHandler,
+    ReservationModule
 ];
 @Module({
     imports: [TypeormModule, CqrsModule],
     providers: [
-        ...providers,  
-        FindWalletByOwnerHandler,
-        CreditWalletCommand,
-        CreditWalletHandler,
-        DebitWalletCommand,
-        DebitWalletHandler,
-        ReleaseFundsCommand,
-        ReleaseFundsHandler,
-        FindWalletTransactionByIdQuery,
-        FindWalletTransactionByIdHandler,
-        FindWalletTransactionsByOwnerQuery,
-        FindWalletTransactionByOwnerHandler,
-        DeleteWalletTransactionCommand,
-        DeleteWalletTransactionHandler,
-        CreateWalletWithdrawalRequestCommand,
-        CreateWalletWithdrawalRequestHandler,
-        UpdateWalletWithdrawalRequestCommand,
-        UpdateWalletWithdrawalRequestHandler,
-        FindWalletWithdrawalRequestsByOwnerQuery,
-        FindWithdrawalRequestsByOwnerHandler,
-        DeleteWalletWithdrawalRequestCommand,
-        DeleteWalletWithdrawalRequestHandler,
-        FindWithdrawalRequestByIdQuery,
-        FindWithdrawalRequestByIdHandler,
-
+        ...providers,
     ],
     controllers: [WalletsController],
     exports: [...providers],

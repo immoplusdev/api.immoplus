@@ -1,5 +1,5 @@
 import { Deps } from '@/core/domain/common/ioc';
-import { DEFAULT_CURRENCY, TransactionSource, TransactionType, Wallet, WalletOperators, WalletTransaction, WalletWithDrawalRequest } from '@/core/domain/wallet';
+import { DEFAULT_CURRENCY, TransactionSource, TransactionType, Wallet, WalletTransaction, WalletWithDrawalRequest } from '@/core/domain/wallet';
 import { BaseRepository } from '@/infrastructure/typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
@@ -10,18 +10,24 @@ import { NotEnoughtMoneyException } from '@/core/domain/wallet/exceptions/not-en
 import { WalletWithdrawalRequestEntity } from './wallet-withdrawal-request.entity';
 import { WrapperResponse } from '@/core/domain/common/models';
 import { SearchItemsParams } from '@/core/domain/http';
+import { PaymentMethod } from '@/core/domain/common/enums';
+import { Reservation, StatusReservation } from '@/core/domain/reservations';
+import { ReservationEntity } from '../reservations';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class WalletsService {
     private readonly walletRepo: BaseRepository<Wallet>;
     private readonly walletTransactionRepo: BaseRepository<WalletTransaction>;
     private readonly walletWithdrawalRepo: BaseRepository<WalletWithDrawalRequest>;
+    private readonly reservationRepo: BaseRepository<Reservation>;
     constructor(
-        @Inject(Deps.DataSource) readonly dataSource: DataSource
+        @Inject(Deps.DataSource) readonly dataSource: DataSource,
     ) {
         this.walletRepo = new BaseRepository(dataSource, WalletEntity).setLoadRelationIds(false);
         this.walletTransactionRepo = new BaseRepository(dataSource, WalletTransactionEntity).setLoadRelationIds(true);
         this.walletWithdrawalRepo = new BaseRepository(dataSource, WalletWithdrawalRequestEntity).setLoadRelationIds(true);
+        this.reservationRepo = new BaseRepository(dataSource, ReservationEntity).setLoadRelationIds(true);
     }
 
 
@@ -55,7 +61,7 @@ export class WalletsService {
         currency?: string, 
         source=TransactionSource.AUTRE, 
         sourceId?: string, 
-        operator?: WalletOperators,  
+        operator?: PaymentMethod,  
         note?: string, 
         releaseDate?: Date
     ): Promise<Wallet> {
@@ -85,7 +91,7 @@ export class WalletsService {
         currency?: string, 
         source=TransactionSource.AUTRE, 
         sourceId?: string, 
-        operator?: WalletOperators,  
+        operator?: PaymentMethod,  
         note?: string
     ): Promise<Wallet> {
         const wallet = await this.findWalletByOwner(ownerId);
@@ -228,6 +234,82 @@ export class WalletsService {
         await this.walletWithdrawalRepo.deleteOne(id);
     }
 
+
+   
+    /**
+     * This function is used to verify and make refund of blocked transactions.
+     * It get all blocked transactions that are not released and have a release date
+     * that is lower than the current date.
+     * Then it update the wallet by decreasing the pending balance and increasing the available balance
+     * and create two new transactions : one for unblocking the funds and one for crediting the available balance.
+     * Finally it update the transaction to be released.
+     */
+    @Cron(CronExpression.EVERY_30_MINUTES)
+    async verifyAndMakeRefund() {
+        const transactions = await this.walletTransactionRepo.findByQuery({
+          _where:
+            [
+                {
+                    _field: "type",
+                    _op: "eq",
+                    _val: TransactionType.BLOCK
+                },
+                {
+                    _field: "isRealeased",
+                    _op: "eq",
+                    _val: false
+                },
+                {
+                    _field: "releasedAt",
+                    _op: "eq",
+                    _val: null
+                }
+            ]
+        });
+
+        await transactions.data.forEach(async (transaction) => {
+            if(transaction.releaseDate && new Date() >= transaction.releaseDate){
+                const walletId = typeof transaction.wallet === 'string' ? transaction.wallet : transaction.wallet.id;
+                const wallet = await this.walletRepo.findOne(walletId);
+                if(wallet && wallet.pendingBalance >= transaction.amount) {
+
+                    const pendingBalance = +wallet.pendingBalance - transaction.amount;
+                    const availableBalance = +wallet.availableBalance + transaction.amount;
+
+      
+                    /* Enregistrement des transactions **/
+                    await this.walletTransactionRepo.createMany([
+                        {
+                            wallet,
+                            type: TransactionType.UNBLOCK,
+                            amount:transaction.amount,
+                            currency: transaction.currency,
+                            source: transaction.source,
+                            sourceId: transaction.sourceId,
+                            note: 'Déblocage des fonds',
+                            createdBy: null,
+                        },
+                        {
+                            wallet,
+                            type: TransactionType.CREDIT,
+                            amount: transaction.amount,
+                            currency: transaction.currency,
+                            source: transaction.source,
+                            sourceId: transaction.sourceId,
+                            note: 'Versement des fonds sur compte disponible',
+                            createdBy: null
+                        }
+                    ]);
+
+                    /* Mise a jour du portefeuille **/
+                    await this.walletRepo.updateOne(wallet.id, { pendingBalance, availableBalance });
+                    await this.walletTransactionRepo.updateOne(transaction.id, {isRealeased: true, releasedAt: new Date() });
+                    if(transaction.source === TransactionSource.RESERVATION) await this.reservationRepo.updateOne(transaction.sourceId, { retraitProEffectue: true });
+                }
+            }
+        });
+
+    }
 
 
 }

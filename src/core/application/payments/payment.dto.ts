@@ -3,11 +3,11 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import {
   PaymentCollection,
-  PaymentMethod,
   PaymentNextAction,
   PaymentStatus,
   PaymentType,
 } from "@/core/domain/payments";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 export class PaymentDto {
   @ApiProperty({ format: "uuid" })

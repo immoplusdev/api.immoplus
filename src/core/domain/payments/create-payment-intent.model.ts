@@ -1,5 +1,5 @@
+import { PaymentMethod } from "../common/enums";
 import { PaymentToken } from "./payment-token.model";
-import {PaymentMethod} from "./payment-method.enum";
 
 export class CreatePaymentIntent {
   customerId: string;

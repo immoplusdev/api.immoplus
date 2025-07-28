@@ -1,5 +1,5 @@
 import {
-  PaymentMethod, CreatePaymentIntent,
+  CreatePaymentIntent,
   CreatePaymentIntentResponse, AttemptPaymentIntent,
   PaymentStatus, AttemptPaymentIntentResponse,
   AuthenticatePaymentIntent, AuthenticatePaymentIntentResponse,
@@ -22,6 +22,7 @@ import {
   Hub2CreatePaymentIntentResponse,
 } from "@/infrastructure/features/payments/hub2";
 import { ConflictException } from "@/core/domain/common/exceptions";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Injectable()
 export class Hub2PaymentGatewayService implements IPaymentGatewayService {

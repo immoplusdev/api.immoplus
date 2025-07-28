@@ -4,7 +4,7 @@ import { AttemptPaymentIntent } from "./attempt-payment-intent.model";
 import { AttemptPaymentIntentResponse } from "./attempt-payment-intent-response.model";
 import { AuthenticatePaymentIntent } from "./authenticate-payment-intent.model";
 import { AuthenticatePaymentIntentResponse } from "./authenticate-payment-response.model";
-import { PaymentMethod } from "./payment-method.enum";
+import { PaymentMethod } from "../common/enums";
 
 export interface IPaymentGatewayService {
   createPaymentIntent(

@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { PaymentMethod } from "@/core/domain/payments";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 export class CreateDemandeRetraitReservationCommand {
   @ApiProperty({ format: "uuid" })

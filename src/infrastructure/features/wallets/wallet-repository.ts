@@ -1,10 +1,11 @@
-import { DEFAULT_CURRENCY, IWalletRepository, TransactionSource, Wallet, WalletOperators, WalletTransaction, WalletWithDrawalRequest } from "@/core/domain/wallet";
+import { DEFAULT_CURRENCY, IWalletRepository, TransactionSource, Wallet, WalletTransaction, WalletWithDrawalRequest } from "@/core/domain/wallet";
 import { WalletsService } from "./wallet.service";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { CreateWalletWithdrawalRequestCommand } from "@/core/application/wallet/commands/create-wallet-withdrawal-request.command";
 import { SearchItemsParams } from "@/core/domain/http";
 import { WrapperResponse } from "@/core/domain/common/models";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 export class WalletsRepository implements IWalletRepository {
     constructor(
@@ -15,11 +16,11 @@ export class WalletsRepository implements IWalletRepository {
         return this.walletService.findWalletByOwner(ownerId);
     }
 
-    creditWallet(ownerId: string, amount: number, currency?: string, source?: TransactionSource, sourceId?: string , operator?: WalletOperators, note?: string, releaseDate?: Date): Promise<Wallet>
+    creditWallet(ownerId: string, amount: number, currency?: string, source?: TransactionSource, sourceId?: string , operator?: PaymentMethod, note?: string, releaseDate?: Date): Promise<Wallet>
     {
         return this.walletService.creditWallet(ownerId, amount, currency, source, sourceId, operator, note, releaseDate);
     }
-    debitWallet(ownerId: string, amount: number, currency?: string, source?: TransactionSource, sourceId?: string , operator?: WalletOperators, note?: string): Promise<Wallet>
+    debitWallet(ownerId: string, amount: number, currency?: string, source?: TransactionSource, sourceId?: string , operator?: PaymentMethod, note?: string): Promise<Wallet>
     {
         return this.walletService.debitWallet(ownerId, amount, currency, source, sourceId, operator, note);
     }

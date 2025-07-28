@@ -19,11 +19,12 @@ import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { PaymentDemandeVisiteValideEvent } from "@/core/application/payments/payment-demande-visite-valide.event";
 import { PaymentReservationValideEvent } from "@/core/application/payments/payment-reservation-valide.event";
 import { IResidenceRepository, Residence } from "@/core/domain/residences";
-import {  DEFAULT_CURRENCY, TransactionSource, WalletOperators } from "@/core/domain/wallet";
+import {  DEFAULT_CURRENCY, TransactionSource } from "@/core/domain/wallet";
 import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { INotificationService } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 @CommandHandler(InterceptPaymentWebhookCommand)
 export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<InterceptPaymentWebhookCommand> {
@@ -97,8 +98,6 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
       ],
     });
 
-    console.log("localPayments : ", localPayments);
-    console.log("Token: ", command.token)
 
     const paymentWebhookData = command.payments.sort((a, b) => {
       return (new Date(a.createdAt) as any) - (new Date(b.createdAt) as any);
@@ -122,7 +121,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
       await this.updateItemStatusAndStatusFacture(localPayment.itemId, localPayment.collection, statusFacture);
     }
      
-    const operator = command.payments[0].metadata?.provider as WalletOperators;
+    const operator = command.payments[0].metadata?.provider as PaymentMethod;
 
     // Si payment de la reservation reussi, faire verfication pour crediter le wallet
     if (paymentStatus == PaymentStatus.Successful && localPayment.collection == PaymentCollection.Reservation) {
@@ -160,7 +159,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
     }
 
 
-  async reservationWalletCredit(reservationId: string, paidAmount: number, operator?: WalletOperators) {
+  async reservationWalletCredit(reservationId: string, paidAmount: number, operator?: PaymentMethod) {
         const reservation: Reservation = await this.reservationRepository.findOne(reservationId);
 
         if(reservation) {
@@ -207,7 +206,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
         }
   }
 
-  async demandeVisiteWalletCredit(demandeVisiteId: string, operator: WalletOperators) {
+  async demandeVisiteWalletCredit(demandeVisiteId: string, operator: PaymentMethod) {
     const demandeVisite: DemandeVisite = await this.demandeVisiteRepository.findOne(demandeVisiteId);
       const bien : BienImmobilier = demandeVisite.bienImmobilier as BienImmobilier;;
 

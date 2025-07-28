@@ -1,7 +1,8 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsOptional } from "class-validator";
-import { PaymentCollection, PaymentMethod } from "@/core/domain/payments";
+import { PaymentCollection } from "@/core/domain/payments";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 export class CreatePaymentIntentCommand {
   @ApiProperty({ enum: PaymentCollection })

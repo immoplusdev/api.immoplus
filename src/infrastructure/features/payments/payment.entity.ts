@@ -10,13 +10,13 @@ import {
 import { OmitMethods } from "@/lib/ts-utilities";
 import {
   PaymentCollection,
-  PaymentMethod,
   PaymentNextAction,
   PaymentStatus,
   PaymentType,
 } from "@/core/domain/payments";
 import { UserEntity } from "@/infrastructure/features/users";
 import { User } from "@/core/domain/users";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Entity("payments")
 export class PaymentEntity {

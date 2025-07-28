@@ -4,7 +4,6 @@ export * from "./status-facture.enum";
 export * from "./payment-type.enum";
 export * from "./payment-collection.enum";
 export * from "./payment-status.enum";
-export * from "./payment-method.enum";
 export * from "./payment-next-action.model";
 export * from "./i-payment-gateway.service";
 export * from "./create-payment-intent.model";

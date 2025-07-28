@@ -9,6 +9,7 @@ import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { GlobalInterceptorsModule } from "@/infrastructure/interceptors/global-interceptors.module";
 import { RestModule } from "@/infrastructure/presentation/rest/rest.module";
 import { ScheduleModule } from "@nestjs/schedule";
+import { TransfersModule } from './infrastructure/features/transfers/transfers.module';
 
 const providers: Provider[] = [];
 
@@ -25,6 +26,7 @@ const providers: Provider[] = [];
     I18nModule.forRoot(i18Configs),
     JwtModule.register(jwtConfigs),
     RestModule,
+    TransfersModule,
 
   ],
   exports: [...providers],
