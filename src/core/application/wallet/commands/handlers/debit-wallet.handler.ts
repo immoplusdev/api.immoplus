@@ -6,9 +6,19 @@ import { Deps } from "@/core/domain/common/ioc";
 
 @CommandHandler(DebitWalletCommand)
 export class DebitWalletHandler implements ICommandHandler<DebitWalletCommand> {
-    constructor(@Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository) {}
+  constructor(
+    @Inject(Deps.WalletRepository)
+    private readonly walletRepository: IWalletRepository,
+  ) {}
 
-    async execute(command: DebitWalletCommand): Promise<Wallet> {
-        return this.walletRepository.debitWallet(command.ownerId, command.amount, command.currency, command.source, command.sourceId, command.operator);
-    }
+  async execute(command: DebitWalletCommand): Promise<Wallet> {
+    return this.walletRepository.debitWallet(
+      command.ownerId,
+      command.amount,
+      command.currency,
+      command.source,
+      command.sourceId,
+      command.operator,
+    );
+  }
 }

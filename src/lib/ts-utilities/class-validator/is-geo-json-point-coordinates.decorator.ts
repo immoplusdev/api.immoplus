@@ -3,7 +3,7 @@
 import { registerDecorator, ValidationOptions } from "class-validator";
 
 export function IsGeoJsonPointCoordinates(
-  validationOptions?: ValidationOptions
+  validationOptions?: ValidationOptions,
 ) {
   return function (object: Object, propertyName: string) {
     registerDecorator({

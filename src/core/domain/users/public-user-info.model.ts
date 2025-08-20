@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 
 export class PublicUserInfo {
   id: string;
@@ -7,6 +7,6 @@ export class PublicUserInfo {
   lastName: string;
   phoneNumber: string;
   constructor(data?: OmitMethods<PublicUserInfo>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

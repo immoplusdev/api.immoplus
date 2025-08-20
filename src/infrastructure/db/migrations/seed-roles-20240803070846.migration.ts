@@ -27,7 +27,9 @@ export class SeedRoles20240803070846 implements MigrationInterface {
     ];
 
     for (const role of roles) {
-      await queryRunner.query(`INSERT INTO roles (id, name, admin_access) VALUES ('${role.id}', '${role.name}', '${role.admin_access}')`);
+      await queryRunner.query(
+        `INSERT INTO roles (id, name, admin_access) VALUES ('${role.id}', '${role.name}', '${role.admin_access}')`,
+      );
     }
   }
 

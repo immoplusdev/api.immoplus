@@ -1,6 +1,6 @@
 import { IsOptional } from "class-validator";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 export class SendTestNotificationDto {
   @ApiProperty()
   @IsOptional()
@@ -26,6 +26,6 @@ export class SendTestNotificationDto {
   returnUrl?: string;
 
   constructor(data?: OmitMethods<SendTestNotificationDto>) {
-  Object.assign(this, data);
+    Object.assign(this, data);
   }
 }

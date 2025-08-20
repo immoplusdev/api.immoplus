@@ -1,9 +1,8 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsOptional } from "class-validator";
 
 export class CreateUserCommand {
-
   // basic fields
   @ApiProperty()
   @IsOptional()
@@ -39,8 +38,8 @@ export class CreateUserCommand {
   @ApiProperty()
   @IsOptional()
   currency?: string;
-  
+
   constructor(data?: OmitMethods<CreateUserCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

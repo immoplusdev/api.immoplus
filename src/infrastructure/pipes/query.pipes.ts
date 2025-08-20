@@ -13,12 +13,10 @@ export class QueryPipe implements PipeTransform {
   }
 
   transformQuery(query: any) {
-
     if (typeof query !== "object") return {};
 
     return parseHttpQuery(query);
   }
-
 
   transformWhereCriterias(criterias: string): ItemsParamsCriteriasDto {
     return JSON.parse(criterias);

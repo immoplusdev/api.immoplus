@@ -1,7 +1,10 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { Reservation, IReservationRepository } from "@/core/domain/reservations";
+import {
+  Reservation,
+  IReservationRepository,
+} from "@/core/domain/reservations";
 import { ReservationEntity } from "@/infrastructure/features/reservations";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { ItemsParamsCriterias, SearchItemsParams } from "@/core/domain/http";
@@ -30,13 +33,17 @@ export class ReservationRepository implements IReservationRepository {
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
-    @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IReservationRepository,
+    @Inject(Deps.ResidenceRepository)
+    private readonly residenceRepository: IReservationRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, ReservationEntity, this.relations)
+    this.repository = new BaseRepository(
+      dataSource,
+      ReservationEntity,
+      this.relations,
+    )
       .setEntityMapper(new ReservationEntityMapper())
       .setFullTextSearchFields(this.fullTextSearchFields);
   }
-
 
   async createMany(payload: Partial<Reservation>[]): Promise<Reservation[]> {
     return await this.repository.createMany(payload);
@@ -46,21 +53,28 @@ export class ReservationRepository implements IReservationRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Reservation[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Reservation[]>> {
     return await this.repository.findByQuery(query);
   }
 
-  async findByResidenceOwnerId(ownerId: string, query?: SearchItemsParams): Promise<WrapperResponse<Reservation[]>> {
-    const idsResponse = await this.residenceRepository.findByQuery({
-      _where:
-        [
+  async findByResidenceOwnerId(
+    ownerId: string,
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Reservation[]>> {
+    const idsResponse = await this.residenceRepository.findByQuery(
+      {
+        _where: [
           {
             _field: "proprietaire",
             _op: "eq",
             _val: ownerId,
           },
         ],
-    }, { fields: ["id"], relations: [] });
+      },
+      { fields: ["id"], relations: [] },
+    );
 
     const idFilter: ItemsParamsCriterias = {
       _field: "residence",
@@ -68,7 +82,9 @@ export class ReservationRepository implements IReservationRepository {
       _val: idsResponse.data.map((item) => item.id),
     };
 
-    const whereClause: ItemsParamsCriterias[] = query._where ? [...query._where, idFilter] : [idFilter];
+    const whereClause: ItemsParamsCriterias[] = query._where
+      ? [...query._where, idFilter]
+      : [idFilter];
 
     return await this.findByQuery({
       ...(query || {}),
@@ -76,17 +92,21 @@ export class ReservationRepository implements IReservationRepository {
     });
   }
 
-
   async findOne(id: string, options?: FindItemOptions): Promise<Reservation> {
     return await this.repository.findOne(id, options);
   }
 
-
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Reservation> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Reservation> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<Reservation>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Reservation>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

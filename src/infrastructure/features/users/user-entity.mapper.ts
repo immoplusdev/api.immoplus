@@ -4,14 +4,14 @@ import { UserEntity } from "./user.entity";
 import { UserDataEntityMapper } from "./user-data-entity.mapper";
 import { UserDataEntity } from "@/infrastructure/features/users";
 
-
 export class UserEntityMapper implements IMapper<UserEntity, User> {
-
   mapFrom(object: OmitMethods<UserEntity>): User {
     return new User({
       ...object,
       avatar: object.avatar ? (object.avatar as any).id : null,
-      additionalData: new UserDataEntityMapper().mapFrom(object.additionalData as UserDataEntity),
+      additionalData: new UserDataEntityMapper().mapFrom(
+        object.additionalData as UserDataEntity,
+      ),
     });
   }
 
@@ -19,7 +19,9 @@ export class UserEntityMapper implements IMapper<UserEntity, User> {
     return new UserEntity({
       ...object,
       avatar: object.avatar ? (object.avatar as any).id : null,
-      additionalData: new UserDataEntityMapper().mapTo(object.additionalData as UserData),
+      additionalData: new UserDataEntityMapper().mapTo(
+        object.additionalData as UserData,
+      ),
     });
   }
 }

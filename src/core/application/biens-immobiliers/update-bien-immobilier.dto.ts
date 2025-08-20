@@ -1,6 +1,10 @@
 import { ApiProperty } from "@/core/domain/common/docs";
 import { enumToList, OmitMethods } from "@/lib/ts-utilities";
-import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  Amentity,
+  StatusValidationBienImmobilier,
+  TypeBienImmobilier,
+} from "@/core/domain/biens-immobiliers";
 import { IsIn, IsOptional } from "class-validator";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { GeoJsonPoint } from "@/core/domain/map";

@@ -1,11 +1,11 @@
-import { Module, Provider } from '@nestjs/common';
-import { QueryPipe } from './query.pipes';
+import { Module, Provider } from "@nestjs/common";
+import { QueryPipe } from "./query.pipes";
 
 const pipes: Provider[] = [QueryPipe];
 
 const pipesProviders: Provider[] = [
   {
-    provide: 'APP_PIPES',
+    provide: "APP_PIPES",
     useClass: QueryPipe,
   },
 ];

@@ -1,5 +1,5 @@
 import { Deps } from "@/core/domain/common/ioc";
-import { Get, Logger, Module, Provider } from "@nestjs/common";
+import { Module, Provider } from "@nestjs/common";
 import { Hub2PaymentGatewayService } from "./hub2-payment-gateway.service";
 import { GatewayController } from "./gateway.controller";
 import { TypeormModule } from "@/infrastructure/typeorm";
@@ -16,7 +16,6 @@ import { CreateTransferHandler } from "@/core/application/gateway/transfers/comm
 import { CreateTransferCommand } from "@/core/application/gateway/transfers/commands/create-transfer.command";
 import { WalletsRepository } from "../wallets/wallet-repository";
 import { PaymentRepository } from "../payments/payment.repository";
-import { User } from "@/core/domain/users";
 import { UserRepository } from "../users";
 import { PermissionModule } from "../permissions";
 import { RoleModule } from "../roles";
@@ -50,11 +49,12 @@ const providers: Provider[] = [
   {
     provide: Deps.PaymentRepository,
     useClass: PaymentRepository,
-  },{
+  },
+  {
     provide: Deps.UsersRepository,
-    useClass: UserRepository
-  }, 
-  CreateTransferHandler, 
+    useClass: UserRepository,
+  },
+  CreateTransferHandler,
   CreateTransferCommand,
   GetTransfersQuery,
   GetTransfersHandler,
@@ -63,12 +63,24 @@ const providers: Provider[] = [
   GetTransferBalanceQuery,
   GetTransferBalanceHandler,
   GetTransferStatusQuery,
-  GetTransferStatusHandler
+  GetTransferStatusHandler,
 ];
 
 @Module({
   controllers: [GatewayController],
-  imports: [TypeormModule,TransfersModule,  PermissionModule, RoleModule, CqrsModule,ConfigsModule, LoggingModule, ReservationModule, DemandeVisiteModule, NotificationModule, GlobalizationModule],
+  imports: [
+    TypeormModule,
+    TransfersModule,
+    PermissionModule,
+    RoleModule,
+    CqrsModule,
+    ConfigsModule,
+    LoggingModule,
+    ReservationModule,
+    DemandeVisiteModule,
+    NotificationModule,
+    GlobalizationModule,
+  ],
   providers: [...providers],
   exports: [...providers],
 })

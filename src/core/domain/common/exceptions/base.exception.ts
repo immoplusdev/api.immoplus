@@ -17,13 +17,12 @@ export class BaseException extends Error {
     if (errors) this.errors = errors;
   }
 
-
   setMessage(message: string) {
     this.message = message;
     return this;
   }
 
-  setData(data: any){
+  setData(data: any) {
     this.data = data;
     return this;
   }

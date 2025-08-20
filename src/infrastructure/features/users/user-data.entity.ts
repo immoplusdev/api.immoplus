@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { User } from "@/core/domain/users";
 import { UserEntity } from "./user.entity";
 import { FileEntity } from "@/infrastructure/features/files";
@@ -34,7 +41,6 @@ export class UserDataEntity {
   @JoinColumn({ name: "registre_commerce_id" })
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   registreCommerce?: File | string;
-
 
   @Column({ name: "numero_contribuable", type: "varchar", nullable: true })
   numeroContribuable?: string;

@@ -18,7 +18,6 @@ export class VilleRepository implements IVilleRepository {
     this.repository = new BaseRepository(dataSource, VilleEntity);
   }
 
-
   async createMany(payload: Partial<Ville>[]): Promise<Ville[]> {
     return await this.repository.createMany(payload);
   }
@@ -27,7 +26,9 @@ export class VilleRepository implements IVilleRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Ville[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Ville[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -35,11 +36,17 @@ export class VilleRepository implements IVilleRepository {
     return await this.repository.findOne(id, options);
   }
 
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Ville> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Ville> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<Ville>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Ville>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

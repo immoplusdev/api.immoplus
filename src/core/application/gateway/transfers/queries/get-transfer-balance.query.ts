@@ -1,3 +1,3 @@
 export class GetTransferBalanceQuery {
-    constructor(public readonly id: string) {}
+  constructor(public readonly id: string) {}
 }

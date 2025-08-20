@@ -1,4 +1,4 @@
-import { IsValidPassword, IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
+import { IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 

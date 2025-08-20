@@ -6,8 +6,9 @@ export class UserWithRoleData extends User {
   roleData: Role;
 
   constructor(data?: OmitMethods<UserWithRoleData>) {
-    if (data) super({
-      ...data,
-    });
+    if (data)
+      super({
+        ...data,
+      });
   }
 }

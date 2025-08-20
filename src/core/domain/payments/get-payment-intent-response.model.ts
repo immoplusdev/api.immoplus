@@ -7,4 +7,3 @@ export class GetPaymentIntentResponse {
     Object.assign(this, data);
   }
 }
-  

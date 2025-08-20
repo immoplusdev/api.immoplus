@@ -9,7 +9,7 @@ export class Wallet {
   pendingBalance: number;
   currency: string;
   walletTransactions?: WalletTransaction[] | string[]; // Array of transaction IDs
-  withDrawalRequest? : WalletTransaction[] | string[]; // Array of withdrawal request IDs
+  withDrawalRequest?: WalletTransaction[] | string[]; // Array of withdrawal request IDs
 
   createdAt?: Date;
   updatedAt?: Date;

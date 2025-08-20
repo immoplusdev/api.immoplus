@@ -1,69 +1,67 @@
-import { Filter } from './filter.model';
+import { Filter } from "./filter.model";
 
 export type HttpQueryParams = {
-    fields?: string;
-    sort?: string;
-    filter?: Filter | null;
-    meta?: string | null;
-    limit?: number | null;
-    offset?: number | null;
-    page?: number | null;
-    search?: string | null;
-    export?: "json" | "csv" | "xml" | null;
-    group?: string[] | null;
-    aggregate?: Aggregate | null;
-    deep?: NestedDeepQuery | null;
-    alias?: Record<string, string> | null;
+  fields?: string;
+  sort?: string;
+  filter?: Filter | null;
+  meta?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+  page?: number | null;
+  search?: string | null;
+  export?: "json" | "csv" | "xml" | null;
+  group?: string[] | null;
+  aggregate?: Aggregate | null;
+  deep?: NestedDeepQuery | null;
+  alias?: Record<string, string> | null;
 };
-
 
 export type Query = {
-    fields?: string[] | null;
-    sort?: string[] | null;
-    filter?: Filter | null;
-    meta?: string | null;
-    limit?: number | null;
-    offset?: number | null;
-    page?: number | null;
-    search?: string | null;
-    export?: 'json' | 'csv' | 'xml' | null;
-    group?: string[] | null;
-    aggregate?: Aggregate | null;
-    deep?: NestedDeepQuery | null;
-    alias?: Record<string, string> | null;
+  fields?: string[] | null;
+  sort?: string[] | null;
+  filter?: Filter | null;
+  meta?: string | null;
+  limit?: number | null;
+  offset?: number | null;
+  page?: number | null;
+  search?: string | null;
+  export?: "json" | "csv" | "xml" | null;
+  group?: string[] | null;
+  aggregate?: Aggregate | null;
+  deep?: NestedDeepQuery | null;
+  alias?: Record<string, string> | null;
 };
 export type DeepQuery = {
-    _fields?: string[] | null;
-    _sort?: string[] | null;
-    _filter?: Filter | null;
-    _limit?: number | null;
-    _offset?: number | null;
-    _page?: number | null;
-    _search?: string | null;
-    _group?: string[] | null;
-    _aggregate?: Aggregate | null;
+  _fields?: string[] | null;
+  _sort?: string[] | null;
+  _filter?: Filter | null;
+  _limit?: number | null;
+  _offset?: number | null;
+  _page?: number | null;
+  _search?: string | null;
+  _group?: string[] | null;
+  _aggregate?: Aggregate | null;
 };
 export type NestedDeepQuery = {
-    [field: string]: DeepQuery | NestedDeepQuery;
+  [field: string]: DeepQuery | NestedDeepQuery;
 };
 /**
  * Aggregate operation. Contains column name, and the field alias it should be returned as
  */
 export type Aggregate = {
-    avg?: string[];
-    avgDistinct?: string[];
-    count?: string[];
-    countDistinct?: string[];
-    sum?: string[];
-    sumDistinct?: string[];
-    min?: string[];
-    max?: string[];
+  avg?: string[];
+  avgDistinct?: string[];
+  count?: string[];
+  countDistinct?: string[];
+  sum?: string[];
+  sumDistinct?: string[];
+  min?: string[];
+  max?: string[];
 };
 //# sourceMappingURL=query.d.ts.map
 
-
 export type QueryOptions = {
-    stripNonRequested?: boolean;
-    permissionsAction?: any;
-    emitEvents?: boolean;
+  stripNonRequested?: boolean;
+  permissionsAction?: any;
+  emitEvents?: boolean;
 };

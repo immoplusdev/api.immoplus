@@ -1,6 +1,11 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { GeoJsonPoint } from "@/core/domain/map";
-import { StatusValidationBienImmobilier, TypeBienImmobilier, Amentity, TypeLocationBienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  StatusValidationBienImmobilier,
+  TypeBienImmobilier,
+  Amentity,
+  TypeLocationBienImmobilier,
+} from "@/core/domain/biens-immobiliers";
 
 export class BienImmobilier {
   id: string;

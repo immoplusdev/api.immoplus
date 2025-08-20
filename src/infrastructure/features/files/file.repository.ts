@@ -7,7 +7,6 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 
-
 @Injectable()
 export class FileRepository implements IFileRepository {
   private readonly repository: BaseRepository<File>;
@@ -19,7 +18,6 @@ export class FileRepository implements IFileRepository {
     this.repository = new BaseRepository(dataSource, FileEntity);
   }
 
-
   async createMany(payload: Partial<File>[]): Promise<File[]> {
     return await this.repository.createMany(payload);
   }
@@ -28,7 +26,9 @@ export class FileRepository implements IFileRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<File[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<File[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -36,11 +36,17 @@ export class FileRepository implements IFileRepository {
     return await this.repository.findOne(id, options);
   }
 
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<File> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<File> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<File>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<File>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

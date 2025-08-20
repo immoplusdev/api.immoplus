@@ -7,17 +7,19 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 import { File, IFileRepository } from "@/core/domain/files";
 
 @CommandHandler(UploadFileCommand)
-export class UploadFileCommandHandler implements ICommandHandler<UploadFileCommand> {
+export class UploadFileCommandHandler
+  implements ICommandHandler<UploadFileCommand>
+{
   constructor(
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.FileRepository)
     private readonly fileRepository: IFileRepository,
-  ) {
-  }
+  ) {}
 
-  async execute(command: UploadFileCommand): Promise<UploadFileCommandResponse> {
-
+  async execute(
+    command: UploadFileCommand,
+  ): Promise<UploadFileCommandResponse> {
     const fileUploadConfig = this.configsManagerService.getFileUploadConfigs();
 
     const payload: Partial<File> = {

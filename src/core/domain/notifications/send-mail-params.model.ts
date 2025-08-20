@@ -11,4 +11,3 @@ export class SendMailParams {
     if (data) Object.assign(this, data);
   }
 }
-

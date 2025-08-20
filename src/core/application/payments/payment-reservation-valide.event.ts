@@ -7,9 +7,7 @@ import { INotificationService } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
-import {
-  PaymentDemandeVisiteValideEvent,
-} from "@/core/application/payments/payment-demande-visite-valide.event";
+import { PaymentDemandeVisiteValideEvent } from "@/core/application/payments/payment-demande-visite-valide.event";
 import { IReservationRepository } from "@/core/domain/reservations";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { Residence } from "@/core/domain/residences";
@@ -23,25 +21,32 @@ export class PaymentReservationValideEvent {
 }
 
 @EventsHandler(PaymentReservationValideEvent)
-export class PaymentReservationValideEventHandler implements IEventHandler<PaymentReservationValideEvent> {
+export class PaymentReservationValideEventHandler
+  implements IEventHandler<PaymentReservationValideEvent>
+{
   constructor(
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.NotificationService) private readonly notificationService: INotificationService,
-    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
-  ) {
-
-  }
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
+  ) {}
 
   async handle(event: PaymentReservationValideEvent) {
-    const reservation = await this.reservationRepository.findOne(event.reservationId);
+    const reservation = await this.reservationRepository.findOne(
+      event.reservationId,
+    );
     if (!reservation) throw new ItemNotFoundException();
-
-
 
     await this.notificationService.sendNotification({
       userId: reservation.createdBy as string,
-      subject: this.globalizationService.t("all.notifications.reservations.paiement_valide_client.subject"),
-      message: this.globalizationService.t("all.notifications.reservations.paiement_valide_client.message"),
+      subject: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_client.subject",
+      ),
+      message: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_client.message",
+      ),
       skipInAppNotification: false,
       sendMail: true,
       sendSms: true,
@@ -50,8 +55,12 @@ export class PaymentReservationValideEventHandler implements IEventHandler<Payme
 
     await this.notificationService.sendNotification({
       userId: (reservation.residence as Residence).proprietaire,
-      subject: this.globalizationService.t("all.notifications.reservations.paiement_valide_pro.subject"),
-      message: this.globalizationService.t("all.notifications.reservations.paiement_valide_pro.message"),
+      subject: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_pro.subject",
+      ),
+      message: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_pro.message",
+      ),
       skipInAppNotification: false,
       sendMail: true,
       sendSms: true,

@@ -9,19 +9,25 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 import { UserDataEntityMapper } from "./user-data-entity.mapper";
 
-
 @Injectable()
 export class UserDataRepository implements IUserDataRepository {
   private readonly repository: BaseRepository<File>;
-  private readonly relations: ["photoIdentite", "pieceIdentite", "registreCommerce"];
+  private readonly relations: [
+    "photoIdentite",
+    "pieceIdentite",
+    "registreCommerce",
+  ];
 
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, UserDataEntity, this.relations).setEntityMapper(new UserDataEntityMapper());
+    this.repository = new BaseRepository(
+      dataSource,
+      UserDataEntity,
+      this.relations,
+    ).setEntityMapper(new UserDataEntityMapper());
   }
-
 
   async createMany(payload: Partial<UserData>[]): Promise<UserData[]> {
     return await this.repository.createMany(payload);
@@ -31,21 +37,27 @@ export class UserDataRepository implements IUserDataRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<UserData[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<UserData[]>> {
     return await this.repository.findByQuery(query);
   }
 
-
-  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<UserData> {
+  async findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<UserData> {
     return await this.repository.findOneByQuery(query, options);
   }
-
 
   async findOne(id: string, options?: FindItemOptions): Promise<UserData> {
     return await this.repository.findOne(id, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<UserData>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<UserData>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

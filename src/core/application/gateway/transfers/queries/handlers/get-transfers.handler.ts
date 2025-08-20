@@ -7,9 +7,12 @@ import { Hu2TransferResponseDto } from "@/core/domain/gateways/transfers/hu2-tra
 
 @QueryHandler(GetTransfersQuery)
 export class GetTransfersHandler implements IQueryHandler<GetTransfersQuery> {
-    constructor(@Inject(Deps.GatewayRepository) private readonly gatewayRepository: IGatewayRepository) {}
+  constructor(
+    @Inject(Deps.GatewayRepository)
+    private readonly gatewayRepository: IGatewayRepository,
+  ) {}
 
-    execute(query: GetTransfersQuery): Promise<Hu2TransferResponseDto[]> {
-        return this.gatewayRepository.getTransfers(query.data);
-    }
+  execute(query: GetTransfersQuery): Promise<Hu2TransferResponseDto[]> {
+    return this.gatewayRepository.getTransfers(query.data);
+  }
 }

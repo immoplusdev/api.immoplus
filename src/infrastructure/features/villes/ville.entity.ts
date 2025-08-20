@@ -1,6 +1,7 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -15,7 +16,6 @@ export class VilleEntity {
   id: string;
   @Column({ name: "name", type: "varchar" })
   name: string;
-
 
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;

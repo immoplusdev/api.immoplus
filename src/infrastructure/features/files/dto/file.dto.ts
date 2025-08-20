@@ -70,4 +70,3 @@ export class WrapperResponseFileListDto extends WrapperResponseDto<FileDto[]> {
   @ApiProperty({ type: [FileDto] })
   data: FileDto[];
 }
-

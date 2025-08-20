@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Inject, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
@@ -7,11 +17,22 @@ import {
   UpdateReservationDto,
   WrapperResponseReservationListDto,
 } from "@/infrastructure/features/reservations";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import {
+  SearchItemsParamsDto,
+  SelectItemsParamsDto,
+} from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import {
@@ -37,14 +58,16 @@ import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { StatusFacture } from "@/core/domain/payments";
 import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers/historique-retrait.model";
 
-
 @ApiTags("Reservation")
 @Controller("reservations")
 export class ReservationController {
-
   private readonly dtoMapper = new ResidenceDtoMapper();
-  private readonly detailsResponseDtoMapper = new WrapperResponseDtoMapper(new WrapperResponseReservationDetailsDtoMapper());
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly detailsResponseDtoMapper = new WrapperResponseDtoMapper(
+    new WrapperResponseReservationDetailsDtoMapper(),
+  );
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
   private readonly autoMapper = new WrapperResponseDtoMapper();
 
   constructor(
@@ -52,23 +75,30 @@ export class ReservationController {
     readonly commandBus: CommandBus,
     @Inject(Deps.ReservationRepository)
     private readonly repository: IReservationRepository,
-  ) {
-  }
-
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseCreateReservationCommandResponseDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Create,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
     @Body() payload: CreateReservationCommand,
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();
+    const responseMapper =
+      new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();
     const command = new CreateReservationCommand({
       ...payload,
       userId,
@@ -81,8 +111,16 @@ export class ReservationController {
   @ApiResponse({
     type: WrapperResponseReservationListDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
@@ -92,27 +130,33 @@ export class ReservationController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-
     const responseMapper = new WrapperResponseDtoMapper<ReservationDto[]>();
 
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([
-      {
-        _field: "createdBy",
-        _l_op: "or",
-        _val: userId,
-      }], params._where);
+    if (!userRole.hasAdminAccess())
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "createdBy",
+            _l_op: "or",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
 
     const items = await this.repository.findByQuery(params);
 
     return responseMapper.mapFromQueryResult(items);
   }
 
-
   @ApiResponse({
     type: WrapperResponseReservationListDto,
   })
   @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
@@ -122,7 +166,6 @@ export class ReservationController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-
     if (ownerId !== userId) throw new UnauthorizedException();
 
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
@@ -130,12 +173,14 @@ export class ReservationController {
     return this.responseMapper.mapFromQueryResult(items);
   }
 
-
   @ApiResponse({
     type: HistoriqueRetrait,
   })
   @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
@@ -145,18 +190,29 @@ export class ReservationController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-
     if (ownerId !== userId) throw new UnauthorizedException();
 
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
     const montantNonRetire = items.data
-      .filter(item => item.statusFacture == StatusFacture.NonPaye)
-      .reduce((previousValue, currentValue) => previousValue + (currentValue.montantTotalReservation - currentValue.montantCommission), 0);
+      .filter((item) => item.statusFacture == StatusFacture.NonPaye)
+      .reduce(
+        (previousValue, currentValue) =>
+          previousValue +
+          (currentValue.montantTotalReservation -
+            currentValue.montantCommission),
+        0,
+      );
 
     const montantRetire = items.data
-      .filter(item => item.statusFacture == StatusFacture.Paye)
-      .reduce((previousValue, currentValue) => previousValue + (currentValue.montantTotalReservation - currentValue.montantCommission), 0);
+      .filter((item) => item.statusFacture == StatusFacture.Paye)
+      .reduce(
+        (previousValue, currentValue) =>
+          previousValue +
+          (currentValue.montantTotalReservation -
+            currentValue.montantCommission),
+        0,
+      );
 
     return new HistoriqueRetrait({
       montantNonRetire,
@@ -165,27 +221,32 @@ export class ReservationController {
     });
   }
 
-
   @ApiResponse({
     type: WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   })
   @Get("data/residence/occupied-dates/:residence")
-  async getResidenceOccupiedDates(
-    @Param("residence") residenceId: string,
-  ) {
-    const responseMapper = new WrapperResponseDtoMapper<GetResidenceOccupiedDatesQueryResponse>();
+  async getResidenceOccupiedDates(@Param("residence") residenceId: string) {
+    const responseMapper =
+      new WrapperResponseDtoMapper<GetResidenceOccupiedDatesQueryResponse>();
     const query = new GetResidenceOccupiedDatesQuery({ residenceId });
 
     const response = await this.queryBus.execute(query);
     return responseMapper.mapFrom(response);
   }
 
-
   @ApiResponse({
     type: WrapperResponseGetReservationByIdQueryResponseDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Read])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
@@ -194,19 +255,27 @@ export class ReservationController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();
-    const query = new GetReservationByIdQuery(({ id }));
+    const responseMapper =
+      new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();
+    const query = new GetReservationByIdQuery({ id });
 
     const response = await this.queryBus.execute(query);
     return responseMapper.mapFrom(response);
   }
 
-
   @ApiResponse({
     type: WrapperResponseGetReservationByIdQueryResponseDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Update])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Update,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
@@ -226,26 +295,35 @@ export class ReservationController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.updateByQuery(query, payload);
 
-    return responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return responseMapper.mapFrom(
+      (await this.repository.findByQuery(query)).data.at(0),
+    );
   }
-
 
   @ApiResponse({
     type: WrapperResponseEstimerPrixReservationQueryResponseDto,
   })
   @Post("action/estimer-prix")
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Create])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Create,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async estimerPrixReservation(
-    @Body() payload: EstimerPrixReservationQuery,
-  ) {
-    const responseMapper = new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponse>();
+  async estimerPrixReservation(@Body() payload: EstimerPrixReservationQuery) {
+    const responseMapper =
+      new WrapperResponseDtoMapper<EstimerPrixReservationQueryResponse>();
     const query = new EstimerPrixReservationQuery(payload);
 
     const response = await this.queryBus.execute(query);
@@ -256,19 +334,30 @@ export class ReservationController {
     type: WrapperResponseAnnulerReservationByIdCommandResponseDto,
   })
   @Post("action/annuler/:id")
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Reservations, PermissionAction.Delete])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Reservations,
+    PermissionAction.Delete,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async annulerReservationById(
     @Param("id") reservationId: string,
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<AnnulerReservationByIdCommandResponse>();
-    const command = new AnnulerReservationByIdCommand({ reservation: reservationId, userId });
+    const responseMapper =
+      new WrapperResponseDtoMapper<AnnulerReservationByIdCommandResponse>();
+    const command = new AnnulerReservationByIdCommand({
+      reservation: reservationId,
+      userId,
+    });
 
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
   }
-
 }

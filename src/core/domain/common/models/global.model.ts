@@ -15,7 +15,6 @@ export type Uuid = string;
 
 export type AutoIncrementInteger = number;
 
-
 /**
  * Stringified Date.
  * @example "2023-01-31T14:18:53.095Z"

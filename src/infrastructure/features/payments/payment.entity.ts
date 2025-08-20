@@ -2,7 +2,8 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity, JoinColumn,
+  Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -20,7 +21,6 @@ import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Entity("payments")
 export class PaymentEntity {
-
   // Basic Fields
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -31,23 +31,53 @@ export class PaymentEntity {
   @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "customer_id" })
   customer?: User | string;
-  @Column({ name: "payment_type", type: "varchar", length: 20, default: PaymentType.Facture })
+  @Column({
+    name: "payment_type",
+    type: "varchar",
+    length: 20,
+    default: PaymentType.Facture,
+  })
   paymentType: PaymentType;
   @Column({ name: "collection", type: "varchar", length: 50 })
   collection: PaymentCollection;
-  @Column({ name: "payment_status", type: "varchar", length: 50, default: PaymentStatus.Processing })
+  @Column({
+    name: "payment_status",
+    type: "varchar",
+    length: 50,
+    default: PaymentStatus.Processing,
+  })
   paymentStatus: PaymentStatus;
-  @Column({ name: "payment_method", type: "varchar", length: 50, default: PaymentMethod.Cash })
+  @Column({
+    name: "payment_method",
+    type: "varchar",
+    length: 50,
+    default: PaymentMethod.Cash,
+  })
   paymentMethod: PaymentMethod;
   @Column({ name: "item_id", type: "varchar", length: 36 })
   itemId: string;
-  @Column({ name: "payment_address", type: "varchar", length: 255, nullable: true })
+  @Column({
+    name: "payment_address",
+    type: "varchar",
+    length: 255,
+    nullable: true,
+  })
   paymentAddress?: string;
 
   // Hub2 Fields
-  @Column({ name: "hub2_payment_id", type: "varchar", length: 36, nullable: true })
+  @Column({
+    name: "hub2_payment_id",
+    type: "varchar",
+    length: 36,
+    nullable: true,
+  })
   hub2PaymentId?: string;
-  @Column({ name: "hub2_exception", type: "varchar", length: 36, nullable: true })
+  @Column({
+    name: "hub2_exception",
+    type: "varchar",
+    length: 36,
+    nullable: true,
+  })
   hub2Exception?: string;
   @Column({ name: "hub2_next_action", type: "varchar", nullable: true })
   hub2NextAction?: PaymentNextAction;
@@ -55,7 +85,6 @@ export class PaymentEntity {
   hub2Token?: string;
   @Column({ name: "hub2_metadata", type: "json", nullable: true })
   hub2Metadata?: Record<string, any>;
-
 
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;

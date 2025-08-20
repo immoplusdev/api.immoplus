@@ -1,6 +1,7 @@
-import { INestApplication } from '@nestjs/common';
+import { INestApplication } from "@nestjs/common";
 import {
-  AcceptLanguageResolver, HeaderResolver,
+  AcceptLanguageResolver,
+  HeaderResolver,
   I18nOptions,
   I18nValidationExceptionFilter,
   I18nValidationPipe,
@@ -8,17 +9,17 @@ import {
 } from "nestjs-i18n";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const path = require('path');
+const path = require("path");
 
 export const i18Configs: I18nOptions = {
-  fallbackLanguage: 'fr',
+  fallbackLanguage: "fr",
   loaderOptions: {
-    path: path.join('dist/i18n/'),
+    path: path.join("dist/i18n/"),
     watch: true,
   },
   resolvers: [
-    { use: QueryResolver, options: ['lang'] },
-    new HeaderResolver(['x-custom-lang']),
+    { use: QueryResolver, options: ["lang"] },
+    new HeaderResolver(["x-custom-lang"]),
     AcceptLanguageResolver,
   ],
 };

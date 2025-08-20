@@ -13,7 +13,9 @@ export class GetResidenceOccupiedDatesQueryResponse {
   }
 }
 
-export class WrapperResponseGetResidenceOccupiedDatesQueryResponseDto<T> extends WrapperResponseDto<GetResidenceOccupiedDatesQueryResponse> {
+export class WrapperResponseGetResidenceOccupiedDatesQueryResponseDto<
+  T,
+> extends WrapperResponseDto<GetResidenceOccupiedDatesQueryResponse> {
   @ApiProperty({ type: GetResidenceOccupiedDatesQueryResponse })
   data: GetResidenceOccupiedDatesQueryResponse;
 }

@@ -15,7 +15,6 @@ export class SendNotificationParams {
   }
 }
 
-
 export class SendEmailNotificationParams {
   email: string;
   subject: string;

@@ -15,12 +15,11 @@ export class InterceptTransferWebhookCommand {
   @ApiProperty()
   data: Hu2TransferResponseDto;
   @ApiProperty()
-  test: Boolean;
+  test: boolean;
   @ApiProperty()
   id: string;
   @ApiProperty()
   createdAt: string;
-  
 
   constructor(data?: OmitMethods<InterceptTransferWebhookCommand>) {
     if (data) Object.assign(this, data);

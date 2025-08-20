@@ -1,5 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { IAuthService, IJwtManagerService, LoginResponse } from "@/core/domain/auth";
+import {
+  IAuthService,
+  IJwtManagerService,
+  LoginResponse,
+} from "@/core/domain/auth";
 import { User } from "@/core/domain/users";
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
@@ -7,8 +11,10 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 @Injectable()
 export class AuthService implements IAuthService {
   constructor(
-    @Inject(Deps.JwtManagerService) private readonly jwtManagerService: IJwtManagerService,
-    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
+    @Inject(Deps.JwtManagerService)
+    private readonly jwtManagerService: IJwtManagerService,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
     //
   }
@@ -16,7 +22,9 @@ export class AuthService implements IAuthService {
   generateUserTokens(user: User): LoginResponse {
     const payload = this.santizePayload(user);
     const accessToken = this.jwtManagerService.generateAccessToken(payload);
-    const expires = this.configsManagerService.getEnvVariable<string>("JWT_REFRESH_EXPIRES_IN");
+    const expires = this.configsManagerService.getEnvVariable<string>(
+      "JWT_REFRESH_EXPIRES_IN",
+    );
     const refreshToken = this.jwtManagerService.generateRefreshToken(payload);
 
     return new LoginResponse({
@@ -31,8 +39,7 @@ export class AuthService implements IAuthService {
     // TODO: Deal with session creation
     // TODO: use nanoid directus like implementation to generate the refresh_token
     return await new Promise((resolve, reject) => {
-      resolve({} as never,
-      );
+      resolve({} as never);
     });
   }
 

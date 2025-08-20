@@ -9,7 +9,6 @@ export class GetPaymentProviderQueryResponse extends Array<PaymentProviderDto> {
   }
 }
 
-
 export class WrapperResponseGetPaymentProviderQueryResponseDto extends WrapperResponseDto<GetPaymentProviderQueryResponse> {
   @ApiProperty({ type: PaymentProviderDto, isArray: true })
   data: GetPaymentProviderQueryResponse;
@@ -19,13 +18,22 @@ export class WrapperResponseGetPaymentProviderQueryResponseDto extends WrapperRe
   }
 }
 
-export class WrapperResponseGetPaymentProviderQueryResponseDtoMapper implements IMapper<GetPaymentProviderQueryResponse, WrapperResponseGetPaymentProviderQueryResponseDto> {
-  mapFrom(param: GetPaymentProviderQueryResponse): WrapperResponseGetPaymentProviderQueryResponseDto {
+export class WrapperResponseGetPaymentProviderQueryResponseDtoMapper
+  implements
+    IMapper<
+      GetPaymentProviderQueryResponse,
+      WrapperResponseGetPaymentProviderQueryResponseDto
+    >
+{
+  mapFrom(
+    param: GetPaymentProviderQueryResponse,
+  ): WrapperResponseGetPaymentProviderQueryResponseDto {
     return new WrapperResponseGetPaymentProviderQueryResponseDto(param);
   }
 
-  mapTo(param: WrapperResponseGetPaymentProviderQueryResponseDto): GetPaymentProviderQueryResponse {
+  mapTo(
+    param: WrapperResponseGetPaymentProviderQueryResponseDto,
+  ): GetPaymentProviderQueryResponse {
     return param.data;
   }
 }
-      

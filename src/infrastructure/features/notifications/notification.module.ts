@@ -26,7 +26,7 @@ const providers: Provider[] = [
   {
     provide: Deps.MailService,
     useClass: MailService,
-  }
+  },
 ];
 
 @Module({

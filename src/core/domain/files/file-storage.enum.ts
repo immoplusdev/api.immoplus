@@ -1,3 +1,3 @@
 export enum FileStorage {
-  Local = "local"
+  Local = "local",
 }

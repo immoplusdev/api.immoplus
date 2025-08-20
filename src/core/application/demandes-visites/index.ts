@@ -18,4 +18,3 @@ export * from "./programmer-demande-visite.command";
 export * from "./programmer-demande-visite-command.handler";
 export * from "./programmer-demande-visite-command.response";
 export * from "./bien-immobilier-status-validation-updated.event";
-

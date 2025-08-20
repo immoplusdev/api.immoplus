@@ -19,5 +19,3 @@ export * from "./intercept-payment-webhook-command.response";
 export * from "./payment-demande-visite-valide.event";
 export * from "./create-demande-retrait-reservation.command";
 export * from "./create-demande-retrait-reservation-command.handler";
-
-

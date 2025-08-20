@@ -3,9 +3,9 @@ import { UserWithRoleAndPermissions } from "@/core/domain/users";
 import { Role } from "@/core/domain/roles";
 
 export class AuthorizationManagerService
-  implements IAuthorizationManagerService {
-  constructor(private readonly user: UserWithRoleAndPermissions) {
-  }
+  implements IAuthorizationManagerService
+{
+  constructor(private readonly user: UserWithRoleAndPermissions) {}
 
   canAccess(requiredRoles: string[], requiredPermissions: string[]): boolean {
     const rolesRequired = requiredRoles.length != 0;
@@ -29,7 +29,6 @@ export class AuthorizationManagerService
 
   hasRequiredRoles(requiredRoles: string[]) {
     return requiredRoles.includes((this.user.role as Role).id);
-
   }
 
   hasRequiredPermissions(requiredPermissions: string[]) {

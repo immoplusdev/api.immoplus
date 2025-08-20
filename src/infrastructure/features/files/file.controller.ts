@@ -1,19 +1,29 @@
 import { createReadStream } from "fs";
 import {
   Body,
-  Controller, Delete,
-  Get, Header,
+  Controller,
+  Delete,
+  Get,
+  Header,
   Inject,
   Param,
   ParseFilePipe,
   Patch,
   Post,
-  Query, Res, StreamableFile,
+  Query,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   FileDtoMapper,
@@ -22,7 +32,10 @@ import {
   WrapperResponseFileListDto,
 } from "@/infrastructure/features/files";
 import { Role, UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { fileUploadConfig } from "@/infrastructure/configs/file-management/file-upload.config";
@@ -33,34 +46,49 @@ import {
   WrapperResponseUploadFileCommandResponseDto,
 } from "@/infrastructure/features/files/dto/upload-file-command-response.dto";
 import { CommandBus } from "@nestjs/cqrs";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
-import { addConditionsToWhereClause, getFilePath } from "@/infrastructure/helpers";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
+import {
+  addConditionsToWhereClause,
+  getFilePath,
+} from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/common/ioc";
 import { IFileRepository } from "@/core/domain/files";
-import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import {
+  SearchItemsParamsDto,
+  SelectItemsParamsDto,
+} from "@/infrastructure/http";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { Response } from "express";
-
 
 @ApiTags("File")
 @Controller("files")
 export class FileController {
-
   private readonly dtoMapper = new FileDtoMapper();
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
 
   constructor(
     readonly commandBus: CommandBus,
     @Inject(Deps.FileRepository)
     private readonly repository: IFileRepository,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -100,11 +128,12 @@ export class FileController {
         ],
       }),
     )
-      file: Express.Multer.File,
+    file: Express.Multer.File,
     @CurrentUser("id") userId: string,
     @Body() payload: UploadFileCommandDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
+    const responseMapper =
+      new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
     const command = new UploadFileCommand({
       ...payload,
       userId,
@@ -114,7 +143,6 @@ export class FileController {
     const response = await this.commandBus.execute(command);
     return responseMapper.mapFrom(response);
   }
-
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
@@ -156,10 +184,11 @@ export class FileController {
         ],
       }),
     )
-      file: Express.Multer.File,
+    file: Express.Multer.File,
     @Body() payload: UploadFileCommandDto,
   ) {
-    const responseMapper = new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
+    const responseMapper =
+      new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
     const command = new UploadFileCommand({
       ...payload,
       userId: null,
@@ -170,11 +199,15 @@ export class FileController {
     return responseMapper.mapFrom(response);
   }
 
-
   @ApiResponse({
     type: WrapperResponseFileListDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -185,12 +218,17 @@ export class FileController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "uploadedBy",
-      _l_op: "and",
-      _val: userId,
-    }], params._where);
+    if (!userRole.hasAdminAccess())
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "uploadedBy",
+            _l_op: "and",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
 
     const items = await this.repository.findByQuery(params);
 
@@ -200,7 +238,12 @@ export class FileController {
   @ApiResponse({
     type: WrapperResponseFileDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -215,19 +258,25 @@ export class FileController {
     return this.responseMapper.mapFrom(item);
   }
 
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get("raw/:id")
-  async getRawFile(@Param("id") id: string, @Res() res: Response):
-    Promise<any> {
+  async getRawFile(
+    @Param("id") id: string,
+    @Res() res: Response,
+  ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
 
     return res.sendFile(getFilePath(file?.fileNameDisk));
   }
-
 
   @Get("raw/public/:id")
   async getRawPublicFile(
@@ -252,11 +301,15 @@ export class FileController {
     return res.sendFile(getFilePath(file?.fileNameDisk));
   }
 
-
   @ApiResponse({
     type: WrapperResponseFileDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -265,8 +318,8 @@ export class FileController {
     @Param("id") id: string,
     @Body() payload: UploadFileCommandDto,
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
-
+    @CurrentUser("role") userRole: Role,
+  ) {
     const query = {
       _where: [
         {
@@ -276,17 +329,25 @@ export class FileController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "uploadedBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "uploadedBy", _val: userId });
 
     await this.repository.updateByQuery(query, payload);
 
-    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom(
+      (await this.repository.findByQuery(query)).data.at(0),
+    );
   }
 
   @ApiResponse({
     type: WrapperResponseFileDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Files, PermissionAction.Delete])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -294,8 +355,8 @@ export class FileController {
   async delete(
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
-
+    @CurrentUser("role") userRole: Role,
+  ) {
     const query = {
       _where: [
         {
@@ -305,11 +366,11 @@ export class FileController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.deleteByQuery(query);
 
     return this.responseMapper.mapFrom({ id } as never);
   }
 }
-

@@ -1,4 +1,4 @@
 export enum EntitiesEnum {
   Payment = "payments",
-  Reservation = "reservations"
+  Reservation = "reservations",
 }

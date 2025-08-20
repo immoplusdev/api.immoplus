@@ -18,7 +18,6 @@ export class Payment {
   itemId: string;
   paymentAddress?: string;
 
-
   // Hub2 Fields
   hub2PaymentId?: string;
   hub2Exception?: string;

@@ -1,10 +1,10 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { Readable } from "stream";
 
 export class UploadFileCommand {
   title?: string;
   folder?: string;
-  description?: string
+  description?: string;
   userId: string;
   file: {
     /** Name of the form field associated with this file. */
@@ -36,6 +36,6 @@ export class UploadFileCommand {
     buffer: Buffer;
   };
   constructor(data?: OmitMethods<UploadFileCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

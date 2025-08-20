@@ -1,37 +1,36 @@
 import { UserDto } from "@/core/application/users";
 import { ApiProperty } from "@/core/domain/common/docs";
-import {IsUUID } from "class-validator";
+import { IsUUID } from "class-validator";
 
 export class WalletDto {
-    @ApiProperty({ format: "uuid", required: true })
-    @IsUUID()
-    id: string;
-    
-    @ApiProperty({ type: UserDto })
-    owner: UserDto;
+  @ApiProperty({ format: "uuid", required: true })
+  @IsUUID()
+  id: string;
 
-    @ApiProperty({ type: Number })
-    availableBalance: number; 
+  @ApiProperty({ type: UserDto })
+  owner: UserDto;
 
-    @ApiProperty({ type: Number })
-    pendingBalance: number; 
+  @ApiProperty({ type: Number })
+  availableBalance: number;
 
-    @ApiProperty({ type: String, default: "XOF" })
-    currency: string;
+  @ApiProperty({ type: Number })
+  pendingBalance: number;
 
-    @ApiProperty({ type: Date})
-    createdAt: Date;
+  @ApiProperty({ type: String, default: "XOF" })
+  currency: string;
 
-    @ApiProperty({ type: Date})
-    updatedAt: Date;
+  @ApiProperty({ type: Date })
+  createdAt: Date;
 
-    constructor(data?: WalletDto) {
-        Object.assign(this, data);
-    }
-}   
+  @ApiProperty({ type: Date })
+  updatedAt: Date;
 
+  constructor(data?: WalletDto) {
+    Object.assign(this, data);
+  }
+}
 
 export class WrapperResponseWalletDto {
-    @ApiProperty({ type: WalletDto })
-    data: WalletDto;
+  @ApiProperty({ type: WalletDto })
+  data: WalletDto;
 }

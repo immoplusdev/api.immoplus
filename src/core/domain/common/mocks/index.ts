@@ -1,1 +1,1 @@
-export * from './text.mock';
+export * from "./text.mock";

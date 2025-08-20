@@ -18,12 +18,15 @@ export class ResidenceStatusValidationUpdatedEvent {
 }
 
 @EventsHandler(ResidenceStatusValidationUpdatedEvent)
-export class ResidenceStatusUpdatedEventHandler implements IEventHandler<ResidenceStatusValidationUpdatedEvent> {
+export class ResidenceStatusUpdatedEventHandler
+  implements IEventHandler<ResidenceStatusValidationUpdatedEvent>
+{
   constructor(
-    @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
-    @Inject(Deps.NotificationService) private readonly notificationService: INotificationService,
-  ) {
-  }
+    @Inject(Deps.ResidenceRepository)
+    private readonly residenceRepository: IResidenceRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+  ) {}
 
   async handle(event: ResidenceStatusValidationUpdatedEvent) {
     if (event.status != StatusValidationBienImmobilier.Valide) return;

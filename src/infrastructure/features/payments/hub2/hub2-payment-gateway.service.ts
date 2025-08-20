@@ -1,17 +1,22 @@
 import {
   CreatePaymentIntent,
-  CreatePaymentIntentResponse, AttemptPaymentIntent,
-  PaymentStatus, AttemptPaymentIntentResponse,
-  AuthenticatePaymentIntent, AuthenticatePaymentIntentResponse,
+  CreatePaymentIntentResponse,
+  AttemptPaymentIntent,
+  PaymentStatus,
+  AttemptPaymentIntentResponse,
+  AuthenticatePaymentIntent,
+  AuthenticatePaymentIntentResponse,
   IPaymentGatewayService,
 } from "@/core/domain/payments";
 import { UnexpectedException } from "@/core/domain/common/exceptions";
 import { PaymentToken } from "@/core/domain/payments/payment-token.model";
 import {
-  HUB2_API_KEY, HUB2_API_URL,
+  HUB2_API_KEY,
+  HUB2_API_URL,
   HUB2_ENVIRONMENT,
   HUB2_MERCHANT_ID,
-  HUB2_OVERRIDE_BUSINESS_NAME, HUB2_RETURN_URL,
+  HUB2_OVERRIDE_BUSINESS_NAME,
+  HUB2_RETURN_URL,
 } from "@/infrastructure/configs/payments";
 import { ILoggerService } from "@/core/domain/logging";
 import { Inject, Injectable } from "@nestjs/common";
@@ -26,8 +31,9 @@ import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Injectable()
 export class Hub2PaymentGatewayService implements IPaymentGatewayService {
-
-  constructor(@Inject(Deps.LoggerService) private readonly loggerService: ILoggerService) {}
+  constructor(
+    @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
+  ) {}
 
   static getWebhookSignatureFromHeaders(headers: Record<string, any>) {
     const header = headers["hub2-signature"]
@@ -91,18 +97,25 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         break;
     }
 
-    return amount * feesPercentage / 100;
+    return (amount * feesPercentage) / 100;
   }
 
   async createPaymentIntent(
     payload: CreatePaymentIntent,
   ): Promise<CreatePaymentIntentResponse> {
-    const amount = payload.amount + this.getPaymentMethodFees(payload.amount, payload.paymentMethod || PaymentMethod.Wave);
+    const amount =
+      payload.amount +
+      this.getPaymentMethodFees(
+        payload.amount,
+        payload.paymentMethod || PaymentMethod.Wave,
+      );
 
     try {
       const body = {
         customerReference: payload.customerId,
-        purchaseReference: PaymentToken.toString(payload.paymentToken) + new Date().toISOString(),
+        purchaseReference:
+          PaymentToken.toString(payload.paymentToken) +
+          new Date().toISOString(),
         amount: Math.ceil(amount),
         currency: "XOF",
         overrideBusinessName: HUB2_OVERRIDE_BUSINESS_NAME,
@@ -238,9 +251,6 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
         break;
     }
 
-    return Math.ceil(amount * feesPercentage / 100);
+    return Math.ceil((amount * feesPercentage) / 100);
   }
-
-
-
 }

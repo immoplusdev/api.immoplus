@@ -1,1 +1,8 @@
-export type ItemStatusFields = "id" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "deletedAt" | "deletedBy"
+export type ItemStatusFields =
+  | "id"
+  | "createdAt"
+  | "createdBy"
+  | "updatedAt"
+  | "updatedBy"
+  | "deletedAt"
+  | "deletedBy";

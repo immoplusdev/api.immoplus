@@ -1,4 +1,15 @@
-import { Body, Controller, Post, Inject, UseGuards, Get, Query, Param, HttpCode, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  Inject,
+  UseGuards,
+  Get,
+  Query,
+  Param,
+  HttpCode,
+  Patch,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiNoContentResponse, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
@@ -11,7 +22,10 @@ import {
   RequiredRoles,
 } from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   CreatePaymentIntentCommand,
@@ -29,10 +43,11 @@ import {
   UpdatePaymentDtoMapper,
 } from "@/core/application/payments";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
+import { AuthenticatePaymentIntentCommand } from "@/core/application/payments/authenticate-payment-intent.command";
 import {
-  AuthenticatePaymentIntentCommand,
-} from "@/core/application/payments/authenticate-payment-intent.command";
-import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+  SearchItemsParamsDto,
+  SelectItemsParamsDto,
+} from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { Hub2PaymentGatewayService } from "@/infrastructure/features/payments/hub2";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
@@ -40,9 +55,10 @@ import { JwtAuthGuard } from "@/infrastructure/features/auth";
 @ApiTags("Payment")
 @Controller("payments")
 export class PaymentController {
-
   private readonly dtoMapper = new PaymentDtoMapper();
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
   private readonly autoMapper = new WrapperResponseDtoMapper();
 
   constructor(
@@ -50,14 +66,18 @@ export class PaymentController {
     private readonly queryBus: QueryBus,
     @Inject(Deps.PaymentRepository)
     private readonly repository: IPaymentRepository,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseCreatePaymentIntentCommandResponseDto,
   })
   @Post("action/create-payment-intent")
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -65,18 +85,24 @@ export class PaymentController {
     @Body() payload: CreatePaymentIntentCommand,
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseCreatePaymentIntentCommandResponseDtoMapper();
+    const responseMapper =
+      new WrapperResponseCreatePaymentIntentCommandResponseDtoMapper();
 
-    const response = await this.commandBus.execute(new CreatePaymentIntentCommand({ ...payload, userId: userId }));
+    const response = await this.commandBus.execute(
+      new CreatePaymentIntentCommand({ ...payload, userId: userId }),
+    );
 
     return responseMapper.mapFrom(response);
   }
 
-
   @Post("action/create-demande-retrait-reservation")
   @ApiNoContentResponse()
   @HttpCode(204)
-  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -84,17 +110,24 @@ export class PaymentController {
     @Body() payload: CreateDemandeRetraitReservationCommand,
     @CurrentUser("id") userId: string,
   ) {
-    await this.commandBus.execute(new CreateDemandeRetraitReservationCommand({
-      ...payload,
-      userId,
-    }));
+    await this.commandBus.execute(
+      new CreateDemandeRetraitReservationCommand({
+        ...payload,
+        userId,
+      }),
+    );
   }
 
   @ApiResponse({
     type: WrapperResponseCreatePaymentIntentCommandResponseDto,
   })
   @Post("action/authenticate-payment-intent")
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Create])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -102,12 +135,15 @@ export class PaymentController {
     @Body() payload: AuthenticatePaymentIntentCommand,
     @CurrentUser("id") userId: string,
   ) {
-    const responseMapper = new WrapperResponseCreatePaymentIntentCommandResponseDtoMapper();
+    const responseMapper =
+      new WrapperResponseCreatePaymentIntentCommandResponseDtoMapper();
 
-    const response = await this.commandBus.execute(new AuthenticatePaymentIntentCommand({
-      ...payload,
-      userId: userId,
-    }));
+    const response = await this.commandBus.execute(
+      new AuthenticatePaymentIntentCommand({
+        ...payload,
+        userId: userId,
+      }),
+    );
 
     return responseMapper.mapFrom(response);
   }
@@ -115,7 +151,12 @@ export class PaymentController {
   @ApiResponse({
     type: WrapperResponsePaymentListDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -126,22 +167,32 @@ export class PaymentController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "customer",
-      _l_op: "and",
-      _val: userId,
-    }], params._where);
+    if (!userRole.hasAdminAccess())
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "customer",
+            _l_op: "and",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
 
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
   }
 
-
   @ApiResponse({
     type: WrapperResponsePaymentDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Payments, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -156,13 +207,13 @@ export class PaymentController {
     return this.responseMapper.mapFrom(item);
   }
 
-
   @ApiResponse({
     type: WrapperResponseGetPaymentProviderQueryResponseDto,
   })
   @Get("data/providers")
   async getPaymentsProviders() {
-    const responseMapper = new WrapperResponseGetPaymentProviderQueryResponseDtoMapper();
+    const responseMapper =
+      new WrapperResponseGetPaymentProviderQueryResponseDtoMapper();
 
     const response = await this.queryBus.execute(new GetPaymentProviderQuery());
 
@@ -177,7 +228,8 @@ export class PaymentController {
     @ReqHeaders() headers: Record<string, string>,
   ): Promise<void> {
     const json = JSON.stringify(payload);
-    const webHookSignature = Hub2PaymentGatewayService.getWebhookSignatureFromHeaders(headers);
+    const webHookSignature =
+      Hub2PaymentGatewayService.getWebhookSignatureFromHeaders(headers);
 
     const command = new InterceptPaymentWebhookCommand({
       type: payload?.type,
@@ -193,7 +245,6 @@ export class PaymentController {
     await this.commandBus.execute(command);
   }
 
-
   @ApiResponse({
     type: WrapperResponsePaymentDto,
   })
@@ -208,7 +259,6 @@ export class PaymentController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdatePaymentDto,
   ) {
-
     const payloadMapper = new UpdatePaymentDtoMapper();
 
     const query = {
@@ -220,11 +270,17 @@ export class PaymentController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
-    await this.repository.updateByQuery(query, { ...payloadMapper.mapTo(payload), createdBy: userId });
+    await this.repository.updateByQuery(query, {
+      ...payloadMapper.mapTo(payload),
+      createdBy: userId,
+    });
 
-    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom(
+      (await this.repository.findByQuery(query)).data.at(0),
+    );
   }
   //
   //
@@ -255,5 +311,4 @@ export class PaymentController {
   //
   //   return this.responseMapper.mapFrom({ id } as never);
   // }
-
 }

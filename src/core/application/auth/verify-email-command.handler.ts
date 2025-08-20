@@ -8,18 +8,28 @@ import { IUserRepository } from "@/core/domain/users";
 import { UnexpectedException } from "@/core/domain/common/exceptions";
 
 @CommandHandler(VerifyEmailCommand)
-export class VerifyEmailCommandHandler implements ICommandHandler<VerifyEmailCommand> {
+export class VerifyEmailCommandHandler
+  implements ICommandHandler<VerifyEmailCommand>
+{
   constructor(
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
   ) {
     //
   }
 
-  async execute(command: VerifyEmailCommand): Promise<VerifyEmailCommandResponse> {
-    await this.tfaService.verifyUserEmailOtp(command.email, command.otp, { throwException: true, resetIfValid: true });
+  async execute(
+    command: VerifyEmailCommand,
+  ): Promise<VerifyEmailCommandResponse> {
+    await this.tfaService.verifyUserEmailOtp(command.email, command.otp, {
+      throwException: true,
+      resetIfValid: true,
+    });
 
-    const user = await this.usersRepository.findOneByEmail(command.email, { fields: ["id", "emailVerified"] });
+    const user = await this.usersRepository.findOneByEmail(command.email, {
+      fields: ["id", "emailVerified"],
+    });
     if (user.emailVerified) throw new UnexpectedException();
 
     await this.usersRepository.updateOne(user.id, { emailVerified: true });

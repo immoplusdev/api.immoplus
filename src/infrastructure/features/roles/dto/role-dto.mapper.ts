@@ -2,7 +2,6 @@ import { AutoMapper } from "@/lib/ts-utilities";
 import { Role } from "@/core/domain/roles";
 import { RoleDto } from "./role.dto";
 
-
 export class RoleDtoMapper {
   private mapper: AutoMapper;
   constructor() {

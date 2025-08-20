@@ -1,11 +1,11 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsOptional } from "class-validator";
 
 export class UpdateUserCommand {
   // basic fields
   @ApiProperty()
-  @IsOptional() 
+  @IsOptional()
   firstName?: string;
   @ApiProperty()
   @IsOptional()
@@ -14,7 +14,7 @@ export class UpdateUserCommand {
   @IsOptional()
   language?: string;
   @ApiProperty()
-  avatar?:  string;
+  avatar?: string;
 
   // User Data
   @ApiProperty()
@@ -39,6 +39,6 @@ export class UpdateUserCommand {
   @IsOptional()
   currency?: string;
   constructor(data?: OmitMethods<UpdateUserCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

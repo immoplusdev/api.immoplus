@@ -1,5 +1,19 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch, UsePipes, ValidationPipe, Req, Put } from "@nestjs/common";
-import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  Param,
+  Inject,
+  UseGuards,
+  Patch,
+  UsePipes,
+  ValidationPipe,
+  Put,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
 import { IResidenceRepository } from "@/core/domain/residences";
@@ -9,9 +23,17 @@ import {
   WrapperResponseResidenceDto,
   WrapperResponseResidenceBatchDto,
 } from "@/infrastructure/features/residences";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   GeolocalizedItemsSearchParamsQueryDto,
@@ -25,26 +47,33 @@ import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 
-
 @ApiTags("Residence")
 @Controller("residences")
 export class ResidenceController {
   private readonly dtoMapper = new ResidenceDtoMapper();
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
 
   constructor(
     @Inject(Deps.ResidenceRepository)
     private readonly repository: IResidenceRepository,
     private readonly commandBus: CommandBus,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Create])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Residences,
+    PermissionAction.Create,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
@@ -63,7 +92,12 @@ export class ResidenceController {
   @ApiResponse({
     type: WrapperResponseResidenceBatchDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -74,11 +108,17 @@ export class ResidenceController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "createdBy",
-      _l_op: "and",
-      _val: userId,
-    }], params._where);
+    if (!userRole.hasAdminAccess())
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "createdBy",
+            _l_op: "and",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
 
     const items = await this.repository.findByQuery(params);
 
@@ -89,9 +129,7 @@ export class ResidenceController {
     type: WrapperResponseResidenceBatchDto,
   })
   @Get("/data/public/")
-  async readManyPublic(
-    @Query() params: SearchItemsParamsDto,
-  ) {
+  async readManyPublic(@Query() params: SearchItemsParamsDto) {
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
@@ -101,13 +139,10 @@ export class ResidenceController {
     type: WrapperResponseResidenceBatchDto,
   })
   @Get("/find-available/public/")
-  async findAvailablePublic(
-    @Query() params: SearchItemsParamsDto,
-  ) {
+  async findAvailablePublic(@Query() params: SearchItemsParamsDto) {
     const items = await this.repository.findAvailableResidencesForToday(params);
     return items;
   }
-
 
   @ApiResponse({
     type: WrapperResponseResidenceBatchDto,
@@ -116,8 +151,7 @@ export class ResidenceController {
   @Get("data/public/geolocalized")
   async findPublicByGeolocation(
     @Query() params: GeolocalizedItemsSearchParamsQueryDto,
-  ) 
-  {
+  ) {
     const items = await this.repository.findByGeolocation(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
@@ -129,14 +163,10 @@ export class ResidenceController {
   @Get("data/filter/public")
   async findByGeolocationFilter(
     @Query() params: GeolocalizedItemsSearchFiltersParamsQueryDto,
-  ) 
-  {
+  ) {
     const items = await this.repository.findByGeolocationFilter(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
-
-
-  
 
   @ApiResponse({
     type: WrapperResponseResidenceDto,
@@ -153,11 +183,15 @@ export class ResidenceController {
     return this.responseMapper.mapFrom(item);
   }
 
-
   @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -174,12 +208,18 @@ export class ResidenceController {
     return this.responseMapper.mapFrom(item);
   }
 
-
   @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Update])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Residences,
+    PermissionAction.Update,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
@@ -189,30 +229,39 @@ export class ResidenceController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateResidenceByIdCommand,
   ) {
-    const response = await this.commandBus.execute(new UpdateResidenceByIdCommand({
-      ...payload,
-      isAdmin: userRole.hasAdminAccess(),
-      userId,
-      residenceId: id,
-    }));
+    const response = await this.commandBus.execute(
+      new UpdateResidenceByIdCommand({
+        ...payload,
+        isAdmin: userRole.hasAdminAccess(),
+        userId,
+        residenceId: id,
+      }),
+    );
 
     return this.responseMapper.mapFrom(response);
   }
 
-
   @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.Residences, PermissionAction.Delete])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Residences,
+    PermissionAction.Delete,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
   async delete(
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
-
+    @CurrentUser("role") userRole: Role,
+  ) {
     const query = {
       _where: [
         {
@@ -222,24 +271,20 @@ export class ResidenceController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.deleteByQuery(query);
 
     return this.responseMapper.mapFrom({ id } as never);
   }
 
-
-  
-
   @ApiResponse({
     type: WrapperResponseResidenceDto,
   })
   @Put("/data/update/all-cordonates")
-  async updateAllCordonates() 
-  {
+  async updateAllCordonates() {
     const items = await this.repository.updateAllCordonates();
-     return this.responseMapper.mapFromQueryResult(items);
+    return this.responseMapper.mapFromQueryResult(items);
   }
-
 }

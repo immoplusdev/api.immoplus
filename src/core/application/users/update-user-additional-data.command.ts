@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { User } from "@/core/domain/users";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsOptional } from "class-validator";
@@ -38,6 +38,6 @@ export class UpdateUserAdditionalDataCommand {
   typeEntreprise?: string;
 
   constructor(data?: OmitMethods<UpdateUserAdditionalDataCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

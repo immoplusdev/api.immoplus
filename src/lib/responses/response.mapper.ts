@@ -3,8 +3,8 @@ import { WrapperResponseDto } from "@/lib/responses/wrapper-response.dto";
 import { WrapperResponse } from "@/core/domain/common/models";
 
 export class WrapperResponseDtoMapper<T>
-  implements IMapper<T, WrapperResponseDto<T>> {
-
+  implements IMapper<T, WrapperResponseDto<T>>
+{
   entityMapper: IMapper<any, any> = null;
 
   constructor(entityMapper?: IMapper<any, any>) {
@@ -25,7 +25,9 @@ export class WrapperResponseDtoMapper<T>
   mapFromQueryResult(param: WrapperResponse<T>): WrapperResponseDto<T> {
     if (this.entityMapper) {
       if (Array.isArray(param.data)) {
-        param.data = param.data.map((item) => this.entityMapper.mapFrom(item)) as never;
+        param.data = param.data.map((item) =>
+          this.entityMapper.mapFrom(item),
+        ) as never;
       } else {
         param.data = this.entityMapper.mapFrom(param.data);
       }
@@ -47,13 +49,13 @@ export class WrapperResponseDtoMapper<T>
   mapToQueryResult(param: WrapperResponseDto<T>): WrapperResponse<T> {
     if (this.entityMapper) {
       if (Array.isArray(param.data)) {
-        param.data = param.data.map((item) => this.entityMapper.mapTo(item)) as never;
+        param.data = param.data.map((item) =>
+          this.entityMapper.mapTo(item),
+        ) as never;
       } else {
         param.data = this.entityMapper.mapTo(param.data);
       }
     }
     return new WrapperResponse<T>().buildFromOuterResponse(param);
   }
-
-
 }

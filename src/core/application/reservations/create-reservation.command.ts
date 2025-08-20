@@ -1,5 +1,4 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { ServiceDates } from "@/core/domain/common/models";
 import { IsNotEmpty, IsOptional } from "class-validator";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { ServiceDateDto } from "@/core/application/common/dto";

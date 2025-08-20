@@ -3,7 +3,10 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { BienImmobilierDto } from "@/core/application/biens-immobiliers";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
-import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
+import {
+  StatusDemandeVisite,
+  TypeDemandeVisite,
+} from "@/core/domain/demandes-visites";
 import { ServiceDateDto } from "@/core/application/common/dto";
 import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
@@ -11,7 +14,6 @@ import { PublicUserInfoDto } from "@/core/application/users";
 import { PublicUserInfo } from "@/core/domain/users";
 
 export class DemandeVisiteDetailsDto {
-
   @ApiProperty({ format: "uuid" })
   id: string;
 
@@ -71,6 +73,3 @@ export class WrapperResponseDemandeVisiteDetailsDto extends WrapperResponseDto<D
   @ApiProperty({ type: DemandeVisiteDetailsDto })
   data: DemandeVisiteDetailsDto;
 }
-
-
-

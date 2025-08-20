@@ -5,5 +5,5 @@ export enum LoggingLevel {
   Http = "http",
   Verbose = "verbose",
   Debug = "debug",
-  Silly = "silly"
+  Silly = "silly",
 }

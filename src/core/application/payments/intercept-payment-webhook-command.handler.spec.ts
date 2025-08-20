@@ -1,15 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { InterceptPaymentWebhookCommandHandler } from './intercept-payment-webhook-command.handler';
-import { ReservationRepository } from '@/infrastructure/features/reservations/reservation.repository';
-import { ResidenceRepository } from '@/infrastructure/features/residences/residence.repository';
-import { WalletsService } from '@/infrastructure/features/wallets/wallet.service';
-import { NotificationService } from '@/infrastructure/features/notifications/notification.service';
-import { GlobalizationService } from '@/infrastructure/features/globalization';
-import { TransactionSource } from '@/core/domain/wallet';
-import { JwtModule } from '@nestjs/jwt';
+import { Test, TestingModule } from "@nestjs/testing";
+import { InterceptPaymentWebhookCommandHandler } from "./intercept-payment-webhook-command.handler";
+import { ReservationRepository } from "@/infrastructure/features/reservations/reservation.repository";
+import { ResidenceRepository } from "@/infrastructure/features/residences/residence.repository";
+import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
+import { NotificationService } from "@/infrastructure/features/notifications/notification.service";
+import { GlobalizationService } from "@/infrastructure/features/globalization";
+import { TransactionSource } from "@/core/domain/wallet";
+import { JwtModule } from "@nestjs/jwt";
 
-
-describe('InterceptPaymentWebhookCommandHandler', () => {
+describe("InterceptPaymentWebhookCommandHandler", () => {
   let handler: InterceptPaymentWebhookCommandHandler;
 
   const mockReservationRepository = {
@@ -29,7 +28,9 @@ describe('InterceptPaymentWebhookCommandHandler', () => {
   };
 
   const mockGlobalizationService = {
-    t: jest.fn().mockReturnValue({"subject": "texte traduit", "message": "texte traduit"}),
+    t: jest
+      .fn()
+      .mockReturnValue({ subject: "texte traduit", message: "texte traduit" }),
   };
 
   beforeEach(async () => {
@@ -42,15 +43,15 @@ describe('InterceptPaymentWebhookCommandHandler', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: GlobalizationService, useValue: mockGlobalizationService },
         {
-            provide: JwtModule,
-            useValue: {
-                register: jest.fn(() => ({
-                    module: {
-                    providers: [],
-                    exports: [],
-                    },
-                })),
-            },
+          provide: JwtModule,
+          useValue: {
+            register: jest.fn(() => ({
+              module: {
+                providers: [],
+                exports: [],
+              },
+            })),
+          },
         },
       ],
     }).compile();
@@ -59,113 +60,115 @@ describe('InterceptPaymentWebhookCommandHandler', () => {
     jest.clearAllMocks();
   });
 
-  it('doit créditer le wallet et envoyer une notification si tout est valide', async () => {
+  it("doit créditer le wallet et envoyer une notification si tout est valide", async () => {
     const reservation = {
-      id: 'res1',
+      id: "res1",
       montantTotalReservation: 1000,
       montantCommission: 100,
-      residence: 'residence1',
-      dateDebut: new Date('2025-08-10'),
+      residence: "residence1",
+      dateDebut: new Date("2025-08-10"),
     };
 
     const residence = {
-      proprietaire: 'user1',
+      proprietaire: "user1",
     };
 
     mockReservationRepository.findOne.mockResolvedValue(reservation);
     mockResidenceRepository.findOne.mockResolvedValue(residence);
-    mockWalletService.creditWallet.mockResolvedValue({ walletId: 'w1' });
+    mockWalletService.creditWallet.mockResolvedValue({ walletId: "w1" });
 
-    await handler.reservationWalletCredit('res1', 900);
+    await handler.reservationWalletCredit("res1", 900);
 
     expect(mockWalletService.creditWallet).toHaveBeenCalledWith(
-      'user1',
+      "user1",
       900, // montantTotalReservation - montantCommission
       TransactionSource.RESERVATION,
-      'res1',
+      "res1",
       expect.any(Date),
     );
 
     expect(mockNotificationService.sendNotification).toHaveBeenCalledWith(
       expect.objectContaining({
-        userId: 'user1',
-        subject: 'texte traduit',
-        message: 'texte traduit',
+        userId: "user1",
+        subject: "texte traduit",
+        message: "texte traduit",
         sendSms: true,
-      })
+      }),
     );
   });
 
-  it('ne fait rien si la réservation est introuvable', async () => {
+  it("ne fait rien si la réservation est introuvable", async () => {
     mockReservationRepository.findOne.mockResolvedValue(null);
 
-    await handler.reservationWalletCredit('unknown', 1000);
+    await handler.reservationWalletCredit("unknown", 1000);
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
     expect(mockNotificationService.sendNotification).not.toHaveBeenCalled();
   });
 
-  it('ne fait rien si le montant est inférieur à 90% du total', async () => {
+  it("ne fait rien si le montant est inférieur à 90% du total", async () => {
     mockReservationRepository.findOne.mockResolvedValue({
       montantTotalReservation: 1000,
     });
 
-    await handler.reservationWalletCredit('res2', 800); // < 900
+    await handler.reservationWalletCredit("res2", 800); // < 900
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
     expect(mockNotificationService.sendNotification).not.toHaveBeenCalled();
   });
 
-  it('ne fait rien si la résidence est introuvable', async () => {
+  it("ne fait rien si la résidence est introuvable", async () => {
     const reservation = {
       montantTotalReservation: 1000,
       montantCommission: 100,
-      residence: 'residence1',
+      residence: "residence1",
       dateDebut: new Date(),
     };
 
     mockReservationRepository.findOne.mockResolvedValue(reservation);
     mockResidenceRepository.findOne.mockResolvedValue(null);
 
-    await handler.reservationWalletCredit('res3', 1000);
+    await handler.reservationWalletCredit("res3", 1000);
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
   });
 
-  it('ne crédite pas si montant à reverser <= 0', async () => {
+  it("ne crédite pas si montant à reverser <= 0", async () => {
     const reservation = {
       montantTotalReservation: 100,
       montantCommission: 150,
-      residence: 'residence1',
+      residence: "residence1",
       dateDebut: new Date(),
     };
 
     mockReservationRepository.findOne.mockResolvedValue(reservation);
-    mockResidenceRepository.findOne.mockResolvedValue({ proprietaire: 'user1' });
+    mockResidenceRepository.findOne.mockResolvedValue({
+      proprietaire: "user1",
+    });
 
-    await handler.reservationWalletCredit('res4', 100);
+    await handler.reservationWalletCredit("res4", 100);
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
   });
 
-  it('n’envoie pas de notification si le crédit échoue', async () => {
+  it("n’envoie pas de notification si le crédit échoue", async () => {
     const reservation = {
-      id: 'res1',
+      id: "res1",
       montantTotalReservation: 1000,
       montantCommission: 100,
-      residence: 'residence1',
+      residence: "residence1",
       dateDebut: new Date(),
     };
 
     const residence = {
-      proprietaire: 'user1',
+      proprietaire: "user1",
     };
 
     mockReservationRepository.findOne.mockResolvedValue(reservation);
     mockResidenceRepository.findOne.mockResolvedValue(residence);
     mockWalletService.creditWallet.mockResolvedValue(null);
 
-    await handler.reservationWalletCredit('res5', 1000);
+    await handler.reservationWalletCredit("res5", 1000);
 
     expect(mockNotificationService.sendNotification).not.toHaveBeenCalled();
   });

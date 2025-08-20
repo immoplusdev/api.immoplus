@@ -1,10 +1,15 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  JoinColumn, JoinTable, ManyToMany,
-  ManyToOne, OneToMany,
-  PrimaryGeneratedColumn, RelationId,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { FileEntity } from "@/infrastructure/features/files";
@@ -40,7 +45,6 @@ export class ResidenceEntity {
   @Column({ name: "pieces", type: "json", nullable: true })
   pieces?: Piece[];
 
-
   // @ManyToMany(() => FileEntity, (file) => file.id, { nullable: true })
   // @JoinTable({
   //   name: "residence_images",
@@ -65,7 +69,6 @@ export class ResidenceEntity {
   @JoinColumn({ name: "ville_id" })
   ville?: string;
 
-
   @ManyToOne(() => CommuneEntity, (entity) => entity.id, { nullable: true })
   @JoinColumn({ name: "commune_id" })
   commune?: string;
@@ -83,9 +86,12 @@ export class ResidenceEntity {
 
   @Column({ name: "residence_disponible", type: "bool", default: true })
   residenceDisponible: boolean;
-  @Column({ name: "status_validation", type: "varchar", default: StatusValidationBienImmobilier.EnAttenteValidation })
+  @Column({
+    name: "status_validation",
+    type: "varchar",
+    default: StatusValidationBienImmobilier.EnAttenteValidation,
+  })
   statusValidation: StatusValidationBienImmobilier;
-
 
   @Column({ name: "prix_reservation", type: "int" })
   prixReservation: number;
@@ -128,7 +134,6 @@ export class ResidenceEntity {
   // @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   // @JoinColumn({ name: "deleted_by" })
   // deletedBy?: string;
-
 
   @OneToMany(() => ReservationEntity, (reservation) => reservation.residence)
   reservations?: ReservationEntity[];

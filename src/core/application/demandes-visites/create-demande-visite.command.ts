@@ -4,7 +4,6 @@ import { ApiProperty } from "@/core/domain/common/docs";
 import { ServiceDateDto } from "@/core/application/common/dto";
 import { IsOptional } from "class-validator";
 
-
 export class CreateDemandeVisiteCommand {
   @ApiProperty({ format: "uuid" })
   bienImmobilier: string;

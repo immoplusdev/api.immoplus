@@ -18,23 +18,32 @@ export class PaymentDemandeVisiteValideEvent {
 }
 
 @EventsHandler(PaymentDemandeVisiteValideEvent)
-export class PaymentDemandeVisiteValideEventHandler implements IEventHandler<PaymentDemandeVisiteValideEvent> {
+export class PaymentDemandeVisiteValideEventHandler
+  implements IEventHandler<PaymentDemandeVisiteValideEvent>
+{
   constructor(
-    @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
-    @Inject(Deps.NotificationService) private readonly notificationService: INotificationService,
-    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
-  ) {
-
-  }
+    @Inject(Deps.DemandeVisiteRepository)
+    private readonly demandeVisiteRepository: IDemandeVisiteRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
+  ) {}
 
   async handle(event: PaymentDemandeVisiteValideEvent) {
-    const demandeVisite = await this.demandeVisiteRepository.findOne(event.demandeVisiteId);
+    const demandeVisite = await this.demandeVisiteRepository.findOne(
+      event.demandeVisiteId,
+    );
     if (!demandeVisite) throw new ItemNotFoundException();
 
     await this.notificationService.sendNotification({
       userId: demandeVisite.createdBy as string,
-      subject: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_client.subject"),
-      message: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_client.message"),
+      subject: this.globalizationService.t(
+        "all.notifications.demandes_visites.paiement_valide_client.subject",
+      ),
+      message: this.globalizationService.t(
+        "all.notifications.demandes_visites.paiement_valide_client.message",
+      ),
       returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
       skipInAppNotification: false,
       sendMail: true,
@@ -42,9 +51,14 @@ export class PaymentDemandeVisiteValideEventHandler implements IEventHandler<Pay
     });
 
     await this.notificationService.sendNotification({
-      userId: (demandeVisite.bienImmobilier as BienImmobilier).proprietaire as string,
-      subject: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_pro.subject"),
-      message: this.globalizationService.t("all.notifications.demandes_visites.paiement_valide_pro.message"),
+      userId: (demandeVisite.bienImmobilier as BienImmobilier)
+        .proprietaire as string,
+      subject: this.globalizationService.t(
+        "all.notifications.demandes_visites.paiement_valide_pro.subject",
+      ),
+      message: this.globalizationService.t(
+        "all.notifications.demandes_visites.paiement_valide_pro.message",
+      ),
       returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
       skipInAppNotification: false,
       sendMail: true,

@@ -8,7 +8,9 @@ import { IPasswordManagerService } from "@/core/domain/auth";
 import { WrongPasswordException } from "@/core/domain/auth/wrong-password.exception";
 
 @CommandHandler(UpdatePasswordCommand)
-export class UpdatePasswordCommandHandler implements ICommandHandler<UpdatePasswordCommand> {
+export class UpdatePasswordCommandHandler
+  implements ICommandHandler<UpdatePasswordCommand>
+{
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -18,7 +20,9 @@ export class UpdatePasswordCommandHandler implements ICommandHandler<UpdatePassw
     //
   }
 
-  async execute(command: UpdatePasswordCommand): Promise<UpdatePasswordCommandResponse> {
+  async execute(
+    command: UpdatePasswordCommand,
+  ): Promise<UpdatePasswordCommandResponse> {
     const user = await this.usersRepository.findOne(command.userId);
 
     this.verifyPassword(command.oldPassword, user.password);
@@ -29,10 +33,13 @@ export class UpdatePasswordCommandHandler implements ICommandHandler<UpdatePassw
   }
 
   private async updatePassword(userId: string, password: string) {
-    await this.usersRepository.updateOne(userId, { password: this.passwordManagerService.encryptPassword(password) });
+    await this.usersRepository.updateOne(userId, {
+      password: this.passwordManagerService.encryptPassword(password),
+    });
   }
 
   private verifyPassword(password: string, hash: string) {
-    if (!this.passwordManagerService.passwordMatchesHash(password, hash)) throw new WrongPasswordException();
+    if (!this.passwordManagerService.passwordMatchesHash(password, hash))
+      throw new WrongPasswordException();
   }
 }

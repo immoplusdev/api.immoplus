@@ -7,22 +7,34 @@ import { IPasswordManagerService, ITfaService } from "@/core/domain/auth";
 import { IUserRepository } from "@/core/domain/users";
 
 @CommandHandler(ResetPasswordCommand)
-export class ResetPasswordCommandHandler implements ICommandHandler<ResetPasswordCommand> {
+export class ResetPasswordCommandHandler
+  implements ICommandHandler<ResetPasswordCommand>
+{
   constructor(
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
     @Inject(Deps.PasswordManagerService)
     private readonly passwordManagerService: IPasswordManagerService,
   ) {
     //
   }
 
-  async execute(command: ResetPasswordCommand): Promise<ResetPasswordCommandResponse> {
+  async execute(
+    command: ResetPasswordCommand,
+  ): Promise<ResetPasswordCommandResponse> {
     await this.verifyOtp(command);
 
-    const user = await this.usersRepository.findOneByUsername(command.username, { fields: ["id"] });
+    const user = await this.usersRepository.findOneByUsername(
+      command.username,
+      { fields: ["id"] },
+    );
 
-    await this.usersRepository.updateOne(user.id, { password: this.passwordManagerService.encryptPassword(command.newPassword) });
+    await this.usersRepository.updateOne(user.id, {
+      password: this.passwordManagerService.encryptPassword(
+        command.newPassword,
+      ),
+    });
 
     return new ResetPasswordCommandResponse();
   }
@@ -34,10 +46,14 @@ export class ResetPasswordCommandHandler implements ICommandHandler<ResetPasswor
         resetIfValid: true,
       });
     } else {
-      await this.tfaService.verifyUserPhoneNumberOtp(command.username, command.otp, {
-        throwException: true,
-        resetIfValid: true,
-      });
+      await this.tfaService.verifyUserPhoneNumberOtp(
+        command.username,
+        command.otp,
+        {
+          throwException: true,
+          resetIfValid: true,
+        },
+      );
     }
   }
 }

@@ -1,6 +1,7 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -10,9 +11,9 @@ import {
 import { FileEntity } from "@/infrastructure/features/files";
 import { UserEntity } from "@/infrastructure/features/users";
 
-@Entity('configurations')
+@Entity("configurations")
 export class AppConfigsEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
   @Column({ name: "website_url", type: "varchar", nullable: true })
   websiteUrl: string;
@@ -20,8 +21,12 @@ export class AppConfigsEntity {
   normalVisitPrice: number;
   @Column({ name: "express_visit_price", type: "int", default: 2500 })
   expressVisitPrice: number;
-  
-  @Column({ name: "pourcentage_commission_reservation", type: "int", default: 5 })
+
+  @Column({
+    name: "pourcentage_commission_reservation",
+    type: "int",
+    default: 5,
+  })
   pourcentageCommissionReservation: number;
 
   @Column({ name: "project_name", type: "varchar", nullable: true })
@@ -29,8 +34,7 @@ export class AppConfigsEntity {
   @Column({ name: "project_url", type: "varchar", nullable: true })
   projectUrl: string;
 
-
-  @ManyToOne(() => FileEntity,item=> item.id, { nullable: true })
+  @ManyToOne(() => FileEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "project_logo_id" })
   projectLogo: string;
 

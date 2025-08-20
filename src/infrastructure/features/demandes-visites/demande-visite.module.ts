@@ -8,7 +8,9 @@ import {
   AnnulerDemandeVisiteByIdCommandHandler,
   CreateDemandeVisiteCommandHandler,
   EstimerPrixDemandeVisiteQueryHandler,
-  GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler, ProgrammerDemandeVisiteCommandHandler,
+  GetBienImmobilierOccupiedDateQueryHandler,
+  GetDemandeVisiteByIdQueryHandler,
+  ProgrammerDemandeVisiteCommandHandler,
 } from "@/core/application/demandes-visites";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { BienImmobilierModule } from "@/infrastructure/features/biens-immobiliers";
@@ -18,8 +20,16 @@ import { NotificationModule } from "@/infrastructure/features/notifications";
 import { LoggingModule } from "@/infrastructure/features/logging";
 import { DemandesVisiteService } from "@/infrastructure/features/demandes-visites/demandes-visite.service";
 
-const commandHandlers = [CreateDemandeVisiteCommandHandler, AnnulerDemandeVisiteByIdCommandHandler, ProgrammerDemandeVisiteCommandHandler];
-const queryHandler = [EstimerPrixDemandeVisiteQueryHandler, GetBienImmobilierOccupiedDateQueryHandler, GetDemandeVisiteByIdQueryHandler];
+const commandHandlers = [
+  CreateDemandeVisiteCommandHandler,
+  AnnulerDemandeVisiteByIdCommandHandler,
+  ProgrammerDemandeVisiteCommandHandler,
+];
+const queryHandler = [
+  EstimerPrixDemandeVisiteQueryHandler,
+  GetBienImmobilierOccupiedDateQueryHandler,
+  GetDemandeVisiteByIdQueryHandler,
+];
 const providers: Provider[] = [
   {
     provide: Deps.DemandeVisiteRepository,
@@ -33,7 +43,16 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [DemandeVisiteController],
-  imports: [TypeormModule, CqrsModule, ConfigsModule, BienImmobilierModule, UserModule, GlobalizationModule, NotificationModule, LoggingModule],
+  imports: [
+    TypeormModule,
+    CqrsModule,
+    ConfigsModule,
+    BienImmobilierModule,
+    UserModule,
+    GlobalizationModule,
+    NotificationModule,
+    LoggingModule,
+  ],
   providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],
 })

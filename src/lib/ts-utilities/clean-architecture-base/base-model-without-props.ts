@@ -1,4 +1,4 @@
-import { OmitMethods } from '../types/omit-method';
+import { OmitMethods } from "../types/omit-method";
 /**
  * @description Base model without props
  * @date 29/03/2023 - 12:33:01
@@ -26,7 +26,9 @@ export class BaseModelWithoutProps<T> {
    *
    * @param {(Omit<OmitMethods<T>, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>)} data
    */
-  update(data: Omit<OmitMethods<T>, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>) {
+  update(
+    data: Omit<OmitMethods<T>, "id" | "createdAt" | "updatedAt" | "deletedAt">,
+  ) {
     Object.assign(this, data);
   }
 }

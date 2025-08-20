@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { ApiProperty } from "@/core/domain/common/docs";
 
@@ -12,4 +12,3 @@ export class WrapperResponseRegisterProEntrepriseCommandResponseDto extends Wrap
   @ApiProperty({ type: RegisterProEntrepriseCommandResponse })
   data: RegisterProEntrepriseCommandResponse;
 }
-

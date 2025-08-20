@@ -3,7 +3,9 @@ import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { BienImmobilierEntity } from "./bien-immobilier.entity";
 import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
-export class BienImmobilierEntityMapper implements IMapper<BienImmobilierEntity, BienImmobilier> {
+export class BienImmobilierEntityMapper
+  implements IMapper<BienImmobilierEntity, BienImmobilier>
+{
   mapFrom(object: OmitMethods<BienImmobilierEntity>): BienImmobilier {
     return new BienImmobilier({
       ...object,

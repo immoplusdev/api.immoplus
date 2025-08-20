@@ -6,7 +6,8 @@ export class Commodite {
   icon: string;
 
   getText() {
-    this.text = commiditeList.find((item) => item.value === this.icon)?.text || "";
+    this.text =
+      commiditeList.find((item) => item.value === this.icon)?.text || "";
     return this;
   }
 

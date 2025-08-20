@@ -1,3 +1,3 @@
 export enum NotificationStatus {
-    Read = "read"
+  Read = "read",
 }

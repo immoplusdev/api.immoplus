@@ -6,7 +6,6 @@ import { Commodite } from "./commodite.model";
 import { Piece } from "./piece.model";
 import { User } from "@/core/domain/users";
 
-
 export class Residence {
   id: string;
   miniature: string;
@@ -48,4 +47,3 @@ export class Residence {
     if (data) Object.assign(this, data);
   }
 }
-

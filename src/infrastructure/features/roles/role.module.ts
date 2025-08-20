@@ -1,8 +1,8 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/common/ioc';
-import { TypeormModule } from '@/infrastructure/typeorm';
-import { RoleController } from './role.controller';
-import { RoleRepository } from './role.repository';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/common/ioc";
+import { TypeormModule } from "@/infrastructure/typeorm";
+import { RoleController } from "./role.controller";
+import { RoleRepository } from "./role.repository";
 
 const providers: Provider[] = [
   {

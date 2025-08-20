@@ -40,5 +40,5 @@ export enum Deps {
 
   // Guards
 
-  AppGuard = "AppGuard"
+  AppGuard = "AppGuard",
 }

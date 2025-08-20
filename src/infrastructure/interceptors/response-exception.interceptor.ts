@@ -2,12 +2,17 @@ import {
   Injectable,
   NestInterceptor,
   ExecutionContext,
-  CallHandler, BadRequestException, Inject,
+  CallHandler,
+  BadRequestException,
+  Inject,
   HttpException,
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
-import { BaseException, UnexpectedException } from "@/core/domain/common/exceptions";
+import {
+  BaseException,
+  UnexpectedException,
+} from "@/core/domain/common/exceptions";
 import { FailedValidationException } from "@/core/domain/common/exceptions/failed-validation.exception";
 import { Deps } from "@/core/domain/common/ioc";
 import { IGlobalizationService } from "@/core/domain/globalization";
@@ -38,9 +43,11 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
             throw this.translateExceptionMessage(err);
           } else if (err instanceof BadRequestException) {
             const errResponse = err.getResponse();
-            const exception = new FailedValidationException((errResponse as any).message[0]);
+            const exception = new FailedValidationException(
+              (errResponse as any).message[0],
+            );
             throw this.translateExceptionMessage(exception);
-          }else {
+          } else {
             if (!this.configsManagerService.isAppProfileProduction()) {
               this.loggerService.error("App Exception", err);
             }
@@ -54,7 +61,9 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
   translateExceptionMessage(exception: BaseException): BaseException {
     if (exception.message.includes("$t:")) {
       const message = exception.message.replace("$t:", "");
-      const translation = this.globalizationService.t(message, { args: exception.data });
+      const translation = this.globalizationService.t(message, {
+        args: exception.data,
+      });
       exception.setMessage(translation);
     }
     return exception;

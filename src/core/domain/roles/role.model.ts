@@ -9,7 +9,7 @@ export class Role {
   enforceTfa: boolean;
   appAccess: boolean;
   adminAccess: boolean;
-  hasAdminAccess(){
+  hasAdminAccess() {
     return this.adminAccess || this.id == UserRole.Admin;
   }
   constructor(data?: OmitMethods<Role>) {

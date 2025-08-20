@@ -1,12 +1,19 @@
 import { Body, Controller, HttpCode, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiNoContentResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiNoContentResponse,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { CommandBus } from "@nestjs/cqrs";
 import { LoginCommand } from "@/core/application/auth/login.command";
 import {
   LoginWithEmailOtpCommand,
   LoginWithEmailOtpCommandResponse,
-  LoginWithPhoneNumberOtpCommand, LoginWithPhoneNumberOtpCommandResponse, RegisterCommand,
+  LoginWithPhoneNumberOtpCommand,
+  LoginWithPhoneNumberOtpCommandResponse,
+  RegisterCommand,
   RegisterProEntrepriseCommand,
   RegisterProParticulierCommand,
   ResetPasswordCommand,
@@ -15,21 +22,26 @@ import {
   UpdatePasswordCommand,
   VerifyEmailCommand,
   VerifyPhoneNumberCommand,
-  WrapperResponseLoginCommandResponseDto, WrapperResponseLoginCommandResponseDtoMapper,
+  WrapperResponseLoginCommandResponseDto,
+  WrapperResponseLoginCommandResponseDtoMapper,
   WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
 } from "@/core/application/auth";
-import { CurrentUser, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/features/auth/guards";
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
-  constructor(
-    readonly commandBus: CommandBus,
-  ) {
-  }
+  constructor(readonly commandBus: CommandBus) {}
 
   @ApiResponse({
     type: WrapperResponseLoginCommandResponseDto,
@@ -84,7 +96,6 @@ export class AuthController {
     return responseMapper.mapFrom(response);
   }
 
-
   @ApiResponse({
     type: WrapperResponseLoginCommandResponseDto,
   })
@@ -97,14 +108,16 @@ export class AuthController {
     return responseMapper.mapFrom(response);
   }
 
-
   @ApiResponse({
     type: WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
   })
   @HttpCode(200)
   @Post("login-with-phone-number-otp")
-  async loginWithPhoneNumberOtp(@Body() payload: LoginWithPhoneNumberOtpCommand) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginWithPhoneNumberOtpCommandResponse>();
+  async loginWithPhoneNumberOtp(
+    @Body() payload: LoginWithPhoneNumberOtpCommand,
+  ) {
+    const responseMapper =
+      new WrapperResponseDtoMapper<LoginWithPhoneNumberOtpCommandResponse>();
     const command = new LoginWithPhoneNumberOtpCommand(payload);
 
     const response = await this.commandBus.execute(command);
@@ -117,15 +130,22 @@ export class AuthController {
   @HttpCode(200)
   @Post("login-with-email-otp")
   async loginWithEmailOtp(@Body() payload: LoginWithEmailOtpCommand) {
-    const responseMapper = new WrapperResponseDtoMapper<LoginWithEmailOtpCommandResponse>();
+    const responseMapper =
+      new WrapperResponseDtoMapper<LoginWithEmailOtpCommandResponse>();
 
-    const response = await this.commandBus.execute(new LoginWithEmailOtpCommand(payload));
+    const response = await this.commandBus.execute(
+      new LoginWithEmailOtpCommand(payload),
+    );
     return responseMapper.mapFrom(response);
   }
 
-
   @ApiNoContentResponse()
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -133,7 +153,8 @@ export class AuthController {
   @Post("update-password")
   async updatePassword(
     @Body() payload: UpdatePasswordCommand,
-    @CurrentUser("id") userId: string) {
+    @CurrentUser("id") userId: string,
+  ) {
     const command = new UpdatePasswordCommand({ ...payload, userId });
     await this.commandBus.execute(command);
   }

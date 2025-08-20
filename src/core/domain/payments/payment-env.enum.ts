@@ -1,4 +1,4 @@
 export enum PaymentEnv {
   Live = "live",
-  Sandbox = "sandbox"
+  Sandbox = "sandbox",
 }

@@ -15,21 +15,28 @@ import {
 } from "@/core/application/payments";
 import { ReservationModule } from "@/infrastructure/features/reservations";
 import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites";
-import {
-  AuthenticatePaymentIntentCommandHandler,
-} from "@/core/application/payments/authenticate-payment-intent-command.handler";
+import { AuthenticatePaymentIntentCommandHandler } from "@/core/application/payments/authenticate-payment-intent-command.handler";
 import { NotificationModule } from "@/infrastructure/features/notifications";
+import { PaymentReservationValideEventHandler } from "@/core/application/payments/payment-reservation-valide.event";
 import {
-  PaymentReservationValideEventHandler,
-} from "@/core/application/payments/payment-reservation-valide.event";
-import { GlobalizationModule, GlobalizationService } from "@/infrastructure/features/globalization";
+  GlobalizationModule,
+  GlobalizationService,
+} from "@/infrastructure/features/globalization";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { ResidenceRepository } from "../residences/residence.repository";
 import { WalletsService } from "../wallets/wallet.service";
 
 const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
-const commandHandlers = [CreatePaymentIntentCommandHandler, InterceptPaymentWebhookCommandHandler, AuthenticatePaymentIntentCommandHandler, CreateDemandeRetraitReservationCommandHandler];
-const eventHandlers = [PaymentDemandeVisiteValideEventHandler, PaymentReservationValideEventHandler];
+const commandHandlers = [
+  CreatePaymentIntentCommandHandler,
+  InterceptPaymentWebhookCommandHandler,
+  AuthenticatePaymentIntentCommandHandler,
+  CreateDemandeRetraitReservationCommandHandler,
+];
+const eventHandlers = [
+  PaymentDemandeVisiteValideEventHandler,
+  PaymentReservationValideEventHandler,
+];
 
 const providers: Provider[] = [
   {
@@ -41,21 +48,33 @@ const providers: Provider[] = [
     useClass: Hub2PaymentGatewayService,
   },
   {
-    provide:Deps.ResidenceRepository,
+    provide: Deps.ResidenceRepository,
     useClass: ResidenceRepository,
   },
   {
-    provide:Deps.WalletsService,
+    provide: Deps.WalletsService,
     useClass: WalletsService,
-  }
-
+  },
 ];
 
 @Module({
   controllers: [PaymentController],
-  imports: [TypeormModule, CqrsModule,ConfigsModule, LoggingModule, ReservationModule, DemandeVisiteModule, NotificationModule, GlobalizationModule],
-  providers: [...providers, ...queryHandler, ...commandHandlers, ...eventHandlers],
+  imports: [
+    TypeormModule,
+    CqrsModule,
+    ConfigsModule,
+    LoggingModule,
+    ReservationModule,
+    DemandeVisiteModule,
+    NotificationModule,
+    GlobalizationModule,
+  ],
+  providers: [
+    ...providers,
+    ...queryHandler,
+    ...commandHandlers,
+    ...eventHandlers,
+  ],
   exports: [...providers],
 })
-export class PaymentModule {
-}
+export class PaymentModule {}

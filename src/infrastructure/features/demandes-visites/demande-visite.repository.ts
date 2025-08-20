@@ -1,17 +1,32 @@
 import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { DemandeVisite, IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
-import { DemandeVisiteEntity, DemandeVisiteEntityMapper } from "@/infrastructure/features/demandes-visites";
+import {
+  DemandeVisite,
+  IDemandeVisiteRepository,
+} from "@/core/domain/demandes-visites";
+import {
+  DemandeVisiteEntity,
+  DemandeVisiteEntityMapper,
+} from "@/infrastructure/features/demandes-visites";
 import { BaseRepository } from "@/infrastructure/typeorm";
-import { ItemsParamsCriterias, ItemsParamsOrderDirection, SearchItemsParams } from "@/core/domain/http";
-import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
+import {
+  ItemsParamsCriterias,
+  ItemsParamsOrderDirection,
+  SearchItemsParams,
+} from "@/core/domain/http";
+import {
+  FindItemOptions,
+  RepositoryRelations,
+  WrapperResponse,
+} from "@/core/domain/common/models";
 
 @Injectable()
 export class DemandeVisiteRepository implements IDemandeVisiteRepository {
   private readonly repository: BaseRepository<DemandeVisite>;
   private readonly relations: RepositoryRelations = ["bienImmobilier"];
-  private readonly fullTextSearchFields: string[] = ["id",
+  private readonly fullTextSearchFields: string[] = [
+    "id",
     "id",
     "bienImmobilier",
     "statusDemandeVisite",
@@ -32,15 +47,21 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
-    @Inject(Deps.BiensImmobiliesRepository) private readonly biensImmobiliesRepository: IDemandeVisiteRepository,
+    @Inject(Deps.BiensImmobiliesRepository)
+    private readonly biensImmobiliesRepository: IDemandeVisiteRepository,
   ) {
-    this.repository = new BaseRepository(dataSource, DemandeVisiteEntity, this.relations)
+    this.repository = new BaseRepository(
+      dataSource,
+      DemandeVisiteEntity,
+      this.relations,
+    )
       .setEntityMapper(new DemandeVisiteEntityMapper())
       .setFullTextSearchFields(this.fullTextSearchFields);
   }
 
-
-  async createMany(payload: Partial<DemandeVisite>[]): Promise<DemandeVisite[]> {
+  async createMany(
+    payload: Partial<DemandeVisite>[],
+  ): Promise<DemandeVisite[]> {
     return await this.repository.createMany(payload);
   }
 
@@ -48,7 +69,10 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<DemandeVisite[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<WrapperResponse<DemandeVisite[]>> {
     return await this.repository.findByQuery(query, options);
   }
 
@@ -56,21 +80,29 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
     return this.repository.findOne(id, options);
   }
 
-  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<DemandeVisite> {
+  async findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<DemandeVisite> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async findByBienImmobilierOwnerId(ownerId: string, query?: SearchItemsParams): Promise<WrapperResponse<DemandeVisite[]>> {
-    const idsResponse = await this.biensImmobiliesRepository.findByQuery({
-      _where:
-        [
+  async findByBienImmobilierOwnerId(
+    ownerId: string,
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<DemandeVisite[]>> {
+    const idsResponse = await this.biensImmobiliesRepository.findByQuery(
+      {
+        _where: [
           {
             _field: "proprietaire",
             _op: "eq",
             _val: ownerId,
           },
         ],
-    }, { fields: ["id"], relations: [] });
+      },
+      { fields: ["id"], relations: [] },
+    );
 
     const idFilter: ItemsParamsCriterias = {
       _field: "bienImmobilier",
@@ -78,7 +110,9 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
       _val: idsResponse.data.map((item) => item.id),
     };
 
-    const whereClause: ItemsParamsCriterias[] = query._where ? [...query._where, idFilter] : [idFilter];
+    const whereClause: ItemsParamsCriterias[] = query._where
+      ? [...query._where, idFilter]
+      : [idFilter];
 
     return await this.findByQuery({
       ...(query || {}),
@@ -86,11 +120,17 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
     });
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<DemandeVisite>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<DemandeVisite>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 
-  async updateOne(id: string, payload: Partial<DemandeVisite>): Promise<string> {
+  async updateOne(
+    id: string,
+    payload: Partial<DemandeVisite>,
+  ): Promise<string> {
     return await this.repository.updateOne(id, payload);
   }
 

@@ -62,7 +62,9 @@ export class WrapperResponsePaymentDto extends WrapperResponseDto<PaymentDto> {
   data: PaymentDto;
 }
 
-export class WrapperResponsePaymentListDto extends WrapperResponseDto<PaymentDto[]> {
+export class WrapperResponsePaymentListDto extends WrapperResponseDto<
+  PaymentDto[]
+> {
   @ApiProperty({ type: [PaymentDto] })
   data: PaymentDto[];
   @ApiProperty()
@@ -78,4 +80,3 @@ export class WrapperResponsePaymentListDto extends WrapperResponseDto<PaymentDto
   @ApiProperty()
   hasNext: boolean;
 }
-

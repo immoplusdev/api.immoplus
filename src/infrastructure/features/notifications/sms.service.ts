@@ -6,14 +6,12 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 const twilio = require("twilio");
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 
-
 @Injectable()
 export class SmsService implements ISmsService {
   constructor(
-    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
-  ) {
-  
-  }
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
+  ) {}
 
   async sendSms(recipients: string[], message: string): Promise<void> {
     const client = twilio(
@@ -23,14 +21,14 @@ export class SmsService implements ISmsService {
 
     await client.messages.create({
       body: message,
-      messagingServiceSid: this.configsManagerService.getEnvVariable("TWILIO_MESSAGING_SERVICE_ID"),
+      messagingServiceSid: this.configsManagerService.getEnvVariable(
+        "TWILIO_MESSAGING_SERVICE_ID",
+      ),
       to: this.sanitizeRecipients(recipients)[0],
     });
   }
 
   private sanitizeRecipients(recipients: string[]): string[] {
-    return recipients.map(recipient => sanitizePhoneNumber(recipient));
+    return recipients.map((recipient) => sanitizePhoneNumber(recipient));
   }
-
-
 }

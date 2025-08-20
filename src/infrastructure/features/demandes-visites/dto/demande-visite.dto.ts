@@ -1,7 +1,10 @@
 import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
-import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
+import {
+  StatusDemandeVisite,
+  TypeDemandeVisite,
+} from "@/core/domain/demandes-visites";
 import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { BienImmobilierDto } from "@/core/application/biens-immobiliers";
@@ -64,8 +67,9 @@ export class WrapperResponseDemandeVisiteDto extends WrapperResponseDto<DemandeV
   data: DemandeVisiteDto;
 }
 
-export class WrapperResponseDemandeVisiteBatchDto extends WrapperResponseDto<DemandeVisiteDto[]> {
+export class WrapperResponseDemandeVisiteBatchDto extends WrapperResponseDto<
+  DemandeVisiteDto[]
+> {
   @ApiProperty({ type: [DemandeVisiteDto] })
   data: DemandeVisiteDto[];
 }
-

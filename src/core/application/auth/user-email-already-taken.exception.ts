@@ -1,4 +1,4 @@
-import { BaseException } from '@/core/domain/common/exceptions';
+import { BaseException } from "@/core/domain/common/exceptions";
 
 export class UserEmailAlreadyTakenException extends BaseException {
   constructor() {

@@ -6,56 +6,89 @@ import { ILoggerService } from "@/core/domain/logging";
 import { AccessForbiddenException } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/common/ioc";
 import { Inject } from "@nestjs/common";
-import {
-  IPaymentGatewayService,
-  IPaymentRepository,
-  PaymentCollection,
-  PaymentStatus,
-  StatusFacture,
-} from "@/core/domain/payments";
-import { IReservationRepository, Reservation, StatusReservation } from "@/core/domain/reservations";
-import { DemandeVisite, IDemandeVisiteRepository, StatusDemandeVisite } from "@/core/domain/demandes-visites";
+import { IReservationRepository } from "@/core/domain/reservations";
+import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
-import { PaymentDemandeVisiteValideEvent } from "@/core/application/payments/payment-demande-visite-valide.event";
-import { PaymentReservationValideEvent } from "@/core/application/payments/payment-reservation-valide.event";
-import { IResidenceRepository, Residence } from "@/core/domain/residences";
-import {  DEFAULT_CURRENCY, IWalletRepository, TransactionSource, WalletWithDrawalRequest, WithdrawalStatus } from "@/core/domain/wallet";
-import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
-import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  DEFAULT_CURRENCY,
+  IWalletRepository,
+  TransactionSource,
+  WalletWithDrawalRequest,
+  WithdrawalStatus,
+} from "@/core/domain/wallet";
+
 import { INotificationService } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { PaymentMethod } from "@/core/domain/common/enums";
 import { ITransferRepository } from "@/core/domain/transfers/i-transfer.repository";
-import { TransferItemType, TransferStatus } from "@/core/domain/transfers/transfer.enum";
+import {
+  TransferItemType,
+  TransferStatus,
+} from "@/core/domain/transfers/transfer.enum";
 
 @CommandHandler(InterceptTransferWebhookCommand)
-export class InterceptTransferWebhookCommandHandler implements ICommandHandler<InterceptTransferWebhookCommand> {
+export class InterceptTransferWebhookCommandHandler
+  implements ICommandHandler<InterceptTransferWebhookCommand>
+{
   constructor(
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.DemandeVisiteRepository)
+    private readonly demandeVisiteRepository: IDemandeVisiteRepository,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
-    @Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository,
-    @Inject(Deps.NotificationService) private readonly notificationService: INotificationService,
-    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
-    @Inject(Deps.TransferRepository) private readonly transferRepository: ITransferRepository,
+    @Inject(Deps.WalletRepository)
+    private readonly walletRepository: IWalletRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.TransferRepository)
+    private readonly transferRepository: ITransferRepository,
     private readonly eventBus: EventBus,
   ) {
     //
   }
 
-  async execute(command: InterceptTransferWebhookCommand): Promise<InterceptTransferWebhookCommandResponse> {
+  async execute(
+    command: InterceptTransferWebhookCommand,
+  ): Promise<InterceptTransferWebhookCommandResponse> {
     if (!this.hasAccess(command.json, command.signature))
       throw new AccessForbiddenException();
 
     try {
-        await this.updateTransferStatus(command);
+      await this.updateTransferStatus(command);
     } catch (error) {
-        this.loggerService.error(error);
+      this.loggerService.error(error);
     }
     return new InterceptTransferWebhookCommandResponse();
   }
 
   hasAccess(json: string, reqHmac: string) {
+    const secret = process.env.HUB2_WEBHOOK_SECRET;
+    if (!secret) {
+      this.loggerService.error("Hub2 webhook secret is not set");
+      return false;
+    }
+
+    const signature = this.createHmacSignature(json, secret);
+    if (!this.compareSignatures(reqHmac, signature)) {
+      this.loggerService.error("Invalid Hub2 webhook signature");
+      return false;
+    }
+
+    this.loggerService.info("Hub2 webhook signature verified successfully");
+
+    try {
+      const data = JSON.parse(json);
+      if (!data || !data.id || !data.status) {
+        this.loggerService.error("Invalid Hub2 webhook data");
+        return false;
+      }
+    } catch (error) {
+      this.loggerService.error("Failed to parse Hub2 webhook data", error);
+      return false;
+    }
+
     return true;
   }
 
@@ -96,10 +129,9 @@ export class InterceptTransferWebhookCommandHandler implements ICommandHandler<I
           _val: command.data.id,
         },
       ],
-      _order_by: 'created_at',
-      _order_dir: 'desc'
+      _order_by: "created_at",
+      _order_dir: "desc",
     });
-
 
     if (localTransfers.length == 0) throw new ItemNotFoundException();
 
@@ -111,62 +143,94 @@ export class InterceptTransferWebhookCommandHandler implements ICommandHandler<I
       hub2Metadata: command.json as never,
     });
 
-    if (transferStatus == TransferStatus.SUCCESSFUL || transferStatus == TransferStatus.FAILED) {
-      await this.updateSourceItemStatus(localTransfer.itemType, localTransfer.itemId, transferStatus);
+    if (
+      transferStatus == TransferStatus.SUCCESSFUL ||
+      transferStatus == TransferStatus.FAILED
+    ) {
+      await this.updateSourceItemStatus(
+        localTransfer.itemType,
+        localTransfer.itemId,
+        transferStatus,
+      );
     }
-     
+
     const operator = command.data?.destination?.provider;
     const phoneNumber = command.data?.destination?.number;
     const paymentStatus = command.data?.status;
-  
+
+    console.log("PhoneNumber:", phoneNumber);
+    console.log("Transfer Status:", paymentStatus);
 
     // Si tranfer reussi, faire verfication pour debiter le wallet
     if (transferStatus == TransferStatus.SUCCESSFUL) {
-        const cunstomerId = typeof localTransfer.customer == 'object' ? localTransfer.customer.id : localTransfer.customer;
-        await this.debitWallet(localTransfer.itemType, localTransfer.itemId, cunstomerId, localTransfer.amount, operator);
+      const cunstomerId =
+        typeof localTransfer.customer == "object"
+          ? localTransfer.customer.id
+          : localTransfer.customer;
+      await this.debitWallet(
+        localTransfer.itemType,
+        localTransfer.itemId,
+        cunstomerId,
+        localTransfer.amount,
+        operator,
+      );
     }
-
   }
 
-  async updateSourceItemStatus(itemtype : string, itemId: string, status: TransferStatus) {
+  async updateSourceItemStatus(
+    itemtype: string,
+    itemId: string,
+    status: TransferStatus,
+  ) {
     switch (itemtype) {
       case TransferItemType.WALLET_WITHDRAWAL_REQUEST:
-        const walletWithdrawalRequest: WalletWithDrawalRequest = await this.walletRepository.findWalletWithdrawalRequestById(itemId);
-        await this.walletRepository.updateWalletWithdrawalRequest(walletWithdrawalRequest.id, {status: this.getWithdrawalStatus(status)});
+        const walletWithdrawalRequest: WalletWithDrawalRequest =
+          await this.walletRepository.findWalletWithdrawalRequestById(itemId);
+        await this.walletRepository.updateWalletWithdrawalRequest(
+          walletWithdrawalRequest.id,
+          { status: this.getWithdrawalStatus(status) },
+        );
         break;
       default:
         break;
     }
   }
 
+  async debitWallet(
+    source: string,
+    sourceId: string,
+    customerId: string,
+    amount: number,
+    operator?: PaymentMethod,
+  ) {
+    const note = "Retrait de fonds";
+    const walletSource = this.getWalletSource(source);
+    const wallet = await this.walletRepository.debitWallet(
+      customerId,
+      amount,
+      DEFAULT_CURRENCY,
+      walletSource,
+      sourceId,
+      operator,
+      note,
+    );
 
-
-  async debitWallet(source: string, sourceId: string,customerId: string, amount: number, operator?: PaymentMethod) {
-      const note = "Retrait de fonds";
-      const walletSource = this.getWalletSource(source);  
-      const wallet = await this.walletRepository.debitWallet(
-        customerId, 
-        amount, 
-        DEFAULT_CURRENCY, 
-        walletSource, 
-        sourceId, 
-        operator,
-        note
-      );
-
-      if(wallet) {
-        // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
-        await this.notificationService.sendNotification({
-          userId: customerId,
-          subject: this.globalizationService.t("all.notifications.wallets.paiement_debit_pro.subject"),
-          message: this.globalizationService.t("all.notifications.wallets.paiement_debit_pro.message"),
-          skipInAppNotification: false,
-          sendMail: true,
-          sendSms: true,
-          returnUrl: ``
-        });
-      }
-      
+    if (wallet) {
+      // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
+      await this.notificationService.sendNotification({
+        userId: customerId,
+        subject: this.globalizationService.t(
+          "all.notifications.wallets.paiement_debit_pro.subject",
+        ),
+        message: this.globalizationService.t(
+          "all.notifications.wallets.paiement_debit_pro.message",
+        ),
+        skipInAppNotification: false,
+        sendMail: true,
+        sendSms: true,
+        returnUrl: ``,
+      });
+    }
   }
 
   getWalletSource(source: string): TransactionSource {
@@ -190,5 +254,4 @@ export class InterceptTransferWebhookCommandHandler implements ICommandHandler<I
         return WithdrawalStatus.PENDING;
     }
   }
-  
 }

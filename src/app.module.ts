@@ -9,7 +9,7 @@ import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { GlobalInterceptorsModule } from "@/infrastructure/interceptors/global-interceptors.module";
 import { RestModule } from "@/infrastructure/presentation/rest/rest.module";
 import { ScheduleModule } from "@nestjs/schedule";
-import { TransfersModule } from './infrastructure/features/transfers/transfers.module';
+import { TransfersModule } from "./infrastructure/features/transfers/transfers.module";
 
 const providers: Provider[] = [];
 
@@ -27,10 +27,8 @@ const providers: Provider[] = [];
     JwtModule.register(jwtConfigs),
     RestModule,
     TransfersModule,
-
   ],
   exports: [...providers],
   providers: [...providers],
 })
-export class AppModule {
-}
+export class AppModule {}

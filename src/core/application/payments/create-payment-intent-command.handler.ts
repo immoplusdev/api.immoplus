@@ -6,7 +6,8 @@ import {
   AttemptPaymentIntent,
   IPaymentGatewayService,
   IPaymentRepository,
-  Payment, PaymentStatus,
+  Payment,
+  PaymentStatus,
   PaymentToken,
   PaymentCollectionItemData,
 } from "@/core/domain/payments";
@@ -18,23 +19,32 @@ import { GetPaymentCollectionItemDataQuery } from "./get-payment-collection-item
 import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @CommandHandler(CreatePaymentIntentCommand)
-export class CreatePaymentIntentCommandHandler implements ICommandHandler<CreatePaymentIntentCommand> {
+export class CreatePaymentIntentCommandHandler
+  implements ICommandHandler<CreatePaymentIntentCommand>
+{
   constructor(
     private readonly queryBus: QueryBus,
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
-    @Inject(Deps.PaymentRepository) private readonly paymentRepository: IPaymentRepository,
-    @Inject(Deps.PaymentGatewayService) private readonly paymentGatewayService: IPaymentGatewayService,
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.DemandeVisiteRepository)
+    private readonly demandeVisiteRepository: IDemandeVisiteRepository,
+    @Inject(Deps.PaymentRepository)
+    private readonly paymentRepository: IPaymentRepository,
+    @Inject(Deps.PaymentGatewayService)
+    private readonly paymentGatewayService: IPaymentGatewayService,
   ) {
     //
   }
 
-  async execute(command: CreatePaymentIntentCommand): Promise<CreatePaymentIntentCommandResponse> {
-
-    const itemData = await this.queryBus.execute(new GetPaymentCollectionItemDataQuery({
-      itemId: command.itemId,
-      collection: command.collection,
-    }));
+  async execute(
+    command: CreatePaymentIntentCommand,
+  ): Promise<CreatePaymentIntentCommandResponse> {
+    const itemData = await this.queryBus.execute(
+      new GetPaymentCollectionItemDataQuery({
+        itemId: command.itemId,
+        collection: command.collection,
+      }),
+    );
     if (!itemData) throw new ItemNotFoundException();
 
     const paymentIntent = await this.initializePayment(command, itemData);
@@ -66,8 +76,10 @@ export class CreatePaymentIntentCommandHandler implements ICommandHandler<Create
     command: CreatePaymentIntentCommand,
     serviceData: PaymentCollectionItemData,
   ): Promise<Payment> {
-
-    const fees = this.paymentGatewayService.calculatePaymentFees(serviceData.amount, command.paymentMethod);
+    const fees = this.paymentGatewayService.calculatePaymentFees(
+      serviceData.amount,
+      command.paymentMethod,
+    );
     const amountNoFees = serviceData.amount;
     const totalAmount = amountNoFees + fees;
 
@@ -104,7 +116,9 @@ export class CreatePaymentIntentCommandHandler implements ICommandHandler<Create
       hub2NextAction: response.nextAction,
       paymentStatus: response?.status as PaymentStatus,
       hub2Token: response.token,
-      hub2Metadata: response.metadata ? response.metadata : JSON.stringify(response) as never,
+      hub2Metadata: response.metadata
+        ? response.metadata
+        : (JSON.stringify(response) as never),
     });
 
     return await this.paymentRepository.findOne(paymentId);

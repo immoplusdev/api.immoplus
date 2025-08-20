@@ -15,7 +15,7 @@ export class WalletTransaction {
   note?: string;
   releaseDate?: Date; // Date à laquelle il faut reversement de la transaction
   isRealeased?: boolean; // Indique si la transaction a deja ete reversee
-  releasedAt?: Date;   // Date de reversement
+  releasedAt?: Date; // Date de reversement
 
   createdAt?: Date;
   updatedAt?: Date;
@@ -26,5 +26,3 @@ export class WalletTransaction {
     if (data) Object.assign(this, data);
   }
 }
-
-

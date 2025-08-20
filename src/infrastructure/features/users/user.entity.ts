@@ -1,7 +1,10 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
-  Entity, JoinColumn, ManyToOne,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -83,7 +86,7 @@ export class UserEntity {
   })
   status: UserStatus;
 
-  @OneToOne(() => WalletEntity, wallet => wallet.owner, { nullable: true })
+  @OneToOne(() => WalletEntity, (wallet) => wallet.owner, { nullable: true })
   wallet?: WalletEntity | string;
 
   @OneToMany(() => UserEntity, (user) => user.createdBy, { nullable: true })

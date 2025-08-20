@@ -16,9 +16,12 @@ export class CommuneRepository implements ICommuneRepository {
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, CommuneEntity, this.relations).setLoadRelationIds(true);
+    this.repository = new BaseRepository(
+      dataSource,
+      CommuneEntity,
+      this.relations,
+    ).setLoadRelationIds(true);
   }
-
 
   async createMany(payload: Partial<Commune>[]): Promise<Commune[]> {
     return await this.repository.createMany(payload);
@@ -28,7 +31,9 @@ export class CommuneRepository implements ICommuneRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Commune[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Commune[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -36,7 +41,10 @@ export class CommuneRepository implements ICommuneRepository {
     return await this.repository.findOne(id, options);
   }
 
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Commune> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Commune> {
     return this.repository.findOneByQuery(query, options);
   }
 
@@ -44,7 +52,10 @@ export class CommuneRepository implements ICommuneRepository {
     return await this.repository.updateOne(id, payload);
   }
 
-  updateByQuery(query: SearchItemsParams, payload: Partial<Commune>): Promise<string[]> {
+  updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Commune>,
+  ): Promise<string[]> {
     return this.repository.updateByQuery(query, payload);
   }
 

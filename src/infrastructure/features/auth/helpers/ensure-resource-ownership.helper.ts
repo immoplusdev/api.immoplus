@@ -2,28 +2,37 @@ import { UserRole } from "@/core/domain/roles";
 import { AccessForbiddenException } from "@/core/domain/auth";
 
 export type VerifyResourceOwnershipOptions = {
-  userId: string, ownerId?: unknown, userRole?: string
-}
+  userId: string;
+  ownerId?: unknown;
+  userRole?: string;
+};
 
 export type VerifyResourceListOwnershipOptions = {
-  ressources: any[], userId: string, ownerField: string, userRole?: string
-}
+  ressources: any[];
+  userId: string;
+  ownerField: string;
+  userRole?: string;
+};
 
-export function verifyResourceOwnership({ userId, ownerId, userRole }: VerifyResourceOwnershipOptions) {
+export function verifyResourceOwnership({
+  userId,
+  ownerId,
+  userRole,
+}: VerifyResourceOwnershipOptions) {
   if (!ownerId) return;
   if (userRole && userRole == UserRole.Admin) return;
   if (ownerId !== userId) throw new AccessForbiddenException();
 }
 
 export function verifyResourceListOwnership({
-                                              ressources,
-                                              userId,
-                                              ownerField,
-                                              userRole,
-                                            }: VerifyResourceListOwnershipOptions) {
+  ressources,
+  userId,
+  ownerField,
+  userRole,
+}: VerifyResourceListOwnershipOptions) {
   if (userRole && userRole == UserRole.Admin) return;
   for (const ressource of ressources) {
-    if (ressource[ownerField] && ressource[ownerField] !== userId) throw new AccessForbiddenException();
+    if (ressource[ownerField] && ressource[ownerField] !== userId)
+      throw new AccessForbiddenException();
   }
-
 }

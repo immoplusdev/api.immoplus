@@ -2,9 +2,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RegisterProEntrepriseCommand } from "./register-pro-entreprise.command";
 import { RegisterProEntrepriseCommandResponse } from "./register-pro-entreprise-command.response";
 import { UserEmailAlreadyTakenException } from "@/core/application/auth/user-email-already-taken.exception";
-import {
-  UserPhoneNumberAlreadyTakenException,
-} from "@/core/application/auth/user-phone-number-already-taken.exception";
+import { UserPhoneNumberAlreadyTakenException } from "@/core/application/auth/user-phone-number-already-taken.exception";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
@@ -14,7 +12,9 @@ import { UserRole } from "@/core/domain/roles";
 import { IConfigsManagerService } from "@/core/domain/configs";
 
 @CommandHandler(RegisterProEntrepriseCommand)
-export class RegisterProEntrepriseCommandHandler implements ICommandHandler<RegisterProEntrepriseCommand> {
+export class RegisterProEntrepriseCommandHandler
+  implements ICommandHandler<RegisterProEntrepriseCommand>
+{
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -24,10 +24,11 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
     private readonly usersDataRepository: IUserDataRepository,
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
-  ) {
-  }
+  ) {}
 
-  async execute(command: RegisterProEntrepriseCommand): Promise<RegisterProEntrepriseCommandResponse> {
+  async execute(
+    command: RegisterProEntrepriseCommand,
+  ): Promise<RegisterProEntrepriseCommandResponse> {
     await this.validateInput(command);
 
     const userId = generateUuid();
@@ -48,7 +49,9 @@ export class RegisterProEntrepriseCommandHandler implements ICommandHandler<Regi
       password: this.passwordManagerService.encryptPassword(command.password),
       role: UserRole.ProEntreprise,
       additionalData: userData.id,
-      createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
+      createdBy: this.configsManagerService.getEnvVariable(
+        "NEST_APP_ADMIN_PASSWORD_ID",
+      ),
     });
 
     return new RegisterProEntrepriseCommandResponse({
