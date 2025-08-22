@@ -4,6 +4,7 @@ import { GetResidenceOccupiedDatesQuery } from "./get-residence-occupied-dates.q
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IReservationRepository } from "@/core/domain/reservations";
+import { StatusFacture } from "@/core/domain/payments";
 
 @QueryHandler(GetResidenceOccupiedDatesQuery)
 export class GetResidenceOccupiedDateQueryHandler
@@ -29,6 +30,10 @@ export class GetResidenceOccupiedDateQueryHandler
           {
             _field: "residence",
             _val: query.residenceId,
+          },
+          {
+            _field: "statusFacture",
+            _val: StatusFacture.Paye,
           },
         ],
       },

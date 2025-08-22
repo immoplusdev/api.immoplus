@@ -18,13 +18,12 @@ import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites"
 import { AuthenticatePaymentIntentCommandHandler } from "@/core/application/payments/authenticate-payment-intent-command.handler";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { PaymentReservationValideEventHandler } from "@/core/application/payments/payment-reservation-valide.event";
-import {
-  GlobalizationModule,
-  GlobalizationService,
-} from "@/infrastructure/features/globalization";
+import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { ConfigsModule } from "@/infrastructure/features/configs";
 import { ResidenceRepository } from "../residences/residence.repository";
 import { WalletsService } from "../wallets/wallet.service";
+import { UserModule } from "@/infrastructure/features/users";
+import { BienImmobilierModule } from "../biens-immobiliers";
 
 const queryHandler = [GetPaymentCollectionItemDataQueryHandler];
 const commandHandlers = [
@@ -68,6 +67,8 @@ const providers: Provider[] = [
     DemandeVisiteModule,
     NotificationModule,
     GlobalizationModule,
+    UserModule,
+    BienImmobilierModule,
   ],
   providers: [
     ...providers,

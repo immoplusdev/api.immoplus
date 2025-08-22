@@ -18,7 +18,7 @@ import { WalletWithdrawalRequestEntity } from "./wallet-withdrawal-request.entit
 import { WrapperResponse } from "@/core/domain/common/models";
 import { SearchItemsParams } from "@/core/domain/http";
 import { PaymentMethod } from "@/core/domain/common/enums";
-import { Reservation, StatusReservation } from "@/core/domain/reservations";
+import { Reservation } from "@/core/domain/reservations";
 import { ReservationEntity } from "../reservations";
 import { Cron, CronExpression } from "@nestjs/schedule";
 
@@ -99,7 +99,8 @@ export class WalletsService {
     await this.walletRepo.updateOne(wallet.id, {
       pendingBalance: pendingBalance,
     });
-    return this.walletRepo.findOne(wallet.id);
+
+    return this.findWalletByOwner(ownerId);
   }
 
   async debitWallet(
@@ -132,7 +133,7 @@ export class WalletsService {
     await this.walletRepo.updateOne(wallet.id, {
       availableBalance: newAvailableBalance,
     });
-    return this.walletRepo.findOne(wallet.id);
+    return await this.findWalletByOwner(ownerId);
   }
 
   async releaseFunds(
@@ -211,7 +212,7 @@ export class WalletsService {
       pendingBalance,
       availableBalance,
     });
-    return this.walletRepo.findOne(wallet.id);
+    return this.findWalletByOwner(ownerId);
   }
 
   async findWalletTransactionById(id: string): Promise<WalletTransaction> {

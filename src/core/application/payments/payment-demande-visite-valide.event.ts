@@ -7,7 +7,9 @@ import { INotificationService } from "@/core/domain/notifications";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
-import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
+import { IUserRepository } from "@/core/domain/users";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 export class PaymentDemandeVisiteValideEvent {
   demandeVisiteId: string;
@@ -28,6 +30,10 @@ export class PaymentDemandeVisiteValideEventHandler
     private readonly notificationService: INotificationService,
     @Inject(Deps.GlobalizationService)
     private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.BiensImmobiliesRepository)
+    private readonly bienImmobilierRepository: IBienImmobilierRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
   ) {}
 
   async handle(event: PaymentDemandeVisiteValideEvent) {
@@ -36,8 +42,20 @@ export class PaymentDemandeVisiteValideEventHandler
     );
     if (!demandeVisite) throw new ItemNotFoundException();
 
+    const bienImmobilier = await this.bienImmobilierRepository.findOne(
+      getIdFromObject(demandeVisite.bienImmobilier),
+    );
+    if (!bienImmobilier) throw new ItemNotFoundException();
+
+    const client = await this.usersRepository.findPublicUserInfoByUserId(
+      bienImmobilier.createdBy,
+    );
+    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(
+      bienImmobilier.proprietaire,
+    );
+
     await this.notificationService.sendNotification({
-      userId: demandeVisite.createdBy as string,
+      userId: client.id,
       subject: this.globalizationService.t(
         "all.notifications.demandes_visites.paiement_valide_client.subject",
       ),
@@ -51,8 +69,7 @@ export class PaymentDemandeVisiteValideEventHandler
     });
 
     await this.notificationService.sendNotification({
-      userId: (demandeVisite.bienImmobilier as BienImmobilier)
-        .proprietaire as string,
+      userId: proprietaire.id,
       subject: this.globalizationService.t(
         "all.notifications.demandes_visites.paiement_valide_pro.subject",
       ),

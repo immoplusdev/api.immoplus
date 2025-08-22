@@ -2,15 +2,14 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
 import { INotificationService } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
-import { PaymentDemandeVisiteValideEvent } from "@/core/application/payments/payment-demande-visite-valide.event";
 import { IReservationRepository } from "@/core/domain/reservations";
-import { BienImmobilier } from "@/core/domain/biens-immobiliers";
-import { Residence } from "@/core/domain/residences";
+import { IResidenceRepository } from "@/core/domain/residences";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
+import { IUserRepository } from "@/core/domain/users";
 
 export class PaymentReservationValideEvent {
   reservationId: string;
@@ -31,16 +30,33 @@ export class PaymentReservationValideEventHandler
     private readonly notificationService: INotificationService,
     @Inject(Deps.GlobalizationService)
     private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.ResidenceRepository)
+    private readonly residenceRepository: IResidenceRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
   ) {}
 
   async handle(event: PaymentReservationValideEvent) {
     const reservation = await this.reservationRepository.findOne(
       event.reservationId,
     );
+
     if (!reservation) throw new ItemNotFoundException();
 
+    const residence = await this.residenceRepository.findOne(
+      getIdFromObject(reservation.residence),
+    );
+    if (!residence) throw new ItemNotFoundException();
+
+    const client = await this.usersRepository.findPublicUserInfoByUserId(
+      reservation.createdBy,
+    );
+    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(
+      residence.proprietaire,
+    );
+
     await this.notificationService.sendNotification({
-      userId: reservation.createdBy as string,
+      userId: client.id,
       subject: this.globalizationService.t(
         "all.notifications.reservations.paiement_valide_client.subject",
       ),
@@ -54,7 +70,7 @@ export class PaymentReservationValideEventHandler
     });
 
     await this.notificationService.sendNotification({
-      userId: (reservation.residence as Residence).proprietaire,
+      userId: proprietaire.id,
       subject: this.globalizationService.t(
         "all.notifications.reservations.paiement_valide_pro.subject",
       ),

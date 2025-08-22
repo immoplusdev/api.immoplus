@@ -53,15 +53,10 @@ import {
   WrapperResponseProgrammerDemandeVisiteCommandResponseDto,
   WrapperResponseProgrammerDemandeVisiteCommandResponseDtoMapper,
 } from "@/core/application/demandes-visites";
-import { CommandBus, IQueryBus, QueryBus } from "@nestjs/cqrs";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "@/core/application/demandes-visites/create-demande-visite.command";
 import { UnauthorizedException } from "@/core/domain/auth";
-import {
-  AnnulerReservationByIdCommand,
-  AnnulerReservationByIdCommandResponse,
-  WrapperResponseAnnulerReservationByIdCommandResponseDto,
-  WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
-} from "@/core/application/reservations";
+import { WrapperResponseGetResidenceOccupiedDatesQueryResponseDto } from "@/core/application/reservations";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers";
 import { StatusFacture } from "@/core/domain/payments";
