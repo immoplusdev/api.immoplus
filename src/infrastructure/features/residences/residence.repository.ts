@@ -141,12 +141,15 @@ export class ResidenceRepository implements IResidenceRepository {
       .getRepository(ResidenceEntity)
       .createQueryBuilder("residence")
       .leftJoin("residence.reservations", "reservation")
+      .where("reservation.statusFacture = :status", {
+        status: StatusFacture.Paye,
+      })
       .where(
         new Brackets((qb) => {
           qb.where("reservation.id IS NULL").orWhere(
             new Brackets((qb2) => {
               qb2
-                .where(":today > DATE(reservation.dateFin)")
+                .andWhere(":today > DATE(reservation.dateFin)")
                 .orWhere(":today < DATE(reservation.dateDebut)");
             }),
           );
