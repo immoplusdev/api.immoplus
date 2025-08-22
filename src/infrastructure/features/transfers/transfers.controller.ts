@@ -63,6 +63,8 @@ export class TransfersController {
     type: WrapperResponseTransferListDto,
   })
   @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async readMany(
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
@@ -77,6 +79,18 @@ export class TransfersController {
       ],
       params._where,
     );
+    const items = await this.repository.findByQuery(params);
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseTransferListDto,
+  })
+  @Get("/all")
+  @RequiredRoles(UserRole.Admin)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async readall(@Query() params: SearchItemsParamsDto) {
     const items = await this.repository.findByQuery(params);
     return this.responseMapper.mapFromQueryResult(items);
   }

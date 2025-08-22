@@ -13,6 +13,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -51,6 +52,7 @@ import {
   WrapperResponseWalletTransactionDto,
 } from "./dtos/wallet-transaction.dto";
 import { WrapperResponseWalletDto } from "./dtos/wallet.dto";
+import { CreateWalletWithdrawalRequestAdminDto } from "./dtos/create-wallet-widrawal-request-admin.dto";
 
 @ApiTags("Wallet")
 @Controller("wallet")
@@ -284,6 +286,26 @@ export class WalletsController {
     );
   }
 
+  @Post("withdrawal-request")
+  @RequiredRoles(UserRole.Admin)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async createWalletWithdrawalRequestByAdmin(
+    @Body() data: CreateWalletWithdrawalRequestAdminDto,
+  ): Promise<WalletWithDrawalRequest> {
+    return this.commandBus.execute(
+      new CreateWalletWithdrawalRequestCommand(
+        data.owner,
+        data.amount,
+        data.currency || DEFAULT_CURRENCY,
+        data.phoneNumber,
+        data.operator,
+        WithdrawalStatus.PENDING,
+        data.note,
+      ),
+    );
+  }
+
   @ApiResponse({
     type: WrapperResponseWalletWithdrawalRequestDto,
   })
@@ -296,6 +318,31 @@ export class WalletsController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async updateWalletWithdrawalRequest(
+    @Param("id") id: string,
+    @Body() data: UpdateWalletWithdrawalRequestDto,
+  ): Promise<WalletWithDrawalRequest> {
+    return this.commandBus.execute(
+      new UpdateWalletWithdrawalRequestCommand(
+        id,
+        data.amount,
+        data.currency || DEFAULT_CURRENCY,
+        data.phoneNumber,
+        data.operator,
+        data.status,
+        data.note,
+      ),
+    );
+  }
+
+  @Patch("withdrawal-request/:id")
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async patchWalletWithdrawalRequest(
     @Param("id") id: string,
     @Body() data: UpdateWalletWithdrawalRequestDto,
   ): Promise<WalletWithDrawalRequest> {
@@ -355,6 +402,21 @@ export class WalletsController {
       params._where,
     );
 
+    return this.queryBus.execute(
+      new FindWalletWithdrawalRequestsByOwnerQuery(params),
+    );
+  }
+
+  @ApiResponse({
+    type: WrapperResponseWalletWithdrawalRequestBatchDto,
+  })
+  @Get("withdrawal-request")
+  @RequiredRoles(UserRole.Admin)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async findWalletWithdrawalRequests(
+    @Query() params: SearchItemsParamsDto,
+  ): Promise<WrapperResponse<WalletWithDrawalRequest[]>> {
     return this.queryBus.execute(
       new FindWalletWithdrawalRequestsByOwnerQuery(params),
     );

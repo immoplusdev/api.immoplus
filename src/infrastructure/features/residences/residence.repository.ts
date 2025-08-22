@@ -168,7 +168,7 @@ export class ResidenceRepository implements IResidenceRepository {
     //  Pagination
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
-    // 🔍 Recherche plein texte
+    // Recherche plein texte
 
     if (search && this.fullTextSearchFields.length > 0) {
       const searchConditions = this.fullTextSearchFields
@@ -323,7 +323,7 @@ export class ResidenceRepository implements IResidenceRepository {
         endDate: formattedEndDate,
       });
 
-    // 🔍 Recherche plein texte
+    // Recherche plein texte
     if (search && this.fullTextSearchFields.length > 0) {
       const searchConditions = this.fullTextSearchFields
         .map((field) => {
@@ -333,7 +333,7 @@ export class ResidenceRepository implements IResidenceRepository {
       qb.andWhere(`(${searchConditions})`, { pattern: `%${search}%` });
     }
 
-    // 📍 Filtre par géolocalisation (Haversine)
+    // Filtre par géolocalisation (Haversine)
     if (query?._lat && query?._long) {
       const radiuis = query?._radius || 5; // Par défaut : 5km
       qb.andWhere(
@@ -352,7 +352,7 @@ export class ResidenceRepository implements IResidenceRepository {
       );
     }
 
-    // 🧮 Filtres dynamiques (_where)
+    // Filtres dynamiques (_where)
     if (query?._where && Array.isArray(query._where)) {
       query._where.forEach((condition, index) => {
         const { _field, _op = "eq", _val, _l_op = "and" } = condition;
@@ -409,7 +409,7 @@ export class ResidenceRepository implements IResidenceRepository {
       });
     }
 
-    // 📌 Tri
+    // Tri
     if (
       query?._order_by &&
       this.fullTextSearchFields.includes(query._order_by)
@@ -419,7 +419,7 @@ export class ResidenceRepository implements IResidenceRepository {
       qb.orderBy(`residence.${query._order_by}`, direction);
     }
 
-    // 📄 Pagination
+    // Pagination
     qb.skip((currentPage - 1) * pageSize).take(pageSize);
 
     // Exécution de la requête
@@ -433,7 +433,6 @@ export class ResidenceRepository implements IResidenceRepository {
       totalCount: total,
     });
   }
-
 
   async updateAllCordonates(): Promise<WrapperResponse<Residence[]>> {
     const residences = await this.repository.findByQuery();
@@ -629,7 +628,7 @@ export class ResidenceRepository implements IResidenceRepository {
   }
 
   /**
-   * 🔍 Application optimisée du filtre de recherche textuelle
+   * Application optimisée du filtre de recherche textuelle
    */
   private applySearchFilter(
     qb: SelectQueryBuilder<ResidenceEntity>,
@@ -648,7 +647,7 @@ export class ResidenceRepository implements IResidenceRepository {
   }
 
   /**
-   * 🗺️ Application optimisée du filtre de géolocalisation
+   * Application optimisée du filtre de géolocalisation
    */
   private applyGeolocationFilter(
     qb: SelectQueryBuilder<ResidenceEntity>,
@@ -735,7 +734,7 @@ export class ResidenceRepository implements IResidenceRepository {
   }
 
   /**
-   * 🔧 Construction optimisée d'une expression de filtre
+   *  Construction optimisée d'une expression de filtre
    */
   private buildFilterExpression(
     _field: string,
@@ -771,7 +770,7 @@ export class ResidenceRepository implements IResidenceRepository {
   }
 
   /**
-   * 📌 Application optimisée du tri
+   * Application optimisée du tri
    */
   private applyOrderBy(
     qb: SelectQueryBuilder<ResidenceEntity>,
@@ -790,7 +789,7 @@ export class ResidenceRepository implements IResidenceRepository {
   }
 
   /**
-   * ✅ Validation des champs autorisés
+   *  Validation des champs autorisés
    */
   private isValidField(field: string): boolean {
     const allowedFields = [
@@ -807,7 +806,7 @@ export class ResidenceRepository implements IResidenceRepository {
   }
 
   /**
-   * ✅ Validation des champs de tri autorisés
+   *  Validation des champs de tri autorisés
    */
   private isValidOrderField(field: string): boolean {
     const allowedOrderFields = [

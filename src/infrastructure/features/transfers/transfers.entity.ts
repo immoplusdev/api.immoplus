@@ -3,12 +3,9 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { UserEntity } from "../users";
-import { User } from "@/core/domain/users";
 import {
   TransferItemType,
   TransferStatus,
