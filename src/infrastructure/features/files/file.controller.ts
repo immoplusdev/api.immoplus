@@ -110,18 +110,7 @@ export class FileController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor("file", {
-      storage: diskStorage({
-        destination: fileUploadConfig?.uploadPath,
-        filename: (req, file, cb) => {
-          const fileNameSplit = file.originalname.split(".");
-          const fileExt = fileNameSplit[fileNameSplit.length - 1];
-          cb(null, `${generateUuid()}.${fileExt}`);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor("file"))
   async create(
     @UploadedFile(
       new ParseFilePipe({
