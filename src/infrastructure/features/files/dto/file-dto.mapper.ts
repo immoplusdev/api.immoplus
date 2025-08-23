@@ -1,12 +1,13 @@
-import { File } from "@/core/domain/files";
 import { FileDto } from "./file.dto";
+import { FileData } from "@/core/domain/files";
+
 
 export class FileDtoMapper {
-  mapFrom(object: File): FileDto {
+  mapFrom(object: FileData): FileDto {
     return new FileDto(object);
   }
 
-  mapTo(object: FileDto): File {
-    return new File(object);
+  mapTo(object: FileDto): FileData {
+    return new FileData(object);
   }
 }

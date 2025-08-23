@@ -1,11 +1,11 @@
 import { forwardRef, Module, Provider } from "@nestjs/common";
-import { Deps } from "@/core/domain/common/ioc";
 import { FileController } from "./file.controller";
 import { FileRepository } from "./file.repository";
-import { TypeormModule } from "@/infrastructure/typeorm";
-import { UploadFileCommandHandler } from "@/core/application/files";
 import { CqrsModule } from "@nestjs/cqrs";
-import { ConfigsModule } from "@/infrastructure/features/configs/configs.module";
+import { FilesService } from "./file-service";
+import { UploadFileCommandHandler } from "@/core/application/files";
+import { Deps } from "@/core/domain/common/ioc";
+import { TypeormModule } from "@/infrastructure/typeorm";
 
 const commandHandlers = [UploadFileCommandHandler];
 
@@ -14,12 +14,17 @@ const providers: Provider[] = [
     provide: Deps.FileRepository,
     useClass: FileRepository,
   },
+  {
+    provide: Deps.FileService,
+    useClass: FilesService,
+  },
 ];
 
 @Module({
   controllers: [FileController],
-  imports: [CqrsModule, TypeormModule, forwardRef(() => ConfigsModule)],
+  imports: [CqrsModule, TypeormModule],
   providers: [...providers, ...commandHandlers],
   exports: [...providers],
 })
-export class FileModule {}
+export class FileModule {
+}

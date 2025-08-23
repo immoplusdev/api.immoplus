@@ -3,3 +3,4 @@ export * from "./roles.decorator";
 export * from "./current-user.decorator";
 export * from "./owner-access-required.decorator";
 export * from "./req-headers.decorator";
+export * from "./minio.decorator";
