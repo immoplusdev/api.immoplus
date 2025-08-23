@@ -7,7 +7,6 @@ import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 
-
 @Injectable()
 export class PermissionRepository implements IPermissionRepository {
   private readonly repository: BaseRepository<Permission>;
@@ -19,7 +18,6 @@ export class PermissionRepository implements IPermissionRepository {
     this.repository = new BaseRepository(dataSource, PermissionEntity);
   }
 
-
   async createMany(payload: Partial<Permission>[]): Promise<Permission[]> {
     return await this.repository.createMany(payload);
   }
@@ -28,7 +26,9 @@ export class PermissionRepository implements IPermissionRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Permission[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Permission[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -36,8 +36,10 @@ export class PermissionRepository implements IPermissionRepository {
     return await this.repository.findOne(id, options);
   }
 
-
-  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Permission> {
+  async findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Permission> {
     return this.repository.findOneByQuery(query, options);
   }
 
@@ -54,7 +56,10 @@ export class PermissionRepository implements IPermissionRepository {
     });
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<Permission>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Permission>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

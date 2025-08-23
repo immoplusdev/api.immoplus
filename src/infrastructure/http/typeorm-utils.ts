@@ -1,7 +1,23 @@
-import { ItemsOperator, ItemsParamsCriterias, ItemsParamsCriteriasLogic, SearchItemsParams } from "@/core/domain/http";
+import {
+  ItemsOperator,
+  ItemsParamsCriterias,
+  ItemsParamsCriteriasLogic,
+  SearchItemsParams,
+} from "@/core/domain/http";
 import { InvalidQueryException } from "@/core/domain/common/exceptions";
 import { ItemsParamsCriteriasDto } from "@/infrastructure/http";
-import { And, Equal, Like, Or, Not, MoreThan, MoreThanOrEqual, LessThan, LessThanOrEqual, In } from "typeorm";
+import {
+  And,
+  Equal,
+  Like,
+  Or,
+  Not,
+  MoreThan,
+  MoreThanOrEqual,
+  LessThan,
+  LessThanOrEqual,
+  In,
+} from "typeorm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 import { Contains } from "class-validator";
 
@@ -17,7 +33,11 @@ export function parseHttpQuery(query: any): SearchItemsParams {
   if (query._order_by) params._order_by = query._order_by;
   if (query._order_dir) params._order_dir = query._order_dir;
   if (query._search) params._search = query._search;
-  if (query._select) params._select = typeof query._select == "string" ? query._select.split(",") : query._select;
+  if (query._select)
+    params._select =
+      typeof query._select == "string"
+        ? query._select.split(",")
+        : query._select;
   if (query._where) {
     try {
       const stringCriterias: string[] =
@@ -28,7 +48,6 @@ export function parseHttpQuery(query: any): SearchItemsParams {
       params._where = stringCriterias.map((stringCriteria) =>
         transformWhereCriterias(stringCriteria),
       );
-
     } catch (error) {
       throw new InvalidQueryException();
     }
@@ -45,8 +64,10 @@ export function mapQueryFieldsToTypeormSelection(fields?: any[]) {
   return typeormSelectFields;
 }
 
-export function mapQueryToTypeormQuery(query: SearchItemsParams, fullTextSearchFields?: string[]) {
-
+export function mapQueryToTypeormQuery(
+  query: SearchItemsParams,
+  fullTextSearchFields?: string[],
+) {
   let whereConditions: ItemsParamsCriterias[] = [];
   if (query._where) whereConditions = query._where;
 
@@ -63,9 +84,13 @@ export function mapQueryToTypeormQuery(query: SearchItemsParams, fullTextSearchF
 
   whereConditions = mapToTypeormWhere(whereConditions);
 
-
-  const pageSize = !query._page || !query._per_page ? DEFAULT_PAGE_SIZE : parseInt(query._per_page as never);
-  const currentPage = query._page ? parseInt(query._page as never) || DEFAULT_PAGE : DEFAULT_PAGE;
+  const pageSize =
+    !query._page || !query._per_page
+      ? DEFAULT_PAGE_SIZE
+      : parseInt(query._per_page as never);
+  const currentPage = query._page
+    ? parseInt(query._page as never) || DEFAULT_PAGE
+    : DEFAULT_PAGE;
   const skip = currentPage - 1 > 0 ? (currentPage - 1) * pageSize : 0;
 
   const searchParams = {
@@ -86,18 +111,20 @@ export function mapQueryToTypeormQuery(query: SearchItemsParams, fullTextSearchF
 }
 
 export function mapToTypeormWhere(criterias: ItemsParamsCriterias[]): any {
-
   if (criterias.length == 0) return {};
 
   const filters = {};
   const typeormFilter = {};
   for (const criteria of criterias) {
-    if (!filters[criteria._field]) filters[criteria._field] = {
-      _l_op: criteria?._l_op || "and",
-      _op: criteria?._op || "eq",
-      filters: [],
-    };
-    filters[criteria._field].filters.push(getOperator(criteria._op, criteria._val));
+    if (!filters[criteria._field])
+      filters[criteria._field] = {
+        _l_op: criteria?._l_op || "and",
+        _op: criteria?._op || "eq",
+        filters: [],
+      };
+    filters[criteria._field].filters.push(
+      getOperator(criteria._op, criteria._val),
+    );
   }
 
   for (const key of Object.keys(filters)) {
@@ -119,7 +146,6 @@ function getLOperator(lOperator: ItemsParamsCriteriasLogic, value: any[]): any {
 }
 
 function getOperator(operator: ItemsOperator, value: any): any {
-
   switch (operator) {
     case "eq":
       return Equal(value);

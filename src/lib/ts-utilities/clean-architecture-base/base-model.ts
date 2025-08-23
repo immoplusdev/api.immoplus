@@ -1,4 +1,4 @@
-import { BaseModelWithoutProps } from './base-model-without-props';
+import { BaseModelWithoutProps } from "./base-model-without-props";
 
 /**
  * @description Base model

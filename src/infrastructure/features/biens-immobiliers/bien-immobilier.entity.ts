@@ -1,11 +1,13 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  RelationId, UpdateDateColumn,
+  RelationId,
+  UpdateDateColumn,
 } from "typeorm";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { FileEntity } from "@/infrastructure/features/files";
@@ -75,7 +77,11 @@ export class BienImmobilierEntity {
   @Column("double")
   longitude?: number;
 
-  @Column({ name: "status_validation", type: "varchar", default: StatusValidationBienImmobilier.EnAttenteValidation })
+  @Column({
+    name: "status_validation",
+    type: "varchar",
+    default: StatusValidationBienImmobilier.EnAttenteValidation,
+  })
   statusValidation: StatusValidationBienImmobilier;
 
   @Column({ name: "prix", type: "int" })

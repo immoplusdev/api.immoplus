@@ -1,7 +1,7 @@
 export function enumarableFromListEqual(
   list: any[],
   column: string,
-  value: any
+  value: any,
 ): any[] {
   const subList: any[] = [];
   if (!list) {

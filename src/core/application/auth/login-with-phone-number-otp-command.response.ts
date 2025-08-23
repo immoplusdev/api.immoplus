@@ -22,4 +22,3 @@ export class WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto extends Wr
   @ApiProperty({ type: LoginWithPhoneNumberOtpCommandResponse })
   data: LoginWithPhoneNumberOtpCommandResponse;
 }
-

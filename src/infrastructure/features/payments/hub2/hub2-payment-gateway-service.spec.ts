@@ -7,39 +7,42 @@ import { PaymentMethod } from "@/core/domain/common/enums";
 
 jest.mock("axios", () => {
   return {
-    post: () => Promise.resolve({
-      data: {
-        id: "",
-        merchantId: "",
-        createdAt: "",
-        updatedAt: "",
-        token: "",
-        purchaseReference: "",
-        customerReference: "",
-        status: PaymentStatus.Successful,
-        amount: 10000,
-        currency: "XOF",
-        payments: [{
+    post: () =>
+      Promise.resolve({
+        data: {
           id: "",
-          intentId: "",
+          merchantId: "",
           createdAt: "",
           updatedAt: "",
+          token: "",
+          purchaseReference: "",
+          customerReference: "",
           status: PaymentStatus.Successful,
           amount: 10000,
           currency: "XOF",
-          method: PaymentMethod.Wave,
-          country: "CI",
-        }],
-        mode: "sandbox",
-      },
-    }),
+          payments: [
+            {
+              id: "",
+              intentId: "",
+              createdAt: "",
+              updatedAt: "",
+              status: PaymentStatus.Successful,
+              amount: 10000,
+              currency: "XOF",
+              method: PaymentMethod.Wave,
+              country: "CI",
+            },
+          ],
+          mode: "sandbox",
+        },
+      }),
   };
 });
 
-
 describe("createNewPayment", () => {
-
-  const hub2PaymentGatewayService = new Hub2PaymentGatewayService(new LoggerService({} as any));
+  const hub2PaymentGatewayService = new Hub2PaymentGatewayService(
+    new LoggerService({} as any),
+  );
 
   it("shouldReturnANoneEmptyObject", () => {
     // Arrange
@@ -53,11 +56,14 @@ describe("createNewPayment", () => {
     });
 
     // Act
-    hub2PaymentGatewayService.attemptPayment(paymentData).then((result) => {
-      // Assert
-      expect(result).not.toBeNull();
-    }).catch((_e: unknown) => {
-      //
-    });
+    hub2PaymentGatewayService
+      .attemptPayment(paymentData)
+      .then((result) => {
+        // Assert
+        expect(result).not.toBeNull();
+      })
+      .catch((_e: unknown) => {
+        //
+      });
   });
 });

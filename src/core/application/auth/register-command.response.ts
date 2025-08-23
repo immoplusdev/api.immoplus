@@ -11,7 +11,6 @@ export class RegisterCommandResponse {
   }
 }
 
-
 export class WrapperResponseRegisterCommandResponseDto {
   @ApiProperty({ type: RegisterCommandResponse })
   data: RegisterCommandResponse;

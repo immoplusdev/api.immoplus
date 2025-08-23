@@ -1,18 +1,33 @@
 import { DataSource, Raw, Repository } from "typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
-import { mapQueryFieldsToTypeormSelection, mapQueryToTypeormQuery } from "@/infrastructure/http";
+import {
+  mapQueryFieldsToTypeormSelection,
+  mapQueryToTypeormQuery,
+} from "@/infrastructure/http";
 import { IBaseRepository } from "@/core/domain/common/repositories";
-import { FindItemOptions, RepositoryRelations, WrapperResponse } from "@/core/domain/common/models";
+import {
+  FindItemOptions,
+  RepositoryRelations,
+  WrapperResponse,
+} from "@/core/domain/common/models";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
 import { IMapper } from "@/lib/ts-utilities";
 import { FindManyOptions } from "typeorm/find-options/FindManyOptions";
 
-export type LoadRelationIdsOptions = boolean | {
-  relations?: string[];
-  disableMixedMap?: boolean;
-};
+export type LoadRelationIdsOptions =
+  | boolean
+  | {
+      relations?: string[];
+      disableMixedMap?: boolean;
+    };
 
-export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Partial<Model>, KeyType = string> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
+export class BaseRepository<
+  Model,
+  CreateDto = Partial<Model>,
+  UpdateDto = Partial<Model>,
+  KeyType = string,
+> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType>
+{
   private readonly repository: Repository<any>;
   private relations?: RepositoryRelations;
   private fullTextSearchFields?: string[];
@@ -34,7 +49,6 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return this as never;
   }
 
-
   setFullTextSearchFields(fields: string[]) {
     this.fullTextSearchFields = fields;
     return this.getRepositoryInstance();
@@ -55,20 +69,30 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return this.getRepositoryInstance();
   }
 
-  async createMany(payload: CreateDto[], returnPayload: boolean = true): Promise<Model[]> {
-    const result = await Promise.all(payload.map(async (item) => await this.createOne(item, returnPayload)));
+  async createMany(
+    payload: CreateDto[],
+    returnPayload: boolean = true,
+  ): Promise<Model[]> {
+    const result = await Promise.all(
+      payload.map(async (item) => await this.createOne(item, returnPayload)),
+    );
     if (returnPayload) return result;
     return [];
   }
 
-  async createOne(payload: CreateDto, returnData: boolean = true): Promise<Model> {
+  async createOne(
+    payload: CreateDto,
+    returnData: boolean = true,
+  ): Promise<Model> {
     const { id } = await this.repository.save(payload);
     if (returnData) return await this.findOne(id);
     return { id } as never;
   }
 
-  async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<Model[]>> {
-
+  async findByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<WrapperResponse<Model[]>> {
     const paginationOptions = {
       currentPage: parseInt(query?._page as never) || DEFAULT_PAGE,
       pageSize: parseInt(query?._per_page as never) || DEFAULT_PAGE_SIZE,
@@ -78,7 +102,6 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
       relations: (options?.loadRelationIds || this.relations) as never,
       loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
     };
-
 
     if (query) {
       const options = {
@@ -92,10 +115,12 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
         const otherFields = this.fullTextSearchFields.slice(1);
         let rawSearchQuery = `${entityName}.${firstField} LIKE :pattern `;
 
-        otherFields.forEach(field => {
+        otherFields.forEach((field) => {
           rawSearchQuery += `OR ${entityName}.${field} LIKE :pattern `;
         });
-        options.where[firstField] = Raw(() => rawSearchQuery, { pattern: `%${query._search}%` });
+        options.where[firstField] = Raw(() => rawSearchQuery, {
+          pattern: `%${query._search}%`,
+        });
       }
 
       const [data, total] = await this.repository.findAndCount({
@@ -105,7 +130,6 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
       return new WrapperResponse(this.mapResponse(data)).paginate({
         ...paginationOptions,
         totalCount: total,
-
       });
     } else {
       const [data, total] = await this.repository.findAndCount(queryOptions);
@@ -128,14 +152,23 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
     return this.mapResponse(item);
   }
 
-  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Model> {
+  async findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Model> {
     const items = await this.findByQuery(query, options);
     if (items.data.length === 0) return null;
     return items.data[0];
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: UpdateDto): Promise<KeyType[]> {
-    const result = await this.repository.update(mapQueryToTypeormQuery(query).where, payload);
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: UpdateDto,
+  ): Promise<KeyType[]> {
+    const result = await this.repository.update(
+      mapQueryToTypeormQuery(query).where,
+      payload,
+    );
     return result.affected && result.affected[0] ? result.affected[0] : [];
   }
 
@@ -145,7 +178,9 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   }
 
   async deleteByQuery(query: SearchItemsParams): Promise<KeyType[]> {
-    const result = await this.repository.softDelete(mapQueryToTypeormQuery(query).where);
+    const result = await this.repository.softDelete(
+      mapQueryToTypeormQuery(query).where,
+    );
     return result.affected && result.affected[0] ? result.affected[0] : [];
   }
 
@@ -157,7 +192,8 @@ export class BaseRepository<Model, CreateDto = Partial<Model>, UpdateDto = Parti
   mapResponse(data: any) {
     if (!this.entityMapper) return data;
 
-    if (Array.isArray(data)) return data.map(item => this.entityMapper.mapFrom(item));
+    if (Array.isArray(data))
+      return data.map((item) => this.entityMapper.mapFrom(item));
 
     return this.entityMapper.mapFrom(data);
   }

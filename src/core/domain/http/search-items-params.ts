@@ -1,5 +1,5 @@
 export interface SearchItemsParams {
-  _lat?: number
+  _lat?: number;
   _long?: number;
   _radius?: number;
   _start_date?: Date;
@@ -14,7 +14,7 @@ export interface SearchItemsParams {
 }
 
 export interface SearchGeolocalizedItemsParams {
-  _lat?: number
+  _lat?: number;
   _long?: number;
   _radius?: number;
   _start_date?: Date;
@@ -29,7 +29,7 @@ export interface SearchGeolocalizedItemsParams {
 }
 
 export interface SearchBienImmobiliereGeoItemsParams {
-  _lat?: number
+  _lat?: number;
   _long?: number;
   _radius?: number;
   _page?: number;
@@ -40,7 +40,6 @@ export interface SearchBienImmobiliereGeoItemsParams {
   _select?: string[];
   _search?: string;
 }
-
 
 export interface SelectItemsParams {
   _select?: string[];
@@ -68,7 +67,7 @@ export type ItemsOperator =
   | "nin"
   | "contains"
   | "ncontains"
-  | "like"
+  | "like";
 // | 'startswith'
 // | 'endswith'
 // | 'isnull'

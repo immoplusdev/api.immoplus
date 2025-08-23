@@ -8,7 +8,9 @@ import { Deps } from "@/core/domain/common/ioc";
 
 @QueryHandler(GetPaymentProviderQuery)
 export class GetPaymentProviderQueryHandler
-  implements IQueryHandler<GetPaymentProviderQuery, GetPaymentProviderQueryResponse> {
+  implements
+    IQueryHandler<GetPaymentProviderQuery, GetPaymentProviderQueryResponse>
+{
   constructor(
     @Inject(Deps.PaymentGatewayService)
     private readonly paymentGatewayService: IPaymentGatewayService,
@@ -16,8 +18,9 @@ export class GetPaymentProviderQueryHandler
     //
   }
 
-  async execute(query: GetPaymentProviderQuery): Promise<GetPaymentProviderQueryResponse> {
-
+  async execute(
+    query: GetPaymentProviderQuery,
+  ): Promise<GetPaymentProviderQueryResponse> {
     // providers.push(
     //   new PaymentProviderDto({
     //     id: "cash",

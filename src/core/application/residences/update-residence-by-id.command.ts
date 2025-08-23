@@ -1,6 +1,12 @@
 import { enumToList, OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { IsBoolean, IsIn, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import {
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+} from "class-validator";
 import { Commodite, TypeResidence } from "@/core/domain/residences";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
@@ -29,7 +35,10 @@ export class UpdateResidenceByIdCommand {
   @IsOptional()
   typeResidence: TypeResidence;
 
-  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: "StatusValidationBienImmobilier" })
+  @ApiProperty({
+    enum: StatusValidationBienImmobilier,
+    enumName: "StatusValidationBienImmobilier",
+  })
   @IsIn(enumToList(StatusValidationBienImmobilier))
   @IsOptional()
   statusValidation: StatusValidationBienImmobilier;
@@ -68,7 +77,6 @@ export class UpdateResidenceByIdCommand {
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   @IsOptional()
   images?: string[];
-
 
   @ApiProperty({ type: () => CommoditeDto, isArray: true })
   @IsOptional()

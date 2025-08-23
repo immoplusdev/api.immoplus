@@ -1,4 +1,9 @@
-import { IUserRepository, PublicUserInfo, User, UserWithRoleAndPermissions } from "@/core/domain/users";
+import {
+  IUserRepository,
+  PublicUserInfo,
+  User,
+  UserWithRoleAndPermissions,
+} from "@/core/domain/users";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { DataSource, In, Repository } from "typeorm";
 import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
@@ -14,7 +19,14 @@ import { RoleRepository } from "../roles/role.repository";
 @Injectable()
 export class UserRepository implements IUserRepository {
   private readonly repository: BaseRepository<User>;
-  private readonly relations = ["role", "additionalData", "additionalData.photoIdentite", "additionalData.pieceIdentite", "additionalData.registreCommerce", "avatar"];
+  private readonly relations = [
+    "role",
+    "additionalData",
+    "additionalData.photoIdentite",
+    "additionalData.pieceIdentite",
+    "additionalData.registreCommerce",
+    "avatar",
+  ];
   private readonly fullTextSearchFields: string[] = [
     "id",
     "firstName",
@@ -51,17 +63,20 @@ export class UserRepository implements IUserRepository {
   }
 
   async createOne(payload: Partial<User>): Promise<User> {
-      // console.log("payload : ",payload);
-      // const role =  await this.roleRepository.findOne("a9ff35cc-41da-11f0-8a97-6e5a18eac3d4");
-      // payload.role = role as Role;
-      // console.log("payload.role : ",payload.role);
-      // payload.createdBy = null;
-    
+    // console.log("payload : ",payload);
+    // const role =  await this.roleRepository.findOne("a9ff35cc-41da-11f0-8a97-6e5a18eac3d4");
+    // payload.role = role as Role;
+    // console.log("payload.role : ",payload.role);
+    // payload.createdBy = null;
+
     return await this.repository.createOne(payload);
   }
 
   // Read
-  async findByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<WrapperResponse<User[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<WrapperResponse<User[]>> {
     return await this.repository.findByQuery(query, options);
   }
 
@@ -69,7 +84,10 @@ export class UserRepository implements IUserRepository {
     return this.repository.findOne(id, options);
   }
 
-  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<User> {
+  async findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<User> {
     return this.repository.findOneByQuery(query, options);
   }
 
@@ -84,23 +102,41 @@ export class UserRepository implements IUserRepository {
     };
   }
 
-  async findOneByEmail(email: string, options?: FindItemOptions): Promise<User | null> {
-    return await this.findOneByQuery({ _where: [{ _field: "email", _val: email }] }, options);
+  async findOneByEmail(
+    email: string,
+    options?: FindItemOptions,
+  ): Promise<User | null> {
+    return await this.findOneByQuery(
+      { _where: [{ _field: "email", _val: email }] },
+      options,
+    );
   }
 
-  async findOneByPhoneNumber(phoneNumber: string, options?: FindItemOptions): Promise<User | null> {
-    return await this.findOneByQuery({
-      _where: [{
-        _field: "phoneNumber",
-        _val: sanitizePhoneNumber(phoneNumber),
-      }],
-    }, options);
+  async findOneByPhoneNumber(
+    phoneNumber: string,
+    options?: FindItemOptions,
+  ): Promise<User | null> {
+    return await this.findOneByQuery(
+      {
+        _where: [
+          {
+            _field: "phoneNumber",
+            _val: sanitizePhoneNumber(phoneNumber),
+          },
+        ],
+      },
+      options,
+    );
   }
 
-  async findOneByUsername(username: string, options?: FindItemOptions): Promise<User | null> {
+  async findOneByUsername(
+    username: string,
+    options?: FindItemOptions,
+  ): Promise<User | null> {
     let user: User | null = null;
     try {
-      if (username.includes("@")) user = await this.findOneByEmail(username, options);
+      if (username.includes("@"))
+        user = await this.findOneByEmail(username, options);
       if (!user) user = await this.findOneByPhoneNumber(username, options);
     } catch (error) {
       return null;
@@ -108,12 +144,16 @@ export class UserRepository implements IUserRepository {
     return user;
   }
 
-  async findOneByIdWithRoleAndPermissions(id: string, options?: FindItemOptions): Promise<UserWithRoleAndPermissions | null> {
-
+  async findOneByIdWithRoleAndPermissions(
+    id: string,
+    options?: FindItemOptions,
+  ): Promise<UserWithRoleAndPermissions | null> {
     const user = await this.findOne(id, options);
     if (!user) throw new UnauthorizedException();
 
-    const permissions = await this.permissionRepository.findByRoleId((user.role as Role).id);
+    const permissions = await this.permissionRepository.findByRoleId(
+      (user.role as Role).id,
+    );
 
     return new UserWithRoleAndPermissions({
       ...user,
@@ -122,7 +162,10 @@ export class UserRepository implements IUserRepository {
   }
 
   // Update
-  async updateByQuery(query: SearchItemsParams, payload: Partial<User>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<User>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

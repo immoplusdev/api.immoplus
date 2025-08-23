@@ -18,13 +18,8 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [FileController],
-  imports: [
-    CqrsModule,
-    TypeormModule,
-    forwardRef(() => ConfigsModule),
-  ],
+  imports: [CqrsModule, TypeormModule, forwardRef(() => ConfigsModule)],
   providers: [...providers, ...commandHandlers],
   exports: [...providers],
 })
-export class FileModule {
-}
+export class FileModule {}

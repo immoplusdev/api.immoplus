@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsEmail, IsNotEmpty } from "class-validator";
 
@@ -10,6 +10,6 @@ export class LoginWithEmailOtpCommand {
   @IsNotEmpty()
   otp: string;
   constructor(data?: OmitMethods<LoginWithEmailOtpCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

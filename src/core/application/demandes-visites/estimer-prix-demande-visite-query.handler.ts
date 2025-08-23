@@ -5,27 +5,43 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
-import { ItemNotFoundException, UnexpectedException } from "@/core/domain/common/exceptions";
+import {
+  ItemNotFoundException,
+  UnexpectedException,
+} from "@/core/domain/common/exceptions";
 import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 
 @QueryHandler(EstimerPrixDemandeVisiteQuery)
 export class EstimerPrixDemandeVisiteQueryHandler
-  implements IQueryHandler<EstimerPrixDemandeVisiteQuery, EstimerPrixDemandeVisiteQueryResponse> {
+  implements
+    IQueryHandler<
+      EstimerPrixDemandeVisiteQuery,
+      EstimerPrixDemandeVisiteQueryResponse
+    >
+{
   constructor(
-    @Inject(Deps.BiensImmobiliesRepository) private readonly bienImmobilierRepository: IBienImmobilierRepository,
-    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
+    @Inject(Deps.BiensImmobiliesRepository)
+    private readonly bienImmobilierRepository: IBienImmobilierRepository,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
     //
   }
 
-  async execute(query: EstimerPrixDemandeVisiteQuery): Promise<EstimerPrixDemandeVisiteQueryResponse> {
-
-    const bienImmobilier = await this.bienImmobilierRepository.findOne(query.bienImmobilier);
+  async execute(
+    query: EstimerPrixDemandeVisiteQuery,
+  ): Promise<EstimerPrixDemandeVisiteQueryResponse> {
+    const bienImmobilier = await this.bienImmobilierRepository.findOne(
+      query.bienImmobilier,
+    );
     if (!bienImmobilier) throw new ItemNotFoundException();
 
     const configs = await this.configsManagerService.getAppConfigs();
 
-    const prixDemandeVisite = query.typeDemandeVisite == TypeDemandeVisite.Express ? configs.expressVisitPrice : configs.normalVisitPrice;
+    const prixDemandeVisite =
+      query.typeDemandeVisite == TypeDemandeVisite.Express
+        ? configs.expressVisitPrice
+        : configs.normalVisitPrice;
 
     if (prixDemandeVisite == 0) throw new UnexpectedException();
 

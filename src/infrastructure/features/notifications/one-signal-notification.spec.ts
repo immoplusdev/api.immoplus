@@ -5,7 +5,7 @@ import { SendNotificationParams } from "@/core/domain/notifications";
 import { NotificationService } from "./notification.service";
 
 describe("NotificationService", () => {
-  let notificationService = new NotificationService(
+  const notificationService = new NotificationService(
     {
       getEnvVariable(varName: string) {
         return process.env[varName];
@@ -35,7 +35,9 @@ describe("NotificationService", () => {
     };
 
     it("it should returns void", async () => {
-      await expect(notificationService.sendNotification(notificationParams)).resolves.toBeUndefined();
+      await expect(
+        notificationService.sendNotification(notificationParams),
+      ).resolves.toBeUndefined();
     });
   });
 });

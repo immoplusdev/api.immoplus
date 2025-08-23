@@ -5,14 +5,12 @@
 // import { LoggerService } from "../logging/logger.service";
 // import { ConfigsManagerService } from "../configs/configs-manager.service";
 
-
 // const dotenv = require("dotenv");
 // dotenv.config();
 
 // describe("NodemailerService", () => {
 //   let mailingService: IMailService;
 //   const configService = new ConfigService();
-
 
 //   const configsManagerService = new ConfigsManagerService(new ConfigService());
 //   const loggerService = new LoggerService(configsManagerService);

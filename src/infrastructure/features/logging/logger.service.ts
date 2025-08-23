@@ -4,7 +4,6 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 import { Deps } from "@/core/domain/common/ioc";
 import { AppProfile } from "@/core/domain/common/enums";
 
-
 @Injectable()
 export class LoggerService implements ILoggerService {
   private readonly logger: ConsoleLogger;
@@ -36,6 +35,9 @@ export class LoggerService implements ILoggerService {
   }
 
   private isProduction(): boolean {
-    return this.configManagerService.getEnvVariable("NEST_APP_PROFILE") === AppProfile.Prod;
+    return (
+      this.configManagerService.getEnvVariable("NEST_APP_PROFILE") ===
+      AppProfile.Prod
+    );
   }
 }

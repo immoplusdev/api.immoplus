@@ -2,9 +2,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RegisterProParticulierCommand } from "./register-pro-particulier.command";
 import { RegisterProParticulierCommandResponse } from "./register-pro-particulier-command.response";
 import { UserEmailAlreadyTakenException } from "@/core/application/auth/user-email-already-taken.exception";
-import {
-  UserPhoneNumberAlreadyTakenException,
-} from "@/core/application/auth/user-phone-number-already-taken.exception";
+import { UserPhoneNumberAlreadyTakenException } from "@/core/application/auth/user-phone-number-already-taken.exception";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
@@ -14,7 +12,9 @@ import { UserRole } from "@/core/domain/roles";
 import { IConfigsManagerService } from "@/core/domain/configs";
 
 @CommandHandler(RegisterProParticulierCommand)
-export class RegisterProParticulierCommandHandler implements ICommandHandler<RegisterProParticulierCommand> {
+export class RegisterProParticulierCommandHandler
+  implements ICommandHandler<RegisterProParticulierCommand>
+{
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -24,10 +24,11 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     private readonly usersDataRepository: IUserDataRepository,
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
-  ) {
-  }
+  ) {}
 
-  async execute(command: RegisterProParticulierCommand): Promise<RegisterProParticulierCommandResponse> {
+  async execute(
+    command: RegisterProParticulierCommand,
+  ): Promise<RegisterProParticulierCommandResponse> {
     await this.validateInput(command);
 
     const userId = generateUuid();
@@ -49,14 +50,15 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
       lastName: command.lastName,
       role: UserRole.ProParticulier,
       additionalData: userData.id as never,
-      createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
+      createdBy: this.configsManagerService.getEnvVariable(
+        "NEST_APP_ADMIN_PASSWORD_ID",
+      ),
     });
 
     return new RegisterProParticulierCommandResponse({
       user,
     });
   }
-
 
   async validateInput(command: RegisterProParticulierCommand) {
     await this.verifyEmailAvailable(command.email);

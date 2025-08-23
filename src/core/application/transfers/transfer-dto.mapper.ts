@@ -3,7 +3,6 @@ import { IMapper, OmitMethods } from "@/lib/ts-utilities";
 import { TransferDto } from "./transfer.dto";
 import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
-
 export class TransferDtoMapper implements IMapper<Transfer, TransferDto> {
   mapFrom(param: OmitMethods<Transfer>): TransferDto {
     return new TransferDto({

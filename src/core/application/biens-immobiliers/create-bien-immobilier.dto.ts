@@ -1,13 +1,16 @@
 import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
-import { Amentity, TypeBienImmobilier, TypeLocationBienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  Amentity,
+  TypeBienImmobilier,
+  TypeLocationBienImmobilier,
+} from "@/core/domain/biens-immobiliers";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { IsEnum, IsOptional } from "class-validator";
 import { AmentityDto } from "@/core/application/biens-immobiliers/amentity.dto";
 
 export class CreateBienImmobilierDto {
-
   @ApiProperty({ format: "uuid" })
   miniature: string;
 
@@ -18,7 +21,10 @@ export class CreateBienImmobilierDto {
   @IsEnum(TypeBienImmobilier)
   typeBienImmobilier: TypeBienImmobilier;
 
-  @ApiProperty({ enum: TypeLocationBienImmobilier, enumName: "TypeLocationBienImmobilier" })
+  @ApiProperty({
+    enum: TypeLocationBienImmobilier,
+    enumName: "TypeLocationBienImmobilier",
+  })
   @IsEnum(TypeLocationBienImmobilier)
   @IsOptional()
   typeLocation: TypeLocationBienImmobilier;

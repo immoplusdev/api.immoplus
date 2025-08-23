@@ -1,12 +1,16 @@
 import { DataSource, In } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { Notification, INotificationRepository, INotificationService, SendNotificationParams } from "@/core/domain/notifications";
+import {
+  Notification,
+  INotificationRepository,
+  INotificationService,
+  SendNotificationParams,
+} from "@/core/domain/notifications";
 import { NotificationEntity } from "@/infrastructure/features/notifications";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
-
 
 @Injectable()
 export class NotificationRepository implements INotificationRepository {
@@ -17,12 +21,12 @@ export class NotificationRepository implements INotificationRepository {
   constructor(
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
-    @Inject(Deps.NotificationService) readonly notificationService: INotificationService
+    @Inject(Deps.NotificationService)
+    readonly notificationService: INotificationService,
   ) {
     this.repository = new BaseRepository(dataSource, NotificationEntity);
     // this.notificationRepository = dataSource.getRepository(NotificationEntity);
   }
-
 
   async createMany(payload: Partial<Notification>[]): Promise<Notification[]> {
     return await this.repository.createMany(payload);
@@ -32,7 +36,9 @@ export class NotificationRepository implements INotificationRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Notification[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Notification[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -40,11 +46,17 @@ export class NotificationRepository implements INotificationRepository {
     return await this.repository.findOne(id, options);
   }
 
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Notification> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Notification> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<Notification>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Notification>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 
@@ -60,19 +72,18 @@ export class NotificationRepository implements INotificationRepository {
     return await this.repository.deleteOne(id);
   }
 
-  async sendTestNotification(params: SendNotificationParams): Promise<String> {
-     
+  async sendTestNotification(params: SendNotificationParams): Promise<string> {
     await this.notificationService.sendNotification({
-        userId: params.userId,
-        sendMail: true,
-        sendSms: true,
-        skipInAppNotification: false,
-        subject: params.subject,
-        message: params.message,
-        htmlMessage: params.htmlMessage || params.message,
-        returnUrl: params.returnUrl || "localhost:3000/estate_detail/12",
-      });
+      userId: params.userId,
+      sendMail: true,
+      sendSms: true,
+      skipInAppNotification: false,
+      subject: params.subject,
+      message: params.message,
+      htmlMessage: params.htmlMessage || params.message,
+      returnUrl: params.returnUrl || "localhost:3000/estate_detail/12",
+    });
 
-      return Promise.resolve("Notification sent successfully");
+    return Promise.resolve("Notification sent successfully");
   }
 }

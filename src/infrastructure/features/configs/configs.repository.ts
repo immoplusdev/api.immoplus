@@ -18,7 +18,6 @@ export class AppConfigsRepository implements IAppConfigsRepository {
     this.repository = new BaseRepository(dataSource, AppConfigsEntity);
   }
 
-
   async createMany(payload: Partial<AppConfigs>[]): Promise<AppConfigs[]> {
     return await this.repository.createMany(payload);
   }
@@ -27,7 +26,9 @@ export class AppConfigsRepository implements IAppConfigsRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<AppConfigs[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<AppConfigs[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -35,11 +36,17 @@ export class AppConfigsRepository implements IAppConfigsRepository {
     return await this.repository.findOne(id, options);
   }
 
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<AppConfigs> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<AppConfigs> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<AppConfigs>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<AppConfigs>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

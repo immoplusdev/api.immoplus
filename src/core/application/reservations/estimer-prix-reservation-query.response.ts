@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { WrapperResponseDto } from "@/lib/responses";
 import { IsNotEmpty, IsNumber } from "class-validator";

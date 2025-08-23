@@ -7,7 +7,6 @@ import { UserData } from "@/core/domain/users";
 import { UserDataDto } from "@/core/application/users";
 
 export class UserDto {
-
   // basic fields
   @ApiProperty()
   id: string;
@@ -61,7 +60,7 @@ export class UserDto {
   compteProValide: boolean;
   @ApiProperty()
   authLoginAttempts: number;
-  @ApiProperty({enum: UserStatus, enumName: 'UserStatus'})
+  @ApiProperty({ enum: UserStatus, enumName: "UserStatus" })
   status: UserStatus;
 
   @ApiProperty()

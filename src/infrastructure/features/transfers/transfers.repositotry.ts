@@ -9,48 +9,58 @@ import { DataSource } from "typeorm";
 import { TransfersEntity } from "./transfers.entity";
 
 export class TransfersRepository implements ITransferRepository {
-  private readonly relations = ['customer'];
+  private readonly relations = ["customer"];
   private readonly repository: BaseRepository<Transfer>;
 
   constructor(@Inject(Deps.DataSource) readonly dataSource: DataSource) {
-      this.repository = new BaseRepository(dataSource, TransfersEntity, this.relations).setLoadRelationIds(true);
+    this.repository = new BaseRepository(
+      dataSource,
+      TransfersEntity,
+      this.relations,
+    ).setLoadRelationIds(true);
   }
 
+  async createMany(payload: Partial<Transfer>[]): Promise<Transfer[]> {
+    return await this.repository.createMany(payload);
+  }
 
-    async createMany(payload: Partial<Transfer>[]): Promise<Transfer[]> {
-        return await this.repository.createMany(payload);
-    }
-    
-    async createOne(payload: Partial<Transfer>): Promise<Transfer> {
-        return await this.repository.createOne(payload);
-    }
-    
-    async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Transfer[]>> {
-        return await this.repository.findByQuery(query);
-    }
-    
-    async findOne(id: string, options?: FindItemOptions): Promise<Transfer> {
-        return await this.repository.findOne(id, options);
-    }
+  async createOne(payload: Partial<Transfer>): Promise<Transfer> {
+    return await this.repository.createOne(payload);
+  }
 
-    findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Transfer> {
-        return this.repository.findOneByQuery(query, options);
-    }
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Transfer[]>> {
+    return await this.repository.findByQuery(query);
+  }
 
-    async updateOne(id: string, payload: Partial<Transfer>): Promise<string> {
-        return await this.repository.updateOne(id, payload);
-    }
+  async findOne(id: string, options?: FindItemOptions): Promise<Transfer> {
+    return await this.repository.findOne(id, options);
+  }
 
-    async updateByQuery(query: SearchItemsParams, payload: Partial<Transfer>): Promise<string[]> {
-        return this.repository.updateByQuery(query, payload);
-    }
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Transfer> {
+    return this.repository.findOneByQuery(query, options);
+  }
 
-    async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
-        return await this.repository.deleteByQuery(query);
-    }
+  async updateOne(id: string, payload: Partial<Transfer>): Promise<string> {
+    return await this.repository.updateOne(id, payload);
+  }
 
-    async deleteOne(id: string): Promise<string> {
-        return await this.repository.deleteOne(id);
-    }
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Transfer>,
+  ): Promise<string[]> {
+    return this.repository.updateByQuery(query, payload);
+  }
 
+  async deleteByQuery(query: SearchItemsParams): Promise<string[]> {
+    return await this.repository.deleteByQuery(query);
+  }
+
+  async deleteOne(id: string): Promise<string> {
+    return await this.repository.deleteOne(id);
+  }
 }

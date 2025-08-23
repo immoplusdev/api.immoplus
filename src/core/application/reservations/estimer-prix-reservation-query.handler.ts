@@ -9,24 +9,36 @@ import { UnexpectedException } from "@/core/domain/common/exceptions";
 
 @QueryHandler(EstimerPrixReservationQuery)
 export class EstimerPrixReservationQueryHandler
-  implements IQueryHandler<EstimerPrixReservationQuery, EstimerPrixReservationQueryResponse> {
+  implements
+    IQueryHandler<
+      EstimerPrixReservationQuery,
+      EstimerPrixReservationQueryResponse
+    >
+{
   constructor(
-    @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
-    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
+    @Inject(Deps.ResidenceRepository)
+    private readonly residenceRepository: IResidenceRepository,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
     //
   }
 
-  async execute(query: EstimerPrixReservationQuery): Promise<EstimerPrixReservationQueryResponse> {
+  async execute(
+    query: EstimerPrixReservationQuery,
+  ): Promise<EstimerPrixReservationQueryResponse> {
     const residence = await this.residenceRepository.findOne(query.residence);
     const configs = await this.configsManagerService.getAppConfigs();
 
-    const pourcentageCommissionReservation = configs.pourcentageCommissionReservation;
-    const montantTotalReservation = residence.prixReservation * query.datesReservation.length;
+    const pourcentageCommissionReservation =
+      configs.pourcentageCommissionReservation;
+    const montantTotalReservation =
+      residence.prixReservation * query.datesReservation.length;
 
     if (montantTotalReservation == 0) throw new UnexpectedException();
-    const montantCommission = this.formatAmount(montantTotalReservation * pourcentageCommissionReservation / 100);
-
+    const montantCommission = this.formatAmount(
+      (montantTotalReservation * pourcentageCommissionReservation) / 100,
+    );
 
     return new EstimerPrixReservationQueryResponse({
       residence: query.residence,
@@ -37,6 +49,6 @@ export class EstimerPrixReservationQueryHandler
   }
 
   formatAmount(montant: number): number {
-    return Math.ceil(montant/5) * 5;
+    return Math.ceil(montant / 5) * 5;
   }
 }

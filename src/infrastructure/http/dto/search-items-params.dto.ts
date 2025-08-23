@@ -100,7 +100,7 @@ export type ItemsOperatorDto =
   | "in"
   | "nin"
   | "contains"
-  | "ncontains"
+  | "ncontains";
 // | 'startswith'
 // | 'endswith'
 // | 'isnull'

@@ -1,23 +1,27 @@
 import { PaymentMethod } from "../common/enums";
 import { User } from "../users";
-import { TransferItemType, TransferStatus, TransferType } from "./transfer.enum";
+import {
+  TransferItemType,
+  TransferStatus,
+  TransferType,
+} from "./transfer.enum";
 
 export class Transfer {
   id: string;
   amount: number;
   currency: string;
   fees?: number;
-  customer?: User | string; 
+  customer?: User | string;
   itemType: TransferItemType;
   itemId: string;
-  transfetStatus: TransferStatus
+  transfetStatus: TransferStatus;
   transferType: TransferType;
   country: string;
   accountNumber?: string;
   bank?: Record<string, any>;
   recipientName?: string;
   transferProvider?: PaymentMethod;
-  
+
   // Hub2 Fields
   hub2TransferId?: string;
   hub2Exception?: string;

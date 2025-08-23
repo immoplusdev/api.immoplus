@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { WrapperResponseDto } from "@/lib/responses";
 import { ServiceDateDto } from "@/core/application/common/dto";
@@ -8,7 +8,7 @@ export class GetBienImmobilierOccupiedDatesQueryResponse {
   @ApiProperty({ type: ServiceDateDto, isArray: true })
   dates: ServiceDates;
   constructor(data?: OmitMethods<GetBienImmobilierOccupiedDatesQueryResponse>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }
 

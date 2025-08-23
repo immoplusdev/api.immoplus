@@ -2,7 +2,8 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity, JoinColumn,
+  Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,9 +12,9 @@ import { FileStorage } from "@/core/domain/files";
 import { UserEntity } from "@/infrastructure/features/users";
 import { User } from "@/core/domain/users";
 
-@Entity('files')
+@Entity("files")
 export class FileEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
   @Column({ name: "filename_disk", type: "varchar" })
   fileNameDisk: string;
@@ -33,14 +34,14 @@ export class FileEntity {
   @CreateDateColumn({ name: "uploaded_on" })
   uploadedOn?: Date;
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
-  @JoinColumn({ name: "modified_by"})
+  @JoinColumn({ name: "modified_by" })
   modifiedBy?: User | string;
   @UpdateDateColumn({ name: "modified_on" })
   modifiedOn?: Date;
   @DeleteDateColumn({ name: "deleted_on" })
   deletedOn?: Date;
   @Column({ name: "charset", type: "varchar", nullable: true })
-  charset?: string ;
+  charset?: string;
   @Column({ name: "filesize", type: "int", nullable: true })
   filesize?: number;
   @Column({ name: "width", type: "int", nullable: true })

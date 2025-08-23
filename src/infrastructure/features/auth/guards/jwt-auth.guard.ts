@@ -40,10 +40,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
 
     const authorizationManagerService = new AuthorizationManagerService(user);
     if (
-      !authorizationManagerService.canAccess(
-        requiredRoles,
-        requiredPermissions,
-      )
+      !authorizationManagerService.canAccess(requiredRoles, requiredPermissions)
     )
       throw new UnauthorizedException();
 

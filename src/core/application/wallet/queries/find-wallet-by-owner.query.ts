@@ -1,3 +1,3 @@
 export class FindWalletByOwnerQuery {
-    constructor(public readonly ownerId: string) {}
-}   
+  constructor(public readonly ownerId: string) {}
+}

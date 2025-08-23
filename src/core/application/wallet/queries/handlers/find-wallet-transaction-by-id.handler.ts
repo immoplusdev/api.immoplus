@@ -5,12 +5,14 @@ import { Deps } from "@/core/domain/common/ioc";
 import { IWalletRepository } from "@/core/domain/wallet";
 
 @QueryHandler(FindWalletTransactionByIdQuery)
-export class FindWalletTransactionByIdHandler implements IQueryHandler<FindWalletTransactionByIdQuery> {
-    constructor(
-        @Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository
-    ) {}
-    async execute(query: FindWalletTransactionByIdQuery): Promise<any> {
-        return this.walletRepository.findWalletTransactionById(query.id);
-    }
-
+export class FindWalletTransactionByIdHandler
+  implements IQueryHandler<FindWalletTransactionByIdQuery>
+{
+  constructor(
+    @Inject(Deps.WalletRepository)
+    private readonly walletRepository: IWalletRepository,
+  ) {}
+  async execute(query: FindWalletTransactionByIdQuery): Promise<any> {
+    return this.walletRepository.findWalletTransactionById(query.id);
+  }
 }

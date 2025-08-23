@@ -56,8 +56,9 @@ export class WrapperResponseReservationDto extends WrapperResponseDto<Reservatio
   data: ReservationDto;
 }
 
-export class WrapperResponseReservationListDto extends WrapperResponseDto<ReservationDto[]> {
+export class WrapperResponseReservationListDto extends WrapperResponseDto<
+  ReservationDto[]
+> {
   @ApiProperty({ type: [ReservationDto] })
   data: ReservationDto[];
 }
-

@@ -6,9 +6,7 @@ import { BienImmobilierRepository } from "./bien-immobilier.repository";
 import { CqrsModule } from "@nestjs/cqrs";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
-import {
-  BienImmobilierStatusValidationUpdatedEventHandler,
-} from "@/core/application/demandes-visites";
+import { BienImmobilierStatusValidationUpdatedEventHandler } from "@/core/application/demandes-visites";
 
 const eventHandlers = [BienImmobilierStatusValidationUpdatedEventHandler];
 

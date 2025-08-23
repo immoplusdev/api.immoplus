@@ -3,7 +3,10 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { DemandeVisiteDetailsDto } from "./demande-visite-details.dto";
 
-export class AnnulerDemandeVisiteByIdCommandResponse extends OmitType(DemandeVisiteDetailsDto, ["deletedAt"] as const) {
+export class AnnulerDemandeVisiteByIdCommandResponse extends OmitType(
+  DemandeVisiteDetailsDto,
+  ["deletedAt"] as const,
+) {
   constructor(data?: OmitMethods<AnnulerDemandeVisiteByIdCommandResponse>) {
     if (data) super(data);
   }
@@ -18,13 +21,22 @@ export class WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto extends W
   }
 }
 
-export class WrapperResponseAnnulerDemandeVisiteCommandResponseDtoMapper implements IMapper<AnnulerDemandeVisiteByIdCommandResponse, WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto> {
-  mapFrom(param: AnnulerDemandeVisiteByIdCommandResponse): WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto {
+export class WrapperResponseAnnulerDemandeVisiteCommandResponseDtoMapper
+  implements
+    IMapper<
+      AnnulerDemandeVisiteByIdCommandResponse,
+      WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto
+    >
+{
+  mapFrom(
+    param: AnnulerDemandeVisiteByIdCommandResponse,
+  ): WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto {
     return new WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto(param);
   }
 
-  mapTo(param: WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto): AnnulerDemandeVisiteByIdCommandResponse {
+  mapTo(
+    param: WrapperResponseAnnulerDemandeVisiteByIdCommandResponseDto,
+  ): AnnulerDemandeVisiteByIdCommandResponse {
     return param.data;
   }
 }
-      

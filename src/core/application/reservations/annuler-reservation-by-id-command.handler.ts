@@ -3,29 +3,41 @@ import { AnnulerReservationByIdCommand } from "./annuler-reservation-by-id.comma
 import { AnnulerReservationByIdCommandResponse } from "./annuler-reservation-by-id-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { IReservationRepository, Reservation, StatusReservation } from "@/core/domain/reservations";
+import {
+  IReservationRepository,
+  Reservation,
+  StatusReservation,
+} from "@/core/domain/reservations";
 import { UnexpectedException } from "@/core/domain/common/exceptions";
 import { GetReservationByIdQuery } from "@/core/application/reservations/get-reservation-by-id.query";
 
 @CommandHandler(AnnulerReservationByIdCommand)
-export class AnnulerReservationByIdCommandHandler implements ICommandHandler<AnnulerReservationByIdCommand> {
+export class AnnulerReservationByIdCommandHandler
+  implements ICommandHandler<AnnulerReservationByIdCommand>
+{
   constructor(
     private readonly queryBus: QueryBus,
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
   ) {
     //
   }
 
-  async execute(command: AnnulerReservationByIdCommand): Promise<AnnulerReservationByIdCommandResponse> {
-
-    const reservation = await this.reservationRepository.findOne(command.reservation, { fields: ["id", "statusReservation"] });
+  async execute(
+    command: AnnulerReservationByIdCommand,
+  ): Promise<AnnulerReservationByIdCommandResponse> {
+    const reservation = await this.reservationRepository.findOne(
+      command.reservation,
+      { fields: ["id", "statusReservation"] },
+    );
 
     try {
       this.verifyCanProceed(reservation.statusReservation, command.userId);
     } catch (err) {
-      return await this.queryBus.execute(new GetReservationByIdQuery({ id: command.reservation }));
+      return await this.queryBus.execute(
+        new GetReservationByIdQuery({ id: command.reservation }),
+      );
     }
-
 
     const payload: Partial<Reservation> = {
       statusReservation: StatusReservation.Rejete,
@@ -35,10 +47,19 @@ export class AnnulerReservationByIdCommandHandler implements ICommandHandler<Ann
 
     await this.reservationRepository.updateOne(command.reservation, payload);
 
-    return await this.queryBus.execute(new GetReservationByIdQuery({ id: command.reservation }));
+    return await this.queryBus.execute(
+      new GetReservationByIdQuery({ id: command.reservation }),
+    );
   }
 
-  private verifyCanProceed(statusReservation: StatusReservation, _userId: string) {
-    if (statusReservation == StatusReservation.Valide || statusReservation == StatusReservation.Rejete) throw new UnexpectedException();
+  private verifyCanProceed(
+    statusReservation: StatusReservation,
+    _userId: string,
+  ) {
+    if (
+      statusReservation == StatusReservation.Valide ||
+      statusReservation == StatusReservation.Rejete
+    )
+      throw new UnexpectedException();
   }
 }

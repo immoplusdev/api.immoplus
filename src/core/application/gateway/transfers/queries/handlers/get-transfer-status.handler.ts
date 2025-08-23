@@ -6,10 +6,15 @@ import { IGatewayRepository } from "@/core/domain/gateways/i-gateway.repository"
 import { TransferStatusResponseDto } from "@/core/domain/gateways/transfers/transfer-status-response.dto";
 
 @QueryHandler(GetTransferStatusQuery)
-export class GetTransferStatusHandler implements IQueryHandler<GetTransferStatusQuery> {
-    constructor(@Inject(Deps.GatewayRepository) private readonly gatewayRepository: IGatewayRepository) {}
+export class GetTransferStatusHandler
+  implements IQueryHandler<GetTransferStatusQuery>
+{
+  constructor(
+    @Inject(Deps.GatewayRepository)
+    private readonly gatewayRepository: IGatewayRepository,
+  ) {}
 
-    execute(query: GetTransferStatusQuery): Promise<TransferStatusResponseDto> {
-        return this.gatewayRepository.getTransferStatus(query.id);
-    }
+  execute(query: GetTransferStatusQuery): Promise<TransferStatusResponseDto> {
+    return this.gatewayRepository.getTransferStatus(query.id);
+  }
 }

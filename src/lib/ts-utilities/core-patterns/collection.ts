@@ -12,13 +12,13 @@ export interface Collection<T> {
 
   /**
    * Add item to collection
-   * @param item 
+   * @param item
    */
   add(item: T): void;
 
   /**
    * Remove item from collection
-   * @param item 
+   * @param item
    */
   remove(item: T): void;
 

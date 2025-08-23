@@ -20,16 +20,9 @@ const providers: Provider[] = [
 ];
 
 @Module({
-  imports: [
-    CqrsModule,
-    ConfigModule,
-    TypeormModule,
-    GlobalizationModule,
-  ],
+  imports: [CqrsModule, ConfigModule, TypeormModule, GlobalizationModule],
   controllers: [ConfigController],
   providers: [...providers],
   exports: [...providers],
 })
-
-export class ConfigsModule {
-}
+export class ConfigsModule {}

@@ -55,8 +55,9 @@ export class WrapperResponseNotificationDto extends WrapperResponseDto<Notificat
   data: NotificationDto;
 }
 
-export class WrapperResponseNotificationListDto extends WrapperResponseDto<NotificationDto[]> {
+export class WrapperResponseNotificationListDto extends WrapperResponseDto<
+  NotificationDto[]
+> {
   @ApiProperty({ type: [NotificationDto] })
   data: NotificationDto[];
 }
-

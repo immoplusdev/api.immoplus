@@ -6,7 +6,8 @@ import { ILoggerService } from "@/core/domain/logging";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserRepository, User } from "@/core/domain/users";
 import {
-  IAuthService, InvalidCredentialsException,
+  IAuthService,
+  InvalidCredentialsException,
   IPasswordManagerService,
   UserCannotLoginException,
 } from "@/core/domain/auth";
@@ -16,13 +17,14 @@ import { UserStatus } from "@/core/domain/users";
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   constructor(
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
-    @Inject(Deps.UsersRepository) private readonly userRepository: IUserRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly userRepository: IUserRepository,
     @Inject(Deps.AuthService) private readonly authService: IAuthService,
-    @Inject(Deps.PasswordManagerService) private readonly passwordManagerService: IPasswordManagerService,
+    @Inject(Deps.PasswordManagerService)
+    private readonly passwordManagerService: IPasswordManagerService,
   ) {
     //
   }
-
 
   async execute(command: LoginCommand): Promise<LoginCommandResponse> {
     const user = await this.userRepository.findOneByUsername(command.username);
@@ -44,13 +46,14 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
   private generateUserTokens(user: User): LoginCommandResponse {
     return this.authService.generateUserTokens(user);
-  };
+  }
 
   private async createUserSession(user: User) {
     await this.authService.createUserSession(user);
   }
 
   private verifyPassword(password: string, hash: string) {
-    if (!this.passwordManagerService.passwordMatchesHash(password, hash)) throw new InvalidCredentialsException();
+    if (!this.passwordManagerService.passwordMatchesHash(password, hash))
+      throw new InvalidCredentialsException();
   }
 }

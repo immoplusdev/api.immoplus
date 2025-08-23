@@ -1,11 +1,31 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch, Put } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  Param,
+  Inject,
+  UseGuards,
+  Patch,
+  Put,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   GeolocalizedItemsSearchParamsQueryDto,
@@ -21,7 +41,8 @@ import {
 import {
   CreateBienImmobilierDto,
   CreateBienImmobilierDtoMapper,
-  UpdateBienImmobilierDto, UpdateBienImmobilierDtoMapper,
+  UpdateBienImmobilierDto,
+  UpdateBienImmobilierDtoMapper,
 } from "@/core/application/biens-immobiliers";
 import { BienImmobilierDtoMapper } from "@/core/application/biens-immobiliers/bien-immobilier-dto.mapper";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
@@ -30,27 +51,34 @@ import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/d
 import { BienImmobilierGeolocalisizeDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize.dto";
 import { BienImmobilierGeolocalisizeFilterDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize-filter.dto";
 
-
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")
 export class BienImmobilierController {
-
   private readonly dtoMapper = new BienImmobilierDtoMapper();
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
 
   constructor(
     @Inject(Deps.BiensImmobiliesRepository)
     private readonly repository: IBienImmobilierRepository,
     private readonly eventBus: EventBus,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
   @Post()
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Create])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.BiensImmobilies,
+    PermissionAction.Create,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
@@ -71,8 +99,16 @@ export class BienImmobilierController {
   @ApiResponse({
     type: WrapperResponseBienImmobilierBatchDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Read])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.BiensImmobilies,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get()
@@ -81,11 +117,17 @@ export class BienImmobilierController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "proprietaire",
-      _l_op: "and",
-      _val: userId,
-    }], params._where);
+    if (!userRole.hasAdminAccess())
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "proprietaire",
+            _l_op: "and",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
 
     const items = await this.repository.findByQuery(params);
 
@@ -95,8 +137,16 @@ export class BienImmobilierController {
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Read])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.BiensImmobilies,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
@@ -105,7 +155,6 @@ export class BienImmobilierController {
     @Param("id") id: string,
     @Query() params?: SelectItemsParamsDto,
   ) {
-
     const item = await this.repository.findOne(id, { fields: params?._select });
 
     if (!item) throw new ItemNotFoundException();
@@ -113,14 +162,11 @@ export class BienImmobilierController {
     return this.responseMapper.mapFrom(item);
   }
 
-
   @ApiResponse({
     type: WrapperResponseBienImmobilierBatchDto,
   })
   @Get("/data/public/")
-  async readManyPublic(
-    @Query() params: SearchItemsParamsDto,
-  ) {
+  async readManyPublic(@Query() params: SearchItemsParamsDto) {
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
@@ -133,18 +179,16 @@ export class BienImmobilierController {
   async readManyPublicGeolocalized(
     @Query() params: BienImmobilierGeolocalisizeDto,
   ) {
-
     const items = await this.repository.findByGeolocation(params);
     return this.responseMapper.mapFromQueryResult(items);
   }
-
 
   @ApiResponse({
     type: WrapperResponseBienImmobilierBatchDto,
   })
   @Get("data/filter/public")
   async readManyPublicGeolocalizedFilter(
-    @Query() params: BienImmobilierGeolocalisizeFilterDto
+    @Query() params: BienImmobilierGeolocalisizeFilterDto,
   ) {
     const items = await this.repository.findByGeolocationFilter(params);
     return this.responseMapper.mapFromQueryResult(items);
@@ -168,8 +212,16 @@ export class BienImmobilierController {
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Update])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.BiensImmobilies,
+    PermissionAction.Update,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
@@ -190,31 +242,48 @@ export class BienImmobilierController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
-    await this.repository.updateByQuery(query, { ...payloadMapper.mapTo(payload), createdBy: userId });
+    await this.repository.updateByQuery(query, {
+      ...payloadMapper.mapTo(payload),
+      createdBy: userId,
+    });
 
-    if (payload.statusValidation && userRole.hasAdminAccess()) await this.eventBus.publish(new BienImmobilierStatusValidationUpdatedEvent({
-      id,
-      status: payload.statusValidation,
-    }));
+    if (payload.statusValidation && userRole.hasAdminAccess())
+      await this.eventBus.publish(
+        new BienImmobilierStatusValidationUpdatedEvent({
+          id,
+          status: payload.statusValidation,
+        }),
+      );
 
-    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom(
+      (await this.repository.findByQuery(query)).data.at(0),
+    );
   }
-
 
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([PermissionCollection.BiensImmobilies, PermissionAction.Delete])
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.BiensImmobilies,
+    PermissionAction.Delete,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
   async delete(
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
+    @CurrentUser("role") userRole: Role,
+  ) {
     const query = {
       _where: [
         {
@@ -224,13 +293,13 @@ export class BienImmobilierController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.deleteByQuery(query);
 
     return this.responseMapper.mapFrom({ id } as never);
   }
-
 
   @ApiResponse({
     type: WrapperResponseBienImmobilierBatchDto,
@@ -239,5 +308,4 @@ export class BienImmobilierController {
   async updateAllCordonates() {
     return this.repository.updateAllCordonates();
   }
-
 }

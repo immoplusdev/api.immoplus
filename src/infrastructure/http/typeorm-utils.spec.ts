@@ -14,9 +14,7 @@ describe("TypeormUtils", () => {
     // controller = module.get<AuthController>(AuthController);
   });
 
-
   it("should be equal", () => {
-
     const typeormFilter = {
       where: {
         subject: And(Equal("test2")),
@@ -41,7 +39,7 @@ describe("TypeormUtils", () => {
 
     const typeormFilterString = JSON.stringify(typeormFilter);
 
-    const utilsFiltersString = JSON.stringify({where: utilsFilters});
+    const utilsFiltersString = JSON.stringify({ where: utilsFilters });
 
     expect(utilsFiltersString).toEqual(typeormFilterString);
   });

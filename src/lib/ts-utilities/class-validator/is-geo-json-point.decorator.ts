@@ -13,9 +13,7 @@ export function IsGeoJsonPoint(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
-          return (
-            value.type == "Point" && value.coordinates.length == 2
-          );
+          return value.type == "Point" && value.coordinates.length == 2;
         },
       },
     });

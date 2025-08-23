@@ -11,4 +11,3 @@ export class PieceDto {
     Object.assign(this, data);
   }
 }
-

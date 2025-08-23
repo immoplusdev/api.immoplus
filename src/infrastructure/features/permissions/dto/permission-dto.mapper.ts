@@ -2,7 +2,6 @@ import { AutoMapper, IMapper } from "@/lib/ts-utilities";
 import { Permission } from "@/core/domain/permissions";
 import { PermissionDto } from "./permission.dto";
 
-
 export class PermissionDtoMapper {
   private mapper: AutoMapper;
   constructor() {

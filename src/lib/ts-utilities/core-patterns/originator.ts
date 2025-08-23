@@ -1,4 +1,4 @@
-import {Memento} from "./memento";
+import { Memento } from "./memento";
 
 export interface Originator<T> {
   saveState(): Memento;

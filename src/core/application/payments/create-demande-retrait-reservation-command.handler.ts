@@ -1,26 +1,46 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { CreateDemandeRetraitReservationCommand } from "./create-demande-retrait-reservation.command";
-import { IPaymentRepository, Payment, PaymentCollection, PaymentStatus, PaymentType } from "@/core/domain/payments";
+import {
+  IPaymentRepository,
+  Payment,
+  PaymentCollection,
+  PaymentStatus,
+  PaymentType,
+} from "@/core/domain/payments";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { IReservationRepository, Reservation, StatusReservation } from "@/core/domain/reservations";
-import { ConflictException, ItemNotFoundException } from "@/core/domain/common/exceptions";
+import {
+  IReservationRepository,
+  Reservation,
+  StatusReservation,
+} from "@/core/domain/reservations";
+import {
+  ConflictException,
+  ItemNotFoundException,
+} from "@/core/domain/common/exceptions";
 
 @CommandHandler(CreateDemandeRetraitReservationCommand)
-export class CreateDemandeRetraitReservationCommandHandler implements ICommandHandler<CreateDemandeRetraitReservationCommand> {
+export class CreateDemandeRetraitReservationCommandHandler
+  implements ICommandHandler<CreateDemandeRetraitReservationCommand>
+{
   constructor(
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.PaymentRepository) private readonly paymentRepository: IPaymentRepository,
-  ) {
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.PaymentRepository)
+    private readonly paymentRepository: IPaymentRepository,
+  ) {}
 
-  }
-
-  async execute(command: CreateDemandeRetraitReservationCommand): Promise<Payment> {
-
-    const reservation = await this.reservationRepository.findOne(command.reservationId);
+  async execute(
+    command: CreateDemandeRetraitReservationCommand,
+  ): Promise<Payment> {
+    const reservation = await this.reservationRepository.findOne(
+      command.reservationId,
+    );
     await this.ensureCanProceed(command, reservation);
 
-    const amountWithFees = Math.round(reservation.montantTotalReservation * 10 / 100);
+    const amountWithFees = Math.round(
+      (reservation.montantTotalReservation * 10) / 100,
+    );
 
     return await this.paymentRepository.createOne({
       amount: amountWithFees,
@@ -35,10 +55,15 @@ export class CreateDemandeRetraitReservationCommandHandler implements ICommandHa
     });
   }
 
-  private async ensureCanProceed(command: CreateDemandeRetraitReservationCommand, reservation: Reservation) {
-
+  private async ensureCanProceed(
+    command: CreateDemandeRetraitReservationCommand,
+    reservation: Reservation,
+  ) {
     if (!reservation) throw new ItemNotFoundException();
-    if (reservation.statusReservation != StatusReservation.Terminee) throw new ConflictException("$t:all.exception.reservation_pas_encore_validee");
+    if (reservation.statusReservation != StatusReservation.Terminee)
+      throw new ConflictException(
+        "$t:all.exception.reservation_pas_encore_validee",
+      );
 
     const existingDemandesRetrait = await this.paymentRepository.findByQuery({
       _where: [
@@ -69,6 +94,9 @@ export class CreateDemandeRetraitReservationCommandHandler implements ICommandHa
       ],
     });
 
-    if (existingDemandesRetrait.data.length != 0) throw new ConflictException("$t:all.exception.existing_demande_retrait_reservation");
+    if (existingDemandesRetrait.data.length != 0)
+      throw new ConflictException(
+        "$t:all.exception.existing_demande_retrait_reservation",
+      );
   }
 }

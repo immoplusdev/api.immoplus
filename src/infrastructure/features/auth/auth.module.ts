@@ -5,7 +5,8 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { RegisterCommandHandler } from "@/core/application/auth/register-command.handler";
 import { UserModule } from "@/infrastructure/features/users/user.module";
 import {
-  LoginCommandHandler, LoginWithEmailOtpCommandHandler,
+  LoginCommandHandler,
+  LoginWithEmailOtpCommandHandler,
   RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler,
   ResetPasswordCommandHandler,
@@ -23,17 +24,20 @@ import { ConfigsModule } from "@/infrastructure/features/configs/configs.module"
 import { TfaService } from "@/infrastructure/features/auth/tfa.service";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
-import {
-  LoginWithPhoneNumberOtpCommandHandler,
-} from "@/core/application/auth/login-with-phone-number-otp-command.handler";
+import { LoginWithPhoneNumberOtpCommandHandler } from "@/core/application/auth/login-with-phone-number-otp-command.handler";
 
 const commandHandlers = [
-  RegisterCommandHandler, RegisterProEntrepriseCommandHandler,
-  RegisterProParticulierCommandHandler, LoginCommandHandler,
+  RegisterCommandHandler,
+  RegisterProEntrepriseCommandHandler,
+  RegisterProParticulierCommandHandler,
+  LoginCommandHandler,
   UpdatePasswordCommandHandler,
-  SendSmsOtpCommandHandler, SendEmailOtpCommandHandler,
-  VerifyEmailCommandHandler, VerifyPhoneNumberCommandHandler,
-  ResetPasswordCommandHandler, LoginWithPhoneNumberOtpCommandHandler,
+  SendSmsOtpCommandHandler,
+  SendEmailOtpCommandHandler,
+  VerifyEmailCommandHandler,
+  VerifyPhoneNumberCommandHandler,
+  ResetPasswordCommandHandler,
+  LoginWithPhoneNumberOtpCommandHandler,
   LoginWithEmailOtpCommandHandler,
 ];
 
@@ -56,7 +60,6 @@ const providers: Provider[] = [
   },
 ];
 
-
 @Module({
   controllers: [AuthController],
   imports: [
@@ -65,7 +68,7 @@ const providers: Provider[] = [
     GlobalizationModule,
     UserModule,
     NotificationModule,
-    CqrsModule
+    CqrsModule,
   ],
   providers: [...providers, ...commandHandlers, AuthService, JwtManagerService],
   exports: [...providers],

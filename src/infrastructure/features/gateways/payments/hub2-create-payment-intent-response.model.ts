@@ -52,7 +52,7 @@ export type Payments = {
   nextAction: PaymentNextAction;
   onCancelRedirectionUrl: string;
   onFinishRedirectionUrl: string;
-}[]
+}[];
 
 export interface Fee {
   id: string;

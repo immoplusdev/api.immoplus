@@ -6,7 +6,7 @@ import { PaymentMethod } from "../common/enums";
 
 export class WalletWithDrawalRequest {
   id: string;
-  owner: User | string; 
+  owner: User | string;
   wallet: Wallet | string;
   amount: number;
   currency: string;

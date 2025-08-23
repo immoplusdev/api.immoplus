@@ -4,19 +4,17 @@ import { RegisterCommandResponse } from "@/core/application/auth/register-comman
 import { Inject } from "@nestjs/common";
 import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
 import { UserEmailAlreadyTakenException } from "@/core/application/auth/user-email-already-taken.exception";
-import {
-  UserPhoneNumberAlreadyTakenException,
-} from "@/core/application/auth/user-phone-number-already-taken.exception";
+import { UserPhoneNumberAlreadyTakenException } from "@/core/application/auth/user-phone-number-already-taken.exception";
 import { Deps } from "@/core/domain/common/ioc";
 import { IPasswordManagerService } from "@/core/domain/auth";
 import { UserRole } from "@/core/domain/roles";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { IConfigsManagerService } from "@/core/domain/configs";
 
-
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
-  implements ICommandHandler<RegisterCommand, RegisterCommandResponse> {
+  implements ICommandHandler<RegisterCommand, RegisterCommandResponse>
+{
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -26,8 +24,7 @@ export class RegisterCommandHandler
     private readonly usersDataRepository: IUserDataRepository,
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
-  ) {
-  }
+  ) {}
 
   async execute(command: RegisterCommand): Promise<RegisterCommandResponse> {
     await this.validateInput(command);
@@ -38,7 +35,6 @@ export class RegisterCommandHandler
       user: userId,
     });
 
-
     const user = await this.usersRepository.createOne({
       id: userId,
       email: command.email.toLowerCase(),
@@ -48,11 +44,13 @@ export class RegisterCommandHandler
       lastName: command.lastName,
       role: UserRole.Customer,
       additionalData: userData.id,
-      createdBy: this.configsManagerService.getEnvVariable("NEST_APP_ADMIN_PASSWORD_ID"),
+      createdBy: this.configsManagerService.getEnvVariable(
+        "NEST_APP_ADMIN_PASSWORD_ID",
+      ),
       avatar: command.avatar || null,
     });
 
-    console.log("user : ",user);
+    console.log("user : ", user);
 
     return new RegisterCommandResponse({
       user,

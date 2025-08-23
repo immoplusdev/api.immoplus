@@ -32,8 +32,9 @@ export class WrapperResponseCommuneDto extends WrapperResponseDto<CommuneDto> {
   data: CommuneDto;
 }
 
-export class WrapperResponseCommuneListDto extends WrapperResponseDto<CommuneDto[]> {
+export class WrapperResponseCommuneListDto extends WrapperResponseDto<
+  CommuneDto[]
+> {
   @ApiProperty({ type: [CommuneDto] })
   data: CommuneDto[];
 }
-

@@ -1,6 +1,7 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -34,13 +35,18 @@ export class ReservationEntity {
   @Column({ name: "dates_reservation", type: "json" })
   datesReservation: ServiceDates;
 
-  @Column({ name: "date_debut", nullable: true }) 
+  @Column({ name: "date_debut", nullable: true })
   dateDebut: Date;
-  
+
   @Column({ name: "date_fin", nullable: true })
   dateFin: Date;
 
-  @Column({ name: "status_facture", type: "varchar", length: 10, default: StatusFacture.NonPaye })
+  @Column({
+    name: "status_facture",
+    type: "varchar",
+    length: 10,
+    default: StatusFacture.NonPaye,
+  })
   statusFacture: StatusFacture;
 
   @Column({ name: "retrait_pro_effectue", type: "bool", default: false })
@@ -53,7 +59,12 @@ export class ReservationEntity {
   @Column({ name: "notes", type: "text", nullable: true })
   notes: string;
 
-  @Column({ name: "customer_phone_number", type: "varchar", length: 20, nullable: true })
+  @Column({
+    name: "customer_phone_number",
+    type: "varchar",
+    length: 20,
+    nullable: true,
+  })
   clientPhoneNumber: string;
 
   @CreateDateColumn({ name: "created_at" })

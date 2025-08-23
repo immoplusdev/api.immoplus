@@ -3,7 +3,10 @@ import { WrapperResponseDto } from "@/lib/responses";
 import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { PaymentDto } from "@/core/application/payments";
 
-export class CreatePaymentIntentCommandResponse extends OmitType(PaymentDto, [] as const) {
+export class CreatePaymentIntentCommandResponse extends OmitType(
+  PaymentDto,
+  [] as const,
+) {
   constructor(data?: OmitMethods<CreatePaymentIntentCommandResponse>) {
     if (data) super(data);
   }
@@ -18,13 +21,22 @@ export class WrapperResponseCreatePaymentIntentCommandResponseDto extends Wrappe
   }
 }
 
-export class WrapperResponseCreatePaymentIntentCommandResponseDtoMapper implements IMapper<CreatePaymentIntentCommandResponse, WrapperResponseCreatePaymentIntentCommandResponseDto> {
-  mapFrom(param: CreatePaymentIntentCommandResponse): WrapperResponseCreatePaymentIntentCommandResponseDto {
+export class WrapperResponseCreatePaymentIntentCommandResponseDtoMapper
+  implements
+    IMapper<
+      CreatePaymentIntentCommandResponse,
+      WrapperResponseCreatePaymentIntentCommandResponseDto
+    >
+{
+  mapFrom(
+    param: CreatePaymentIntentCommandResponse,
+  ): WrapperResponseCreatePaymentIntentCommandResponseDto {
     return new WrapperResponseCreatePaymentIntentCommandResponseDto(param);
   }
 
-  mapTo(param: WrapperResponseCreatePaymentIntentCommandResponseDto): CreatePaymentIntentCommandResponse {
+  mapTo(
+    param: WrapperResponseCreatePaymentIntentCommandResponseDto,
+  ): CreatePaymentIntentCommandResponse {
     return param.data;
   }
 }
-      

@@ -58,7 +58,10 @@ export class WrapperResponseReservationDetailsDto extends WrapperResponseDto<Res
   data: ReservationDetailsDto;
 }
 
-export class WrapperResponseReservationDetailsDtoMapper implements IMapper<ReservationDetailsDto, WrapperResponseReservationDetailsDto> {
+export class WrapperResponseReservationDetailsDtoMapper
+  implements
+    IMapper<ReservationDetailsDto, WrapperResponseReservationDetailsDto>
+{
   mapFrom(param: ReservationDetailsDto): WrapperResponseReservationDetailsDto {
     return new WrapperResponseReservationDetailsDto(param);
   }
@@ -84,4 +87,3 @@ export class WrapperResponseReservationDetailsDtoMapper implements IMapper<Reser
 //   @ApiProperty()
 //   hasNext: boolean;
 // }
-

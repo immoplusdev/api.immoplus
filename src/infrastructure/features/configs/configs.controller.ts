@@ -1,13 +1,29 @@
-import { Body, Controller, Get, Inject, UseGuards, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  UseGuards,
+  Patch,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
-import { RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { PublicConfigDto, WrapperResponsePublicConfigDto } from "@/infrastructure/features/configs/dto";
+import {
+  PublicConfigDto,
+  WrapperResponsePublicConfigDto,
+} from "@/infrastructure/features/configs/dto";
 import { UpdateConfigDto } from "@/infrastructure/features/configs/dto/update-configs.dto";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
@@ -17,8 +33,7 @@ export class ConfigController {
   constructor(
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponsePublicConfigDto,
@@ -30,19 +45,20 @@ export class ConfigController {
     return responseMapper.mapFrom(item as never);
   }
 
-
   @ApiResponse({
     type: WrapperResponsePublicConfigDto,
   })
   @RequiredRoles(UserRole.Admin)
-  @RequiredPermissions([PermissionCollection.Configurations, PermissionAction.Read])
+  @RequiredPermissions([
+    PermissionCollection.Configurations,
+    PermissionAction.Read,
+  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch()
-  async updateSingleton(
-    @Body() payload: UpdateConfigDto,
-  ) {
-    const responseMapper = new WrapperResponseDtoMapper<WrapperResponsePublicConfigDto>();
+  async updateSingleton(@Body() payload: UpdateConfigDto) {
+    const responseMapper =
+      new WrapperResponseDtoMapper<WrapperResponsePublicConfigDto>();
 
     await this.configsManagerService.updateAppConfigs(payload);
     const item = await this.configsManagerService.getPublicConfigs();

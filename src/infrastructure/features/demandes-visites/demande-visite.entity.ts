@@ -1,6 +1,7 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -11,7 +12,10 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { UserEntity } from "@/infrastructure/features/users";
-import { StatusDemandeVisite, TypeDemandeVisite } from "@/core/domain/demandes-visites";
+import {
+  StatusDemandeVisite,
+  TypeDemandeVisite,
+} from "@/core/domain/demandes-visites";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { BienImmobilierEntity } from "@/infrastructure/features/biens-immobiliers";
 
@@ -42,7 +46,12 @@ export class DemandeVisiteEntity {
 
   @Column({ name: "dates_demande_visite", type: "json" })
   datesDemandeVisite: ServiceDates;
-  @Column({ name: "status_facture", type: "varchar", length: 10, default: StatusFacture.NonPaye })
+  @Column({
+    name: "status_facture",
+    type: "varchar",
+    length: 10,
+    default: StatusFacture.NonPaye,
+  })
   statusFacture: StatusFacture;
 
   @Column({ name: "retrait_pro_effectue", type: "bool", default: false })
@@ -52,11 +61,15 @@ export class DemandeVisiteEntity {
   @Column({ name: "montant_demande_visite_sans_commission", type: "int" })
   montantCommission: number;
 
-
   @Column({ name: "notes", type: "text", nullable: true })
   notes: string;
 
-  @Column({ name: "customer_phone_number", type: "varchar", length: 20, nullable: true })
+  @Column({
+    name: "customer_phone_number",
+    type: "varchar",
+    length: 20,
+    nullable: true,
+  })
   clientPhoneNumber: string;
 
   @CreateDateColumn({ name: "created_at" })

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@/core/domain/common/docs";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 
 export class PublicConfigItemDto {
   @ApiProperty()
@@ -10,4 +10,3 @@ export class PublicConfigItemDto {
     Object.assign(this, data);
   }
 }
-

@@ -6,22 +6,25 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 
 @Injectable()
 export class JwtManagerService implements IJwtManagerService {
-
   constructor(
-    @Inject(Deps.ConfigsManagerService) private readonly configsManagerService: IConfigsManagerService,
-  ) {
-  }
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
+  ) {}
 
   generateAccessToken(payload: any): string {
-    return jwt.sign(payload,
+    return jwt.sign(
+      payload,
       this.configsManagerService.getEnvVariable("JWT_SECRET"),
       {
         expiresIn: this.configsManagerService.getEnvVariable("JWT_EXPIRES_IN"),
-      });
+      },
+    );
   }
 
   generateRefreshToken(payload: any): string {
-    return jwt.sign({ id: payload.id },
-      this.configsManagerService.getEnvVariable("JWT_SECRET"));
+    return jwt.sign(
+      { id: payload.id },
+      this.configsManagerService.getEnvVariable("JWT_SECRET"),
+    );
   }
 }

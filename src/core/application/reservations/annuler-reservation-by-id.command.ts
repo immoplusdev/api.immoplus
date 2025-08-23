@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsOptional } from "class-validator";
 
@@ -11,6 +11,6 @@ export class AnnulerReservationByIdCommand {
   @IsOptional()
   notes?: string;
   constructor(data?: OmitMethods<AnnulerReservationByIdCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

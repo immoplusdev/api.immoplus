@@ -1,9 +1,13 @@
 import { PaymentMethod } from "@/core/domain/common/enums";
 import { WithdrawalStatus } from "@/core/domain/wallet";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber } from "class-validator";
+import { IsNumber, IsUUID } from "class-validator";
 
-export class CreateWalletWithdrawalRequestDto {
+export class CreateWalletWithdrawalRequestAdminDto {
+  @ApiProperty({ format: "uuid", required: true })
+  @IsUUID()
+  owner: string;
+
   @ApiProperty({ type: Number, required: true })
   @IsNumber()
   amount: number;

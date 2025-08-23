@@ -1,16 +1,15 @@
 export enum TransferStatus {
-  CREATED = 'created', 
-  SUCCESSFUL = 'successful', 
-  PENDING = 'pending', 
-  FAILED = 'failed'
-}    
-
-export enum TransferType {
-  MOBILE_MONEY = 'mobile_money', 
-  BANK_TRANSFER = 'bank_transfer', 
-  AIRTIME = 'airtime' 
+  CREATED = "created",
+  SUCCESSFUL = "successful",
+  PENDING = "pending",
+  FAILED = "failed",
 }
 
+export enum TransferType {
+  MOBILE_MONEY = "mobile_money",
+  BANK_TRANSFER = "bank_transfer",
+  AIRTIME = "airtime",
+}
 
 export enum TransferProvider {
   MoovMoney = "moov",
@@ -22,8 +21,8 @@ export enum TransferProvider {
 }
 
 export enum TransferItemType {
-  WALLET_WITHDRAWAL_REQUEST = 'walletWithDrawalRequest',
-  ADMIN_WITHDRAWAL = 'admin_withdrawal',
+  WALLET_WITHDRAWAL_REQUEST = "walletWithDrawalRequest",
+  ADMIN_WITHDRAWAL = "admin_withdrawal",
 }
 
 export enum PaymentCollection {

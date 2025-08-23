@@ -1,6 +1,7 @@
 import {
   Column,
-  CreateDateColumn, DeleteDateColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -9,12 +10,15 @@ import {
 } from "typeorm";
 import { RoleEntity } from "@/infrastructure/features/roles";
 import { Role } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { UserEntity } from "@/infrastructure/features/users";
 
-@Entity('permissions')
+@Entity("permissions")
 export class PermissionEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
   @ManyToOne(() => RoleEntity, (role) => role.id)
   @JoinColumn({ name: "role_id" })

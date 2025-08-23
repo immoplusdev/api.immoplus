@@ -36,7 +36,10 @@ export class ResidenceDto {
   @ApiProperty()
   adresse?: string;
 
-  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: "StatusValidationBienImmobilier" })
+  @ApiProperty({
+    enum: StatusValidationBienImmobilier,
+    enumName: "StatusValidationBienImmobilier",
+  })
   statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty({ type: GeoJsonPointDto })
@@ -88,8 +91,9 @@ export class WrapperResponseResidenceDto extends WrapperResponseDto<ResidenceDto
   data: ResidenceDto;
 }
 
-export class WrapperResponseResidenceBatchDto extends WrapperResponseDto<ResidenceDto[]> {
+export class WrapperResponseResidenceBatchDto extends WrapperResponseDto<
+  ResidenceDto[]
+> {
   @ApiProperty({ type: [ResidenceDto] })
   data: ResidenceDto[];
 }
-

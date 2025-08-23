@@ -1,7 +1,11 @@
 import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
-import { Amentity, StatusValidationBienImmobilier, TypeBienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  Amentity,
+  StatusValidationBienImmobilier,
+  TypeBienImmobilier,
+} from "@/core/domain/biens-immobiliers";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { AmentityDto } from "./amentity.dto";
@@ -48,7 +52,10 @@ export class BienImmobilierDto {
   @ApiProperty({ type: GeoJsonPointDto })
   position?: GeoJsonPoint;
 
-  @ApiProperty({ enum: StatusValidationBienImmobilier, enumName: "StatusValidationBienImmobilier" })
+  @ApiProperty({
+    enum: StatusValidationBienImmobilier,
+    enumName: "StatusValidationBienImmobilier",
+  })
   statusValidation: StatusValidationBienImmobilier;
 
   @ApiProperty()
@@ -100,8 +107,9 @@ export class WrapperResponseBienImmobilierDto extends WrapperResponseDto<BienImm
   data: BienImmobilierDto;
 }
 
-export class WrapperResponseBienImmobilierBatchDto extends WrapperResponseDto<BienImmobilierDto[]> {
+export class WrapperResponseBienImmobilierBatchDto extends WrapperResponseDto<
+  BienImmobilierDto[]
+> {
   @ApiProperty({ type: [BienImmobilierDto] })
   data: BienImmobilierDto[];
 }
-

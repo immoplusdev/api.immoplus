@@ -6,12 +6,18 @@ import { Inject } from "@nestjs/common";
 import { WrapperResponse } from "@/core/domain/common/models";
 
 @QueryHandler(FindWalletTransactionsByOwnerQuery)
-export class FindWalletTransactionByOwnerHandler implements IQueryHandler<FindWalletTransactionsByOwnerQuery>{
-
-    constructor(
-         @Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository
-    ){}
-    async execute(findWalletTransactionsByOwnerQuery: FindWalletTransactionsByOwnerQuery): Promise<WrapperResponse<WalletTransaction[]>>{ 
-        return this.walletRepository.findWalletTransactionsByOwner(findWalletTransactionsByOwnerQuery.query);
-    }
+export class FindWalletTransactionByOwnerHandler
+  implements IQueryHandler<FindWalletTransactionsByOwnerQuery>
+{
+  constructor(
+    @Inject(Deps.WalletRepository)
+    private readonly walletRepository: IWalletRepository,
+  ) {}
+  async execute(
+    findWalletTransactionsByOwnerQuery: FindWalletTransactionsByOwnerQuery,
+  ): Promise<WrapperResponse<WalletTransaction[]>> {
+    return this.walletRepository.findWalletTransactionsByOwner(
+      findWalletTransactionsByOwnerQuery.query,
+    );
+  }
 }

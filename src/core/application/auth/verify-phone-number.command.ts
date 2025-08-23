@@ -1,4 +1,4 @@
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 
 export class VerifyPhoneNumberCommand {
@@ -7,6 +7,6 @@ export class VerifyPhoneNumberCommand {
   @ApiProperty()
   otp: string;
   constructor(data?: OmitMethods<VerifyPhoneNumberCommand>) {
-    if(data) Object.assign(this, data);
+    if (data) Object.assign(this, data);
   }
 }

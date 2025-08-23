@@ -1,16 +1,21 @@
 import {
   CreatePaymentIntent,
-  CreatePaymentIntentResponse, AttemptPaymentIntent,
-  PaymentStatus, AttemptPaymentIntentResponse,
-  AuthenticatePaymentIntent, AuthenticatePaymentIntentResponse,
+  CreatePaymentIntentResponse,
+  AttemptPaymentIntent,
+  PaymentStatus,
+  AttemptPaymentIntentResponse,
+  AuthenticatePaymentIntent,
+  AuthenticatePaymentIntentResponse,
 } from "@/core/domain/payments";
 import { UnexpectedException } from "@/core/domain/common/exceptions";
 import { PaymentToken } from "@/core/domain/payments/payment-token.model";
 import {
-  HUB2_API_KEY, HUB2_API_URL,
+  HUB2_API_KEY,
+  HUB2_API_URL,
   HUB2_ENVIRONMENT,
   HUB2_MERCHANT_ID,
-  HUB2_OVERRIDE_BUSINESS_NAME, HUB2_RETURN_URL,
+  HUB2_OVERRIDE_BUSINESS_NAME,
+  HUB2_RETURN_URL,
 } from "@/infrastructure/configs/payments";
 import { ILoggerService } from "@/core/domain/logging";
 import { Inject, Injectable } from "@nestjs/common";
@@ -30,8 +35,9 @@ import { TransferStatusResponseDto } from "@/core/domain/gateways/transfers/tran
 
 @Injectable()
 export class Hub2PaymentGatewayService implements IGatewayRepository {
-
-  constructor(@Inject(Deps.LoggerService) private readonly loggerService: ILoggerService) {}
+  constructor(
+    @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
+  ) {}
 
   static getWebhookSignatureFromHeaders(headers: Record<string, any>) {
     const header = headers["hub2-signature"]
@@ -42,7 +48,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
   }
 
   formatAmount(amount: number) {
-    return Math.ceil(amount /5)*5;
+    return Math.ceil(amount / 5) * 5;
   }
 
   getProviderHub2(paymentMethod: string) {
@@ -99,7 +105,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
         break;
     }
 
-    return this.formatAmount(amount * feesPercentage / 100);
+    return this.formatAmount((amount * feesPercentage) / 100);
   }
 
   getTransferMethodFees(amount: number, paymentMethod: string) {
@@ -121,18 +127,25 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
         break;
     }
 
-    return this.formatAmount(amount * feesPercentage / 100);
+    return this.formatAmount((amount * feesPercentage) / 100);
   }
 
   async createPaymentIntent(
     payload: CreatePaymentIntent,
   ): Promise<CreatePaymentIntentResponse> {
-    const amount = payload.amount + this.getPaymentMethodFees(payload.amount, payload.paymentMethod || PaymentMethod.Wave);
+    const amount =
+      payload.amount +
+      this.getPaymentMethodFees(
+        payload.amount,
+        payload.paymentMethod || PaymentMethod.Wave,
+      );
 
     try {
       const body = {
         customerReference: payload.customerId,
-        purchaseReference: PaymentToken.toString(payload.paymentToken) + new Date().toISOString(),
+        purchaseReference:
+          PaymentToken.toString(payload.paymentToken) +
+          new Date().toISOString(),
         amount: amount,
         currency: "XOF",
         overrideBusinessName: HUB2_OVERRIDE_BUSINESS_NAME,
@@ -268,10 +281,12 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
         break;
     }
 
-    return Math.ceil(amount * feesPercentage / 100);
+    return Math.ceil((amount * feesPercentage) / 100);
   }
 
-  async createTransfer(payload: TransfertPayloadDto): Promise<Hu2TransferResponseDto> {
+  async createTransfer(
+    payload: TransfertPayloadDto,
+  ): Promise<Hu2TransferResponseDto> {
     try {
       const response = await axios.post<Hu2TransferResponseDto>(
         `${HUB2_API_URL}/transfers`,
@@ -289,13 +304,15 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
     }
   }
 
-  async getTransfers(query?: GetTransfersQueryDto ): Promise<Hu2TransferResponseDto[]> {
+  async getTransfers(
+    query?: GetTransfersQueryDto,
+  ): Promise<Hu2TransferResponseDto[]> {
     try {
       const response = await axios.get<Hu2TransferResponseDto[]>(
         `${HUB2_API_URL}/transfers`,
         {
           headers: this.getHeaders(),
-          params: query
+          params: query,
         },
       );
       return response.data;
@@ -307,7 +324,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
     }
   }
 
-  async getTransfer(id: string): Promise<Hu2TransferResponseDto>{
+  async getTransfer(id: string): Promise<Hu2TransferResponseDto> {
     try {
       const response = await axios.get<Hu2TransferResponseDto>(
         `${HUB2_API_URL}/transfers/${id}`,
@@ -324,8 +341,8 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
     }
   }
 
-  async getTransferBalance(id: string): Promise<Hu2TransferResponseDto>{
-     try {
+  async getTransferBalance(id: string): Promise<Hu2TransferResponseDto> {
+    try {
       const response = await axios.get<Hu2TransferResponseDto>(
         `${HUB2_API_URL}/transfers/${id}/balance`,
         {
@@ -340,7 +357,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       throw new UnexpectedException();
     }
   }
-  async getTransferStatus(id: string): Promise<TransferStatusResponseDto>{
+  async getTransferStatus(id: string): Promise<TransferStatusResponseDto> {
     try {
       const response = await axios.get<TransferStatusResponseDto>(
         `${HUB2_API_URL}/transfers/${id}/status`,
@@ -356,5 +373,4 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       throw new UnexpectedException();
     }
   }
-
 }

@@ -1,5 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { AppConfigs, IAppConfigsRepository, IConfigsManagerService, PublicConfigs } from "@/core/domain/configs";
+import {
+  AppConfigs,
+  IAppConfigsRepository,
+  IConfigsManagerService,
+  PublicConfigs,
+} from "@/core/domain/configs";
 import { ConfigService } from "@nestjs/config";
 import { fileUploadConfig } from "@/infrastructure/configs";
 import { IFileUploadConfig } from "@/core/domain/files";
@@ -11,15 +16,16 @@ import { TypeResidence } from "@/core/domain/residences";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
 
-
 @Injectable()
 export class ConfigsManagerService implements IConfigsManagerService {
   private readonly config: ConfigService;
 
   constructor(
     config: ConfigService,
-    @Inject(Deps.AppConfigsRepository) private readonly appConfigsRepository: IAppConfigsRepository,
-    @Inject(Deps.GlobalizationService) private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.AppConfigsRepository)
+    private readonly appConfigsRepository: IAppConfigsRepository,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
   ) {
     this.config = config;
   }
@@ -52,13 +58,14 @@ export class ConfigsManagerService implements IConfigsManagerService {
   }
 
   async getAppConfigsId(): Promise<string> {
-    const { data: [{ id }] } = await this.appConfigsRepository.findByQuery({ _select: ["id"] });
+    const {
+      data: [{ id }],
+    } = await this.appConfigsRepository.findByQuery({ _select: ["id"] });
     return id;
   }
 
   async getPublicConfigs(): Promise<PublicConfigs> {
     const appConfigs = await this.getAppConfigs();
-
 
     return new PublicConfigs({
       ...appConfigs,
@@ -76,20 +83,27 @@ export class ConfigsManagerService implements IConfigsManagerService {
       shippingTypes: [],
       visitPaymentTypes: this.translatePublicConfigItems([]),
       typesResidence: this.enumToConfig(TypeResidence),
-      typesDemandeVisite: this.enumToConfig(TypeDemandeVisite)
+      typesDemandeVisite: this.enumToConfig(TypeDemandeVisite),
     });
   }
 
   private translatePublicConfigItems(items: PublicConfigItem[]) {
-    return items.map(item => new PublicConfigItem({ text: this.globalizationService.t(`all.field.${item.text}`), value: item.value }));
+    return items.map(
+      (item) =>
+        new PublicConfigItem({
+          text: this.globalizationService.t(`all.field.${item.text}`),
+          value: item.value,
+        }),
+    );
   }
 
   private enumToConfig(value: any) {
-    return enumToList(value).map(item => new PublicConfigItem({
-      text: this.globalizationService.t(`all.enum.${item}`),
-      value: item,
-    }));
+    return enumToList(value).map(
+      (item) =>
+        new PublicConfigItem({
+          text: this.globalizationService.t(`all.enum.${item}`),
+          value: item,
+        }),
+    );
   }
-
-
 }

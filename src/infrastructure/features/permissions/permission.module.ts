@@ -1,7 +1,7 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/common/ioc';
-import { PermissionController } from './permission.controller';
-import { PermissionRepository } from './permission.repository';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/common/ioc";
+import { PermissionController } from "./permission.controller";
+import { PermissionRepository } from "./permission.repository";
 import { TypeormModule } from "@/infrastructure/typeorm";
 
 const providers: Provider[] = [

@@ -10,36 +10,47 @@ import {
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IResidenceRepository } from "@/core/domain/residences";
-import { DateReservationDejaPriseException, IReservationRepository } from "@/core/domain/reservations";
+import {
+  DateReservationDejaPriseException,
+  IReservationRepository,
+} from "@/core/domain/reservations";
 import { IUserRepository } from "@/core/domain/users";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { ServiceDates } from "@/core/domain/common/models";
-import {
-  GetResidenceOccupiedDatesQueryResponse,
-} from "@/core/application/reservations";
+import { GetResidenceOccupiedDatesQueryResponse } from "@/core/application/reservations";
 import { dateToString } from "@/lib/ts-utilities";
 
-
 @CommandHandler(CreateReservationCommand)
-export class CreateReservationCommandHandler implements ICommandHandler<CreateReservationCommand> {
+export class CreateReservationCommandHandler
+  implements ICommandHandler<CreateReservationCommand>
+{
   constructor(
     readonly queryBus: QueryBus,
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
-    @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
+    @Inject(Deps.ResidenceRepository)
+    private readonly residenceRepository: IResidenceRepository,
   ) {
     //
   }
 
-  async execute(command: CreateReservationCommand): Promise<CreateReservationCommandResponse> {
-
+  async execute(
+    command: CreateReservationCommand,
+  ): Promise<CreateReservationCommandResponse> {
     await this.verifyCanCreateReservation(command);
 
-    const calculationResult: EstimerPrixReservationQueryResponse = await this.queryBus.execute(new EstimerPrixReservationQuery({ ...command }));
+    const calculationResult: EstimerPrixReservationQueryResponse =
+      await this.queryBus.execute(
+        new EstimerPrixReservationQuery({ ...command }),
+      );
 
-    const residence = await this.residenceRepository.findOne(command.residence, { fields: ["id", "proprietaire"] });
+    const residence = await this.residenceRepository.findOne(
+      command.residence,
+      { fields: ["id", "proprietaire"] },
+    );
     if (!residence) throw new ItemNotFoundException();
-
 
     if (!command.clientPhoneNumber) {
       const client = await this.usersRepository.findOne(command.userId, {
@@ -49,27 +60,38 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
       command.setClientPhoneNumber(client.phoneNumber);
     }
 
-
-    const { id } = await this.reservationRepository.createOne({
-      ...command,
-      montantTotalReservation: calculationResult.montantTotalReservation,
-      montantCommission: calculationResult.montantCommission,
-      clientPhoneNumber: command.clientPhoneNumber,
-      createdBy: command.userId,
-    }, false);
-
+    const reserDates = await this.getStartAndEndDates(command.datesReservation);
+    const { id } = await this.reservationRepository.createOne(
+      {
+        ...command,
+        ...reserDates,
+        montantTotalReservation: calculationResult.montantTotalReservation,
+        montantCommission: calculationResult.montantCommission,
+        clientPhoneNumber: command.clientPhoneNumber,
+        createdBy: command.userId,
+      },
+      false,
+    );
 
     return await this.queryBus.execute(new GetReservationByIdQuery({ id }));
   }
 
   private async verifyCanCreateReservation(command: CreateReservationCommand) {
-    const occupiedDatesResponse = await this.queryBus.execute<GetResidenceOccupiedDatesQuery, GetResidenceOccupiedDatesQueryResponse>(
+    const occupiedDatesResponse = await this.queryBus.execute<
+      GetResidenceOccupiedDatesQuery,
+      GetResidenceOccupiedDatesQueryResponse
+    >(
       new GetResidenceOccupiedDatesQuery({
         residenceId: command.residence,
-      }));
+      }),
+    );
 
-    const previousReservationDates = this.serviceDatesToDates(occupiedDatesResponse.dates);
-    const newReservationDates = this.serviceDatesToDates(command.datesReservation);
+    const previousReservationDates = this.serviceDatesToDates(
+      occupiedDatesResponse.dates,
+    );
+    const newReservationDates = this.serviceDatesToDates(
+      command.datesReservation,
+    );
 
     for (const date of newReservationDates) {
       if (previousReservationDates.includes(date)) {
@@ -79,7 +101,16 @@ export class CreateReservationCommandHandler implements ICommandHandler<CreateRe
   }
 
   private serviceDatesToDates(serviceDates: ServiceDates) {
-    return serviceDates.map(serviceDate => dateToString(serviceDate.date));
+    return serviceDates.map((serviceDate) => dateToString(serviceDate.date));
   }
 
+  getStartAndEndDates(datesReservation: ServiceDates) {
+    const startDate = datesReservation[0]?.date;
+    const endDate = datesReservation[datesReservation.length - 1]?.date;
+
+    return {
+      dateDebut: startDate ? new Date(startDate) : null,
+      dateFin: endDate ? new Date(endDate) : null,
+    };
+  }
 }

@@ -7,7 +7,7 @@ import {
 @ValidatorConstraint()
 export class IsPointCoordinates implements ValidatorConstraintInterface {
   validate(
-    coordinates: number[]
+    coordinates: number[],
     // , validationArguments: ValidationArguments
   ) {
     return coordinates.length != 2;

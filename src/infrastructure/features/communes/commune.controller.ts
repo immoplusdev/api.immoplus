@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Post, Query, Param, Inject, UseGuards, Patch } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  Param,
+  Inject,
+  UseGuards,
+  Patch,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
 import { Deps } from "@/core/domain/common/ioc";
@@ -7,27 +18,39 @@ import {
   CreateCommuneDto,
   UpdateCommuneDto,
   WrapperResponseCommuneDto,
-  WrapperResponseCommuneListDto, CommuneDtoMapper,
+  WrapperResponseCommuneListDto,
+  CommuneDtoMapper,
 } from "@/infrastructure/features/communes";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { Role, UserRole } from "@/core/domain/roles";
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
-import { SearchItemsParamsDto, SelectItemsParamsDto } from "@/infrastructure/http";
+import {
+  SearchItemsParamsDto,
+  SelectItemsParamsDto,
+} from "@/infrastructure/http";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
 @ApiTags("Commune")
 @Controller("communes")
 export class CommuneController {
-
   private readonly dtoMapper = new CommuneDtoMapper();
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
 
   constructor(
     @Inject(Deps.CommuneRepository)
     private readonly repository: ICommuneRepository,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseCommuneDto,
@@ -53,9 +76,7 @@ export class CommuneController {
     type: WrapperResponseCommuneListDto,
   })
   @Get()
-  async readMany(
-    @Query() params: SearchItemsParamsDto,
-  ) {
+  async readMany(@Query() params: SearchItemsParamsDto) {
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
@@ -73,7 +94,6 @@ export class CommuneController {
 
     return this.responseMapper.mapFrom(item);
   }
-
 
   @ApiResponse({
     type: WrapperResponseCommuneDto,
@@ -98,13 +118,15 @@ export class CommuneController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.updateByQuery(query, payload);
 
-    return this.responseMapper.mapFrom((await this.repository.findByQuery(query)).data.at(0));
+    return this.responseMapper.mapFrom(
+      (await this.repository.findByQuery(query)).data.at(0),
+    );
   }
-
 
   @ApiResponse({
     type: WrapperResponseCommuneDto,
@@ -117,7 +139,8 @@ export class CommuneController {
   async delete(
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role) {
+    @CurrentUser("role") userRole: Role,
+  ) {
     const query = {
       _where: [
         {
@@ -127,7 +150,8 @@ export class CommuneController {
       ],
     };
 
-    if (!userRole.hasAdminAccess()) query._where.push({ _field: "createdBy", _val: userId });
+    if (!userRole.hasAdminAccess())
+      query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.deleteByQuery(query);
 

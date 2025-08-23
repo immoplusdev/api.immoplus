@@ -1,4 +1,4 @@
 export enum AppEventGroups {
-  Filter = 'filter',
-  Action = 'action',
+  Filter = "filter",
+  Action = "action",
 }

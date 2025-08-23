@@ -9,12 +9,13 @@ export class SendNotificationParams {
   sendSms?: boolean;
   htmlMessage?: string;
   returnUrl?: string;
+  data?: Record<string, any>;
+  url?: string;
 
   constructor(data?: OmitMethods<SendNotificationParams>) {
     if (data) Object.assign(this, data);
   }
 }
-
 
 export class SendEmailNotificationParams {
   email: string;
@@ -34,4 +35,14 @@ export class SendSmsNotificationParams {
   constructor(data?: OmitMethods<SendSmsNotificationParams>) {
     if (data) Object.assign(this, data);
   }
+}
+
+export interface OneSignalResponse {
+  id: string;
+  recipients: number;
+  external_id?: string;
+  errors?: {
+    invalid_external_user_ids?: string[];
+    invalid_player_ids?: string[];
+  };
 }

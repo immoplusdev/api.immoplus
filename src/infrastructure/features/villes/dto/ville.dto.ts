@@ -1,5 +1,5 @@
 import { ApiProperty } from "@/core/domain/common/docs";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 
 export class VilleDto {
@@ -25,12 +25,13 @@ export class VilleDto {
 }
 
 export class WrapperResponseVilleDto extends WrapperResponseDto<VilleDto> {
-   @ApiProperty({ type: VilleDto })
-   data: VilleDto;
+  @ApiProperty({ type: VilleDto })
+  data: VilleDto;
 }
 
-export class WrapperResponseVilleListDto extends WrapperResponseDto<VilleDto[]> {
-   @ApiProperty({ type: [VilleDto] })
-   data: VilleDto[];
+export class WrapperResponseVilleListDto extends WrapperResponseDto<
+  VilleDto[]
+> {
+  @ApiProperty({ type: [VilleDto] })
+  data: VilleDto[];
 }
-

@@ -11,24 +11,37 @@ import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @QueryHandler(GetReservationByIdQuery)
 export class GetReservationByIdQueryHandler
-  implements IQueryHandler<GetReservationByIdQuery, GetReservationByIdQueryResponse> {
+  implements
+    IQueryHandler<GetReservationByIdQuery, GetReservationByIdQueryResponse>
+{
   constructor(
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.UsersRepository) private readonly usersRepository: IUserRepository,
-    @Inject(Deps.ResidenceRepository) private readonly residenceRepository: IResidenceRepository,
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
+    @Inject(Deps.ResidenceRepository)
+    private readonly residenceRepository: IResidenceRepository,
   ) {
     //
   }
 
-  async execute(query: GetReservationByIdQuery): Promise<GetReservationByIdQueryResponse> {
+  async execute(
+    query: GetReservationByIdQuery,
+  ): Promise<GetReservationByIdQueryResponse> {
     const reservation = await this.reservationRepository.findOne(query.id);
     if (!reservation) throw new ItemNotFoundException();
 
-    const residence = await this.residenceRepository.findOne(getIdFromObject(reservation.residence));
+    const residence = await this.residenceRepository.findOne(
+      getIdFromObject(reservation.residence),
+    );
     if (!residence) throw new ItemNotFoundException();
 
-    const client = await this.usersRepository.findPublicUserInfoByUserId(reservation.createdBy);
-    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(residence.proprietaire);
+    const client = await this.usersRepository.findPublicUserInfoByUserId(
+      reservation.createdBy,
+    );
+    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(
+      residence.proprietaire,
+    );
 
     return {
       ...reservation,

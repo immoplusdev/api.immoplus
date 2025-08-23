@@ -1,3 +1,3 @@
 export interface Observer {
-    notify(id?: string): void;
+  notify(id?: string): void;
 }

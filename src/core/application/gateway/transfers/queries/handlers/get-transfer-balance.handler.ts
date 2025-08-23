@@ -5,10 +5,15 @@ import { Deps } from "@/core/domain/common/ioc";
 import { IGatewayRepository } from "@/core/domain/gateways/i-gateway.repository";
 
 @QueryHandler(GetTransferBalanceQuery)
-export class GetTransferBalanceHandler  implements IQueryHandler<GetTransferBalanceQuery> {
-    constructor(@Inject(Deps.GatewayRepository) private readonly gatewayRepository: IGatewayRepository) {}
+export class GetTransferBalanceHandler
+  implements IQueryHandler<GetTransferBalanceQuery>
+{
+  constructor(
+    @Inject(Deps.GatewayRepository)
+    private readonly gatewayRepository: IGatewayRepository,
+  ) {}
 
-    execute(query: GetTransferBalanceQuery): Promise<any> {
-        return this.gatewayRepository.getTransferBalance(query.id);
-    }
+  execute(query: GetTransferBalanceQuery): Promise<any> {
+    return this.gatewayRepository.getTransferBalance(query.id);
+  }
 }

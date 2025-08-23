@@ -1,4 +1,4 @@
 export interface TransferStatusResponseDto {
-    id: string;
-    status: string;
+  id: string;
+  status: string;
 }

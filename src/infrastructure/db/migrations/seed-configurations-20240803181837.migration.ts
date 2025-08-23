@@ -5,7 +5,6 @@ import { AppConfigs } from "@/core/domain/configs";
 
 export class SeedConfiguration20240803181837 implements MigrationInterface {
   async up(queryRunner: QueryRunner): Promise<void> {
-
     const configurations: Partial<AppConfigs>[] = [
       {
         id: generateUuid(),

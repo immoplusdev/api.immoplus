@@ -3,7 +3,10 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { Payment, IPaymentRepository } from "@/core/domain/payments";
 
-import { PaymentEntity, PaymentEntityMapper } from "@/infrastructure/features/payments";
+import {
+  PaymentEntity,
+  PaymentEntityMapper,
+} from "@/infrastructure/features/payments";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
@@ -33,7 +36,11 @@ export class PaymentRepository implements IPaymentRepository {
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
   ) {
-    this.repository = new BaseRepository(dataSource, PaymentEntity, this.relations)
+    this.repository = new BaseRepository(
+      dataSource,
+      PaymentEntity,
+      this.relations,
+    )
       .setEntityMapper(new PaymentEntityMapper())
       .setFullTextSearchFields(this.fullTextSearchFields);
   }
@@ -46,7 +53,9 @@ export class PaymentRepository implements IPaymentRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Payment[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Payment[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -54,11 +63,17 @@ export class PaymentRepository implements IPaymentRepository {
     return this.repository.findOne(id, options);
   }
 
-  async findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Payment> {
+  async findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Payment> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<Payment>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Payment>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

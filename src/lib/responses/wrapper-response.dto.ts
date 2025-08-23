@@ -27,7 +27,6 @@ export class WrapperResponseDto<T> {
     return this;
   }
 
-
   constructor(data?: T) {
     if (data) this.data = data;
   }

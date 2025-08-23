@@ -12,15 +12,24 @@ import {
 
 @QueryHandler(GetPaymentCollectionItemDataQuery)
 export class GetPaymentCollectionItemDataQueryHandler
-  implements IQueryHandler<GetPaymentCollectionItemDataQuery, GetPaymentCollectionItemDataQueryResponse> {
+  implements
+    IQueryHandler<
+      GetPaymentCollectionItemDataQuery,
+      GetPaymentCollectionItemDataQueryResponse
+    >
+{
   constructor(
-    @Inject(Deps.ReservationRepository) private readonly reservationRepository: IReservationRepository,
-    @Inject(Deps.DemandeVisiteRepository) private readonly demandeVisiteRepository: IDemandeVisiteRepository,
+    @Inject(Deps.ReservationRepository)
+    private readonly reservationRepository: IReservationRepository,
+    @Inject(Deps.DemandeVisiteRepository)
+    private readonly demandeVisiteRepository: IDemandeVisiteRepository,
   ) {
     //
   }
 
-  async execute(query: GetPaymentCollectionItemDataQuery): Promise<GetPaymentCollectionItemDataQueryResponse> {
+  async execute(
+    query: GetPaymentCollectionItemDataQuery,
+  ): Promise<GetPaymentCollectionItemDataQueryResponse> {
     const itemData = new PaymentCollectionItemData();
 
     if (query.collection == PaymentCollection.Reservation) {

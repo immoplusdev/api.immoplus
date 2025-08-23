@@ -15,5 +15,4 @@ const providers: Provider[] = [
   providers: [...providers],
   exports: [...providers],
 })
-
 export class LoggingModule {}

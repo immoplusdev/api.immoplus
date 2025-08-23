@@ -1,8 +1,8 @@
-import { Module, Provider } from '@nestjs/common';
-import { Deps } from '@/core/domain/common/ioc';
+import { Module, Provider } from "@nestjs/common";
+import { Deps } from "@/core/domain/common/ioc";
 import { TypeormModule } from "@/infrastructure/typeorm";
-import { CommuneController } from './commune.controller';
-import { CommuneRepository } from './commune.repository';
+import { CommuneController } from "./commune.controller";
+import { CommuneRepository } from "./commune.repository";
 
 const providers: Provider[] = [
   {

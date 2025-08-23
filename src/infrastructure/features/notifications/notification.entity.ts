@@ -1,9 +1,12 @@
 import {
-  Column, CreateDateColumn, DeleteDateColumn,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users";
 import { NotificationType } from "@/core/domain/notifications/notification-type.enum";

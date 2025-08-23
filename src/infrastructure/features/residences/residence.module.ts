@@ -25,8 +25,12 @@ const providers: Provider[] = [
 @Module({
   controllers: [ResidenceController],
   imports: [TypeormModule, CqrsModule, GlobalizationModule, NotificationModule],
-  providers: [...providers, ...queryHandler, ...commandHandlers, ...eventHandlers],
+  providers: [
+    ...providers,
+    ...queryHandler,
+    ...commandHandlers,
+    ...eventHandlers,
+  ],
   exports: [...providers],
 })
-export class ResidenceModule {
-}
+export class ResidenceModule {}

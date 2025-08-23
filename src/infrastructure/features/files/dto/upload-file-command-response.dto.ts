@@ -13,4 +13,3 @@ export class WrapperResponseUploadFileCommandResponseDto extends WrapperResponse
   @ApiProperty({ type: UploadFileCommandResponseDto })
   data: UploadFileCommandResponseDto;
 }
-

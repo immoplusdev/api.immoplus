@@ -1,3 +1,3 @@
 export class DeleteWalletWithdrawalRequestCommand {
-    constructor(public readonly id: string) {}
+  constructor(public readonly id: string) {}
 }

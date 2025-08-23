@@ -18,7 +18,6 @@ export class RoleRepository implements IRoleRepository {
     this.repository = new BaseRepository(dataSource, RoleEntity);
   }
 
-
   async createMany(payload: Partial<Role>[]): Promise<Role[]> {
     return await this.repository.createMany(payload);
   }
@@ -27,7 +26,9 @@ export class RoleRepository implements IRoleRepository {
     return await this.repository.createOne(payload);
   }
 
-  async findByQuery(query?: SearchItemsParams): Promise<WrapperResponse<Role[]>> {
+  async findByQuery(
+    query?: SearchItemsParams,
+  ): Promise<WrapperResponse<Role[]>> {
     return await this.repository.findByQuery(query);
   }
 
@@ -35,11 +36,17 @@ export class RoleRepository implements IRoleRepository {
     return await this.repository.findOne(id, options);
   }
 
-  findOneByQuery(query?: SearchItemsParams, options?: FindItemOptions): Promise<Role> {
+  findOneByQuery(
+    query?: SearchItemsParams,
+    options?: FindItemOptions,
+  ): Promise<Role> {
     return this.repository.findOneByQuery(query, options);
   }
 
-  async updateByQuery(query: SearchItemsParams, payload: Partial<Role>): Promise<string[]> {
+  async updateByQuery(
+    query: SearchItemsParams,
+    payload: Partial<Role>,
+  ): Promise<string[]> {
     return await this.repository.updateByQuery(query, payload);
   }
 

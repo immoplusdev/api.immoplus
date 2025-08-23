@@ -5,10 +5,15 @@ import { IWalletRepository } from "@/core/domain/wallet";
 import { Deps } from "@/core/domain/common/ioc";
 
 @CommandHandler(DeleteWalletTransactionCommand)
-export class DeleteWalletTransactionHandler implements ICommandHandler<DeleteWalletTransactionCommand> {
-    constructor(@Inject(Deps.WalletRepository) private readonly walletRepository: IWalletRepository) {}
+export class DeleteWalletTransactionHandler
+  implements ICommandHandler<DeleteWalletTransactionCommand>
+{
+  constructor(
+    @Inject(Deps.WalletRepository)
+    private readonly walletRepository: IWalletRepository,
+  ) {}
 
-    async execute(command: DeleteWalletTransactionCommand): Promise<void> {
-        await this.walletRepository.deleteWalletTransaction(command.id);
-    }
+  async execute(command: DeleteWalletTransactionCommand): Promise<void> {
+    await this.walletRepository.deleteWalletTransaction(command.id);
+  }
 }

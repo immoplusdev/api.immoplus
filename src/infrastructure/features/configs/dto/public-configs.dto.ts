@@ -65,8 +65,9 @@ export class WrapperResponsePublicConfigDto extends WrapperResponseDto<PublicCon
   data: PublicConfigDto;
 }
 
-export class WrapperResponsePublicConfigListDto extends WrapperResponseDto<PublicConfigDto[]> {
+export class WrapperResponsePublicConfigListDto extends WrapperResponseDto<
+  PublicConfigDto[]
+> {
   @ApiProperty({ type: [PublicConfigDto] })
   data: PublicConfigDto[];
 }
-

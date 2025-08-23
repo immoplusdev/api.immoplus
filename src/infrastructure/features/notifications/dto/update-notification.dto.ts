@@ -1,6 +1,6 @@
 import { IsOptional } from "class-validator";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { OmitMethods } from '@/lib/ts-utilities';
+import { OmitMethods } from "@/lib/ts-utilities";
 import { NotificationType } from "@/core/domain/notifications";
 
 export class UpdateNotificationDto {
@@ -24,6 +24,6 @@ export class UpdateNotificationDto {
   recipient: string;
 
   constructor(data?: OmitMethods<UpdateNotificationDto>) {
-  Object.assign(this, data);
+    Object.assign(this, data);
   }
 }

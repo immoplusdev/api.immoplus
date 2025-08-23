@@ -1,6 +1,7 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -11,16 +12,26 @@ import {
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 
-import { PermissionAction, PermissionCollection } from "@/core/domain/permissions";
+import {
+  PermissionAction,
+  PermissionCollection,
+} from "@/core/domain/permissions";
 import { CommandBus } from "@nestjs/cqrs";
-import { CurrentUser, OwnerAccessRequired, RequiredPermissions, RequiredRoles } from "@/infrastructure/decorators";
+import {
+  CurrentUser,
+  OwnerAccessRequired,
+  RequiredPermissions,
+  RequiredRoles,
+} from "@/infrastructure/decorators";
 import { Deps } from "@/core/domain/common/ioc";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { IUserRepository } from "@/core/domain/users";
 import { Role, UserRole } from "@/core/domain/roles";
 import {
   UpdateUserAdditionalDataCommand,
-  UpdateUserAdditionalDataCommandResponse, UpdateUserCommand, UserDtoMapper,
+  UpdateUserAdditionalDataCommandResponse,
+  UpdateUserCommand,
+  UserDtoMapper,
   WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
   WrapperResponseUserDto,
   WrapperResponseUserListDto,
@@ -29,25 +40,29 @@ import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { AccessForbiddenException } from "@/core/domain/auth";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 
-
 @ApiTags("User")
 @Controller("users")
 export class UserController {
   private readonly dtoMapper = new UserDtoMapper();
-  private readonly responseMapper = new WrapperResponseDtoMapper(this.dtoMapper);
+  private readonly responseMapper = new WrapperResponseDtoMapper(
+    this.dtoMapper,
+  );
 
   constructor(
     readonly commandBus: CommandBus,
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
-  ) {
-  }
-
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseUserListDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -58,64 +73,75 @@ export class UserController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess()) params._where = addConditionsToWhereClause([{
-      _field: "createdBy",
-      _l_op: "and",
-      _val: userId,
-    }], params._where);
+    if (!userRole.hasAdminAccess())
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "createdBy",
+            _l_op: "and",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
 
     const result = await this.usersRepository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(result);
-
   }
 
   @ApiResponse({
     type: WrapperResponseUserDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("createdBy")
   @Get(":id")
-  async readOne(
-    @Param("id") id: string,
-  ) {
+  async readOne(@Param("id") id: string) {
     const user = await this.usersRepository.findOne(id);
     return this.responseMapper.mapFrom(user);
   }
 
-
   @ApiResponse({
     type: WrapperResponseUserDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Read])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @OwnerAccessRequired("id")
   @Get("/data/me")
-  async readCurrentUser(
-    @CurrentUser("id") userId: string,
-  ) {
+  async readCurrentUser(@CurrentUser("id") userId: string) {
     const user = await this.usersRepository.findOne(userId);
     return this.responseMapper.mapFrom(user);
   }
 
-
   @ApiResponse({
     type: WrapperResponseUserDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
-  async update(
-    @Param("id") id: string,
-    @Body() payload: UpdateUserCommand,
-  ) {
+  async update(@Param("id") id: string, @Body() payload: UpdateUserCommand) {
     await this.usersRepository.updateOne(id, payload);
 
     const response = await this.usersRepository.findOne(id);
@@ -126,7 +152,12 @@ export class UserController {
   @ApiResponse({
     type: WrapperResponseUpdateUserAdditionalDataCommandResponseDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Update])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -137,10 +168,11 @@ export class UserController {
     @CurrentUser("role") userRole: Role,
     @Body() payload: UpdateUserAdditionalDataCommand,
   ) {
+    if (!userRole.hasAdminAccess() && userId !== currentUserId)
+      throw new AccessForbiddenException();
 
-    if (!userRole.hasAdminAccess() && userId !== currentUserId) throw new AccessForbiddenException();
-
-    const responseMapper = new WrapperResponseDtoMapper<UpdateUserAdditionalDataCommandResponse>();
+    const responseMapper =
+      new WrapperResponseDtoMapper<UpdateUserAdditionalDataCommandResponse>();
 
     const command = new UpdateUserAdditionalDataCommand({
       ...payload,
@@ -154,14 +186,17 @@ export class UserController {
   @ApiResponse({
     type: WrapperResponseUserDto,
   })
-  @RequiredRoles(UserRole.Admin, UserRole.Customer, UserRole.ProEntreprise, UserRole.ProParticulier)
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
   @RequiredPermissions([PermissionCollection.Users, PermissionAction.Delete])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
-  async delete(
-    @Param("id") id: string) {
-
+  async delete(@Param("id") id: string) {
     const user = await this.usersRepository.findOne(id);
 
     await this.usersRepository.deleteOne(id);
@@ -169,4 +204,3 @@ export class UserController {
     return this.responseMapper.mapFrom(user);
   }
 }
-

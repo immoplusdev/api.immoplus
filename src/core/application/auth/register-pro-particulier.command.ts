@@ -1,4 +1,4 @@
-import { IsValidPassword, IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
+import { IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 
@@ -19,7 +19,7 @@ export class RegisterProParticulierCommand {
   @IsValidPhoneNumber()
   phoneNumber: string;
   @ApiProperty()
-  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception"})
+  @IsNotEmpty({ message: "$t:all.exception.empty_password_exception" })
   password: string;
   @ApiProperty()
   @IsNotEmpty()

@@ -22,9 +22,21 @@ import { GatewayModule } from "@/infrastructure/features/gateways/gateway.module
 export const controllers = [];
 
 const modules = [
-  UserModule, PermissionModule, AuthModule, FileModule, NotificationModule, VilleModule,
-  CommuneModule, ReservationModule, ResidenceModule, BienImmobilierModule, DemandeVisiteModule,
-  PaymentModule, WalletModule, TransfersModule, GatewayModule
+  UserModule,
+  PermissionModule,
+  AuthModule,
+  FileModule,
+  NotificationModule,
+  VilleModule,
+  CommuneModule,
+  ReservationModule,
+  ResidenceModule,
+  BienImmobilierModule,
+  DemandeVisiteModule,
+  PaymentModule,
+  WalletModule,
+  TransfersModule,
+  GatewayModule,
 ];
 
 @Module({
