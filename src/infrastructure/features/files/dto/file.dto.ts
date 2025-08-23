@@ -1,7 +1,12 @@
-import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
+import { FileStorage } from "@/core/domain/files";
+import { ApiProperty } from "@/core/domain/common/docs";
 import { WrapperResponseDto } from "@/lib/responses";
-import { User } from "@/core/domain/users";
+
+export interface MulterFile extends Express.Multer.File {
+  externalFileId: string;
+}
+
 
 export class FileDto {
   @ApiProperty()
@@ -12,50 +17,15 @@ export class FileDto {
   title?: string;
   @ApiProperty()
   fileNameDownload?: string;
+  @ApiProperty({ enum: FileStorage })
+  storage?: FileStorage;
   @ApiProperty()
-  storage?: string;
+  externalFileId?: string;
   @ApiProperty()
   type?: string;
   @ApiProperty()
   folder?: string;
-  @ApiProperty()
-  uploadedBy?: User | string;
-  @ApiProperty()
-  uploadedOn?: Date;
-  @ApiProperty()
-  modifiedBy?: User | string;
-  @ApiProperty()
-  modifiedOn?: Date;
-  @ApiProperty()
-  deletedOn?: Date;
-  @ApiProperty()
-  charset?: string;
-  @ApiProperty()
-  fileSize?: number;
-  @ApiProperty()
-  width?: number;
-  @ApiProperty()
-  height?: number;
-  @ApiProperty()
-  duration?: number;
-  @ApiProperty()
-  embed?: string;
-  @ApiProperty()
-  description?: string;
-  @ApiProperty()
-  location?: string;
-  @ApiProperty()
-  tags?: string;
-  @ApiProperty()
-  metadata?: Record<string, any>;
-  @ApiProperty()
-  focalPointX?: number;
-  @ApiProperty()
-  focalPointY?: number;
-  @ApiProperty()
-  tusId?: string;
-  @ApiProperty()
-  tusData?: Record<string, any>;
+
   constructor(data?: OmitMethods<FileDto>) {
     Object.assign(this, data);
   }

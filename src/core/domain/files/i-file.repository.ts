@@ -1,5 +1,6 @@
+
+import { FileData } from "./file.model";
 import { IBaseRepository } from "@/core/domain/common/repositories";
-import { File } from "@/core/domain/files";
 
 export interface IFileRepository
-  extends IBaseRepository<File, Partial<File>, Partial<File>> {}
+  extends IBaseRepository<FileData, Partial<FileData>, Partial<FileData>> {}

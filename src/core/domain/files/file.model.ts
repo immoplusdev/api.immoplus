@@ -1,21 +1,17 @@
 import { OmitMethods } from "@/lib/ts-utilities";
-import { User } from "@/core/domain/users";
+import { FileStorage } from "./file-storage.enum";
 
-export class File {
+export class FileData {
   id: string;
   fileNameDisk: string;
   title?: string;
   fileNameDownload?: string;
-  storage?: string;
+  externalFileId?: string;
+  storage?: FileStorage;
   type?: string;
   folder?: string;
-  uploadedBy?: User | string;
-  uploadedOn?: Date;
-  modifiedBy?: User | string;
-  modifiedOn?: Date;
-  deletedOn?: Date;
-  charset?: string;
-  fileSize?: number;
+
+  // File metadata
   width?: number;
   height?: number;
   duration?: number;
@@ -27,8 +23,18 @@ export class File {
   focalPointX?: number;
   focalPointY?: number;
   tusId?: string;
-  tusData?: Record<string, any>;
-  constructor(data?: OmitMethods<File>) {
+  charset?: string;
+  fileSize?: number;
+
+  createdAt?: Date;
+  uploadedBy?: string;
+  updatedAt?: Date;
+  updatedBy?: string;
+  deletedAt?: Date;
+
+  constructor(data?: OmitMethods<FileData>) {
     if (data) Object.assign(this, data);
   }
 }
+
+export type File = FileData;
