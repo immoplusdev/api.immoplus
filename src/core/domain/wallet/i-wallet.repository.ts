@@ -1,4 +1,3 @@
-import { User } from "../users";
 import { WalletTransaction } from "./wallet-transaction.model";
 import { Wallet } from "./wallet.model";
 import { WalletWithDrawalRequest } from "./wallet-withdrawal-request.model";

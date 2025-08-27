@@ -3,6 +3,7 @@ export * from "./auth";
 export * from "./compression";
 export * from "./cors";
 export * from "./environments";
+export * from "./exception-filters";
 export * from "./file-management";
 export * from "./global-interceptors";
 export * from "./global-pipes";

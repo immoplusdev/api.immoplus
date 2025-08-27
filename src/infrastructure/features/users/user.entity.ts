@@ -14,9 +14,9 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { Role } from "@/core/domain/roles";
 import { UserStatus } from "@/core/domain/users";
 import { RoleEntity } from "@/infrastructure/features/roles";
-import { FileEntity } from "@/infrastructure/features/files";
 import { UserDataEntity } from "./user-data.entity";
 import { WalletEntity } from "../wallets/wallet.entity";
+import { FileEntity } from "@/infrastructure/features/files";
 
 @Entity("users")
 export class UserEntity {

@@ -12,3 +12,20 @@ services:
       - ${NEST_UPLOAD_DIR}:/uploads
     env_file:
       - ./.env
+
+  minio:
+    image: docker.io/bitnami/minio:2022
+    container_name: ${MINIO_CONTAINER_NAME}
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_UI_PORT}:9001"
+    volumes:
+      - ${MINIO_DATA_DIR}:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_DEFAULT_BUCKETS=files
+

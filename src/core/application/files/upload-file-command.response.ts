@@ -1,3 +1,3 @@
-import { File } from "@/core/domain/files";
+import { FileData } from "@/core/domain/files";
 
-export class UploadFileCommandResponse extends File {}
+export class UploadFileCommandResponse extends FileData {}

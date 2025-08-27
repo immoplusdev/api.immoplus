@@ -39,7 +39,14 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   }
 
   private verifyUserCanLogin(user: User) {
-    if (!user) throw new InvalidCredentialsException();
+    if (!user)
+      throw new InvalidCredentialsException({
+        message: "$t:all.exception.invalid_credentials",
+        statusCode: 401,
+        error: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
+
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
     // if((user.role as Role).id == UserRole.Admin) throw new UserCannotLoginException();
   }
@@ -54,6 +61,11 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
   private verifyPassword(password: string, hash: string) {
     if (!this.passwordManagerService.passwordMatchesHash(password, hash))
-      throw new InvalidCredentialsException();
+      throw new InvalidCredentialsException({
+        message: "$t:all.exception.invalid_credentials",
+        statusCode: 401,
+        error: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
   }
 }

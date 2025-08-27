@@ -12,10 +12,10 @@
     "access_forbidden": "Accès interdit",
     "collection_not_found": "Collection introuvable",
     "user_not_found": "Utilisateur introuvable",
+    "unauthorized": "Non autorisé",
     "item_not_found": "Élément introuvable",
     "invalid_credentials": "Mauvais nom d'utilisateur ou mot de passe",
     "invalid_otp": "Code de vérification invalide",
-    "unauthorized": "Non autorisé",
     "user_cannot_login": "L'utilisateur ne peut pas se connecter",
     "wrong_password": "Mauvais mot de passe",
     "account_data_already_verified": "Les données du compte ont déjà été vérifiées",
@@ -28,14 +28,21 @@
     "empty_password_exception": "Veuillez entrer un mot de passe correcte",
     "existing_demande_retrait_reservation": "Une demande de retrait existe déjà pour cette réservation",
     "reservation_pas_encore_validee": "La réservation n'est pas encore validée",
-    "not_enought_money": "Solde insuffisant"
+    "not_enought_money": "Solde insuffisant",
+
+    "jwt_token_expired": "JWT token a expiré",
+    "invalid_jwt_token": "JWT token non valide",
+    "jwt_token_not_active": "JWT token pas encore actif",
+    "jwt_token_required": "JWT token requis",
+    "authentication_failed": "Authentification echouée",
+    "insufficient_permissions": "Permissions insuffisantes",
+    "invalid_refresh_token": "Token de rafraîchissement invalide"
   },
   "validation": {
     "create_user_error": "Erreur lors de la création de l'utilisateur",
     "is_valid_phone_number": "Phone number must be a valid phone number of the following format 2250123456789"
   },
-  "field": {
-  },
+  "field": {},
   "enum": {
     "appartement": "Appartement",
     "maison": "Maison",
@@ -67,21 +74,18 @@
       }
     },
     "wallets": {
-        "paiement_block_valide_pro": {
-          "subject": "\uD83D\uDD14 Compte bloqué crédité !",
-          "message": "Votre compte bloqué a été crédité, ouvrez l'application pour voir les détails!"
-        },
-        "paiement_unblock_valide_pro": {
-          "subject": "\uD83D\uDD14  Compte principal crédité !",
-          "message": "Vous avez reçu un reversement sur votre compte principal, ouvrez l'application pour voir les détails!"
-        },
-        "paiement_debit_pro": {
-          "subject": "\uD83D\uDD14 Nouveau retrait !",
-          "message": "Nouveau retrait effectué sur votre compte, ouvrez l'application pour voir les détails."
-        }    
+      "paiement_block_valide_pro": {
+        "subject": "\uD83D\uDD14 Compte bloqué crédité !",
+        "message": "Votre compte bloqué a été crédité, ouvrez l'application pour voir les détails!"
+      },
+      "paiement_unblock_valide_pro": {
+        "subject": "\uD83D\uDD14  Compte principal crédité !",
+        "message": "Vous avez reçu un reversement sur votre compte principal, ouvrez l'application pour voir les détails!"
+      },
+      "paiement_debit_pro": {
+        "subject": "\uD83D\uDD14 Nouveau retrait !",
+        "message": "Nouveau retrait effectué sur votre compte, ouvrez l'application pour voir les détails."
+      }
     }
-
-
   }
 }
-

@@ -31,7 +31,7 @@ import {
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   SearchItemsParamsDto,
-  SelectItemsParamsDto,
+  // SelectItemsParamsDto,
 } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
@@ -166,7 +166,13 @@ export class ReservationController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-    if (ownerId !== userId) throw new UnauthorizedException();
+    if (ownerId !== userId)
+      throw new UnauthorizedException({
+        message: "Unauthorized",
+        statusCode: 401,
+        error: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
 
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
@@ -190,7 +196,13 @@ export class ReservationController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-    if (ownerId !== userId) throw new UnauthorizedException();
+    if (ownerId !== userId)
+      throw new UnauthorizedException({
+        message: "Unauthorized",
+        statusCode: 401,
+        error: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
 
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
@@ -253,7 +265,7 @@ export class ReservationController {
   @Get(":id")
   async readOne(
     @Param("id") id: string,
-    @Query() params?: SelectItemsParamsDto,
+    // @Query() params?: SelectItemsParamsDto,
   ) {
     const responseMapper =
       new WrapperResponseDtoMapper<GetReservationByIdQueryResponse>();

@@ -1,8 +1,11 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { OmitMethods } from "@/lib/ts-utilities";
-import { ApiProperty } from "@/core/domain/common/docs";
 import { IsOptional } from "class-validator";
 
 export class UploadFileCommandDto {
+  @ApiProperty()
+  @IsOptional()
+  url?: string;
   @ApiProperty()
   @IsOptional()
   title?: string;
@@ -18,6 +21,7 @@ export class UploadFileCommandDto {
   @ApiProperty()
   @IsOptional()
   metadata?: Record<string, any>;
+
   constructor(data?: OmitMethods<UploadFileCommandDto>) {
     Object.assign(this, data);
   }

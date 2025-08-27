@@ -1,18 +1,16 @@
-import { createReadStream } from "fs";
 import {
   Body,
   Controller,
   Delete,
   Get,
   Header,
-  Inject,
+  Inject, MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Patch,
   Post,
   Query,
   Res,
-  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -26,7 +24,7 @@ import {
 } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
-  FileDtoMapper,
+  FileDtoMapper, MulterFile,
   UploadFileCommandDto,
   WrapperResponseFileDto,
   WrapperResponseFileListDto,
@@ -64,6 +62,8 @@ import {
 } from "@/infrastructure/http";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { Response } from "express";
+import { randomUUID } from "crypto";
+import { FilesService } from "./file-service";
 
 @ApiTags("File")
 @Controller("files")
@@ -77,7 +77,10 @@ export class FileController {
     readonly commandBus: CommandBus,
     @Inject(Deps.FileRepository)
     private readonly repository: IFileRepository,
-  ) {}
+    @Inject(Deps.FileService)
+    readonly service: FilesService,
+  ) {
+  }
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
@@ -107,23 +110,12 @@ export class FileController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor("file", {
-      storage: diskStorage({
-        destination: fileUploadConfig?.uploadPath,
-        filename: (req, file, cb) => {
-          const fileNameSplit = file.originalname.split(".");
-          const fileExt = fileNameSplit[fileNameSplit.length - 1];
-          cb(null, `${generateUuid()}.${fileExt}`);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor("file"))
   async create(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          // new MaxFileSizeValidator({ maxSize: 10000 }),
+          new MaxFileSizeValidator({ maxSize: 10000 }),
           // new FileTypeValidator({ fileType: 'image/jpeg' }),
         ],
       }),
@@ -134,13 +126,26 @@ export class FileController {
   ) {
     const responseMapper =
       new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
+
+    const split = file?.originalname?.split(".");
+    const extension = split[split.length - 1];
+
+    const uploadedFile: MulterFile = {
+      ...file,
+      externalFileId: `${randomUUID().toString()}.${extension}`,
+    };
+
+    await this.service.uploadFile(uploadedFile);
+
     const command = new UploadFileCommand({
       ...payload,
       userId,
-      file,
+      file: file as never,
+      externalFileId: uploadedFile.externalFileId,
     });
 
     const response = await this.commandBus.execute(command);
+
     return responseMapper.mapFrom(response);
   }
 
@@ -163,18 +168,7 @@ export class FileController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor("file", {
-      storage: diskStorage({
-        destination: fileUploadConfig.uploadPath,
-        filename: (req, file, cb) => {
-          const fileNameSplit = file.originalname.split(".");
-          const fileExt = fileNameSplit[fileNameSplit.length - 1];
-          cb(null, `${generateUuid()}.${fileExt}`);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor("file"))
   async createPublic(
     @UploadedFile(
       new ParseFilePipe({
@@ -189,13 +183,26 @@ export class FileController {
   ) {
     const responseMapper =
       new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
+
+    const split = file?.originalname?.split(".");
+    const extension = split[split.length - 1];
+
+    const uploadedFile: MulterFile = {
+      ...file,
+      externalFileId: `${randomUUID().toString()}.${extension}`,
+    };
+
+    await this.service.uploadFile(uploadedFile);
+
     const command = new UploadFileCommand({
       ...payload,
       userId: null,
-      file,
+      file: file as never,
+      externalFileId: uploadedFile.externalFileId,
     });
 
     const response = await this.commandBus.execute(command);
+
     return responseMapper.mapFrom(response);
   }
 
@@ -275,6 +282,9 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
 
+    if (file.externalFileId)
+      return res.redirect(await this.service.getFile(file.fileNameDownload));
+
     return res.sendFile(getFilePath(file?.fileNameDisk));
   }
 
@@ -285,6 +295,9 @@ export class FileController {
   ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
+
+    if (file.externalFileId)
+      return res.redirect(await this.service.getFile(file.fileNameDownload));
 
     return res.sendFile(getFilePath(file?.fileNameDisk));
   }
@@ -297,6 +310,9 @@ export class FileController {
   ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
+
+    if (file.externalFileId)
+      return res.redirect(await this.service.getFile(file.fileNameDownload));
 
     return res.sendFile(getFilePath(file?.fileNameDisk));
   }

@@ -13,6 +13,8 @@ import {
   LoginWithEmailOtpCommandResponse,
   LoginWithPhoneNumberOtpCommand,
   LoginWithPhoneNumberOtpCommandResponse,
+  RefreshTokenCommand,
+  RefreshTokenCommandResponse,
   RegisterCommand,
   RegisterProEntrepriseCommand,
   RegisterProParticulierCommand,
@@ -26,6 +28,7 @@ import {
   WrapperResponseLoginCommandResponseDtoMapper,
   WrapperResponseLoginWithPhoneNumberOtpCommandResponseDto,
 } from "@/core/application/auth";
+import { RefreshTokenDto } from "./dto";
 import {
   CurrentUser,
   RequiredPermissions,
@@ -197,5 +200,19 @@ export class AuthController {
   async resetPassword(@Body() payload: ResetPasswordCommand) {
     const command = new ResetPasswordCommand(payload);
     await this.commandBus.execute(command);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseLoginCommandResponseDto,
+  })
+  @HttpCode(200)
+  @Post("refresh-token")
+  async refreshToken(@Body() payload: RefreshTokenDto) {
+    const responseMapper =
+      new WrapperResponseDtoMapper<RefreshTokenCommandResponse>();
+    const command = new RefreshTokenCommand(payload.refreshToken);
+
+    const response = await this.commandBus.execute(command);
+    return responseMapper.mapFrom(response);
   }
 }

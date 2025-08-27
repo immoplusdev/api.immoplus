@@ -7,6 +7,7 @@ import { UserModule } from "@/infrastructure/features/users/user.module";
 import {
   LoginCommandHandler,
   LoginWithEmailOtpCommandHandler,
+  RefreshTokenCommandHandler,
   RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler,
   ResetPasswordCommandHandler,
@@ -31,6 +32,7 @@ const commandHandlers = [
   RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler,
   LoginCommandHandler,
+  RefreshTokenCommandHandler,
   UpdatePasswordCommandHandler,
   SendSmsOtpCommandHandler,
   SendEmailOtpCommandHandler,
