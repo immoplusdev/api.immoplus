@@ -10,5 +10,6 @@ export * from "./invalid-otp.exception";
 export * from "./access-forbidden.exception";
 export * from "./invalid-credentials.exception";
 export * from "./invalid-password.exception";
+export * from "./invalid-refresh-token.exception";
 export * from "./unauthorized.exception";
 export * from "./verify-otp-options.model";

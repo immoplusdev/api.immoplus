@@ -34,7 +34,7 @@ import {
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
   SearchItemsParamsDto,
-  SelectItemsParamsDto,
+  // SelectItemsParamsDto,
 } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import {
@@ -177,7 +177,13 @@ export class DemandeVisiteController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-    if (ownerId !== userId) throw new UnauthorizedException();
+    if (ownerId !== userId)
+      throw new UnauthorizedException({
+        message: "Unauthorized",
+        statusCode: 401,
+        error: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
 
     const items = await this.repository.findByBienImmobilierOwnerId(
       ownerId,
@@ -204,7 +210,13 @@ export class DemandeVisiteController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-    if (ownerId !== userId) throw new UnauthorizedException();
+    if (ownerId !== userId)
+      throw new UnauthorizedException({
+        message: "Unauthorized",
+        statusCode: 401,
+        error: "Unauthorized",
+        code: "UNAUTHORIZED",
+      });
 
     const items = await this.repository.findByBienImmobilierOwnerId(
       ownerId,
@@ -257,7 +269,7 @@ export class DemandeVisiteController {
   @Get(":id")
   async readOne(
     @Param("id") id: string,
-    @Query() params?: SelectItemsParamsDto,
+    // @Query() params?: SelectItemsParamsDto,
   ) {
     const item = await this.queryBus.execute(
       new GetDemandeVisiteByIdQuery({ id }),

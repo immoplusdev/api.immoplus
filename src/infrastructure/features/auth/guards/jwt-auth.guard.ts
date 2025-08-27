@@ -1,4 +1,8 @@
-import { ExecutionContext, Injectable } from "@nestjs/common";
+import {
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Reflector } from "@nestjs/core";
 import { AuthorizationManagerService } from "@/infrastructure/features/auth/authorization-manager.service";
@@ -29,20 +33,78 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     return super.canActivate(context);
   }
 
-  handleRequest(err, user, _info) {
+  handleRequest(err, user, info) {
     const requiredRoles = this.requiredRoles ? this.requiredRoles : [];
     const requiredPermissions = this.requiredPermissions
       ? this.requiredPermissions
       : [];
-    if (requiredRoles.length != 0 || requiredPermissions.length != 0) {
-      if (err || !user) throw err || new UnauthorizedException();
+
+    // Gestion des erreurs d'authentification JWT
+    if (err || !user) {
+      if (info) {
+        // Analyser le type d'erreur JWT
+        switch (info.name) {
+          case "TokenExpiredError":
+            throw new UnauthorizedException({
+              statusCode: 401,
+              error: "Unauthorized",
+              message: "$t:all.exception.jwt_token_expired",
+              code: "JWT_TOKEN_EXPIRED",
+            });
+
+          case "JsonWebTokenError":
+            throw new UnauthorizedException({
+              statusCode: 401,
+              error: "Unauthorized",
+              message: "$t:all.exception.invalid_jwt_token",
+              code: "JWT_TOKEN_INVALID",
+            });
+
+          case "NotBeforeError":
+            throw new UnauthorizedException({
+              statusCode: 401,
+              error: "Unauthorized",
+              message: "$t:all.exception.jwt_token_not_active",
+              code: "JWT_TOKEN_NOT_ACTIVE",
+            });
+
+          default:
+            throw new UnauthorizedException({
+              statusCode: 401,
+              error: "Unauthorized",
+              message: "$t:all.exception.authentication_failed",
+              code: "AUTHENTICATION_FAILED",
+            });
+        }
+      }
+
+      // Cas où le token n'existe pas
+      throw new UnauthorizedException({
+        statusCode: 401,
+        error: "Unauthorized",
+        message: "$t:all.exception.jwt_token_required",
+        code: "JWT_TOKEN_MISSING",
+      });
     }
 
-    const authorizationManagerService = new AuthorizationManagerService(user);
-    if (
-      !authorizationManagerService.canAccess(requiredRoles, requiredPermissions)
-    )
-      throw new UnauthorizedException();
+    // Vérification des autorisations
+    if (requiredRoles.length != 0 || requiredPermissions.length != 0) {
+      const authorizationManagerService = new AuthorizationManagerService(user);
+
+      if (
+        !authorizationManagerService.canAccess(
+          requiredRoles,
+          requiredPermissions,
+        )
+      ) {
+        throw new ForbiddenException({
+          statusCode: 403,
+          error: "Forbidden",
+          message: "$t:all.exception.insufficient_permissions",
+          code: "INSUFFICIENT_PERMISSIONS",
+        });
+      }
+    }
 
     user.role = new Role(user.role);
     return new User(user) as never;
