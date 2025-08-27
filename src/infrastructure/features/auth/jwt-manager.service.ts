@@ -23,7 +23,17 @@ export class JwtManagerService implements IJwtManagerService {
 
   generateRefreshToken(payload: any): string {
     return jwt.sign(
-      { id: payload.id },
+      { sub: payload.id },
+      this.configsManagerService.getEnvVariable("JWT_SECRET"),
+      {
+        expiresIn: "30d",
+      },
+    );
+  }
+
+  verifyToken(token: string): any {
+    return jwt.verify(
+      token,
       this.configsManagerService.getEnvVariable("JWT_SECRET"),
     );
   }

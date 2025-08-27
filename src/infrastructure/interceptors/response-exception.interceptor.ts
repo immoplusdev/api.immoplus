@@ -5,7 +5,6 @@ import {
   CallHandler,
   BadRequestException,
   Inject,
-  HttpException,
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
@@ -40,18 +39,21 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
         },
         (err) => {
           if (err instanceof BaseException) {
-            throw this.translateExceptionMessage(err);
+            // Les BaseException sont maintenant gérées par le BaseExceptionFilter
+            throw err;
           } else if (err instanceof BadRequestException) {
+            console.log("err instanceof BadRequestException");
             const errResponse = err.getResponse();
             const exception = new FailedValidationException(
               (errResponse as any).message[0],
             );
-            throw this.translateExceptionMessage(exception);
+            throw exception;
           } else {
+            console.log("err instanceof UnexpectedException");
             if (!this.configsManagerService.isAppProfileProduction()) {
               this.loggerService.error("App Exception", err);
             }
-            throw this.translateExceptionMessage(new UnexpectedException());
+            throw new UnexpectedException();
           }
         },
       ),

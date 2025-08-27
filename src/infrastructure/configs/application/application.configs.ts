@@ -9,6 +9,7 @@ import {
   configureI18n,
   configureEnv,
   globalPipesConfig,
+  configureExceptionFilters,
   NEST_SWAGGER_ENABLED,
 } from "@/infrastructure/configs";
 
@@ -19,6 +20,7 @@ export async function applicationConfigs() {
   corsConfigs(app);
   if (NEST_SWAGGER_ENABLED) swaggerConfigs(app);
   configureAutoValidation(app);
+  configureExceptionFilters(app);
   globalInterceptorsConfig(app);
   globalPipesConfig(app);
   configureI18n(app);
