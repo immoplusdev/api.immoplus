@@ -179,6 +179,7 @@ export class TfaService implements ITfaService {
     if (otpIsValid && options?.resetIfValid)
       await this.generateUserOtp(user.id);
 
+
     return otpIsValid;
   }
 
