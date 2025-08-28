@@ -3,9 +3,10 @@ import { VerifyEmailCommand } from "./verify-email.command";
 import { VerifyEmailCommandResponse } from "./verify-email-command.response";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { ITfaService } from "@/core/domain/auth";
+import { InvalidOtpException, ITfaService } from "@/core/domain/auth";
 import { IUserRepository } from "@/core/domain/users";
 import { UnexpectedException } from "@/core/domain/common/exceptions";
+import { EmailNotFoundException } from "@/core/domain/common/exceptions/email-not-found.exception";
 
 @CommandHandler(VerifyEmailCommand)
 export class VerifyEmailCommandHandler
@@ -30,7 +31,10 @@ export class VerifyEmailCommandHandler
     const user = await this.usersRepository.findOneByEmail(command.email, {
       fields: ["id", "emailVerified"],
     });
-    if (user.emailVerified) throw new UnexpectedException();
+
+    if (!user) throw new EmailNotFoundException();
+
+    if (!user.emailVerified) throw new InvalidOtpException();
 
     await this.usersRepository.updateOne(user.id, { emailVerified: true });
     return new VerifyEmailCommandResponse();
