@@ -29,6 +29,7 @@
     "existing_demande_retrait_reservation": "Une demande de retrait existe déjà pour cette réservation",
     "reservation_pas_encore_validee": "La réservation n'est pas encore validée",
     "not_enought_money": "Solde insuffisant",
+    "email_not_found": "Adresse e-mail introuvable",
 
     "jwt_token_expired": "JWT token a expiré",
     "invalid_jwt_token": "JWT token non valide",

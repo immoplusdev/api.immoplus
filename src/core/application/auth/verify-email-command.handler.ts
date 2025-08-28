@@ -6,6 +6,7 @@ import { Deps } from "@/core/domain/common/ioc";
 import { ITfaService } from "@/core/domain/auth";
 import { IUserRepository } from "@/core/domain/users";
 import { UnexpectedException } from "@/core/domain/common/exceptions";
+import { EmailNotFoundException } from "@/core/domain/common/exceptions/email-not-found.exception";
 
 @CommandHandler(VerifyEmailCommand)
 export class VerifyEmailCommandHandler
@@ -27,10 +28,8 @@ export class VerifyEmailCommandHandler
       resetIfValid: true,
     });
 
-    const user = await this.usersRepository.findOneByEmail(command.email, {
-      fields: ["id", "emailVerified"],
-    });
-    if (user.emailVerified) throw new UnexpectedException();
+    const user = await this.usersRepository.findOneByEmail(command.email);
+    if (!user || user.emailVerified) throw new EmailNotFoundException();
 
     await this.usersRepository.updateOne(user.id, { emailVerified: true });
     return new VerifyEmailCommandResponse();
