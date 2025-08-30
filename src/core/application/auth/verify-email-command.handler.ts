@@ -5,7 +5,7 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { InvalidOtpException, ITfaService } from "@/core/domain/auth";
 import { IUserRepository } from "@/core/domain/users";
-import { UnexpectedException } from "@/core/domain/common/exceptions";
+// import { UnexpectedException } from "@/core/domain/common/exceptions";
 import { EmailNotFoundException } from "@/core/domain/common/exceptions/email-not-found.exception";
 
 @CommandHandler(VerifyEmailCommand)
