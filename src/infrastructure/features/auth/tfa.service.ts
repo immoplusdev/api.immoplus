@@ -18,6 +18,7 @@ import {
   BYPASS_USER_EMAIL,
   BYPASS_USER_PHONE_NUMBER,
 } from "@/infrastructure/configs";
+import { NotificationException } from "@/core/domain/auth/notification.exception";
 
 const twilio = require("twilio"); // Or, for ESM: import twilio from "twilio";
 
@@ -83,26 +84,40 @@ export class TfaService implements ITfaService {
   }
 
   async sendUserSmsOtp(phoneNumber: string) {
-    if (
-      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-        AppProfile.Dev ||
-      phoneNumber == BYPASS_USER_PHONE_NUMBER
-    )
-      return;
+    try {
+      if (
+        this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
+          AppProfile.Dev ||
+        phoneNumber == BYPASS_USER_PHONE_NUMBER
+      )
+        return;
 
-    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, {
-      fields: ["phoneNumber"],
-    });
-    if (!user) throw new UserNotFoundException();
+      const user = await this.usersRepository.findOneByPhoneNumber(
+        phoneNumber,
+        {
+          fields: ["phoneNumber"],
+        },
+      );
+      console.log("user : ", user);
+      if (!user) throw new UserNotFoundException();
 
-    const to = sanitizePhoneNumberIntl(user.phoneNumber);
+      const to = sanitizePhoneNumberIntl(user.phoneNumber);
 
-    await this.twilioService.verify.v2
-      .services(this.verifyServiceSid)
-      .verifications.create({
-        channel: "sms",
-        to,
-      });
+      await this.twilioService.verify.v2
+        .services(this.verifyServiceSid)
+        .verifications.create({
+          channel: "sms",
+          to,
+        });
+    } catch (e) {
+      this.loggerService.error(e);
+      throw new NotificationException(
+        e.message,
+        e.status,
+        e.messageCode,
+        e.messageId,
+      );
+    }
   }
 
   async isUserSmsOtpValid(phoneNumber: string, otp: string) {
@@ -178,7 +193,6 @@ export class TfaService implements ITfaService {
 
     if (otpIsValid && options?.resetIfValid)
       await this.generateUserOtp(user.id);
-
 
     return otpIsValid;
   }
