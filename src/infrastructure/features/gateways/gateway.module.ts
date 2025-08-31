@@ -28,6 +28,8 @@ import { GetTransferBalanceHandler } from "@/core/application/gateway/transfers/
 import { GetTransferBalanceQuery } from "@/core/application/gateway/transfers/queries/get-transfer-balance.query";
 import { GetTransferStatusQuery } from "@/core/application/gateway/transfers/queries/get-transfer-status.query";
 import { GetTransferStatusHandler } from "@/core/application/gateway/transfers/queries/handlers/get-transfer-status.handler";
+import { InterceptTransferWebhookCommand } from "@/core/application/gateway/transfers/commands/intercept-transfer-webhook.command";
+import { InterceptTransferWebhookCommandHandler } from "@/core/application/gateway/transfers/commands/handlers/intercept-transfer-webhook-command.handler";
 
 const providers: Provider[] = [
   {
@@ -64,6 +66,8 @@ const providers: Provider[] = [
   GetTransferBalanceHandler,
   GetTransferStatusQuery,
   GetTransferStatusHandler,
+  InterceptTransferWebhookCommand,
+  InterceptTransferWebhookCommandHandler,
 ];
 
 @Module({

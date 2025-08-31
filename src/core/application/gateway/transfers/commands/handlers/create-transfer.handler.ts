@@ -68,11 +68,12 @@ export class CreateTransferHandler
       withdrawal.amount,
       withdrawal.operator,
     );
-    // const amount = +withdrawal.amount - fees;
+    const amount = +withdrawal.amount - fees;
     const userName = user.firstName + " " + user.lastName;
+
     const transferData = new Transfer({
       id: uuidv4(),
-      amount: +withdrawal.amount,
+      amount: amount,
       currency: withdrawal.currency,
       fees: fees,
       customer: user.id,
@@ -81,12 +82,11 @@ export class CreateTransferHandler
       transfetStatus: TransferStatus.CREATED,
       transferType: TransferType.MOBILE_MONEY,
       country: user.country || "CI",
-      accountNumber: null,
+      accountNumber: withdrawal.phoneNumber,
       bank: null,
       recipientName: userName,
       transferProvider: withdrawal.operator,
     });
-    console.log("transferData: ", transferData);
     const transfer = await this.transferRepository.createOne(transferData);
 
     /** Initialize transfer payload to Hu2 */
