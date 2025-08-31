@@ -1,11 +1,11 @@
 meta {
-  name: simulate-successful-demandes-visite-payment
+  name: simulate-successful-transfer
   type: http
   seq: 7
 }
 
 post {
-  url: {{API_URL}}/payments/webhook
+  url: {{API_URL}}/gateway/hu2/webhook/transfer
   body: json
   auth: none
 }
@@ -20,15 +20,15 @@ headers {
 body:json {
   {
     "owner": "xbBADB0y6sJ5CWLEhWYNf",
-    "type": "payment_intent.successful",
+    "type": "transfer.succeeded",
     "data": {
-      "id": "pi_pwIU4Y15nqO_pancMt-pS",
+      "id": "tr_ydlCddxCq0uUbUcXbxVXQ",
       "createdAt": "2024-01-26T13:35:36.926Z",
       "updatedAt": "2024-01-26T13:36:27.218Z",
       "merchantId": "xbBADB0y6sJ5CWLEhWYNf",
       "purchaseReference": "to_order_d1e44f51-2084-4738-a215-a516e0d875de",
       "customerReference": "7de00ed0-ea90-4ccf-9633-5fa99152414c",
-      "amount": 100,
+      "amount": 1000,
       "currency": "XOF",
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnRlbnRJZCI6InBpX3B3SVU0WTE1bnFPX3BhbmNNdC1wUyIsIm1lcmNoYW50SWQiOiJ4YkJBREIweTZzSjVDV0xFaFdZTmYiLCJtb2RlIjoibGl2ZSIsImlhdCI6MTc0NDkzMTQ0Nn0.d4Xn9tRQJn9slt8IYujWEeyb5ZY3gQoXWfgx50C0Dbo",
       "status": "successful",
