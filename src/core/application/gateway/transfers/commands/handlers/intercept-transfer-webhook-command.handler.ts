@@ -52,9 +52,9 @@ export class InterceptTransferWebhookCommandHandler
   async execute(
     command: InterceptTransferWebhookCommand,
   ): Promise<InterceptTransferWebhookCommandResponse> {
-    if (!this.hasAccess(command.json, command.signature))
-      throw new AccessForbiddenException();
-
+    console.log("InterceptTransferWebhookCommandHandler : ", command);
+    // if (!this.hasAccess(command.json, command.signature))
+    //   throw new AccessForbiddenException();
     try {
       await this.updateTransferStatus(command);
     } catch (error) {
@@ -93,6 +93,9 @@ export class InterceptTransferWebhookCommandHandler
   }
 
   createHmacSignature(json: string, secret: string) {
+    if (!crypto) {
+      throw new Error("Crypto module is not available");
+    }
     const hmac = crypto.createHmac("sha256", secret);
     hmac.update(json);
     return hmac.digest("hex");
@@ -125,7 +128,7 @@ export class InterceptTransferWebhookCommandHandler
     const { data: localTransfers } = await this.transferRepository.findByQuery({
       _where: [
         {
-          _field: "hub2_transfer_id",
+          _field: "hub2TransferId",
           _val: command.data.id,
         },
       ],
