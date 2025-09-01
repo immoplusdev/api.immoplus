@@ -6,7 +6,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { OmitMethods } from "@/lib/ts-utilities";
@@ -22,6 +21,7 @@ import {
   TypeLocationBienImmobilier,
 } from "@/core/domain/biens-immobiliers";
 import { File } from "@/core/domain/files";
+import { Piece } from "@/core/domain/biens-immobiliers/piece.model";
 
 @Entity("biens_immobiliers")
 export class BienImmobilierEntity {
@@ -98,6 +98,9 @@ export class BienImmobilierEntity {
 
   @Column({ name: "type_location", type: "varchar", nullable: true })
   typeLocation: TypeLocationBienImmobilier;
+
+  @Column({ name: "pieces", type: "json", nullable: true })
+  pieces?: Piece[];
 
   @Column({ name: "bien_immobilier_disponible", type: "bool", nullable: true })
   bienImmobilierDisponible: boolean;
