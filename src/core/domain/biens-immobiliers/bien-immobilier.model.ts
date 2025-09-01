@@ -6,6 +6,7 @@ import {
   Amentity,
   TypeLocationBienImmobilier,
 } from "@/core/domain/biens-immobiliers";
+import { Piece } from "./piece.model";
 
 export class BienImmobilier {
   id: string;
@@ -14,6 +15,7 @@ export class BienImmobilier {
   typeBienImmobilier: TypeBienImmobilier;
   description: string;
   typeLocation: TypeLocationBienImmobilier;
+  pieces?: Piece[];
   aLouer: boolean;
   amentities?: Amentity[];
   tags?: string[];
