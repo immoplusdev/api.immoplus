@@ -6,6 +6,7 @@ import { Deps } from "@/core/domain/common/ioc";
 import { IUserRepository } from "@/core/domain/users";
 import { IPasswordManagerService } from "@/core/domain/auth";
 import { WrongPasswordException } from "@/core/domain/auth/wrong-password.exception";
+import { SamePasswordException } from "@/core/domain/auth/same-password.exception";
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordCommandHandler
@@ -27,6 +28,8 @@ export class UpdatePasswordCommandHandler
 
     this.verifyPassword(command.oldPassword, user.password);
 
+    this.verifySamePassword(command.newPassword, user.password);
+
     await this.updatePassword(command.userId, command.newPassword);
 
     return new UpdatePasswordCommandResponse();
@@ -41,5 +44,10 @@ export class UpdatePasswordCommandHandler
   private verifyPassword(password: string, hash: string) {
     if (!this.passwordManagerService.passwordMatchesHash(password, hash))
       throw new WrongPasswordException();
+  }
+
+  private verifySamePassword(password: string, hash: string) {
+    if (this.passwordManagerService.passwordMatchesHash(password, hash))
+      throw new SamePasswordException();
   }
 }
