@@ -3,7 +3,7 @@ services:
   jenkins:
     image: jenkins/jenkins:lts
     container_name: ${JENKINS_CONTAINER_NAME}
-    restart: unless-stopped
+    restart: always
     privileged: true
     user: root
     ports:
@@ -18,7 +18,7 @@ services:
 
   dockge:
     image: louislam/dockge:1
-    restart: unless-stopped
+    restart: always
     container_name: ${DOCKGE_CONTAINER_NAME}
     ports:
       - ${DOCKGE_PORT}:5001
