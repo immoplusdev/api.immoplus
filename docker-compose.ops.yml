@@ -1,0 +1,40 @@
+version: "3"
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: ${JENKINS_CONTAINER_NAME}
+    restart: unless-stopped
+    privileged: true
+    user: root
+    ports:
+      - ${JENKINS_PORT}:8080
+      - ${JENKINS_PORT_2}:50000
+    volumes:
+      - ${JENKINS_HOME_PATH}:/var/jenkins_home
+      - ${JENKINS_WORKSPACE_PATH}:/var/jenkins_home/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/libexec/docker:/usr/libexec/docker
+
+  dockge:
+    image: louislam/dockge:1
+    restart: unless-stopped
+    container_name: ${DOCKGE_CONTAINER_NAME}
+    ports:
+      - ${DOCKGE_PORT}:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKGE_PATH}:/app/data
+
+      # If you want to use private registries, you need to share the auth file with Dockge:
+      # - /root/.docker/:/root/.docker
+
+      # Stacks Directory
+      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # ⚠️ 1. FULL path only. No relative path (MUST)
+      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      - /opt/stacks:/opt/stacks
+    environment:
+      # Tell Dockge where is your stacks directory
+      - DOCKGE_STACKS_DIR=/opt/stacks
+      - DOCKGE_ENABLE_CONSOLE=true
