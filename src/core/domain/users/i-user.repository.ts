@@ -27,4 +27,6 @@ export interface IUserRepository
   ): Promise<UserWithRoleAndPermissions | null>;
 
   findPublicUserInfoByUserId(id: string): Promise<PublicUserInfo | null>;
+
+  findClientByPhoneNumber(phoneNumber: string): Promise<PublicUserInfo | null>;
 }

@@ -5,7 +5,7 @@ import {
   UserWithRoleAndPermissions,
 } from "@/core/domain/users";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { DataSource, In, Repository } from "typeorm";
+import { DataSource } from "typeorm";
 import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
 import { Deps } from "@/core/domain/common/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
@@ -98,6 +98,29 @@ export class UserRepository implements IUserRepository {
     });
     return {
       id,
+      ...result,
+    };
+  }
+
+  async findClientByPhoneNumber(
+    phoneNumber: string,
+  ): Promise<PublicUserInfo | null> {
+    const result = await this.findOneByQuery(
+      {
+        _where: [
+          {
+            _field: "phoneNumber",
+            _val: sanitizePhoneNumber(phoneNumber),
+          },
+        ],
+      },
+      {
+        fields: ["id", "email", "firstName", "lastName", "phoneNumber"],
+        relations: [],
+      },
+    );
+
+    return {
       ...result,
     };
   }

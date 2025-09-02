@@ -27,6 +27,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   }
 
   async execute(command: LoginCommand): Promise<LoginCommandResponse> {
+    console.log("LoginCommandHandler : ", command);
     const user = await this.userRepository.findOneByUsername(command.username);
 
     this.verifyUserCanLogin(user);
