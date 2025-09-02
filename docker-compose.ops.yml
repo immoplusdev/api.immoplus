@@ -15,6 +15,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker
       - /usr/libexec/docker:/usr/libexec/docker
+      
   dockge:
     image: louislam/dockge:1
     restart: always
