@@ -56,6 +56,7 @@ export class AuthController {
     const loginCommand = new LoginCommand({
       username: payload.phoneNumber,
       password: payload.password,
+      role: UserRole.Customer,
     });
 
     await this.commandBus.execute(new RegisterCommand(payload));
@@ -74,6 +75,7 @@ export class AuthController {
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
       password: registerCommand.password,
+      role: UserRole.ProParticulier,
     });
 
     await this.commandBus.execute(registerCommand);
@@ -92,6 +94,7 @@ export class AuthController {
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
       password: registerCommand.password,
+      role: UserRole.Customer,
     });
 
     await this.commandBus.execute(registerCommand);

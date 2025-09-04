@@ -105,23 +105,21 @@ export class UserRepository implements IUserRepository {
   async findClientByPhoneNumber(
     phoneNumber: string,
   ): Promise<PublicUserInfo | null> {
-    const result = await this.findOneByQuery(
-      {
-        _where: [
-          {
-            _field: "phoneNumber",
-            _val: sanitizePhoneNumber(phoneNumber),
-          },
-        ],
-      }
-    );
+    const result = await this.findOneByQuery({
+      _where: [
+        {
+          _field: "phoneNumber",
+          _val: sanitizePhoneNumber(phoneNumber),
+        },
+      ],
+    });
 
     return {
-      ...{"id":result?.id},
-      ...{"email":result?.email},
-      ...{"firstName":result?.firstName},
-      ...{"lastName":result?.lastName},
-      ...{"phoneNumber":result?.phoneNumber}
+      ...{ id: result?.id },
+      ...{ email: result?.email },
+      ...{ firstName: result?.firstName },
+      ...{ lastName: result?.lastName },
+      ...{ phoneNumber: result?.phoneNumber },
     };
   }
 
@@ -158,11 +156,11 @@ export class UserRepository implements IUserRepository {
   ): Promise<User | null> {
     let user: User | null = null;
     try {
-      if (username.includes("@")){
+      if (username.includes("@")) {
         user = await this.findOneByEmail(username, options);
         console.log("email user: ", user);
       }
-       
+
       if (!user) user = await this.findOneByPhoneNumber(username, options);
     } catch (error) {
       console.log(error);

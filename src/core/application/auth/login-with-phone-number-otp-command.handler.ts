@@ -11,11 +11,13 @@ import {
 } from "@/core/domain/users";
 import {
   IAuthService,
+  InvalidCredentialsException,
   InvalidOtpException,
   ITfaService,
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { LoginCommandResponse } from "@/core/application/auth";
+import { UserRole } from "@/core/domain/roles";
 
 @CommandHandler(LoginWithPhoneNumberOtpCommand)
 export class LoginWithPhoneNumberOtpCommandHandler
@@ -38,6 +40,8 @@ export class LoginWithPhoneNumberOtpCommandHandler
     );
     if (!user) throw new UserNotFoundException();
 
+    this.verifyUserType(user, command.role);
+
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 
     const isOtpValid = await this.tfaService.isUserSmsOtpValid(
@@ -57,5 +61,16 @@ export class LoginWithPhoneNumberOtpCommandHandler
 
   private async createUserSession(user: User) {
     await this.authService.createUserSession(user);
+  }
+
+  private verifyUserType(user: User, role: UserRole) {
+    const userrole = typeof user.role == "string" ? user.role : user.role.id;
+    if (userrole != role)
+      throw new InvalidCredentialsException({
+        message: "$t:all.exception.forbidden_website",
+        statusCode: 403,
+        error: "Forbidden",
+        code: "FORBIDDEN",
+      });
   }
 }

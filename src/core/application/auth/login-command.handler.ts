@@ -12,6 +12,7 @@ import {
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
+import { UserRole } from "@/core/domain/roles";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
@@ -31,6 +32,8 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
     const user = await this.userRepository.findOneByUsername(command.username);
 
     this.verifyUserCanLogin(user);
+
+    this.verifyUserType(user, command.role);
 
     this.verifyPassword(command.password, user.password);
 
@@ -67,6 +70,17 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
         statusCode: 401,
         error: "Unauthorized",
         code: "UNAUTHORIZED",
+      });
+  }
+
+  private verifyUserType(user: User, role: UserRole) {
+    const userrole = typeof user.role == "string" ? user.role : user.role.id;
+    if (userrole != role)
+      throw new InvalidCredentialsException({
+        message: "$t:all.exception.forbidden_website",
+        statusCode: 403,
+        error: "Forbidden",
+        code: "FORBIDDEN",
       });
   }
 }
