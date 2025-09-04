@@ -27,7 +27,7 @@ export class UserEntity {
   firstName: string;
   @Column({ name: "last_name", type: "varchar", nullable: true })
   lastName: string;
-  @Column({ name: "email", type: "varchar" })
+  @Column({ name: "email", type: "varchar", unique: true })
   email: string;
   @Column({ name: "password", type: "varchar" })
   password: string;
@@ -40,7 +40,7 @@ export class UserEntity {
   @ManyToOne(() => FileEntity, (file) => file.id, { nullable: true })
   @JoinColumn({ name: "avatar_id" })
   avatar?: string;
-  @Column({ name: "phone_number", type: "varchar" })
+  @Column({ name: "phone_number", type: "varchar", unique: true })
   phoneNumber: string;
   @Column({ name: "otp", type: "varchar", nullable: true })
   otp?: string;

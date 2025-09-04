@@ -99,6 +99,42 @@ CREATE TABLE `communes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `files`
+--
+
+CREATE TABLE `files` (
+  `id` varchar(36) NOT NULL,
+  `filename_disk` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `filename_download` varchar(255) DEFAULT NULL,
+  `storage` varchar(255) DEFAULT 'minio',
+  `external_file_id` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `folder` varchar(255) DEFAULT NULL,
+  `charset` varchar(255) DEFAULT NULL,
+  `filesize` int DEFAULT NULL,
+  `width` int DEFAULT NULL,
+  `height` int DEFAULT NULL,
+  `duration` int DEFAULT NULL,
+  `embed` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `tags` varchar(255) DEFAULT NULL,
+  `metadata` json DEFAULT NULL,
+  `focal_point_x` int DEFAULT NULL,
+  `focal_point_y` int DEFAULT NULL,
+  `tus_id` varchar(255) DEFAULT NULL,
+  `tus_data` json DEFAULT NULL,
+  `uploaded_by` varchar(36) DEFAULT NULL,
+  `uploaded_on` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `modified_by` varchar(36) DEFAULT NULL,
+  `modified_on` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  `deleted_on` datetime(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `configurations`
 --
 

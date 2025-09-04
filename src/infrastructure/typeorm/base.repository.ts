@@ -156,9 +156,14 @@ export class BaseRepository<
     query?: SearchItemsParams,
     options?: FindItemOptions,
   ): Promise<Model> {
-    const items = await this.findByQuery(query, options);
-    if (items.data.length === 0) return null;
-    return items.data[0];
+    try {
+      const items = await this.findByQuery(query, options);
+      if (items.data.length === 0) return null;
+      return items.data[0];
+    } catch (error) {
+      console.error('findOneByQuery error:', error);
+      return null;
+    }
   }
 
   async updateByQuery(
