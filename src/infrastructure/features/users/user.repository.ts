@@ -5,7 +5,7 @@ import {
   UserWithRoleAndPermissions,
 } from "@/core/domain/users";
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { DataSource, In, Repository } from "typeorm";
+import { DataSource } from "typeorm";
 import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
 import { Deps } from "@/core/domain/common/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
@@ -102,6 +102,29 @@ export class UserRepository implements IUserRepository {
     };
   }
 
+  async findClientByPhoneNumber(
+    phoneNumber: string,
+  ): Promise<PublicUserInfo | null> {
+    const result = await this.findOneByQuery(
+      {
+        _where: [
+          {
+            _field: "phoneNumber",
+            _val: sanitizePhoneNumber(phoneNumber),
+          },
+        ],
+      }
+    );
+
+    return {
+      ...{"id":result?.id},
+      ...{"email":result?.email},
+      ...{"firstName":result?.firstName},
+      ...{"lastName":result?.lastName},
+      ...{"phoneNumber":result?.phoneNumber}
+    };
+  }
+
   async findOneByEmail(
     email: string,
     options?: FindItemOptions,
@@ -135,10 +158,14 @@ export class UserRepository implements IUserRepository {
   ): Promise<User | null> {
     let user: User | null = null;
     try {
-      if (username.includes("@"))
+      if (username.includes("@")){
         user = await this.findOneByEmail(username, options);
+        console.log("email user: ", user);
+      }
+       
       if (!user) user = await this.findOneByPhoneNumber(username, options);
     } catch (error) {
+      console.log(error);
       return null;
     }
     return user;

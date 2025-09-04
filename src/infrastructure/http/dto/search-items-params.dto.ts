@@ -61,7 +61,7 @@ export class SearchItemsParamsDto {
     type: String,
     default: [`{ "_field": "field", "_op": "eq", "_val": "value" }`],
   })
-  _where?: [ItemsParamsCriteriasDto];
+  _where?: ItemsParamsCriteriasDto[];
 
   @ApiProperty({
     required: false,
