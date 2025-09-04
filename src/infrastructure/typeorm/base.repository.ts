@@ -161,7 +161,7 @@ export class BaseRepository<
       if (items.data.length === 0) return null;
       return items.data[0];
     } catch (error) {
-      console.error('findOneByQuery error:', error);
+      console.error("findOneByQuery error:", error);
       return null;
     }
   }
