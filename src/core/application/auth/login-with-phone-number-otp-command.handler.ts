@@ -17,7 +17,8 @@ import {
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { LoginCommandResponse } from "@/core/application/auth";
-import { UserRole } from "@/core/domain/roles";
+import { UserApp, UserRole } from "@/core/domain/roles";
+import { verifyUserType } from "../common/verify-user-type";
 
 @CommandHandler(LoginWithPhoneNumberOtpCommand)
 export class LoginWithPhoneNumberOtpCommandHandler
@@ -40,7 +41,7 @@ export class LoginWithPhoneNumberOtpCommandHandler
     );
     if (!user) throw new UserNotFoundException();
 
-    this.verifyUserType(user, command.role);
+    verifyUserType(user, command.source);
 
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 
@@ -63,9 +64,21 @@ export class LoginWithPhoneNumberOtpCommandHandler
     await this.authService.createUserSession(user);
   }
 
-  private verifyUserType(user: User, role: UserRole) {
+  private async verifyUserType(user: User, source: UserApp) {
+    const allowRoles: string[] = [];
+    switch (source) {
+      case UserApp.AdminApp:
+        allowRoles.push(UserRole.Admin);
+        break;
+      case UserApp.CustomerApp:
+        allowRoles.push(UserRole.Customer);
+        break;
+      case UserApp.ProApp:
+        allowRoles.push(UserRole.ProEntreprise, UserRole.ProParticulier);
+        break;
+    }
     const userrole = typeof user.role == "string" ? user.role : user.role.id;
-    if (userrole != role)
+    if (!allowRoles.includes(userrole))
       throw new InvalidCredentialsException({
         message: "$t:all.exception.forbidden_website",
         statusCode: 403,

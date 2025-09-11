@@ -4,7 +4,8 @@ import {
   Delete,
   Get,
   Header,
-  Inject, MaxFileSizeValidator,
+  Inject,
+  MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Patch,
@@ -24,7 +25,8 @@ import {
 } from "@nestjs/swagger";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
-  FileDtoMapper, MulterFile,
+  FileDtoMapper,
+  MulterFile,
   UploadFileCommandDto,
   WrapperResponseFileDto,
   WrapperResponseFileListDto,
@@ -79,8 +81,7 @@ export class FileController {
     private readonly repository: IFileRepository,
     @Inject(Deps.FileService)
     readonly service: FilesService,
-  ) {
-  }
+  ) {}
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
@@ -295,6 +296,8 @@ export class FileController {
   ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
+
+    console.log("file : ", file);
 
     if (file.externalFileId)
       return res.redirect(await this.service.getFile(file.fileNameDownload));

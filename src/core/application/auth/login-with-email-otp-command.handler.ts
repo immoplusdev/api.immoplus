@@ -12,11 +12,10 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import {
   IAuthService,
-  InvalidCredentialsException,
   ITfaService,
   UserCannotLoginException,
 } from "@/core/domain/auth";
-import { UserRole } from "@/core/domain/roles";
+import { verifyUserType } from "../common/verify-user-type";
 
 @CommandHandler(LoginWithEmailOtpCommand)
 export class LoginWithEmailOtpCommandHandler
@@ -44,7 +43,7 @@ export class LoginWithEmailOtpCommandHandler
       resetIfValid: true,
     });
 
-    this.verifyUserType(user, command.role);
+    verifyUserType(user, command.source);
 
     await this.createUserSession(user);
 
@@ -59,14 +58,4 @@ export class LoginWithEmailOtpCommandHandler
     await this.authService.createUserSession(user);
   }
 
-  private verifyUserType(user: User, role: UserRole) {
-    const userrole = typeof user.role == "string" ? user.role : user.role.id;
-    if (userrole != role)
-      throw new InvalidCredentialsException({
-        message: "$t:all.exception.forbidden_website",
-        statusCode: 403,
-        error: "Forbidden",
-        code: "FORBIDDEN",
-      });
-  }
 }

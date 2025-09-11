@@ -12,7 +12,7 @@ import {
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
-import { UserRole } from "@/core/domain/roles";
+import { verifyUserType } from "../common/verify-user-type";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
@@ -28,12 +28,11 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   }
 
   async execute(command: LoginCommand): Promise<LoginCommandResponse> {
-    console.log("LoginCommandHandler : ", command);
     const user = await this.userRepository.findOneByUsername(command.username);
 
     this.verifyUserCanLogin(user);
 
-    this.verifyUserType(user, command.role);
+    verifyUserType(user, command.source);
 
     this.verifyPassword(command.password, user.password);
 
@@ -73,14 +72,29 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
       });
   }
 
-  private verifyUserType(user: User, role: UserRole) {
-    const userrole = typeof user.role == "string" ? user.role : user.role.id;
-    if (userrole != role)
-      throw new InvalidCredentialsException({
-        message: "$t:all.exception.forbidden_website",
-        statusCode: 403,
-        error: "Forbidden",
-        code: "FORBIDDEN",
-      });
-  }
+  // private verifyUserType(user: User, source: UserApp) {
+  //   const allowRoles: string[] = [];
+  //   switch (source) {
+  //     case UserApp.AdminApp:
+  //       allowRoles.push(UserRole.Admin);
+  //       break;
+  //     case UserApp.CustomerApp:
+  //       allowRoles.push(UserRole.Customer);
+  //       break;
+  //     case UserApp.ProApp:
+  //       allowRoles.push(UserRole.ProEntreprise, UserRole.ProParticulier);
+  //       break;
+  //   }
+
+  //   const userrole: string =
+  //     typeof user.role == "string" ? user.role : user.role.id;
+  //   if (!allowRoles.includes(userrole)) {
+  //     throw new InvalidCredentialsException({
+  //       message: "$t:all.exception.forbidden_website",
+  //       statusCode: 403,
+  //       error: "Forbidden",
+  //       code: "FORBIDDEN",
+  //     });
+  //   }
+  // }
 }

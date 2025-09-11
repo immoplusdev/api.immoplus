@@ -44,7 +44,6 @@ export class CreateTransferHandler
       await this.walletRepository.findWalletWithdrawalRequestById(
         command.walletWithDrawalRequestId,
       );
-    console.log(withdrawal);
     if (!withdrawal) {
       throw new Error("Withdrawal request not found");
     }

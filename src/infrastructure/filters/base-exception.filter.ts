@@ -22,6 +22,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
       message = this.globalizationService.t(translationKey, {
         args: exception.data,
       });
+      console.log("Message: ", message);
     }
 
     // Format de réponse personnalisé

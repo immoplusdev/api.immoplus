@@ -14,7 +14,7 @@ const path = require("path");
 export const i18Configs: I18nOptions = {
   fallbackLanguage: "fr",
   loaderOptions: {
-    path: path.join("dist/i18n/"),
+    path: path.join(__dirname, "../../../i18n/"),
     watch: true,
   },
   resolvers: [

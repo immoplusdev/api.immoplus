@@ -50,8 +50,6 @@ export class RegisterCommandHandler
       avatar: command.avatar || null,
     });
 
-    console.log("user : ", user);
-
     return new RegisterCommandResponse({
       user,
     });
