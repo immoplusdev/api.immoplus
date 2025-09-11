@@ -48,6 +48,7 @@ import {
   WrapperResponseAnnulerReservationByIdCommandResponseDto,
   WrapperResponseCreateReservationCommandResponseDto,
   WrapperResponseEstimerPrixReservationQueryResponseDto,
+  WrapperResponseEstimerReservationCostResponseDto,
   WrapperResponseGetReservationByIdQueryResponseDto,
   WrapperResponseGetResidenceOccupiedDatesQueryResponseDto,
   WrapperResponseReservationDetailsDtoMapper,
@@ -57,6 +58,7 @@ import { ResidenceDtoMapper } from "@/infrastructure/features/residences";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { StatusFacture } from "@/core/domain/payments";
 import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers/historique-retrait.model";
+import { EstimateReservationCostDto } from "@/core/application/reservations/estimate-reservation-cost.dto";
 
 @ApiTags("Reservation")
 @Controller("reservations")
@@ -370,6 +372,24 @@ export class ReservationController {
     });
 
     const response = await this.commandBus.execute(command);
+    return responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseEstimerReservationCostResponseDto,
+  })
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.Customer,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post("estimate-cost")
+  async estimateReservationCost(@Body() payload: EstimateReservationCostDto) {
+    const responseMapper = new WrapperResponseDtoMapper<number>();
+    const response = await this.repository.estimateReservationCost(payload);
     return responseMapper.mapFrom(response);
   }
 }

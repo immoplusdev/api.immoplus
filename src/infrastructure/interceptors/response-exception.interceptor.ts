@@ -49,11 +49,12 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
             );
             throw exception;
           } else {
-            console.log("err instanceof UnexpectedException");
             if (!this.configsManagerService.isAppProfileProduction()) {
               this.loggerService.error("App Exception", err);
             }
-            throw new UnexpectedException();
+            throw new UnexpectedException(
+              err.message ?? `$t:all.exception.something_went_wrong`,
+            );
           }
         },
       ),

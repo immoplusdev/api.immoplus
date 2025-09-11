@@ -31,6 +31,7 @@
     "not_enought_money": "Solde insuffisant",
     "email_not_found": "Adresse e-mail introuvable",
     "same_password": "Le nouveau mot de passe est identique à l'ancien. Veuillez saisir un mot de passe différent.",
+    "forbidden_website": "Votre type de compte ne vous autorise pas à continuer sur cette page",
 
     "jwt_token_expired": "JWT token a expiré",
     "invalid_jwt_token": "JWT token non valide",

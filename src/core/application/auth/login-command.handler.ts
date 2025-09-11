@@ -12,6 +12,7 @@ import {
   UserCannotLoginException,
 } from "@/core/domain/auth";
 import { UserStatus } from "@/core/domain/users";
+import { verifyUserType } from "../common/verify-user-type";
 
 @CommandHandler(LoginCommand)
 export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
@@ -27,10 +28,11 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
   }
 
   async execute(command: LoginCommand): Promise<LoginCommandResponse> {
-    console.log("LoginCommandHandler : ", command);
     const user = await this.userRepository.findOneByUsername(command.username);
 
     this.verifyUserCanLogin(user);
+
+    verifyUserType(user, command.source);
 
     this.verifyPassword(command.password, user.password);
 

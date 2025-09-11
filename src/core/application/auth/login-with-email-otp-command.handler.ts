@@ -15,6 +15,7 @@ import {
   ITfaService,
   UserCannotLoginException,
 } from "@/core/domain/auth";
+import { verifyUserType } from "../common/verify-user-type";
 
 @CommandHandler(LoginWithEmailOtpCommand)
 export class LoginWithEmailOtpCommandHandler
@@ -42,6 +43,8 @@ export class LoginWithEmailOtpCommandHandler
       resetIfValid: true,
     });
 
+    verifyUserType(user, command.source);
+
     await this.createUserSession(user);
 
     return this.generateUserTokens(user);
@@ -54,4 +57,5 @@ export class LoginWithEmailOtpCommandHandler
   private async createUserSession(user: User) {
     await this.authService.createUserSession(user);
   }
+
 }

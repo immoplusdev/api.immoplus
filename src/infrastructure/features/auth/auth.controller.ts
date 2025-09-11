@@ -34,13 +34,12 @@ import {
   RequiredPermissions,
   RequiredRoles,
 } from "@/infrastructure/decorators";
-import { UserRole } from "@/core/domain/roles";
+import { UserApp, UserRole } from "@/core/domain/roles";
 import {
   PermissionAction,
   PermissionCollection,
 } from "@/core/domain/permissions";
 import { JwtAuthGuard } from "@/infrastructure/features/auth/guards";
-
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
@@ -56,6 +55,7 @@ export class AuthController {
     const loginCommand = new LoginCommand({
       username: payload.phoneNumber,
       password: payload.password,
+      source: UserApp.CustomerApp,
     });
 
     await this.commandBus.execute(new RegisterCommand(payload));
@@ -74,6 +74,7 @@ export class AuthController {
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
       password: registerCommand.password,
+      source: UserApp.ProApp,
     });
 
     await this.commandBus.execute(registerCommand);
@@ -92,6 +93,7 @@ export class AuthController {
     const loginCommand = new LoginCommand({
       username: registerCommand.phoneNumber,
       password: registerCommand.password,
+      source: UserApp.ProApp,
     });
 
     await this.commandBus.execute(registerCommand);

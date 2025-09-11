@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { randomUUID } from "crypto";
 import * as Minio from "minio";
 import { InjectMinio } from "@/infrastructure/decorators";
 import { MulterFile } from "@/infrastructure/features/files/dto";

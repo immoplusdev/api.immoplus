@@ -34,7 +34,6 @@ export class ResidenceStatusUpdatedEventHandler
       relations: ["proprietaire"],
     });
 
-    console.log(residence);
 
     const proprietaire = castObject<User>(residence.proprietaire as never);
 
