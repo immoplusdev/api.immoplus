@@ -22,7 +22,23 @@ export class EstimerPrixReservationQueryResponse {
   }
 }
 
+export class EstimateReservationCostResponse {
+  @ApiProperty()
+  pourcentage: number;
+  @ApiProperty()
+  montant: number;
+  @ApiProperty()
+  frais: number;
+  @ApiProperty()
+  total: number;
+}
+
 export class WrapperResponseEstimerPrixReservationQueryResponseDto extends WrapperResponseDto<EstimerPrixReservationQueryResponse> {
   @ApiProperty({ type: EstimerPrixReservationQueryResponse })
   data: EstimerPrixReservationQueryResponse;
+}
+
+export class WrapperResponseEstimerReservationCostResponseDto extends WrapperResponseDto<EstimateReservationCostResponse> {
+  @ApiProperty({ type: EstimateReservationCostResponse })
+  data: EstimateReservationCostResponse;
 }

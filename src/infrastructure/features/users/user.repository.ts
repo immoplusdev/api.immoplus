@@ -158,12 +158,10 @@ export class UserRepository implements IUserRepository {
     try {
       if (username.includes("@")) {
         user = await this.findOneByEmail(username, options);
-        console.log("email user: ", user);
       }
 
       if (!user) user = await this.findOneByPhoneNumber(username, options);
     } catch (error) {
-      console.log(error);
       return null;
     }
     return user;

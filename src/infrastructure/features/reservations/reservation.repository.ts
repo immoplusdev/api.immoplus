@@ -10,6 +10,10 @@ import { BaseRepository } from "@/infrastructure/typeorm";
 import { ItemsParamsCriterias, SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
 import { ReservationEntityMapper } from "@/infrastructure/features/reservations/reservation-entity.mapper";
+import { IResidenceRepository } from "@/core/domain/residences";
+import { EstimateReservationCostDto } from "@/core/application/reservations/estimate-reservation-cost.dto";
+import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import { calculateReservationPrice } from "@/core/application/reservations/reservation-price.helper";
 
 @Injectable()
 export class ReservationRepository implements IReservationRepository {
@@ -34,7 +38,7 @@ export class ReservationRepository implements IReservationRepository {
     @Inject(Deps.DataSource)
     readonly dataSource: DataSource,
     @Inject(Deps.ResidenceRepository)
-    private readonly residenceRepository: IReservationRepository,
+    private readonly residenceRepository: IResidenceRepository,
   ) {
     this.repository = new BaseRepository(
       dataSource,
@@ -120,5 +124,21 @@ export class ReservationRepository implements IReservationRepository {
 
   async deleteOne(id: string): Promise<string> {
     return await this.repository.deleteOne(id);
+  }
+
+  async estimateReservationCost(payload: EstimateReservationCostDto): Promise<any>
+  {
+    const residence = await this.residenceRepository.findOne(payload.residenceId);
+
+    if (!residence) {
+      throw new ItemNotFoundException()
+    }
+
+    const start = typeof payload.dateDebut === 'string' ? new Date(payload.dateDebut) : payload.dateDebut;
+    const end = typeof payload.dateFin === 'string' ? new Date(payload.dateFin) : payload.dateFin;
+
+   const result = calculateReservationPrice(residence.prixReservation, start, end, payload.paymentMethod); 
+
+    return result;
   }
 }
