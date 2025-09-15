@@ -100,6 +100,9 @@ export class WalletsService {
       pendingBalance: pendingBalance,
     });
 
+    if (source == TransactionSource.RESERVATION) {
+      await this.reservationRepo.updateOne(sourceId, { proReverse: true });
+    }
     return this.findWalletByOwner(ownerId);
   }
 
@@ -133,6 +136,7 @@ export class WalletsService {
     await this.walletRepo.updateOne(wallet.id, {
       availableBalance: newAvailableBalance,
     });
+
     return await this.findWalletByOwner(ownerId);
   }
 
@@ -212,6 +216,12 @@ export class WalletsService {
       pendingBalance,
       availableBalance,
     });
+
+    if (source == TransactionSource.RESERVATION) {
+      await this.reservationRepo.updateOne(sourceId, {
+        retraitProEffectue: true,
+      });
+    }
     return this.findWalletByOwner(ownerId);
   }
 

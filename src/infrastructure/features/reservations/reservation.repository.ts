@@ -126,18 +126,32 @@ export class ReservationRepository implements IReservationRepository {
     return await this.repository.deleteOne(id);
   }
 
-  async estimateReservationCost(payload: EstimateReservationCostDto): Promise<any>
-  {
-    const residence = await this.residenceRepository.findOne(payload.residenceId);
+  async estimateReservationCost(
+    payload: EstimateReservationCostDto,
+  ): Promise<any> {
+    const residence = await this.residenceRepository.findOne(
+      payload.residenceId,
+    );
 
     if (!residence) {
-      throw new ItemNotFoundException()
+      throw new ItemNotFoundException();
     }
 
-    const start = typeof payload.dateDebut === 'string' ? new Date(payload.dateDebut) : payload.dateDebut;
-    const end = typeof payload.dateFin === 'string' ? new Date(payload.dateFin) : payload.dateFin;
+    const start =
+      typeof payload.dateDebut === "string"
+        ? new Date(payload.dateDebut)
+        : payload.dateDebut;
+    const end =
+      typeof payload.dateFin === "string"
+        ? new Date(payload.dateFin)
+        : payload.dateFin;
 
-   const result = calculateReservationPrice(residence.prixReservation, start, end, payload.paymentMethod); 
+    const result = calculateReservationPrice(
+      residence.prixReservation,
+      start,
+      end,
+      payload.paymentMethod,
+    );
 
     return result;
   }

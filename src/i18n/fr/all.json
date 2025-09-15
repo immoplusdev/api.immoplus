@@ -78,16 +78,40 @@
     },
     "wallets": {
       "paiement_block_valide_pro": {
-        "subject": "\uD83D\uDD14 Compte bloqué crédité !",
-        "message": "Votre compte bloqué a été crédité, ouvrez l'application pour voir les détails!"
+        "subject": "🔔 Compte bloqué crédité !",
+        "message": "Votre compte bloqué vient d’être crédité. Connectez-vous à ImmoPlus pour consulter le montant et les détails de l’opération.",
+        "short": {
+          "subject": "💳 Crédit sur compte bloqué",
+          "message": "Votre compte bloqué a été crédité ✅ Vérifiez ImmoPlus."
+        },
+        "ultra_short": {
+          "subject": "💳 Crédit bloqué",
+          "message": "Nouveau crédit sur compte bloqué."
+        }
       },
       "paiement_unblock_valide_pro": {
-        "subject": "\uD83D\uDD14  Compte principal crédité !",
-        "message": "Vous avez reçu un reversement sur votre compte principal, ouvrez l'application pour voir les détails!"
+        "subject": "🔔 Compte principal crédité !",
+        "message": "Un reversement a été effectué sur votre compte principal. Connectez-vous à ImmoPlus pour découvrir le montant et les informations complètes.",
+        "short": {
+          "subject": "💳 Crédit sur compte principal",
+          "message": "Reversement reçu 💰 Consultez ImmoPlus."
+        },
+        "ultra_short": {
+          "subject": "💳 Crédit principal",
+          "message": "Reversement reçu sur compte principal."
+        }
       },
       "paiement_debit_pro": {
-        "subject": "\uD83D\uDD14 Nouveau retrait !",
-        "message": "Nouveau retrait effectué sur votre compte, ouvrez l'application pour voir les détails."
+        "subject": "🔔 Nouveau retrait !",
+        "message": "Un retrait a été enregistré sur votre compte. Connectez-vous à ImmoPlus afin de vérifier les détails de la transaction.",
+        "short": {
+          "subject": "💸 Retrait effectué",
+          "message": "Un retrait vient d’être enregistré 👀 Vérifiez ImmoPlus."
+        },
+        "ultra_short": {
+          "subject": "💸 Retrait effectué",
+          "message": "Un retrait vient d’être fait."
+        }
       }
     }
   }

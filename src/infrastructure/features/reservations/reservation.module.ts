@@ -16,6 +16,10 @@ import { GetReservationByIdQueryHandler } from "@/core/application/reservations/
 import { UserModule } from "@/infrastructure/features/users/user.module";
 import { ReservationService } from "@/infrastructure/features/reservations/reservation.service";
 import { LoggingModule } from "@/infrastructure/features/logging";
+import { NotificationService } from "../notifications/notification.service";
+import { GlobalizationModule } from "@/infrastructure/features/globalization/globalization.module";
+import { WalletModule } from "@/infrastructure/features/wallets/wallet.module";
+import { NotificationModule } from "@/infrastructure/features/notifications/notification.module";
 
 const queryHandler = [
   EstimerPrixReservationQueryHandler,
@@ -47,6 +51,9 @@ const providers: Provider[] = [
     ConfigsModule,
     UserModule,
     LoggingModule,
+    GlobalizationModule,
+    WalletModule,
+    NotificationModule,
   ],
   providers: [...providers, ...queryHandler, ...commandHandlers],
   exports: [...providers],

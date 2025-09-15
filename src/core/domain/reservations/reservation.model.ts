@@ -13,6 +13,7 @@ export class Reservation {
   dateFin: Date;
   statusFacture: StatusFacture;
   retraitProEffectue: boolean;
+  proReverse?: boolean;
   montantTotalReservation: number;
   montantCommission: number;
   notes: string;
