@@ -51,6 +51,10 @@ export class ReservationEntity {
 
   @Column({ name: "retrait_pro_effectue", type: "bool", default: false })
   retraitProEffectue: boolean;
+
+  @Column({ name: "pro_reverse", type: "bool", default: false })
+  proReverse?: boolean;
+
   @Column({ name: "montant_total_reservation", type: "int" })
   montantTotalReservation: number;
   @Column({ name: "montant_commission", type: "int" })

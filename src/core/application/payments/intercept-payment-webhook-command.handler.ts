@@ -31,8 +31,9 @@ import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { INotificationService } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { PaymentMethod } from "@/core/domain/common/enums";
-import { PaymentReservationValideEvent } from "./payment-reservation-valide.event";
 import { IUserRepository } from "@/core/domain/users";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
+import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 
 @CommandHandler(InterceptPaymentWebhookCommand)
 export class InterceptPaymentWebhookCommandHandler
@@ -157,28 +158,23 @@ export class InterceptPaymentWebhookCommandHandler
       );
     }
 
-    const operator = command.payments[0].metadata?.provider as PaymentMethod;
+    // const operator = command.payments[0].metadata?.provider as PaymentMethod;
 
     // Si payment de la reservation reussi, faire verfication pour crediter le wallet
-    console.log("localPayment.collection", localPayment.collection);
-    if (
-      paymentStatus == PaymentStatus.Successful &&
-      localPayment.collection == PaymentCollection.Reservation
-    ) {
-      await this.reservationWalletCredit(
-        localPayment.itemId,
-        command.amount,
-        operator,
-      );
-    }
+    // if (
+    //   paymentStatus == PaymentStatus.Successful &&
+    //   localPayment.collection == PaymentCollection.Reservation
+    // ) {
+    //   await this.reservationWalletCredit(localPayment.itemId, operator);
+    // }
 
     // Si payment de la demande de visite reussi, faire verfication pour crediter le wallet
-    if (
-      paymentStatus == PaymentStatus.Successful &&
-      localPayment.collection == PaymentCollection.DemandeDeVisite
-    ) {
-      await this.demandeVisiteWalletCredit(localPayment.itemId, operator);
-    }
+    // if (
+    //   paymentStatus == PaymentStatus.Successful &&
+    //   localPayment.collection == PaymentCollection.DemandeDeVisite
+    // ) {
+    //   await this.demandeVisiteWalletCredit(localPayment.itemId, operator);
+    // }
   }
 
   async updateItemStatusAndStatusFacture(
@@ -193,11 +189,7 @@ export class InterceptPaymentWebhookCommandHandler
           statusReservation: StatusReservation.Valide,
         });
 
-        if (statusFacture == StatusFacture.Paye)
-          this.eventBus.publish(
-            new PaymentReservationValideEvent({ reservationId: itemId }),
-          );
-
+        if (statusFacture == StatusFacture.Paye) this.reservationNotify(itemId);
         break;
       case PaymentCollection.DemandeDeVisite:
         await this.demandeVisiteRepository.updateOne(itemId, {
@@ -216,7 +208,6 @@ export class InterceptPaymentWebhookCommandHandler
 
   async reservationWalletCredit(
     reservationId: string,
-    paidAmount: number,
     operator?: PaymentMethod,
   ) {
     const reservation: Reservation =
@@ -322,5 +313,51 @@ export class InterceptPaymentWebhookCommandHandler
         returnUrl: ``,
       });
     }
+  }
+
+  async reservationNotify(reservationId: string) {
+    const reservation = await this.reservationRepository.findOne(reservationId);
+
+    if (!reservation) throw new ItemNotFoundException();
+
+    const residence = await this.residenceRepository.findOne(
+      getIdFromObject(reservation.residence),
+    );
+    if (!residence) throw new ItemNotFoundException();
+
+    const client = await this.usersRepository.findClientByPhoneNumber(
+      reservation.clientPhoneNumber,
+    );
+    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(
+      getIdFromObject(residence.proprietaire),
+    );
+
+    await this.notificationService.sendNotification({
+      userId: client.id,
+      subject: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_client.subject",
+      ),
+      message: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_client.message",
+      ),
+      skipInAppNotification: false,
+      sendMail: true,
+      sendSms: true,
+      returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+    });
+
+    await this.notificationService.sendNotification({
+      userId: proprietaire.id,
+      subject: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_pro.subject",
+      ),
+      message: this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_pro.message",
+      ),
+      skipInAppNotification: false,
+      sendMail: true,
+      sendSms: true,
+      returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+    });
   }
 }

@@ -28,7 +28,6 @@ import { FindWithdrawalRequestByIdQuery } from "@/core/application/wallet/querie
 import { FindWithdrawalRequestByIdHandler } from "@/core/application/wallet/queries/handlers/find-withdrawal-request-by-id.handler";
 import { FindWithdrawalRequestsByOwnerHandler } from "@/core/application/wallet/queries/handlers/find-wallet-withdrawal-requests-by-owner.handler";
 import { DeleteWalletWithdrawalRequestHandler } from "@/core/application/wallet/commands/handlers/delete-wallet-withdrawal-request.handler";
-import { ReservationModule } from "../reservations";
 
 const providers: Provider[] = [
   {
@@ -62,7 +61,6 @@ const providers: Provider[] = [
   DeleteWalletWithdrawalRequestHandler,
   FindWithdrawalRequestByIdQuery,
   FindWithdrawalRequestByIdHandler,
-  ReservationModule,
 ];
 @Module({
   imports: [TypeormModule, CqrsModule],
