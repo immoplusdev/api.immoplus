@@ -32,7 +32,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand> {
 
     this.verifyUserCanLogin(user);
 
-    verifyUserType(user, command.source);
+    // verifyUserType(user, command.source);
 
     this.verifyPassword(command.password, user.password);
 
