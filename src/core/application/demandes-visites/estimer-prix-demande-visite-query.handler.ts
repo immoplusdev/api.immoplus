@@ -43,7 +43,7 @@ export class EstimerPrixDemandeVisiteQueryHandler
         ? configs.expressVisitPrice
         : configs.normalVisitPrice;
 
-    if (prixDemandeVisite == 0) throw new UnexpectedException();
+    // if (prixDemandeVisite == 0) throw new UnexpectedException();
 
     return new EstimerPrixDemandeVisiteQueryResponse({
       bienImmobilier: query.bienImmobilier,
