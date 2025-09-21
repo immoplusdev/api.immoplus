@@ -10,6 +10,7 @@ import { IPasswordManagerService } from "@/core/domain/auth";
 import { UserRole } from "@/core/domain/roles";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { IConfigsManagerService } from "@/core/domain/configs";
+import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
@@ -29,6 +30,24 @@ export class RegisterCommandHandler
   async execute(command: RegisterCommand): Promise<RegisterCommandResponse> {
     await this.validateInput(command);
 
+    // Vérifier s'il existe un utilisateur supprimé avec cet email ou téléphone
+    const deletedUser = await this.findDeletedUser(
+      command.email,
+      command.phoneNumber,
+    );
+
+    if (deletedUser) {
+      // Restaurer et mettre à jour l'utilisateur existant
+      const restoredUser = await this.restoreAndUpdateUser(
+        deletedUser,
+        command,
+      );
+      return new RegisterCommandResponse({
+        user: restoredUser,
+      });
+    }
+
+    // Créer un nouvel utilisateur si aucun utilisateur supprimé n'existe
     const userId = generateUuid();
     const userData = await this.usersDataRepository.createOne({
       activite: null,
@@ -60,13 +79,62 @@ export class RegisterCommandHandler
     await this.verifyPhoneNumberAvailable(command.phoneNumber);
   }
 
+  async findDeletedUser(email: string, phoneNumber: string) {
+    // Chercher par email d'abord
+    const userByEmail = await this.usersRepository.findOneByEmail(
+      email.toLowerCase(),
+      {
+        withDeleted: true,
+      },
+    );
+
+    if (userByEmail && userByEmail.deletedAt) {
+      return userByEmail;
+    }
+
+    // Chercher par téléphone si pas trouvé par email
+    const userByPhone = await this.usersRepository.findOneByPhoneNumber(
+      sanitizePhoneNumber(phoneNumber),
+      {
+        withDeleted: true,
+      },
+    );
+
+    if (userByPhone && userByPhone.deletedAt) {
+      return userByPhone;
+    }
+
+    return null;
+  }
+
+  async restoreAndUpdateUser(deletedUser: any, command: RegisterCommand) {
+    // Restaurer l'utilisateur en supprimant le deletedAt et en mettant à jour ses informations
+    await this.usersRepository.updateOne(deletedUser.id, {
+      email: command.email.toLowerCase(),
+      phoneNumber: command.phoneNumber,
+      password: this.passwordManagerService.encryptPassword(command.password),
+      firstName: command.firstName,
+      lastName: command.lastName,
+      avatar: command.avatar || null,
+      deletedAt: null, // Restaurer l'utilisateur
+      updatedAt: new Date(),
+    });
+
+    // Récupérer l'utilisateur mis à jour
+    return await this.usersRepository.findOne(deletedUser.id);
+  }
+
   async verifyEmailAvailable(email: string) {
-    const user = await this.usersRepository.findOneByEmail(email);
+    const user = await this.usersRepository.findOneByEmail(email, {
+      withDeleted: false,
+    });
     if (user?.id) throw new UserEmailAlreadyTakenException();
   }
 
   async verifyPhoneNumberAvailable(phoneNumber: string) {
-    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber);
+    const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, {
+      withDeleted: false,
+    });
     if (user?.id) throw new UserPhoneNumberAlreadyTakenException();
   }
 }

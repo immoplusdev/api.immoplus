@@ -34,6 +34,8 @@ export class GetPaymentCollectionItemDataQueryHandler
 
     if (query.collection == PaymentCollection.Reservation) {
       const data = await this.reservationRepository.findOne(query.itemId);
+      console.log("query.itemId : ", query.itemId);
+      console.log("data : ", data);
       itemData.setData({
         itemId: data.id,
         collection: PaymentCollection.Reservation,

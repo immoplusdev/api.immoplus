@@ -97,6 +97,7 @@ export class ReservationRepository implements IReservationRepository {
   }
 
   async findOne(id: string, options?: FindItemOptions): Promise<Reservation> {
+    console.log("findOne id : ", id);
     return await this.repository.findOne(id, options);
   }
 
