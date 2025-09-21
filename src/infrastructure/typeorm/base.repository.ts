@@ -101,6 +101,7 @@ export class BaseRepository<
     const queryOptions: FindManyOptions<Model> = {
       relations: (options?.loadRelationIds || this.relations) as never,
       loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
+      withDeleted: options?.withDeleted,
     };
 
     if (query) {
@@ -147,6 +148,7 @@ export class BaseRepository<
       select: mapQueryFieldsToTypeormSelection(options?.fields),
       relations: (options?.relations || this.relations) as never,
       loadRelationIds: options?.loadRelationIds || this.loadRelationIds,
+      withDeleted: options?.withDeleted,
     });
     if (!item) return null;
     return this.mapResponse(item);
