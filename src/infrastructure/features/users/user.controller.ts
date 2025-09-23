@@ -6,6 +6,7 @@ import {
   Inject,
   Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from "@nestjs/common";
@@ -39,6 +40,13 @@ import {
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { AccessForbiddenException } from "@/core/domain/auth";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import { UserOtpService } from "./user-otp.service";
+import {
+  SendOtpDto,
+  SendOtpResponseDto,
+  VerifyOtpDto,
+  VerifyOtpResponseDto,
+} from "./dto";
 
 @ApiTags("User")
 @Controller("users")
@@ -52,6 +60,7 @@ export class UserController {
     readonly commandBus: CommandBus,
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
+    private readonly userOtpService: UserOtpService,
   ) {}
 
   @ApiResponse({
@@ -202,5 +211,25 @@ export class UserController {
     await this.usersRepository.deleteOne(id);
 
     return this.responseMapper.mapFrom(user);
+  }
+
+  @ApiResponse({
+    type: SendOtpResponseDto,
+  })
+  @Post("send-otp")
+  async sendOtp(@Body() payload: SendOtpDto): Promise<SendOtpResponseDto> {
+    const message = await this.userOtpService.sendOtp(payload.email);
+    return { data: { message } };
+  }
+
+  @ApiResponse({
+    type: VerifyOtpResponseDto,
+  })
+  @Post("verify-otp")
+  async verifyOtp(
+    @Body() payload: VerifyOtpDto,
+  ): Promise<VerifyOtpResponseDto> {
+    const result = await this.userOtpService.verifyOtp(payload.email, payload.otp);
+    return { data: result };
   }
 }

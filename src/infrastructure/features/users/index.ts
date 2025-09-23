@@ -4,3 +4,6 @@ export * from "./user.service";
 export * from "./user.module";
 export * from "./user-data.entity";
 export * from "./user-entity.mapper";
+export * from "./user-otp.entity";
+export * from "./user-otp.repository";
+export * from "./user-otp.service";
