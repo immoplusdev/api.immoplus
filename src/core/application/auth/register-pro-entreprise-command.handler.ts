@@ -3,14 +3,15 @@ import { RegisterProEntrepriseCommand } from "./register-pro-entreprise.command"
 import { RegisterProEntrepriseCommandResponse } from "./register-pro-entreprise-command.response";
 import { UserEmailAlreadyTakenException } from "@/core/application/auth/user-email-already-taken.exception";
 import { UserPhoneNumberAlreadyTakenException } from "@/core/application/auth/user-phone-number-already-taken.exception";
-import { Inject } from "@nestjs/common";
+import { Inject, BadRequestException } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
-import { IPasswordManagerService } from "@/core/domain/auth";
+import { IPasswordManagerService, UnauthorizedException } from "@/core/domain/auth";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { UserRole } from "@/core/domain/roles";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
+import { UserOtpRepository } from "@/infrastructure/features/users/user-otp.repository";
 
 @CommandHandler(RegisterProEntrepriseCommand)
 export class RegisterProEntrepriseCommandHandler
@@ -25,6 +26,7 @@ export class RegisterProEntrepriseCommandHandler
     private readonly usersDataRepository: IUserDataRepository,
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
+    private readonly userOtpRepository: UserOtpRepository,
   ) {}
 
   async execute(
@@ -81,6 +83,7 @@ export class RegisterProEntrepriseCommandHandler
   async validateInput(command: RegisterProEntrepriseCommand) {
     await this.verifyEmailAvailable(command.email);
     await this.verifyPhoneNumberAvailable(command.phoneNumber);
+    await this.verifyOtpToken(command.token, command.email);
   }
 
   async findDeletedUser(email: string, phoneNumber: string) {
@@ -168,5 +171,36 @@ export class RegisterProEntrepriseCommandHandler
       withDeleted: false,
     });
     if (user?.id) throw new UserPhoneNumberAlreadyTakenException();
+  }
+
+  async verifyOtpToken(token: string, email: string) {
+    try {
+      const userOtp = await this.userOtpRepository.findOneByToken(token);
+
+      if (!userOtp) {
+        throw new BadRequestException("Token OTP invalide");
+      }
+
+      if (userOtp.email.toLowerCase() !== email.toLowerCase()) {
+        throw new BadRequestException(
+          "Le token OTP ne correspond pas à l'email fourni",
+        );
+      }
+
+      if (!userOtp.isUsed) {
+        throw new BadRequestException("Le code OTP n'a pas été vérifié");
+      }
+
+      if (new Date() > userOtp.otpExpiration) {
+        throw new BadRequestException("Le token OTP a expiré");
+      }
+    } catch (error) {
+      throw new UnauthorizedException({
+        message: error.message,
+        statusCode: error.statusCode,
+        error: error.error,
+        code: error.code,
+      });
+    }
   }
 }

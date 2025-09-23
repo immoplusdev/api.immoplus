@@ -1,6 +1,6 @@
 import { IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class RegisterCommand {
   @ApiProperty()
@@ -22,6 +22,10 @@ export class RegisterCommand {
   @ApiProperty()
   @IsNotEmpty({ message: "$t:all.exception.empty_password_exception" })
   password: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  token: string;
 
   constructor(data?: OmitMethods<RegisterCommand>) {
     Object.assign(this, data);

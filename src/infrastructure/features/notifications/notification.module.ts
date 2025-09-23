@@ -33,7 +33,7 @@ const providers: Provider[] = [
   controllers: [NotificationController],
   imports: [
     TypeormModule,
-    UserModule,
+    forwardRef(() => UserModule),
     forwardRef(() => ConfigsModule),
     forwardRef(() => LoggingModule),
   ],

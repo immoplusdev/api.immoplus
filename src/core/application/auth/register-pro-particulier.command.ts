@@ -1,6 +1,6 @@
 import { IsValidPhoneNumber, OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class RegisterProParticulierCommand {
   @ApiProperty()
@@ -30,6 +30,10 @@ export class RegisterProParticulierCommand {
   @ApiProperty()
   @IsNotEmpty()
   pieceIdentiteId: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  token: string;
 
   constructor(data?: OmitMethods<RegisterProParticulierCommand>) {
     if (data) Object.assign(this, data);
