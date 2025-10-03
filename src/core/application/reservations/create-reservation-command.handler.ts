@@ -48,7 +48,7 @@ export class CreateReservationCommandHandler
 
     const residence = await this.residenceRepository.findOne(
       command.residence,
-      { fields: ["id", "proprietaire"] },
+      { fields: ["id", "proprietaire", "heureEntree", "heureDepart"] },
     );
     if (!residence) throw new ItemNotFoundException();
 
@@ -60,7 +60,11 @@ export class CreateReservationCommandHandler
       command.setClientPhoneNumber(client.phoneNumber);
     }
 
-    const reserDates = await this.getStartAndEndDates(command.datesReservation);
+    const reserDates = await this.getStartAndEndDates(
+      command.datesReservation,
+      residence.heureEntree,
+      residence.heureDepart,
+    );
     const { id } = await this.reservationRepository.createOne(
       {
         ...command,
@@ -104,13 +108,39 @@ export class CreateReservationCommandHandler
     return serviceDates.map((serviceDate) => dateToString(serviceDate.date));
   }
 
-  getStartAndEndDates(datesReservation: ServiceDates) {
-    const startDate = datesReservation[0]?.date;
-    const endDate = datesReservation[datesReservation.length - 1]?.date;
+  getStartAndEndDates(
+    datesReservation: ServiceDates,
+    heureEntree: string,
+    heureSortie: string,
+  ) {
+    let startDate: Date;
+    let endDate: Date;
 
-    return {
-      dateDebut: startDate ? new Date(startDate) : null,
-      dateFin: endDate ? new Date(endDate) : null,
-    };
+    if (datesReservation.length > 1) {
+      startDate = datesReservation[0]?.date;
+      endDate = datesReservation[datesReservation.length - 1]?.date;
+    } else {
+      startDate = new Date(datesReservation[0]?.date);
+
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 1);
+    }
+
+    const startHours = heureEntree.split(":");
+
+    const formatStartDate = new Date(startDate);
+    if (startHours.length > 1) {
+      formatStartDate.setHours(
+        parseInt(startHours[0]),
+        parseInt(startHours[1]),
+        0,
+        0,
+      );
+    }
+    const endHours = heureSortie.split(":");
+    if (endHours.length > 1) {
+      endDate.setHours(parseInt(startHours[0]), parseInt(startHours[1]), 0, 0);
+    }
+    return { dateDebut: formatStartDate, dateFin: endDate };
   }
 }

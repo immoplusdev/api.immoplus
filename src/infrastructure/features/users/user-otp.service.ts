@@ -4,7 +4,7 @@ import { UserOtpEntity } from "./user-otp.entity";
 import { IMailService } from "@/core/domain/notifications";
 import { Deps } from "@/core/domain/common/ioc";
 import * as crypto from "crypto";
-import { InvalidOtpException, UnauthorizedException } from "@/core/domain/auth";
+import { UnauthorizedException } from "@/core/domain/auth";
 
 @Injectable()
 export class UserOtpService {
