@@ -229,7 +229,10 @@ export class UserController {
   async verifyOtp(
     @Body() payload: VerifyOtpDto,
   ): Promise<VerifyOtpResponseDto> {
-    const result = await this.userOtpService.verifyOtp(payload.email, payload.otp);
+    const result = await this.userOtpService.verifyOtp(
+      payload.email,
+      payload.otp,
+    );
     return { data: result };
   }
 }
