@@ -113,21 +113,10 @@ export class CreateReservationCommandHandler
     heureEntree: string,
     heureSortie: string,
   ) {
-    let startDate: Date;
-    let endDate: Date;
-
-    if (datesReservation.length > 1) {
-      startDate = datesReservation[0]?.date;
-      endDate = datesReservation[datesReservation.length - 1]?.date;
-    } else {
-      startDate = new Date(datesReservation[0]?.date);
-
-      endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 1);
-    }
+    const startDate = datesReservation[0]?.date;
+    const endDate = datesReservation[datesReservation.length - 1]?.date;
 
     const startHours = heureEntree.split(":");
-
     const formatStartDate = new Date(startDate);
     if (startHours.length > 1) {
       formatStartDate.setHours(
@@ -137,6 +126,7 @@ export class CreateReservationCommandHandler
         0,
       );
     }
+
     const endHours = heureSortie.split(":");
     if (endHours.length > 1) {
       endDate.setHours(parseInt(startHours[0]), parseInt(startHours[1]), 0, 0);
