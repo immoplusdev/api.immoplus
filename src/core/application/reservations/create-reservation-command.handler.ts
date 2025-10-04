@@ -117,6 +117,7 @@ export class CreateReservationCommandHandler
     const endDate = datesReservation[datesReservation.length - 1]?.date;
 
     const startHours = heureEntree.split(":");
+
     const formatStartDate = new Date(startDate);
     if (startHours.length > 1) {
       formatStartDate.setHours(
@@ -127,10 +128,17 @@ export class CreateReservationCommandHandler
       );
     }
 
+    const formatEndDate = new Date(endDate);
+    formatEndDate.setDate(formatEndDate.getDate() + 1);
     const endHours = heureSortie.split(":");
     if (endHours.length > 1) {
-      endDate.setHours(parseInt(startHours[0]), parseInt(startHours[1]), 0, 0);
+      formatEndDate.setHours(
+        parseInt(startHours[0]),
+        parseInt(startHours[1]),
+        0,
+        0,
+      );
     }
-    return { dateDebut: formatStartDate, dateFin: endDate };
+    return { dateDebut: formatStartDate, dateFin: formatEndDate };
   }
 }
