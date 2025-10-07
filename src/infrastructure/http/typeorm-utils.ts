@@ -105,6 +105,8 @@ export function mapQueryToTypeormQuery(
     const order = {};
     order[query._order_by] = query._order_dir;
     searchParams.order = order;
+  } else {
+    searchParams.order = { createdAt: "DESC" };
   }
 
   return searchParams;

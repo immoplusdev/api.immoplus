@@ -247,6 +247,8 @@ export class ResidenceRepository implements IResidenceRepository {
       const direction =
         query._order_dir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
       qb.orderBy(`residence.${query._order_by}`, direction);
+    } else {
+      qb.orderBy("residence.createdAt", "DESC");
     }
 
     // Pagination
@@ -675,7 +677,13 @@ export class ResidenceRepository implements IResidenceRepository {
     orderBy?: string,
     orderDir?: string,
   ) {
-    if (!orderBy || !this.isValidOrderField(orderBy)) return;
+    if (!orderBy || !this.isValidOrderField(orderBy)) {
+      qb.orderBy("residence.createdAt", "DESC").addOrderBy(
+        "residence.id",
+        "ASC",
+      );
+      return;
+    }
 
     const direction = orderDir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
 
