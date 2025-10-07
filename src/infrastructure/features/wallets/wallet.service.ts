@@ -21,6 +21,7 @@ import { PaymentMethod } from "@/core/domain/common/enums";
 import { Reservation } from "@/core/domain/reservations";
 import { ReservationEntity } from "../reservations";
 import { Cron, CronExpression } from "@nestjs/schedule";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class WalletsService {
@@ -365,5 +366,28 @@ export class WalletsService {
         }
       }
     });
+  }
+
+  async setPinCode(ownerId: string, pin: string): Promise<void> {
+    const wallet = await this.findWalletByOwner(ownerId);
+    const saltRounds = 10;
+    const pinHash = await bcrypt.hash(pin, saltRounds);
+
+    await this.walletRepo.updateOne(wallet.id, { pinHash });
+  }
+
+  async verifyPinCode(ownerId: string, pin: string): Promise<boolean> {
+    const wallet = await this.findWalletByOwner(ownerId);
+
+    if (!wallet.pinHash) {
+      return false;
+    }
+
+    return await bcrypt.compare(pin, wallet.pinHash);
+  }
+
+  async hasPinCode(ownerId: string): Promise<boolean> {
+    const wallet = await this.findWalletByOwner(ownerId);
+    return !!wallet.pinHash;
   }
 }

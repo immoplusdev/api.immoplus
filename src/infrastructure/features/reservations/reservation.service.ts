@@ -73,7 +73,8 @@ export class ReservationService {
     );
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  // @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async reversementReservationClient() {
     this.loggerService.info("Refreshing reservation reversement");
     const reservations = await this.reservationRepository.findByQuery({
@@ -83,37 +84,60 @@ export class ReservationService {
           _op: "eq",
           _val: false,
         },
-        { _field: "statusFacture", _op: "eq", _val: StatusFacture.Paye },
+        {
+          _field: "statusFacture",
+          _op: "eq",
+          _val: StatusFacture.Paye,
+        },
       ],
     });
 
-    const today = moment().format("YYYY-MM-DD");
+    const today = moment();
+    console.log("reservations.data: ", reservations.data.length);
+    let reservation: Reservation = null;
 
-    for (const reservation of reservations.data) {
+    for (reservation of reservations.data) {
+      console.log("reservation : ", reservation.id);
+
       const dateReversementBlock = moment(reservation.dateDebut).add(1, "days");
       const deblockReservationAmount = moment(reservation.dateFin).add(
         1,
         "days",
       );
 
-      // Reverser les fonds au proprietaire si la date de debut de la reservation est depassee
-      if (
-        dateReversementBlock &&
-        dateReversementBlock.isBefore(today, "second")
-      ) {
-        if (reservation.proReverse !== true) {
-          // Crediter le proprietaire
-          await this.reservationWalletCredit(reservation.id);
-        } else {
-          // Verifier si la date de fin de la reservation est depassee pour debloquer les fonds
-          if (
-            deblockReservationAmount &&
-            deblockReservationAmount.isBefore(today, "second")
-          ) {
-            // Debloquer les fonds
-            await this.reservationWalletUnblock(reservation.id);
+      if (reservation.id == "bc0cd72e-dddf-439b-b071-5a088feee947") {
+        console.log("reservation trouvé : ", reservation);
+      }
+
+      try {
+        // Reverser les fonds au proprietaire si la date de debut de la reservation est depassee
+        if (dateReversementBlock && dateReversementBlock.isBefore(today)) {
+          if (reservation.proReverse != true) {
+            // Crediter le proprietaire
+            console.log("Start credit for ID: ", reservation.id);
+            await this.reservationWalletCredit(reservation.id);
+            // Marquer comme traité
+            await this.reservationRepository.updateOne(reservation.id, {
+              proReverse: true,
+            });
+          } else {
+            // Verifier si la date de fin de la reservation est depassee pour debloquer les fonds
+            if (
+              deblockReservationAmount &&
+              deblockReservationAmount.isBefore(today)
+            ) {
+              // Debloquer les fonds
+              console.log("Start unblock for ID: ", reservation.id);
+              await this.reservationWalletUnblock(reservation.id);
+              // Marquer comme complètement traité
+              await this.reservationRepository.updateOne(reservation.id, {
+                retraitProEffectue: true,
+              });
+            }
           }
         }
+      } catch (error) {
+        this.loggerService.error("Catech error: ", error);
       }
     }
   }
@@ -122,6 +146,7 @@ export class ReservationService {
     reservationId: string,
     operator?: PaymentMethod,
   ) {
+    console.log("Reversement pour reservation : ", reservationId);
     const reservation: Reservation =
       await this.reservationRepository.findOne(reservationId);
 

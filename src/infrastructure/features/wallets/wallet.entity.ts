@@ -43,6 +43,9 @@ export class WalletEntity {
   @Column({ name: "currency", type: "varchar", length: 3, nullable: false })
   currency: string; // ISO 4217 currency code
 
+  @Column({ name: "pin_hash", type: "varchar", length: 255, nullable: true })
+  pinHash?: string;
+
   @OneToMany(() => WalletTransactionEntity, (transaction) => transaction.wallet)
   transactions: WalletTransaction[];
 

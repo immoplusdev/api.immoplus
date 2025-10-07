@@ -54,4 +54,8 @@ export interface IWalletRepository {
     query: SearchItemsParams,
   ): Promise<WrapperResponse<WalletWithDrawalRequest[]>>;
   deleteWalletWithdrawalRequest(id: string): Promise<void>;
+
+  setPinCode(ownerId: string, pin: string): Promise<void>;
+  verifyPinCode(ownerId: string, pin: string): Promise<boolean>;
+  hasPinCode(ownerId: string): Promise<boolean>;
 }
