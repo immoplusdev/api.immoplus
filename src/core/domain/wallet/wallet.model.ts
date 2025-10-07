@@ -8,6 +8,7 @@ export class Wallet {
   availableBalance: number;
   pendingBalance: number;
   currency: string;
+  pinHash?: string;
   walletTransactions?: WalletTransaction[] | string[]; // Array of transaction IDs
   withDrawalRequest?: WalletTransaction[] | string[]; // Array of withdrawal request IDs
 

@@ -120,4 +120,16 @@ export class WalletsRepository implements IWalletRepository {
   deleteWalletWithdrawalRequest(id: string): Promise<void> {
     return this.walletService.deleteWalletWithdrawalRequest(id);
   }
+
+  setPinCode(ownerId: string, pin: string): Promise<void> {
+    return this.walletService.setPinCode(ownerId, pin);
+  }
+
+  verifyPinCode(ownerId: string, pin: string): Promise<boolean> {
+    return this.walletService.verifyPinCode(ownerId, pin);
+  }
+
+  hasPinCode(ownerId: string): Promise<boolean> {
+    return this.walletService.hasPinCode(ownerId);
+  }
 }

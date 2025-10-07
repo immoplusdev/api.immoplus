@@ -53,6 +53,11 @@ import {
 } from "./dtos/wallet-transaction.dto";
 import { WrapperResponseWalletDto } from "./dtos/wallet.dto";
 import { CreateWalletWithdrawalRequestAdminDto } from "./dtos/create-wallet-widrawal-request-admin.dto";
+import { SetPinDto } from "./dtos/set-pin.dto";
+import { VerifyPinDto } from "./dtos/verify-pin.dto";
+import { SetPinCommand } from "@/core/application/wallet/commands/set-pin.command";
+import { VerifyPinCommand } from "@/core/application/wallet/commands/verify-pin.command";
+import { HasPinQuery } from "@/core/application/wallet/queries/has-pin.query";
 
 @ApiTags("Wallet")
 @Controller("wallet")
@@ -85,7 +90,7 @@ export class WalletsController {
     type: WrapperResponseWalletDto,
   })
   @Get("admin/user-wallet/:userId")
-  @RequiredRoles(UserRole.Admin)
+  // @RequiredRoles(UserRole.Admin)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async getUserWallet(@Param("userId") userId: string) {
@@ -449,5 +454,52 @@ export class WalletsController {
     return this.commandBus.execute(
       new DeleteWalletWithdrawalRequestCommand(id),
     );
+  }
+
+  @Post("set-pin")
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async setPinCode(
+    @CurrentUser("id") userId: string,
+    @Body() data: SetPinDto,
+  ) {
+    await this.commandBus.execute(new SetPinCommand(userId, data.pin));
+    return this.responseMapper.mapFrom({ message: "Code PIN défini avec succès" });
+  }
+
+  @Post("verify-pin")
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async verifyPinCode(
+    @CurrentUser("id") userId: string,
+    @Body() data: VerifyPinDto,
+  ) {
+    const isValid = await this.commandBus.execute(
+      new VerifyPinCommand(userId, data.pin),
+    );
+    return this.responseMapper.mapFrom({ isValid });
+  }
+
+  @Get("has-pin")
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async hasPinCode(@CurrentUser("id") userId: string) {
+    const hasPin = await this.queryBus.execute(new HasPinQuery(userId));
+    return this.responseMapper.mapFrom({ hasPin });
   }
 }

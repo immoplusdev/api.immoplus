@@ -28,6 +28,12 @@ import { FindWithdrawalRequestByIdQuery } from "@/core/application/wallet/querie
 import { FindWithdrawalRequestByIdHandler } from "@/core/application/wallet/queries/handlers/find-withdrawal-request-by-id.handler";
 import { FindWithdrawalRequestsByOwnerHandler } from "@/core/application/wallet/queries/handlers/find-wallet-withdrawal-requests-by-owner.handler";
 import { DeleteWalletWithdrawalRequestHandler } from "@/core/application/wallet/commands/handlers/delete-wallet-withdrawal-request.handler";
+import { SetPinCommand } from "@/core/application/wallet/commands/set-pin.command";
+import { VerifyPinCommand } from "@/core/application/wallet/commands/verify-pin.command";
+import { HasPinQuery } from "@/core/application/wallet/queries/has-pin.query";
+import { SetPinHandler } from "@/core/application/wallet/commands/handlers/set-pin.handler";
+import { VerifyPinHandler } from "@/core/application/wallet/commands/handlers/verify-pin.handler";
+import { HasPinHandler } from "@/core/application/wallet/queries/handlers/has-pin.handler";
 
 const providers: Provider[] = [
   {
@@ -61,6 +67,12 @@ const providers: Provider[] = [
   DeleteWalletWithdrawalRequestHandler,
   FindWithdrawalRequestByIdQuery,
   FindWithdrawalRequestByIdHandler,
+  SetPinCommand,
+  SetPinHandler,
+  VerifyPinCommand,
+  VerifyPinHandler,
+  HasPinQuery,
+  HasPinHandler,
 ];
 @Module({
   imports: [TypeormModule, CqrsModule],
