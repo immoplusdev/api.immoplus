@@ -259,8 +259,8 @@ export class ResidenceController {
   @Delete(":id")
   async delete(
     @Param("id") id: string,
-    @CurrentUser("id") userId: string,
-    @CurrentUser("role") userRole: Role,
+    // @CurrentUser("id") userId: string,
+    // @CurrentUser("role") userRole: Role,
   ) {
     const query = {
       _where: [
@@ -271,8 +271,8 @@ export class ResidenceController {
       ],
     };
 
-    if (!userRole.hasAdminAccess())
-      query._where.push({ _field: "createdBy", _val: userId });
+    // if (!userRole.hasAdminAccess())
+    //   query._where.push({ _field: "createdBy", _val: userId });
 
     await this.repository.deleteByQuery(query);
 
