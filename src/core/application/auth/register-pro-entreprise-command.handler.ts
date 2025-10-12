@@ -62,6 +62,8 @@ export class RegisterProEntrepriseCommandHandler
       user: userId,
     });
 
+
+
     const user = await this.usersRepository.createOne({
       id: userId,
       avatar: command.avatar || null,
@@ -70,9 +72,7 @@ export class RegisterProEntrepriseCommandHandler
       password: this.passwordManagerService.encryptPassword(command.password),
       role: UserRole.ProEntreprise,
       additionalData: userData.id,
-      createdBy: this.configsManagerService.getEnvVariable(
-        "NEST_APP_ADMIN_PASSWORD_ID",
-      ),
+      createdBy: null,
     });
 
     return new RegisterProEntrepriseCommandResponse({

@@ -71,9 +71,7 @@ export class RegisterProParticulierCommandHandler
       lastName: command.lastName,
       role: UserRole.ProParticulier,
       additionalData: userData.id as never,
-      createdBy: this.configsManagerService.getEnvVariable(
-        "NEST_APP_ADMIN_PASSWORD_ID",
-      ),
+      createdBy: null,
     });
 
     return new RegisterProParticulierCommandResponse({
