@@ -21,9 +21,7 @@ export class SmsService implements ISmsService {
 
     await client.messages.create({
       body: message,
-      messagingServiceSid: this.configsManagerService.getEnvVariable(
-        "TWILIO_MESSAGING_SERVICE_ID",
-      ),
+      from: this.configsManagerService.getEnvVariable("TWILIO_PHONE_NUMBER"),
       to: this.sanitizeRecipients(recipients)[0],
     });
   }
