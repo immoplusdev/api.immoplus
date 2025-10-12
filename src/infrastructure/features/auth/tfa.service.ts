@@ -85,13 +85,6 @@ export class TfaService implements ITfaService {
 
   async sendUserSmsOtp(phoneNumber: string) {
     try {
-      if (
-        this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-          AppProfile.Dev ||
-        phoneNumber == BYPASS_USER_PHONE_NUMBER
-      )
-        return;
-
       const user = await this.usersRepository.findOneByPhoneNumber(
         phoneNumber,
         {
@@ -101,14 +94,15 @@ export class TfaService implements ITfaService {
       console.log("user : ", user);
       if (!user) throw new UserNotFoundException();
 
-      const to = sanitizePhoneNumberIntl(user.phoneNumber);
+      const to = sanitizePhoneNumberIntl(phoneNumber);
+      const otp = this.generateOtp();
+      await this.usersRepository.updateOne(user.id, { otp });
 
-      await this.twilioService.verify.v2
-        .services(this.verifyServiceSid)
-        .verifications.create({
-          channel: "sms",
-          to,
-        });
+      await this.twilioService.messages.create({
+        body: `Votre code de vérification est : ${otp}`,
+        from: this.configsManagerService.getEnvVariable("TWILIO_PHONE_NUMBER"),
+        to: to,
+      });
     } catch (e) {
       this.loggerService.error(e);
       throw new NotificationException(
