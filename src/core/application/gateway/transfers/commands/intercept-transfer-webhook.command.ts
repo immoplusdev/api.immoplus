@@ -1,7 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
 import { Hu2TransferResponseDto } from "@/core/domain/gateways/transfers/hu2-transfer-response.dto";
-import Api from "twilio/lib/rest/Api";
 
 export class InterceptTransferWebhookCommand {
   @ApiProperty()

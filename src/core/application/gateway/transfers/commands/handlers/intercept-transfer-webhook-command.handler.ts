@@ -132,7 +132,7 @@ export class InterceptTransferWebhookCommandHandler
           _val: command.data.id,
         },
       ],
-      _order_by: "created_at",
+      _order_by: "createdAt",
       _order_dir: "desc",
     });
 
