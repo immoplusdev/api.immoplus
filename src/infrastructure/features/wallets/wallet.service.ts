@@ -206,7 +206,7 @@ export class WalletsService {
       ],
     });
 
-    if (!transaction) {
+    if (transaction) {
       await this.walletTransactionRepo.updateOne(transaction.id, {
         isRealeased: true,
         releasedAt: new Date(),
