@@ -1,4 +1,4 @@
-import { Brackets, DataSource, SelectQueryBuilder } from "typeorm";
+import { DataSource, SelectQueryBuilder } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { Residence, IResidenceRepository } from "@/core/domain/residences";
@@ -144,17 +144,17 @@ export class ResidenceRepository implements IResidenceRepository {
       .where("reservation.statusFacture = :status", {
         status: StatusFacture.Paye,
       })
-      .where(
-        new Brackets((qb) => {
-          qb.where("reservation.id IS NULL").orWhere(
-            new Brackets((qb2) => {
-              qb2
-                .andWhere(":today > DATE(reservation.dateFin)")
-                .orWhere(":today < DATE(reservation.dateDebut)");
-            }),
-          );
-        }),
-      )
+      // .where(
+      //   new Brackets((qb) => {
+      //     qb.where("reservation.id IS NULL").orWhere(
+      //       new Brackets((qb2) => {
+      //         qb2
+      //           .andWhere(":today > DATE(reservation.dateFin)")
+      //           .orWhere(":today < DATE(reservation.dateDebut)");
+      //       }),
+      //     );
+      //   }),
+      // )
       .setParameters({
         today: formattedDate,
       })
@@ -494,17 +494,6 @@ export class ResidenceRepository implements IResidenceRepository {
         "residence.proprietaire",
         "proprietaire",
         "proprietaire.deleted_at IS NULL",
-      )
-      .where(
-        new Brackets((qb) => {
-          qb.where("reservation.id IS NULL").orWhere(
-            new Brackets((qb2) => {
-              qb2
-                .where("DATE(:startDate) > DATE(reservation.dateFin)")
-                .orWhere("DATE(:endDate) < DATE(reservation.dateDebut)");
-            }),
-          );
-        }),
       )
       .andWhere("residence.status_validation = :status", {
         status: StatusValidationBienImmobilier.Valide,

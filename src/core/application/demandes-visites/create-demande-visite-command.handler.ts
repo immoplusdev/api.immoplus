@@ -1,9 +1,15 @@
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { CreateDemandeVisiteCommand } from "./create-demande-visite.command";
 import { CreateDemandeVisiteCommandResponse } from "./create-demande-visite-command.response";
-import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import {
+  ItemNotFoundException,
+  ConflictException,
+} from "@/core/domain/common/exceptions";
 import { Inject } from "@nestjs/common";
-import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
+import {
+  IDemandeVisiteRepository,
+  StatusDemandeVisite,
+} from "@/core/domain/demandes-visites";
 import { Deps } from "@/core/domain/common/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { IUserRepository } from "@/core/domain/users";
@@ -47,6 +53,35 @@ export class CreateDemandeVisiteCommandHandler
         fields: ["id", "phoneNumber"],
       });
       command.setClientPhoneNumber(client.phoneNumber);
+    }
+
+    const existingDemande = await this.demandeVisiteRepository.findOneByQuery(
+      {
+        _where: [
+          {
+            _field: "bienImmobilier",
+            _op: "eq",
+            _val: command.bienImmobilier,
+          },
+          {
+            _field: "createdBy",
+            _op: "eq",
+            _val: command.userId,
+          },
+          {
+            _field: "statusDemandeVisite",
+            _op: "in",
+            _val: [StatusDemandeVisite.Valide, StatusDemandeVisite.EnCours],
+          },
+        ],
+      },
+      { relations: [] },
+    );
+
+    if (existingDemande) {
+      throw new ConflictException(
+        "Vous avez déjà une demande de visite en attente sur cette résidence",
+      );
     }
 
     const { id } = await this.demandeVisiteRepository.createOne(
