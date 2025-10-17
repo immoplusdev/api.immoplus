@@ -6,6 +6,7 @@ import { BienImmobilierRepository } from "./bien-immobilier.repository";
 import { CqrsModule } from "@nestjs/cqrs";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import { UserModule } from "@/infrastructure/features/users";
 import { BienImmobilierStatusValidationUpdatedEventHandler } from "@/core/application/demandes-visites";
 
 const eventHandlers = [BienImmobilierStatusValidationUpdatedEventHandler];
@@ -19,7 +20,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [BienImmobilierController],
-  imports: [TypeormModule, CqrsModule, NotificationModule, GlobalizationModule],
+  imports: [TypeormModule, CqrsModule, NotificationModule, GlobalizationModule, UserModule],
   providers: [...providers, ...eventHandlers],
   exports: [...providers],
 })

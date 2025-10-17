@@ -78,6 +78,10 @@
       "nouvelle_residence_admin": {
         "subject": "🏠 Nouvelle résidence à valider",
         "message": "Une nouvelle résidence vient d'être enregistrée et nécessite votre validation. Veuillez vous connecter à l'administration pour l'examiner et l'approuver."
+      },
+      "nouveau_bien_immobilier_admin": {
+        "subject": "🏢 Nouveau bien immobilier à valider",
+        "message": "Un nouveau bien immobilier vient d'être enregistré et nécessite votre validation. Veuillez vous connecter à l'administration pour l'examiner et l'approuver."
       }
     },
     "wallets": {

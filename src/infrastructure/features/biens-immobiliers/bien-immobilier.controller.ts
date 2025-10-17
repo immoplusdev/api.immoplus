@@ -50,6 +50,9 @@ import { EventBus } from "@nestjs/cqrs";
 import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/demandes-visites";
 import { BienImmobilierGeolocalisizeDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize.dto";
 import { BienImmobilierGeolocalisizeFilterDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize-filter.dto";
+import { IUserRepository } from "@/core/domain/users";
+import { INotificationService } from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
 
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")
@@ -63,6 +66,12 @@ export class BienImmobilierController {
     @Inject(Deps.BiensImmobiliesRepository)
     private readonly repository: IBienImmobilierRepository,
     private readonly eventBus: EventBus,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
   ) {}
 
   @ApiResponse({
@@ -92,6 +101,9 @@ export class BienImmobilierController {
       createdBy: userId,
       proprietaire: payload.proprietaire ? payload.proprietaire : userId,
     });
+
+    // Notify all admin users about the new bien immobilier
+    await this.notifyAdminsNewBienImmobilier(response.id);
 
     return this.responseMapper.mapFrom(response);
   }
@@ -307,5 +319,35 @@ export class BienImmobilierController {
   @Put("data/update/coordonates")
   async updateAllCordonates() {
     return this.repository.updateAllCordonates();
+  }
+
+  private async notifyAdminsNewBienImmobilier(
+    bienImmobilierId: string,
+  ): Promise<void> {
+    try {
+      const adminUsers = await this.usersRepository.findAdminUsers();
+
+      const subject = this.globalizationService.t(
+        "all.notifications.reservations.nouveau_bien_immobilier_admin.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.reservations.nouveau_bien_immobilier_admin.message",
+      );
+
+      for (const admin of adminUsers) {
+        await this.notificationService.sendNotification({
+          userId: admin.id,
+          subject,
+          message,
+          skipInAppNotification: false,
+          sendMail: true,
+          sendSms: false,
+          returnUrl: `/admin/biens-immobiliers/${bienImmobilierId}`,
+        });
+      }
+    } catch (error) {
+      console.error("Error notifying admins about new bien immobilier:", error);
+      // Don't throw error to prevent blocking bien immobilier creation
+    }
   }
 }
