@@ -6,7 +6,10 @@ import { UserPhoneNumberAlreadyTakenException } from "@/core/application/auth/us
 import { Inject, BadRequestException } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserDataRepository, IUserRepository } from "@/core/domain/users";
-import { IPasswordManagerService, UnauthorizedException } from "@/core/domain/auth";
+import {
+  IPasswordManagerService,
+  UnauthorizedException,
+} from "@/core/domain/auth";
 import { generateUuid } from "@/lib/ts-utilities/db";
 import { UserRole } from "@/core/domain/roles";
 import { IConfigsManagerService } from "@/core/domain/configs";

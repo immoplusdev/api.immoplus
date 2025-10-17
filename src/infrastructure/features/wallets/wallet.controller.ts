@@ -464,12 +464,11 @@ export class WalletsController {
   )
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async setPinCode(
-    @CurrentUser("id") userId: string,
-    @Body() data: SetPinDto,
-  ) {
+  async setPinCode(@CurrentUser("id") userId: string, @Body() data: SetPinDto) {
     await this.commandBus.execute(new SetPinCommand(userId, data.pin));
-    return this.responseMapper.mapFrom({ message: "Code PIN défini avec succès" });
+    return this.responseMapper.mapFrom({
+      message: "Code PIN défini avec succès",
+    });
   }
 
   @Post("verify-pin")

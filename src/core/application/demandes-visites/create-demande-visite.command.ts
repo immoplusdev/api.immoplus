@@ -9,7 +9,7 @@ export class CreateDemandeVisiteCommand {
   bienImmobilier: string;
   @ApiProperty({ enum: TypeDemandeVisite })
   typeDemandeVisite: TypeDemandeVisite;
-  @ApiProperty({ type: ServiceDateDto, isArray: true })
+  // @ApiProperty({ type: ServiceDateDto, isArray: true })
   // @IsOptional()
   // datesDemandeVisite: ServiceDates;
   @ApiProperty()

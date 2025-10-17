@@ -1,5 +1,3 @@
-import { nanoid } from "nanoid";
-
 export const generateRandomString = (length: number, type = "*") => {
   let result = "";
   let characters = "";
@@ -21,4 +19,8 @@ export const generateRandomString = (length: number, type = "*") => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+};
+
+export const generateReservationCode = (): string => {
+  return generateRandomString(6, "alphanum").toUpperCase();
 };

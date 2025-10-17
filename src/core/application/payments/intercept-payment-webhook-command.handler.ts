@@ -29,12 +29,19 @@ import { DEFAULT_CURRENCY, TransactionSource } from "@/core/domain/wallet";
 import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { INotificationService } from "@/core/domain/notifications";
-import { IGlobalizationService } from "@/core/domain/globalization";
+import {
+  IGlobalizationService,
+  TranslateOptions,
+} from "@/core/domain/globalization";
 import { PaymentMethod } from "@/core/domain/common/enums";
 import { IUserRepository } from "@/core/domain/users";
 import { getIdFromObject } from "@/lib/ts-utilities/mapping";
+import { generateReservationCode } from "@/lib/ts-utilities/strings/string-generator";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 
+type CustomTranslateOptions = TranslateOptions & {
+  codeReservation: string;
+};
 @CommandHandler(InterceptPaymentWebhookCommand)
 export class InterceptPaymentWebhookCommandHandler
   implements ICommandHandler<InterceptPaymentWebhookCommand>
@@ -74,7 +81,7 @@ export class InterceptPaymentWebhookCommandHandler
     return new InterceptPaymentWebhookCommandResponse();
   }
 
-  hasAccess(json: string, reqHmac: string) {
+  hasAccess(_json: string, _reqHmac: string) {
     return true;
   }
 
@@ -184,10 +191,16 @@ export class InterceptPaymentWebhookCommandHandler
   ) {
     switch (collection) {
       case PaymentCollection.Reservation:
-        await this.reservationRepository.updateOne(itemId, {
+        const updateData: any = {
           statusFacture,
           statusReservation: StatusReservation.Valide,
-        });
+        };
+
+        if (statusFacture == StatusFacture.Paye) {
+          updateData.codeReservation = generateReservationCode();
+        }
+
+        await this.reservationRepository.updateOne(itemId, updateData);
 
         if (statusFacture == StatusFacture.Paye) this.reservationNotify(itemId);
         break;
@@ -339,6 +352,9 @@ export class InterceptPaymentWebhookCommandHandler
       ),
       message: this.globalizationService.t(
         "all.notifications.reservations.paiement_valide_client.message",
+        {
+          codeReservation: reservation.codeReservation,
+        } as CustomTranslateOptions,
       ),
       skipInAppNotification: false,
       sendMail: true,

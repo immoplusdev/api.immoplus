@@ -34,7 +34,6 @@ export class ResidenceStatusUpdatedEventHandler
       relations: ["proprietaire"],
     });
 
-
     const proprietaire = castObject<User>(residence.proprietaire as never);
 
     const emailContent = `

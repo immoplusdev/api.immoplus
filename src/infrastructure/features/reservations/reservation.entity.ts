@@ -71,6 +71,14 @@ export class ReservationEntity {
   })
   clientPhoneNumber: string;
 
+  @Column({
+    name: "code_reservation",
+    type: "varchar",
+    length: 6,
+    nullable: true,
+  })
+  codeReservation: string;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;
   @UpdateDateColumn({ name: "updated_at" })

@@ -69,11 +69,15 @@
     "reservations": {
       "paiement_valide_client": {
         "subject": "\uD83C\uDF89 Réservation confirmée !",
-        "message": "Votre réservation a été validée avec succès ! \n Nous sommes impatients de vous accueillir ! Passez un excellent séjour ! ✨\uD83C\uDF34"
+        "message": "Votre réservation a été validée avec succès ! \n\n📋 Votre code de réservation : {codeReservation} \n\n⚠️ Veuillez présenter ce code à l'accueil le jour de votre arrivée à la résidence.\n\n Nous sommes impatients de vous accueillir ! Passez un excellent séjour ! ✨🏴"
       },
       "paiement_valide_pro": {
         "subject": "\uD83D\uDD14 Nouvelle réservation reçue !",
         "message": "Nouvelle réservation reçue, ouvrez l'application pour voir les détails."
+      },
+      "nouvelle_residence_admin": {
+        "subject": "🏠 Nouvelle résidence à valider",
+        "message": "Une nouvelle résidence vient d'être enregistrée et nécessite votre validation. Veuillez vous connecter à l'administration pour l'examiner et l'approuver."
       }
     },
     "wallets": {
