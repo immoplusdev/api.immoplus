@@ -9,7 +9,7 @@ import { DataSource } from "typeorm";
 import { UserEntity, UserEntityMapper } from "@/infrastructure/features/users";
 import { Deps } from "@/core/domain/common/ioc";
 import { IPermissionRepository } from "@/core/domain/permissions";
-import { Role } from "@/core/domain/roles";
+import { Role, UserRole } from "@/core/domain/roles";
 import { SearchItemsParams } from "@/core/domain/http";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
@@ -205,5 +205,17 @@ export class UserRepository implements IUserRepository {
   async deleteOne(id: string): Promise<string> {
     await this.repository.deleteOne(id);
     return id;
+  }
+
+  async findAdminUsers(): Promise<User[]> {
+    const { data } = await this.repository.findByQuery({
+      _where: [
+        {
+          _field: "role",
+          _val: UserRole.Admin,
+        },
+      ],
+    });
+    return data;
   }
 }

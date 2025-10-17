@@ -10,6 +10,7 @@ import {
 import { CqrsModule } from "@nestjs/cqrs";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
+import { UserModule } from "@/infrastructure/features/users";
 
 const queryHandler = [];
 const commandHandlers = [UpdateResidenceByIdCommandHandler];
@@ -24,7 +25,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [ResidenceController],
-  imports: [TypeormModule, CqrsModule, GlobalizationModule, NotificationModule],
+  imports: [TypeormModule, CqrsModule, GlobalizationModule, NotificationModule, UserModule],
   providers: [
     ...providers,
     ...queryHandler,

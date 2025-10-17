@@ -6,7 +6,6 @@ import { StatusFacture } from "@/core/domain/payments";
 import { Residence } from "@/core/domain/residences";
 import { ServiceDateDto } from "@/core/application/common/dto";
 import { ResidenceDto } from "@/infrastructure/features/residences";
-import { IsNotEmpty } from "class-validator";
 
 export class ReservationDto {
   @ApiProperty({ format: "uuid" })
@@ -33,6 +32,8 @@ export class ReservationDto {
   notes: string;
   @ApiProperty()
   clientPhoneNumber: string;
+  @ApiProperty({ nullable: true })
+  codeReservation: string;
   @ApiProperty()
   createdAt?: Date;
   @ApiProperty()

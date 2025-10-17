@@ -7,7 +7,6 @@ export interface MulterFile extends Express.Multer.File {
   externalFileId: string;
 }
 
-
 export class FileDto {
   @ApiProperty()
   id: string;

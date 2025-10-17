@@ -26,5 +26,4 @@ const providers: Provider[] = [
   providers: [...providers, ...commandHandlers],
   exports: [...providers],
 })
-export class FileModule {
-}
+export class FileModule {}

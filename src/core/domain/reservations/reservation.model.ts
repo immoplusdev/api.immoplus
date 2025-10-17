@@ -18,6 +18,7 @@ export class Reservation {
   montantCommission: number;
   notes: string;
   clientPhoneNumber: string;
+  codeReservation: string;
   createdAt?: Date;
   updatedAt?: Date;
   // deletedAt?: Date;

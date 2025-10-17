@@ -57,5 +57,4 @@ export class LoginWithEmailOtpCommandHandler
   private async createUserSession(user: User) {
     await this.authService.createUserSession(user);
   }
-
 }

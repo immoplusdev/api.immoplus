@@ -46,6 +46,9 @@ import { UpdateResidenceByIdCommand } from "@/core/application/residences";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
+import { IUserRepository } from "@/core/domain/users";
+import { INotificationService } from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
 
 @ApiTags("Residence")
 @Controller("residences")
@@ -59,6 +62,12 @@ export class ResidenceController {
     @Inject(Deps.ResidenceRepository)
     private readonly repository: IResidenceRepository,
     private readonly commandBus: CommandBus,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
   ) {}
 
   @ApiResponse({
@@ -85,6 +94,9 @@ export class ResidenceController {
       createdBy: userId,
       proprietaire: payload.proprietaire ? payload.proprietaire : userId,
     });
+
+    // Notify all admin users about the new residence
+    await this.notifyAdminsNewResidence(response.id);
 
     return this.responseMapper.mapFrom(response);
   }
@@ -286,5 +298,33 @@ export class ResidenceController {
   async updateAllCordonates() {
     const items = await this.repository.updateAllCordonates();
     return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  private async notifyAdminsNewResidence(residenceId: string): Promise<void> {
+    try {
+      const adminUsers = await this.usersRepository.findAdminUsers();
+
+      const subject = this.globalizationService.t(
+        "all.notifications.reservations.nouvelle_residence_admin.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.reservations.nouvelle_residence_admin.message",
+      );
+
+      for (const admin of adminUsers) {
+        await this.notificationService.sendNotification({
+          userId: admin.id,
+          subject,
+          message,
+          skipInAppNotification: false,
+          sendMail: true,
+          sendSms: false,
+          returnUrl: `/admin/residences/${residenceId}`,
+        });
+      }
+    } catch (error) {
+      console.error("Error notifying admins about new residence:", error);
+      // Don't throw error to prevent blocking residence creation
+    }
   }
 }
