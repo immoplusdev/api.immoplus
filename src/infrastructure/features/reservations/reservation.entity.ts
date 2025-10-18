@@ -59,6 +59,8 @@ export class ReservationEntity {
   montantTotalReservation: number;
   @Column({ name: "montant_commission", type: "int" })
   montantCommission: number;
+  @Column({ name: "montant_paye", type: "int", default: 0 })
+  montantPaye: number;
 
   @Column({ name: "notes", type: "text", nullable: true })
   notes: string;

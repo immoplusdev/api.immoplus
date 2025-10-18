@@ -4,8 +4,13 @@ export function calculateReservationPrice(
   residencePrice: number,
   startDate: Date,
   endDate: Date,
-  paymentMethod: PaymentMethod,
-): any {
+  paymentMethod?: PaymentMethod,
+): {
+    pourcentage: number,
+    montant: number,
+    frais: number,
+    total: number
+  } {
   if (startDate >= endDate) {
     throw new Error("La date de début doit être antérieure à la date de fin.");
   }

@@ -16,6 +16,7 @@ export class Reservation {
   proReverse?: boolean;
   montantTotalReservation: number;
   montantCommission: number;
+  montantPaye: number;
   notes: string;
   clientPhoneNumber: string;
   codeReservation: string;
