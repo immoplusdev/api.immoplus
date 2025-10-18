@@ -29,6 +29,8 @@ export class ReservationDto {
   @ApiProperty()
   montantCommission: number;
   @ApiProperty()
+  montantPaye: number;
+  @ApiProperty()
   notes: string;
   @ApiProperty()
   clientPhoneNumber: string;

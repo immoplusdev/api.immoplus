@@ -21,7 +21,7 @@ export class EstimateReservationCostDto {
     enum: PaymentMethod,
     enumName: "PaymentMethod",
   })
-  paymentMethod: PaymentMethod;
+  paymentMethod?: PaymentMethod;
 
   constructor(data?: OmitMethods<EstimateReservationCostDto>) {
     if (data) Object.assign(this, data);

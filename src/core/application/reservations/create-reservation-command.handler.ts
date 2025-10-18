@@ -19,6 +19,8 @@ import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { ServiceDates } from "@/core/domain/common/models";
 import { GetResidenceOccupiedDatesQueryResponse } from "@/core/application/reservations";
 import { dateToString } from "@/lib/ts-utilities";
+import { calculateReservationPrice } from "./reservation-price.helper";
+import { PaymentMethod } from "@/core/domain/common/enums";
 
 @CommandHandler(CreateReservationCommand)
 export class CreateReservationCommandHandler
@@ -41,14 +43,14 @@ export class CreateReservationCommandHandler
   ): Promise<CreateReservationCommandResponse> {
     await this.verifyCanCreateReservation(command);
 
-    const calculationResult: EstimerPrixReservationQueryResponse =
+    const priceEstimation: EstimerPrixReservationQueryResponse =
       await this.queryBus.execute(
         new EstimerPrixReservationQuery({ ...command }),
       );
 
     const residence = await this.residenceRepository.findOne(
       command.residence,
-      { fields: ["id", "proprietaire", "heureEntree", "heureDepart"] },
+      { fields: ["id", "proprietaire", "heureEntree", "heureDepart", "prixReservation"] },
     );
     if (!residence) throw new ItemNotFoundException();
 
@@ -65,14 +67,24 @@ export class CreateReservationCommandHandler
       residence.heureEntree,
       residence.heureDepart,
     );
+
+
+    const priceCalculation = calculateReservationPrice(
+      residence.prixReservation,
+      reserDates.dateDebut,
+      reserDates.dateFin,
+      PaymentMethod.Wave,
+    );
+
     const { id } = await this.reservationRepository.createOne(
       {
         ...command,
         ...reserDates,
-        montantTotalReservation: calculationResult.montantTotalReservation,
-        montantCommission: calculationResult.montantCommission,
+        montantTotalReservation: priceEstimation.montantTotalReservation,
+        montantCommission: priceEstimation.montantCommission,
         clientPhoneNumber: command.clientPhoneNumber,
         createdBy: command.userId,
+        montantPaye: priceCalculation?.total,
       },
       false,
     );
