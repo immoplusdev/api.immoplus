@@ -251,8 +251,14 @@ export class WalletsService {
     if (wallet.availableBalance < +request.amount) {
       throw new NotEnoughtMoneyException();
     }
+
+    const amountWithFees = await this.calculateTotalWithFees(
+      request.amount,
+      request.operator,
+    );
     const newRequest = new WalletWithDrawalRequest({
       ...request,
+      amountWithFees,
       wallet,
     });
 
@@ -389,5 +395,25 @@ export class WalletsService {
   async hasPinCode(ownerId: string): Promise<boolean> {
     const wallet = await this.findWalletByOwner(ownerId);
     return !!wallet.pinHash;
+  }
+
+  async calculateTotalWithFees(
+    amount: number,
+    operator: PaymentMethod,
+  ): Promise<number> {
+    switch (operator) {
+      case PaymentMethod.MoovMoney:
+        return amount + amount * 0.01; // 1.% fee
+      case PaymentMethod.Wave:
+        return amount + amount * 0.02; // 2% fee
+      case PaymentMethod.OrangeMoney:
+        return amount + amount * 0.1; // 1% fee
+      case PaymentMethod.MtnMoney:
+        return amount + amount * 0.01; // 1% fee
+      case PaymentMethod.Cash:
+        return amount; // No fee for cash
+      default:
+        return amount; // No fee for unknown operators
+    }
   }
 }

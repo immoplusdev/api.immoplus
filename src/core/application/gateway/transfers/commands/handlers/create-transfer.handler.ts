@@ -104,7 +104,7 @@ export class CreateTransferHandler
 
     const transferPayload = new TransfertPayloadDto({
       reference: transfer.id,
-      amount: +transfer.amount,
+      amount: +withdrawal.amountWithFees,
       currency: transfer.currency,
       description: transfer.recipientName,
       destination: destination,

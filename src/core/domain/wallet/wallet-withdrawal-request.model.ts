@@ -9,6 +9,7 @@ export class WalletWithDrawalRequest {
   owner: User | string;
   wallet: Wallet | string;
   amount: number;
+  amountWithFees: number;
   currency: string;
   phoneNumber?: string;
   operator?: PaymentMethod;
