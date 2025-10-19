@@ -25,6 +25,14 @@ export class WalletWithdrawalRequestEntity {
   @Column({ type: "decimal", precision: 10, scale: 2 })
   amount: number;
 
+  @Column({
+    name: "amount_with_fees",
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+  })
+  amountWithFees: number;
+
   @Column({ type: "varchar", length: 3 })
   currency: string; // ISO 4217 currency code
 
