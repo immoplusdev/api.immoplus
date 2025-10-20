@@ -38,6 +38,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
       ...(exception.data && { data: exception.data }),
     };
 
-    response.status(exception.statusCode).json(errorResponse);
+    const statusCode = exception.statusCode || 500;
+    response.status(statusCode).json(errorResponse);
   }
 }

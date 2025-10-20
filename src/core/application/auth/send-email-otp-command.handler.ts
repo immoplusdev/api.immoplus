@@ -7,12 +7,15 @@ import { ITfaService } from "@/core/domain/auth";
 import { IMailService, SendMailParams } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { SendSmsOtpCommandResponse } from "@/core/application/auth/send-sms-otp-command.response";
+import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
 
 @CommandHandler(SendEmailOtpCommand)
 export class SendEmailOtpCommandHandler
   implements ICommandHandler<SendEmailOtpCommand>
 {
   constructor(
+    @Inject(Deps.UsersRepository)
+    private readonly userRepository: IUserRepository,
     @Inject(Deps.TfaService) private readonly tfaService: ITfaService,
     @Inject(Deps.MailService) private readonly mailService: IMailService,
     @Inject(Deps.GlobalizationService)
@@ -24,6 +27,9 @@ export class SendEmailOtpCommandHandler
   async execute(
     command: SendEmailOtpCommand,
   ): Promise<SendEmailOtpCommandResponse> {
+    const user = await this.userRepository.findOneByEmail(command.email);
+    if (!user) throw new UserNotFoundException();
+
     const otp = await this.tfaService.generateUserEmailOtp(command.email);
 
     const emailParams = new SendMailParams({
