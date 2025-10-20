@@ -50,7 +50,17 @@ export class CreateReservationCommandHandler
 
     const residence = await this.residenceRepository.findOne(
       command.residence,
-      { fields: ["id", "proprietaire", "heureEntree", "heureDepart", "prixReservation"] },
+      {
+        fields: [
+          "id",
+          "proprietaire",
+          "heureEntree",
+          "heureDepart",
+          "prixReservation",
+          "dureeMinSejour",
+          "dureeMaxSejour",
+        ],
+      },
     );
     if (!residence) throw new ItemNotFoundException();
 
@@ -62,12 +72,21 @@ export class CreateReservationCommandHandler
       command.setClientPhoneNumber(client.phoneNumber);
     }
 
+    if (command.datesReservation.length < residence.dureeMinSejour)
+      throw new Error(
+        `La durée minimum de séjour est de ${residence.dureeMinSejour} jour(s).`,
+      );
+
+    if (command.datesReservation.length > residence.dureeMaxSejour)
+      throw new Error(
+        `La durée maximum de séjour est de ${residence.dureeMaxSejour} jour(s).`,
+      );
+
     const reserDates = await this.getStartAndEndDates(
       command.datesReservation,
       residence.heureEntree,
       residence.heureDepart,
     );
-
 
     const priceCalculation = calculateReservationPrice(
       residence.prixReservation,
