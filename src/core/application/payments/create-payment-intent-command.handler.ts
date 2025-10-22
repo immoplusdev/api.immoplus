@@ -45,6 +45,7 @@ export class CreatePaymentIntentCommandHandler
         collection: command.collection,
       }),
     );
+    console.log("Item Data:", itemData);
     if (!itemData) throw new ItemNotFoundException();
 
     const paymentIntent = await this.initializePayment(command, itemData);
@@ -76,12 +77,13 @@ export class CreatePaymentIntentCommandHandler
     command: CreatePaymentIntentCommand,
     serviceData: PaymentCollectionItemData,
   ): Promise<Payment> {
-    const fees = this.paymentGatewayService.calculatePaymentFees(
-      serviceData.amount,
-      command.paymentMethod,
-    );
-    const amountNoFees = serviceData.amount;
-    const totalAmount = amountNoFees + fees;
+    // const fees = this.paymentGatewayService.calculatePaymentFees(
+    //   serviceData.amount,
+    //   command.paymentMethod,
+    // );
+    // const amountNoFees = serviceData.amount;
+    // const totalAmount = amountNoFees + fees;
+    const totalAmount = serviceData.amount;
 
     const paymentIntentResponse =
       await this.paymentGatewayService.createPaymentIntent({
@@ -96,7 +98,7 @@ export class CreatePaymentIntentCommandHandler
 
     return await this.paymentRepository.createOne({
       amount: totalAmount,
-      amountNoFees: amountNoFees,
+      amountNoFees: serviceData.amountNoFees,
       collection: serviceData.collection,
       paymentStatus: paymentIntentResponse.status,
       paymentMethod: command.paymentMethod,

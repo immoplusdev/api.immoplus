@@ -103,20 +103,13 @@ export class Hub2PaymentGatewayService implements IPaymentGatewayService {
   async createPaymentIntent(
     payload: CreatePaymentIntent,
   ): Promise<CreatePaymentIntentResponse> {
-    const amount =
-      payload.amount +
-      this.getPaymentMethodFees(
-        payload.amount,
-        payload.paymentMethod || PaymentMethod.Wave,
-      );
-
     try {
       const body = {
         customerReference: payload.customerId,
         purchaseReference:
           PaymentToken.toString(payload.paymentToken) +
           new Date().toISOString(),
-        amount: Math.ceil(amount),
+        amount: payload.amount,
         currency: "XOF",
         overrideBusinessName: HUB2_OVERRIDE_BUSINESS_NAME,
       };

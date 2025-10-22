@@ -10,6 +10,9 @@ export class PaymentCollectionItemData {
   @ApiProperty()
   amount: number;
 
+  @ApiProperty()
+  amountNoFees: number;
+
   setData(data: OmitMethods<PaymentCollectionItemData>) {
     Object.assign(this, data);
     return this;
