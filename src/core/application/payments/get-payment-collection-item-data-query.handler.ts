@@ -38,6 +38,7 @@ export class GetPaymentCollectionItemDataQueryHandler
         itemId: data.id,
         collection: PaymentCollection.Reservation,
         amount: data.montantPaye,
+        amountNoFees: data.montantTotalReservation,
       });
     } else {
       const data = await this.demandeVisiteRepository.findOne(query.itemId);
@@ -45,6 +46,7 @@ export class GetPaymentCollectionItemDataQueryHandler
         itemId: data.id,
         collection: PaymentCollection.DemandeDeVisite,
         amount: data.montantTotalDemandeVisite,
+        amountNoFees: data.montantTotalDemandeVisite,
       });
 
       // "statusReservation": "en_cours",
