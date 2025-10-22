@@ -34,12 +34,10 @@ export class GetPaymentCollectionItemDataQueryHandler
 
     if (query.collection == PaymentCollection.Reservation) {
       const data = await this.reservationRepository.findOne(query.itemId);
-      console.log("query.itemId : ", query.itemId);
-      console.log("data : ", data);
       itemData.setData({
         itemId: data.id,
         collection: PaymentCollection.Reservation,
-        amount: data.montantTotalReservation,
+        amount: data.montantPaye,
       });
     } else {
       const data = await this.demandeVisiteRepository.findOne(query.itemId);
