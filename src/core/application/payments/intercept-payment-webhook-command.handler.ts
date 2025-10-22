@@ -39,9 +39,6 @@ import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 import { generateReservationCode } from "@/lib/ts-utilities/strings/string-generator";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 
-type CustomTranslateOptions = TranslateOptions & {
-  codeReservation: string;
-};
 @CommandHandler(InterceptPaymentWebhookCommand)
 export class InterceptPaymentWebhookCommandHandler
   implements ICommandHandler<InterceptPaymentWebhookCommand>
@@ -353,8 +350,10 @@ export class InterceptPaymentWebhookCommandHandler
       message: this.globalizationService.t(
         "all.notifications.reservations.paiement_valide_client.message",
         {
-          codeReservation: reservation.codeReservation,
-        } as CustomTranslateOptions,
+          args: {
+            codeReservation: reservation.codeReservation,
+          },
+        } as TranslateOptions,
       ),
       skipInAppNotification: false,
       sendMail: true,
