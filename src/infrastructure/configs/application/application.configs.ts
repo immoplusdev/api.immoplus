@@ -1,5 +1,7 @@
 import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "@/app.module";
+
 import {
   compressionConfigs,
   swaggerConfigs,
@@ -12,9 +14,10 @@ import {
   configureExceptionFilters,
   NEST_SWAGGER_ENABLED,
 } from "@/infrastructure/configs";
+import { join } from "path";
 
 export async function applicationConfigs() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   configureEnv(app);
   compressionConfigs(app);
   corsConfigs(app);
@@ -24,6 +27,16 @@ export async function applicationConfigs() {
   globalInterceptorsConfig(app);
   globalPipesConfig(app);
   configureI18n(app);
+
+  // Definir le repertoire des vues
+  app.setBaseViewsDir(join(__dirname, "../../../..", "views"));
+
+  // definir le moteur des vues
+  app.setViewEngine("hbs");
+
+  // Servir les fichiers statiques
+  app.useStaticAssets(join(__dirname, "../../../..", "public"));
+
   await app.listen(process.env.PORT || 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
