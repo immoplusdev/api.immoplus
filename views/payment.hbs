@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+</head>
+
+<body>
+    <div class="payment-status-container">
+        <h1>Statut de votre paiement pour {{ collection }}
+        </h1>
+        <div id="icon" class="status-icon">
+            <lord-icon src="https://cdn.lordicon.com/default-icon.json" trigger="loop"
+                colors="primary:#121331,secondary:#08a88a" style="width:200px;height:200px">
+            </lord-icon>
+        </div>
+
+        <p id="status-text"></p>
+    </div>
+
+    <script>
+        const status = "{{ status }}";
+        const icon = document.querySelector('lord-icon');
+        const statusText = document.getElementById('status-text');
+
+        switch (status) {
+            case 'waiting_for_validation':
+                icon.setAttribute('src', 'https://cdn.lordicon.com/dnoiydox.json');
+                statusText.textContent = 'En attente de validation...';
+                break;
+            case 'payment_required':
+                icon.setAttribute('src', 'https://cdn.lordicon.com/nocovwne.json');
+                statusText.textContent = 'Paiement requis.';
+                break;
+            case 'processing':
+                icon.setAttribute('src', 'https://cdn.lordicon.com/yeallgsa.json');
+                statusText.textContent = 'Traitement en cours...';
+                break;
+            case 'action_required':
+                icon.setAttribute('src', 'https://cdn.lordicon.com/tdrtiskw.json');
+                statusText.textContent = 'Action requise pour finaliser le paiement.';
+                break;
+            case 'successful':
+                icon.setAttribute('src', 'https://cdn.lordicon.com/lupuorrc.json');
+                statusText.textContent = 'Paiement réussi ! Merci pour votre transaction.';
+                break;
+            case 'failed':
+                icon.setAttribute('src', 'https://cdn.lordicon.com/rslnizbt.json');
+                statusText.textContent = 'Échec du paiement. Veuillez réessayer.';
+                break;
+            default:
+                statusText.textContent = 'Statut inconnu.';
+        }
+    </script>
+</body>
+
+</html>

@@ -11,10 +11,13 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TransfersModule } from "./infrastructure/features/transfers/transfers.module";
 import { GlobalPipesModule } from "@/infrastructure/pipes";
 import { MinioModule } from "@/infrastructure/features/files";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
-const providers: Provider[] = [];
+const providers: Provider[] = [AppService];
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
