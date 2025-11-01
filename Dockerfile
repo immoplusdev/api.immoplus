@@ -46,6 +46,9 @@ WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
+COPY views ./views
+COPY public ./public
+
 
 ENV NODE_ENV=production
 
