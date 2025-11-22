@@ -1,41 +1,46 @@
 import { Injectable } from "@nestjs/common";
-import * as Minio from "minio";
-import { InjectMinio } from "@/infrastructure/decorators";
+import {
+  S3Client,
+  ListBucketsCommand,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { InjectS3 } from "@/infrastructure/decorators";
 import { MulterFile } from "@/infrastructure/features/files/dto";
 
 @Injectable()
 export class FilesService {
   protected bucketName = "files";
 
-  constructor(@InjectMinio() private readonly minioService: Minio.Client) {}
+  constructor(@InjectS3() private readonly s3Client: S3Client) {}
 
   async bucketsList() {
-    return await this.minioService.listBuckets();
+    const command = new ListBucketsCommand({});
+    const response = await this.s3Client.send(command);
+    return response.Buckets || [];
   }
 
   async getFile(filename: string) {
-    return await this.minioService.presignedUrl(
-      "GET",
-      this.bucketName,
-      filename,
-    );
+    const command = new GetObjectCommand({
+      Bucket: this.bucketName,
+      Key: filename,
+    });
+    // Generate presigned URL valid for 1 hour
+    return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
   }
 
-  uploadFile(file: MulterFile) {
-    return new Promise((resolve, reject) => {
-      this.minioService.putObject(
-        this.bucketName,
-        file.externalFileId,
-        file.buffer,
-        file.size,
-        (error, objInfo) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(objInfo);
-          }
-        },
-      );
+  async uploadFile(file: MulterFile) {
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: file.externalFileId,
+      Body: file.buffer,
+      ContentLength: file.size,
+      ContentType: file.mimetype,
     });
+    console.log("Uploading ... => ", command);
+
+    const response = await this.s3Client.send(command);
+    return response;
   }
 }

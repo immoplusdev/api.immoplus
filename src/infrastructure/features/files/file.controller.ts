@@ -36,10 +36,7 @@ import {
   PermissionAction,
   PermissionCollection,
 } from "@/core/domain/permissions";
-import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { fileUploadConfig } from "@/infrastructure/configs/file-management/file-upload.config";
-import { generateUuid } from "@/lib/ts-utilities/db";
 import { UploadFileCommand } from "@/core/application/files";
 import {
   UploadFileCommandResponseDto,
@@ -138,16 +135,16 @@ export class FileController {
 
     await this.service.uploadFile(uploadedFile);
 
-    const command = new UploadFileCommand({
-      ...payload,
-      userId,
-      file: file as never,
-      externalFileId: uploadedFile.externalFileId,
-    });
+    // const command = new UploadFileCommand({
+    //   ...payload,
+    //   userId,
+    //   file: file as never,
+    //   externalFileId: uploadedFile.externalFileId,
+    // });
 
-    const response = await this.commandBus.execute(command);
+    // const response = await this.commandBus.execute(command);
 
-    return responseMapper.mapFrom(response);
+    // return responseMapper.mapFrom(response);
   }
 
   @ApiResponse({

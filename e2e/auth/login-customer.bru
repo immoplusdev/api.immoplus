@@ -1,0 +1,26 @@
+meta {
+  name: login-customer
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{API_URL}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "{{CUSTOMER_USERNAME}}",
+    "password": "{{DEFAULT_USER_PASSWORD}}",
+    "source": "customer_app"
+  }
+}
+
+script:post-response {
+  const { data: { accessToken } }  = res.getBody();
+    
+  bru.setEnvVar("DEFAULT_CUSTOMER_TOKEN", accessToken);
+  
+}

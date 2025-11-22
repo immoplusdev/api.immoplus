@@ -10,7 +10,7 @@ import { RestModule } from "@/infrastructure/presentation/rest/rest.module";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TransfersModule } from "./infrastructure/features/transfers/transfers.module";
 import { GlobalPipesModule } from "@/infrastructure/pipes";
-import { MinioModule } from "@/infrastructure/features/files";
+import { S3Module } from "@/infrastructure/features/files";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
@@ -29,7 +29,7 @@ const providers: Provider[] = [AppService];
     GlobalPipesModule,
     I18nModule.forRoot(i18Configs),
     JwtModule.register(jwtConfigs),
-    MinioModule,
+    S3Module,
     RestModule,
     TransfersModule,
   ],
