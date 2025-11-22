@@ -8,12 +8,21 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { InjectS3 } from "@/infrastructure/decorators";
 import { MulterFile } from "@/infrastructure/features/files/dto";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class FilesService {
-  protected bucketName = "files";
+  protected bucketName: string;
 
-  constructor(@InjectS3() private readonly s3Client: S3Client) {}
+  constructor(
+    @InjectS3() private readonly s3Client: S3Client,
+    private readonly configService: ConfigService,
+  ) {
+    this.bucketName = this.configService.get<string>(
+      "AWS_S3_BUCKET_NAME",
+      "files",
+    );
+  }
 
   async bucketsList() {
     const command = new ListBucketsCommand({});
@@ -38,8 +47,7 @@ export class FilesService {
       ContentLength: file.size,
       ContentType: file.mimetype,
     });
-    console.log("Uploading ... => ", command);
-
+    
     const response = await this.s3Client.send(command);
     return response;
   }

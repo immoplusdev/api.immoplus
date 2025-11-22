@@ -135,16 +135,16 @@ export class FileController {
 
     await this.service.uploadFile(uploadedFile);
 
-    // const command = new UploadFileCommand({
-    //   ...payload,
-    //   userId,
-    //   file: file as never,
-    //   externalFileId: uploadedFile.externalFileId,
-    // });
+    const command = new UploadFileCommand({
+      ...payload,
+      userId,
+      file: file as never,
+      externalFileId: uploadedFile.externalFileId,
+    });
 
-    // const response = await this.commandBus.execute(command);
+    const response = await this.commandBus.execute(command);
 
-    // return responseMapper.mapFrom(response);
+    return responseMapper.mapFrom(response);
   }
 
   @ApiResponse({
