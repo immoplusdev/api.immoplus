@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import {
   S3Client,
   ListBucketsCommand,
@@ -9,6 +9,8 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { InjectS3 } from "@/infrastructure/decorators";
 import { MulterFile } from "@/infrastructure/features/files/dto";
 import { ConfigService } from "@nestjs/config";
+import { Deps } from "@/core/domain/common/ioc";
+import { IConfigsManagerService } from "@/core/domain/configs";
 
 @Injectable()
 export class FilesService {
@@ -17,6 +19,8 @@ export class FilesService {
   constructor(
     @InjectS3() private readonly s3Client: S3Client,
     private readonly configService: ConfigService,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
     this.bucketName = this.configService.get<string>(
       "AWS_S3_BUCKET_NAME",
@@ -30,13 +34,15 @@ export class FilesService {
     return response.Buckets || [];
   }
 
-  async getFile(filename: string) {
+  async getFile(fileKey: string) {
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
-      Key: filename,
+      Key: fileKey,
     });
-    // Generate presigned URL valid for 1 hour
-    return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
+    
+    return await getSignedUrl(this.s3Client, command, {
+      expiresIn: 3600,
+    });
   }
 
   async uploadFile(file: MulterFile) {
@@ -47,7 +53,7 @@ export class FilesService {
       ContentLength: file.size,
       ContentType: file.mimetype,
     });
-    
+
     const response = await this.s3Client.send(command);
     return response;
   }
