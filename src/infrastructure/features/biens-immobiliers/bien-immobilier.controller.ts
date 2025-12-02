@@ -149,19 +149,6 @@ export class BienImmobilierController {
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
-  @RequiredRoles(
-    UserRole.Admin,
-    UserRole.Customer,
-    UserRole.ProEntreprise,
-    UserRole.ProParticulier,
-  )
-  @RequiredPermissions([
-    PermissionCollection.BiensImmobilies,
-    PermissionAction.Read,
-  ])
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
