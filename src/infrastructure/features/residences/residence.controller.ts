@@ -150,6 +150,30 @@ export class ResidenceController {
   @ApiResponse({
     type: WrapperResponseResidenceBatchDto,
   })
+  @Get("/data/public/proprietaire/:proprietaireId")
+  async readManyByProprietaire(
+    @Param("proprietaireId") proprietaireId: string,
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "proprietaire",
+          _l_op: "and",
+          _val: proprietaireId,
+        },
+      ],
+      params._where,
+    );
+
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
   @Get("/find-available/public/")
   async findAvailablePublic(@Query() params: SearchItemsParamsDto) {
     const items = await this.repository.findAvailableResidencesForToday(params);
