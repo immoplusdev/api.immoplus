@@ -174,6 +174,30 @@ export class BienImmobilierController {
   @ApiResponse({
     type: WrapperResponseBienImmobilierBatchDto,
   })
+  @Get("/data/public/proprietaire/:proprietaireId")
+  async readManyByProprietaire(
+    @Param("proprietaireId") proprietaireId: string,
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "proprietaire",
+          _l_op: "and",
+          _val: proprietaireId,
+        },
+      ],
+      params._where,
+    );
+
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierBatchDto,
+  })
   @Get("/data/public/geolocalized")
   async readManyPublicGeolocalized(
     @Query() params: BienImmobilierGeolocalisizeDto,
