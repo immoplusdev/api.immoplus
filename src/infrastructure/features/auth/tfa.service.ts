@@ -83,33 +83,102 @@ export class TfaService implements ITfaService {
     return otp;
   }
 
+  // async sendUserSmsOtp(phoneNumber: string) {
+  //   try {
+  //     const user = await this.usersRepository.findOneByPhoneNumber(
+  //       phoneNumber,
+  //       {
+  //         fields: ["id", "phoneNumber"],
+  //       },
+  //     );
+  //     this.loggerService.info(`Sending SMS OTP to user: ${user?.id}`);
+  //     if (!user) throw new UserNotFoundException();
+
+  //     const to = sanitizePhoneNumberIntl(phoneNumber);
+  //     const otp =
+  //       phoneNumber === "2250700000001" ? "675494" : this.generateOtp();
+  //     await this.usersRepository.updateOne(user.id, { otp });
+
+  //     if (phoneNumber !== "2250700000001") {
+  //       await this.twilioService.messages.create({
+  //         body: `Votre code de vérification est : ${otp}`,
+  //         messagingServiceSid: this.configsManagerService.getEnvVariable(
+  //           "TWILIO_MESSAGING_SERVICE_ID",
+  //         ),
+  //         to: to,
+  //       });
+  //     }
+  //   } catch (e) {
+  //     this.loggerService.error(`Error sending SMS OTP: ${e.message}`, e);
+  //     throw new NotificationException(
+  //       e.message,
+  //       e.status,
+  //       e.messageCode,
+  //       e.messageId,
+  //     );
+  //   }
+  // }
+
   async sendUserSmsOtp(phoneNumber: string) {
     try {
       const user = await this.usersRepository.findOneByPhoneNumber(
         phoneNumber,
-        {
-          fields: ["phoneNumber"],
-        },
+        { fields: ["id", "phoneNumber"] },
       );
-      console.log("user : ", user);
+
       if (!user) throw new UserNotFoundException();
 
+      this.loggerService.info(`Sending SMS OTP to user: ${user.id}`);
+
       const to = sanitizePhoneNumberIntl(phoneNumber);
+      const from: string = this.configsManagerService.getEnvVariable(
+        "TWILIO_PHONE_NUMBER",
+      );
+
       const otp =
-        phoneNumber == "2250700000001" ? "675494" : this.generateOtp();
+        phoneNumber === "2250700000001" ? "675494" : this.generateOtp();
+
       await this.usersRepository.updateOne(user.id, { otp });
 
-      if (phoneNumber != "2250700000001") {
-        await this.twilioService.messages.create({
+      if (phoneNumber !== "2250700000001") {
+        const messagingServiceSid: string =
+          this.configsManagerService.getEnvVariable(
+            "TWILIO_MESSAGING_SERVICE_ID",
+          );
+
+        // 🔍 VÉRIFIER LE MESSAGING SERVICE SID
+        if (!messagingServiceSid) {
+          throw new Error("TWILIO_MESSAGING_SERVICE_ID is not configured");
+        }
+
+        this.loggerService.info(`Sending SMS to: ${to}`);
+        this.loggerService.info(`Sending SMS from: ${from}`);
+        this.loggerService.info(
+          `Messaging Service SID: ${messagingServiceSid.substring(0, 5)}...`,
+        );
+
+        const message = await this.twilioService.messages.create({
           body: `Votre code de vérification est : ${otp}`,
-          from: this.configsManagerService.getEnvVariable(
-            "TWILIO_PHONE_NUMBER",
-          ),
+          from: from,
           to: to,
         });
+
+        this.loggerService.info(
+          `✅ SMS sent successfully. SID: ${message.sid}`,
+        );
       }
     } catch (e) {
-      this.loggerService.error(e);
+      this.loggerService.error(`❌ Error sending SMS OTP: ${e.message}`);
+
+      // 🔍 LOGGER LES DÉTAILS DE L'ERREUR TWILIO
+      if (e.status) {
+        this.loggerService.error(`Twilio Error Code: ${e.code}`);
+        this.loggerService.error(`Twilio Status: ${e.status}`);
+        this.loggerService.error(`More info: ${e.moreInfo || "N/A"}`);
+      }
+
+      this.loggerService.error(e.stack);
+
       throw new NotificationException(
         e.message,
         e.status,
