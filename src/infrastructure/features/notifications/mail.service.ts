@@ -40,14 +40,14 @@ export class MailService implements IMailService {
       from: params.from ? params.from : process.env.NODE_MAILER_FROM,
     };
 
-    if (
-      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-      AppProfile.Dev
-    ) {
-      // this.loggerService.info(params.html || params.text, params);
-      // return;
-      mailParams.to = "dev.johnlight@gmail.com";
-    }
+    // if (
+    //   this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
+    //   AppProfile.Dev
+    // ) {
+    //   // this.loggerService.info(params.html || params.text, params);
+    //   // return;
+    //   mailParams.to = "dev.johnlight@gmail.com";
+    // }
 
     this.mailTransport.sendMail(mailParams);
   }
