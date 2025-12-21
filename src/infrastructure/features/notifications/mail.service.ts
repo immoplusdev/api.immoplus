@@ -17,18 +17,37 @@ export class MailService implements IMailService {
     private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
   ) {
-    const port = parseInt(
-      this.configsManagerService.getEnvVariable("NODE_MAILER_PORT"),
-    );
+    // const port = parseInt(
+    //   this.configsManagerService.getEnvVariable("NODE_MAILER_PORT"),
+    // );
+    // const isSecure = port === 465;
+
+    // this.mailingConfig = {
+    //   host: this.configsManagerService.getEnvVariable("NODE_MAILER_HOST"),
+    //   port: port,
+    //   secure: isSecure,
+    //   auth: {
+    //     user: this.configsManagerService.getEnvVariable("NODE_MAILER_USER"),
+    //     pass: this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD"),
+    //   },
+    //   tls: {
+    //     rejectUnauthorized: false,
+    //   },
+    //   connectionTimeout: 10000,
+    //   greetingTimeout: 10000,
+    //   socketTimeout: 10000,
+    // };
+
+    const port = 465;
     const isSecure = port === 465;
 
     this.mailingConfig = {
-      host: this.configsManagerService.getEnvVariable("NODE_MAILER_HOST"),
+      host: "mail.immoplus.ci",
       port: port,
       secure: isSecure,
       auth: {
-        user: this.configsManagerService.getEnvVariable("NODE_MAILER_USER"),
-        pass: this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD"),
+        user: "immoplus@immoplus.ci",
+        pass: "sa*-Ur=GM$kz,rw6",
       },
       tls: {
         rejectUnauthorized: false,
@@ -43,8 +62,10 @@ export class MailService implements IMailService {
   async sendMail(params: SendMailParams) {
     const mailParams = {
       ...params,
-      from: params.from ? params.from : process.env.NODE_MAILER_FROM,
+      from: "immoplus@immoplus.ci",
     };
+
+    console.log("Sending mail with params:", mailParams);
 
     // if (
     //   this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
