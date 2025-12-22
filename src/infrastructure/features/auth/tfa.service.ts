@@ -130,50 +130,30 @@ export class TfaService implements ITfaService {
 
       this.loggerService.info(`Sending SMS OTP to user: ${user.id}`);
 
-      const to = sanitizePhoneNumberIntl(phoneNumber);
-      const from: string = this.configsManagerService.getEnvVariable(
-        "TWILIO_PHONE_NUMBER",
-      );
-
+      const to = phoneNumber;
       const otp =
         phoneNumber === "2250700000001" ? "675494" : this.generateOtp();
 
       await this.usersRepository.updateOne(user.id, { otp });
 
       if (phoneNumber !== "2250700000001") {
-        const messagingServiceSid: string =
-          this.configsManagerService.getEnvVariable(
-            "TWILIO_MESSAGING_SERVICE_ID",
-          );
+        const smsProvider =
+          this.configsManagerService.getEnvVariable<string>("SMS_PROVIDER");
 
-        // 🔍 VÉRIFIER LE MESSAGING SERVICE SID
-        if (!messagingServiceSid) {
-          throw new Error("TWILIO_MESSAGING_SERVICE_ID is not configured");
+        const message = `Votre code de vérification est : ${otp}`;
+
+        if (smsProvider === "twilio") {
+          await this.sendSmsViaTwilio(to, message);
+        } else if (smsProvider === "letexto") {
+          await this.sendSmsViaLetexto(to, message);
         }
-
-        this.loggerService.info(`Sending SMS to: ${to}`);
-        this.loggerService.info(`Sending SMS from: ${from}`);
-        this.loggerService.info(
-          `Messaging Service SID: ${messagingServiceSid.substring(0, 5)}...`,
-        );
-
-        const message = await this.twilioService.messages.create({
-          body: `Votre code de vérification est : ${otp}`,
-          from: from,
-          to: to,
-        });
-
-        this.loggerService.info(
-          `✅ SMS sent successfully. SID: ${message.sid}`,
-        );
       }
     } catch (e) {
       this.loggerService.error(`❌ Error sending SMS OTP: ${e.message}`);
 
-      // 🔍 LOGGER LES DÉTAILS DE L'ERREUR TWILIO
       if (e.status) {
-        this.loggerService.error(`Twilio Error Code: ${e.code}`);
-        this.loggerService.error(`Twilio Status: ${e.status}`);
+        this.loggerService.error(`Error Code: ${e.code}`);
+        this.loggerService.error(`Status: ${e.status}`);
         this.loggerService.error(`More info: ${e.moreInfo || "N/A"}`);
       }
 
@@ -186,6 +166,70 @@ export class TfaService implements ITfaService {
         e.messageId,
       );
     }
+  }
+
+  private async sendSmsViaTwilio(
+    to: string,
+    sendmessage: string,
+  ): Promise<void> {
+    const from: string = this.configsManagerService.getEnvVariable(
+      "TWILIO_PHONE_NUMBER",
+    );
+
+    const receptor = sanitizePhoneNumberIntl(to);
+
+    this.loggerService.info(`Sending SMS to: ${receptor}`);
+    this.loggerService.info(`Sending SMS from: ${from}`);
+
+    const message = await this.twilioService.messages.create({
+      body: sendmessage,
+      from: from,
+      to: receptor,
+    });
+
+    this.loggerService.info(`✅ SMS sent successfully. SID: ${message.sid}`);
+  }
+
+  private async sendSmsViaLetexto(
+    to: string,
+    sendmessage: string,
+  ): Promise<void> {
+    const apiKey =
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_KEY");
+    const sender =
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_SENDER");
+    const apiUrl =
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_URL");
+
+    this.loggerService.info(`Sending SMS via Letexto to: ${to}`);
+
+    console.log("apiUrl:", apiUrl, apiKey, sender, to, sendmessage);
+
+    const completeUrl =
+      apiUrl +
+      "?token=" +
+      apiKey +
+      "&from=" +
+      sender +
+      "&to=" +
+      to +
+      "&content=" +
+      sendmessage;
+
+    const response = await fetch(completeUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: null,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Letexto API error: ${response.statusText}`);
+    }
+
+    this.loggerService.info(`✅ SMS sent successfully via Letexto`);
   }
 
   async isUserSmsOtpValid(phoneNumber: string, otp: string) {
