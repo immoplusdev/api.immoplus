@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -36,10 +37,7 @@ import {
   PermissionAction,
   PermissionCollection,
 } from "@/core/domain/permissions";
-import { diskStorage } from "multer";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { fileUploadConfig } from "@/infrastructure/configs/file-management/file-upload.config";
-import { generateUuid } from "@/lib/ts-utilities/db";
 import { UploadFileCommand } from "@/core/application/files";
 import {
   UploadFileCommandResponseDto,
@@ -52,10 +50,7 @@ import {
   RequiredPermissions,
   RequiredRoles,
 } from "@/infrastructure/decorators";
-import {
-  addConditionsToWhereClause,
-  getFilePath,
-} from "@/infrastructure/helpers";
+import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/common/ioc";
 import { IFileRepository } from "@/core/domain/files";
 import {
@@ -81,7 +76,8 @@ export class FileController {
     private readonly repository: IFileRepository,
     @Inject(Deps.FileService)
     readonly service: FilesService,
-  ) {}
+  ) {
+  }
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
@@ -283,10 +279,11 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
 
-    if (file.externalFileId)
-      return res.redirect(await this.service.getFile(file.fileNameDownload));
+    // if (file.externalFileId)
+    //   return res.redirect(await this.service.getFile(file.externalFileId));
 
-    return res.sendFile(getFilePath(file?.fileNameDisk));
+    // return res.sendFile(getFilePath(file?.fileNameDisk));
+    return res.send(await this.service.getFile(file.externalFileId));
   }
 
   @Get("raw/public/:id")
@@ -297,12 +294,8 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
 
-    console.log("file : ", file);
-
-    if (file.externalFileId)
-      return res.redirect(await this.service.getFile(file.fileNameDownload));
-
-    return res.sendFile(getFilePath(file?.fileNameDisk));
+    const url = await this.service.getFile(file.fileNameDownload);
+    return res.redirect(url);
   }
 
   @Get("videos/raw/public/:id")
@@ -314,10 +307,8 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
 
-    if (file.externalFileId)
-      return res.redirect(await this.service.getFile(file.fileNameDownload));
-
-    return res.sendFile(getFilePath(file?.fileNameDisk));
+    const url = await this.service.getFile(file.fileNameDownload);
+    return res.redirect(url);
   }
 
   @ApiResponse({

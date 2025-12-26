@@ -1,47 +1,60 @@
-import { Injectable } from "@nestjs/common";
-import * as Minio from "minio";
-import { InjectMinio } from "@/infrastructure/decorators";
+import { Inject, Injectable } from "@nestjs/common";
+import {
+  S3Client,
+  ListBucketsCommand,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { InjectS3 } from "@/infrastructure/decorators";
 import { MulterFile } from "@/infrastructure/features/files/dto";
 import { ConfigService } from "@nestjs/config";
+import { Deps } from "@/core/domain/common/ioc";
+import { IConfigsManagerService } from "@/core/domain/configs";
 
 @Injectable()
 export class FilesService {
   protected bucketName: string;
 
   constructor(
-    @InjectMinio() private readonly minioService: Minio.Client,
+    @InjectS3() private readonly s3Client: S3Client,
     private readonly configService: ConfigService,
+    @Inject(Deps.ConfigsManagerService)
+    private readonly configsManagerService: IConfigsManagerService,
   ) {
-    this.bucketName = this.configService.get("MINIO_BUCKET_NAME", "files");
-  }
-
-  async bucketsList() {
-    return await this.minioService.listBuckets();
-  }
-
-  async getFile(filename: string) {
-    return await this.minioService.presignedUrl(
-      "GET",
-      this.bucketName,
-      filename,
+    this.bucketName = this.configService.get<string>(
+      "AWS_S3_BUCKET_NAME",
+      "files",
     );
   }
 
-  uploadFile(file: MulterFile) {
-    return new Promise((resolve, reject) => {
-      this.minioService.putObject(
-        this.bucketName,
-        file.externalFileId,
-        file.buffer,
-        file.size,
-        (error, objInfo) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(objInfo);
-          }
-        },
-      );
+  async bucketsList() {
+    const command = new ListBucketsCommand({});
+    const response = await this.s3Client.send(command);
+    return response.Buckets || [];
+  }
+
+  async getFile(fileKey: string) {
+    const command = new GetObjectCommand({
+      Bucket: this.bucketName,
+      Key: fileKey,
     });
+
+    return await getSignedUrl(this.s3Client, command, {
+      expiresIn: 3600,
+    });
+  }
+
+  async uploadFile(file: MulterFile) {
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: file.externalFileId,
+      Body: file.buffer,
+      ContentLength: file.size,
+      ContentType: file.mimetype,
+    });
+
+    const response = await this.s3Client.send(command);
+    return response;
   }
 }

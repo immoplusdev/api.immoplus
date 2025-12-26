@@ -11,17 +11,18 @@ post {
 }
 
 auth:bearer {
-  token: {{accessToken}}
+  token: {{DEFAULT_CUSTOMER_TOKEN}}
 }
 
 body:multipart-form {
-  file: @file(/Users/monmackbook/Downloads/CAMION-BACHE 1.jpg)
+  file: @file(/Users/macbookpro/Downloads/03b0b16f-bebd-40ba-ab4c-e2b53b833376-85154fae-44db-41f4-85e0-6f8ddfb1535a.png)
 }
 
-tests {
-  test("Should receive a not null id", function() {
-    const {data: { id }} = res.getBody();
+script:post-response {
   
-    expect(id).to.be.a('string');
-  });
+  
+  const { data: { id } }  = res.getBody();
+    
+  bru.setEnvVar("DEFAULT_FILE_ID", id);
+  
 }

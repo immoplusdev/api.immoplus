@@ -45,13 +45,21 @@ export class LoginWithPhoneNumberOtpCommandHandler
 
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 
-    if (command.phoneNumber != "2250700000001" && command.otp == "675494") {
-      const isOtpValid = await this.tfaService.isUserSmsOtpValid(
-        command.phoneNumber,
-        command.otp,
-      );
-      if (!isOtpValid) throw new InvalidOtpException();
+    // Verification for test phone numbers;
+    const excludedPhoneNumbers = ["2250700000001", "2250700000002"];
+    if (
+      excludedPhoneNumbers.includes(command.phoneNumber) &&
+      command.otp == "675494"
+    ) {
+      await this.createUserSession(user);
+      return this.generateUserTokens(user);
     }
+
+    const isOtpValid = await this.tfaService.isUserSmsOtpValid(
+      command.phoneNumber,
+      command.otp,
+    );
+    if (!isOtpValid) throw new InvalidOtpException();
 
     await this.createUserSession(user);
 
