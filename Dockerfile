@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node package*.json ./
 
-RUN npm install
+RUN npm install --force
 
 COPY --chown=node:node . .
 
@@ -26,7 +26,7 @@ FROM node:${NODE_VERSION} AS build
 WORKDIR /usr/src/app
 
 COPY --chown=node:node package*.json ./
-RUN npm install
+RUN npm install --force
 
 COPY --chown=node:node . .
 
