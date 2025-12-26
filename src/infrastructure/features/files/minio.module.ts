@@ -14,10 +14,10 @@ import { MINIO_TOKEN } from "@/infrastructure/decorators";
         configService: ConfigService,
       ): Promise<Minio.Client> => {
         return new Minio.Client({
-          endPoint: configService.getOrThrow("MINIO_ENDPOINT"),
-          port: +configService.getOrThrow("MINIO_PORT"),
-          accessKey: configService.getOrThrow("MINIO_ACCESS_KEY"),
-          secretKey: configService.getOrThrow("MINIO_SECRET_KEY"),
+          endPoint: "164.90.203.20",
+          port: 9002,
+          accessKey: "2Y2wGZNtdHRJR6XB",
+          secretKey: "wpcgyLLrUgG2YxgKpObJswsTAUy8O4xf",
           useSSL: false,
         });
       },

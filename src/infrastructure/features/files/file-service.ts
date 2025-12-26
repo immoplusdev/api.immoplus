@@ -14,11 +14,13 @@ export class FilesService {
   }
 
   async getFile(filename: string) {
-    return await this.minioService.presignedUrl(
+    const presignedUrl = await this.minioService.presignedUrl(
       "GET",
       this.bucketName,
       filename,
     );
+    console.log("Presigned URL: ", presignedUrl);
+    return presignedUrl;
   }
 
   uploadFile(file: MulterFile) {
