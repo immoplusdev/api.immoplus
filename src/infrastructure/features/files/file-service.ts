@@ -2,12 +2,18 @@ import { Injectable } from "@nestjs/common";
 import * as Minio from "minio";
 import { InjectMinio } from "@/infrastructure/decorators";
 import { MulterFile } from "@/infrastructure/features/files/dto";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class FilesService {
-  protected bucketName = "files";
+  protected bucketName: string;
 
-  constructor(@InjectMinio() private readonly minioService: Minio.Client) {}
+  constructor(
+    @InjectMinio() private readonly minioService: Minio.Client,
+    private readonly configService: ConfigService,
+  ) {
+    this.bucketName = this.configService.get("MINIO_BUCKET_NAME", "files");
+  }
 
   async bucketsList() {
     return await this.minioService.listBuckets();

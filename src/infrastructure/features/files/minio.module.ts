@@ -13,12 +13,15 @@ import { MINIO_TOKEN } from "@/infrastructure/decorators";
       useFactory: async (
         configService: ConfigService,
       ): Promise<Minio.Client> => {
+        const useSSL = configService.get("MINIO_USE_SSL", "false") === "true";
+        const region = configService.get("MINIO_REGION", "ams3");
         return new Minio.Client({
           endPoint: configService.getOrThrow("MINIO_ENDPOINT"),
           port: +configService.getOrThrow("MINIO_PORT"),
           accessKey: configService.getOrThrow("MINIO_ACCESS_KEY"),
           secretKey: configService.getOrThrow("MINIO_SECRET_KEY"),
-          useSSL: false,
+          useSSL: useSSL,
+          region: region,
         });
       },
     },
