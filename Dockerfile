@@ -33,7 +33,7 @@ COPY --chown=node:node . .
 RUN npm run build
 
 # Gestion spécifique pour bcrypt si besoin
-RUN npm uninstall bcrypt && npm install bcrypt
+RUN npm uninstall bcrypt --force && npm install bcrypt --force
 
 ENV NODE_ENV=production
 
