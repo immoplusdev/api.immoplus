@@ -2,8 +2,6 @@ import { DataSource } from "typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Deps } from "@/core/domain/common/ioc";
 import { forwardRef } from "@nestjs/common";
-import * as fs from "fs";
-import * as path from "path";
 
 export const typeormProviders = [
   {
@@ -12,28 +10,19 @@ export const typeormProviders = [
     inject: [ConfigService],
     useFactory: async (config: ConfigService) => {
       const sslEnabled = config.get<string>("DB_SSL_ENABLED") === "true";
-      const sslCaPath = config.get<string>("DB_SSL_CA_PATH");
+      const sslCa = config.get<string>("DB_SSL_CA_STRING");
       const sslRejectUnauthorized =
         config.get<string>("DB_SSL_REJECT_UNAUTHORIZED") === "true";
 
       let sslConfig: any = false;
 
-      if (sslEnabled && sslCaPath) {
-        const absoluteCaPath = path.isAbsolute(sslCaPath)
-          ? sslCaPath
-          : path.join(process.cwd(), sslCaPath);
-
-        if (fs.existsSync(absoluteCaPath)) {
-          const ca = fs.readFileSync(absoluteCaPath, "utf8");
-          sslConfig = {
-            ca,
-            rejectUnauthorized: sslRejectUnauthorized,
-          };
-        } else {
-          console.warn(`SSL CA certificate not found at: ${absoluteCaPath}`);
-        }
+      if (sslEnabled) {
+        sslConfig = {
+          ca: sslCa,
+          rejectUnauthorized: sslRejectUnauthorized,
+        };
       }
-      
+
       const dataSource = new DataSource({
         type: config.get<string>("DB_CLIENT") as never,
         host: config.get<string>("DB_HOST"),

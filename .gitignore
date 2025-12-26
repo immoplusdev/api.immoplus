@@ -397,6 +397,7 @@ Temporary Items
 .env
 .env.*
 ca-certificate.crt
+db-ca-certificate.crt
 dist
 .webpack
 .serverless/**/*.zip
