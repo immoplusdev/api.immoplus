@@ -14,7 +14,7 @@ export class ReleaseFundsDto {
   @ApiProperty({ format: "string", required: false, default: "XOF" })
   currency?: string;
 
-  @ApiProperty({ type: "enum", required: false, enum: TransactionSource })
+  @ApiProperty({ required: false, enum: TransactionSource })
   source?: TransactionSource;
 
   @ApiProperty({ format: "uuid", required: false })
