@@ -54,20 +54,22 @@ async function main() {
 
   try {
     const files = loadFilesBackup();
-    const placeholders = COLUMNS.map(() => "?").join(", ");
     const updateClause = COLUMNS.map((c) => `${c}=VALUES(${c})`).join(", ");
-    const insertSql = `INSERT INTO files (${COLUMNS.join(
-      ", ",
-    )}) VALUES (${placeholders}) ON DUPLICATE KEY UPDATE ${updateClause}`;
 
     const chunkSize = 300;
     for (let start = 0; start < files.length; start += chunkSize) {
       const chunk = files.slice(start, start + chunkSize);
-      const values = chunk.map((row) =>
+      const rowPlaceholders = `(${COLUMNS.map(() => "?").join(", ")})`;
+      const allPlaceholders = chunk.map(() => rowPlaceholders).join(", ");
+      const insertSql = `INSERT INTO files (${COLUMNS.join(
+        ", ",
+      )}) VALUES ${allPlaceholders} ON DUPLICATE KEY UPDATE ${updateClause}`;
+
+      const flatValues = chunk.flatMap((row) =>
         COLUMNS.map((col) => toDbValue(row[col])),
       );
 
-      await connection.query(insertSql, values);
+      await connection.query(insertSql, flatValues);
       console.log(
         `Inserted ${Math.min(start + chunkSize, files.length)} of ${
           files.length
@@ -94,7 +96,8 @@ function loadFilesBackup() {
   const cleanedContent = rawContent.replace(/^\s*\[\]\s*/, "");
   const parsed = JSON.parse(cleanedContent);
   const filesTable = parsed.find(
-    (entry) => entry.type === "table" && entry.name === "files",
+    (entry) =>
+      entry.type === "table" && (entry.name === "files" || entry.name === "files_backup"),
   );
 
   if (!filesTable || !filesTable.data) {
