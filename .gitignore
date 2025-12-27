@@ -409,3 +409,4 @@ environments/prod.bru
 perf-tests/env.js
 data/
 mysql-data
+scripts/migration/files-backup.json
