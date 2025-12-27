@@ -292,9 +292,9 @@ export class FileController {
     @Res() res: Response,
   ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    if (!file) return null;
+    if (!file) return res.send(null);
 
-    const url = await this.service.getFile(file.fileNameDownload);
+    const url = await this.service.getFile(file.externalFileId);
     return res.redirect(url);
   }
 
@@ -305,9 +305,9 @@ export class FileController {
     @Res() res: Response,
   ): Promise<any> {
     const file = await this.repository.findOne(id.split(".")[0]);
-    if (!file) return null;
+    if (!file) return res.send(null);
 
-    const url = await this.service.getFile(file.fileNameDownload);
+    const url = await this.service.getFile(file.externalFileId);
     return res.redirect(url);
   }
 
