@@ -124,10 +124,15 @@ async function main() {
         const contentType = guessContentType(fileName);
         const newExternalId = randomUUID();
 
-        await uploadToS3(filePath, newExternalId, contentType, stats.size);
-
         const existing =
             recordsByDownload.get(fileName) || recordsByDisk.get(fileName);
+
+        if (existing?.processed) {
+            console.log(`Skipping ${fileName} (already processed).`);
+            continue;
+        }
+
+        await uploadToS3(filePath, newExternalId, contentType, stats.size);
 
         if (existing) {
             existing.external_file_id = newExternalId;
@@ -140,6 +145,7 @@ async function main() {
             }
             existing.storage = existing.storage || "minio";
             existing.type = existing.type || contentType;
+            existing.processed = true;
             console.log(
                 `Updated existing record for ${fileName} with external_file_id ${newExternalId}`,
             );
@@ -173,6 +179,7 @@ async function main() {
                 uploaded_by: null,
                 modified_by: null,
                 external_file_id: newExternalId,
+                processed: true,
             };
 
             filesTable.data.push(newRow);
