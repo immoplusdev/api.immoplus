@@ -28,7 +28,7 @@ export class NotificationService implements INotificationService {
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
-    if (params.sendMail)
+    if (params.sendMail == true)
       try {
         await this.mailService.sendMail({
           to: user.email,
@@ -39,21 +39,22 @@ export class NotificationService implements INotificationService {
         this.loggerService.error(`[Send Mail] Test failed: ${error}`);
       }
 
-    if (params.sendSms)
+    if (params.sendSms == true)
       try {
         await this.smsService.sendSms([user.phoneNumber], params.message);
       } catch (error) {
         this.loggerService.error(error);
       }
 
-    try {
-      if (!params.skipInAppNotification)
+    if (params.skipInAppNotification == false) {
+      try {
         await this.sendOneSignalNotification(
           params,
           (user.role as Role)?.id as UserRole,
         );
-    } catch (error) {
-      this.loggerService.error(`[Send SMS] Test failed: ${error}`);
+      } catch (error) {
+        this.loggerService.error(`[Send SMS] Test failed: ${error}`);
+      }
     }
   }
 

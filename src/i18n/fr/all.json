@@ -121,6 +121,12 @@
           "message": "Un retrait vient d’être fait."
         }
       }
+    },
+    "auth": {
+      "welcome": {
+        "subject": "Bienvenue sur ImmoPlus !",
+        "message": "Nous sommes heureux de vous accueillir sur ImmoPlus. Nous vous souhaitons une excellente expérience d'utilisation."
+      }
     }
   }
 }

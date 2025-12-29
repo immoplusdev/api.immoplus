@@ -51,7 +51,10 @@ import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/d
 import { BienImmobilierGeolocalisizeDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize.dto";
 import { BienImmobilierGeolocalisizeFilterDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize-filter.dto";
 import { IUserRepository } from "@/core/domain/users";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers/status-validation-bien-immobilier.enum";
 
@@ -372,6 +375,10 @@ export class BienImmobilierController {
           sendMail: true,
           sendSms: false,
           returnUrl: `/admin/biens-immobiliers/${bienImmobilierId}`,
+          data: {
+            type: PushNotificationType.BienImmobilier,
+            id: bienImmobilierId,
+          },
         });
       }
     } catch (error) {

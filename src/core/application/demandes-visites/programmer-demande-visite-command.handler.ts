@@ -5,15 +5,16 @@ import { GetDemandeVisiteByIdQuery } from "@/core/application/demandes-visites/g
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 
 @CommandHandler(ProgrammerDemandeVisiteCommand)
-export class ProgrammerDemandeVisiteCommandHandler
-  implements ICommandHandler<ProgrammerDemandeVisiteCommand>
-{
+export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<ProgrammerDemandeVisiteCommand> {
   constructor(
     private readonly queryBus: QueryBus,
     @Inject(Deps.DemandeVisiteRepository)
@@ -50,6 +51,10 @@ export class ProgrammerDemandeVisiteCommandHandler
       sendMail: true,
       sendSms: true,
       skipInAppNotification: false,
+      data: {
+        type: PushNotificationType.DemandeVisite,
+        id: demandeVisite.id,
+      },
     });
 
     return await this.queryBus.execute(

@@ -3,7 +3,6 @@ import { InterceptTransferWebhookCommand } from "../intercept-transfer-webhook.c
 import { InterceptTransferWebhookCommandResponse } from "../../../intercept-transfer-webhook-command.response";
 import crypto from "crypto";
 import { ILoggerService } from "@/core/domain/logging";
-import { AccessForbiddenException } from "@/core/domain/auth";
 import { Deps } from "@/core/domain/common/ioc";
 import { Inject } from "@nestjs/common";
 import { IReservationRepository } from "@/core/domain/reservations";
@@ -17,7 +16,10 @@ import {
   WithdrawalStatus,
 } from "@/core/domain/wallet";
 
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { PaymentMethod } from "@/core/domain/common/enums";
 import { ITransferRepository } from "@/core/domain/transfers/i-transfer.repository";
@@ -27,9 +29,7 @@ import {
 } from "@/core/domain/transfers/transfer.enum";
 
 @CommandHandler(InterceptTransferWebhookCommand)
-export class InterceptTransferWebhookCommandHandler
-  implements ICommandHandler<InterceptTransferWebhookCommand>
-{
+export class InterceptTransferWebhookCommandHandler implements ICommandHandler<InterceptTransferWebhookCommand> {
   constructor(
     @Inject(Deps.ReservationRepository)
     private readonly reservationRepository: IReservationRepository,
@@ -232,6 +232,10 @@ export class InterceptTransferWebhookCommandHandler
         sendMail: true,
         sendSms: true,
         returnUrl: ``,
+        data: {
+          type: PushNotificationType.Wallet,
+          id: wallet.id,
+        },
       });
     }
   }

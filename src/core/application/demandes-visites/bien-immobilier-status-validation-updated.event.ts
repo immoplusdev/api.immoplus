@@ -6,7 +6,10 @@ import { castObject, OmitMethods } from "@/lib/ts-utilities";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { User } from "@/core/domain/users";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 
@@ -20,9 +23,7 @@ export class BienImmobilierStatusValidationUpdatedEvent {
 }
 
 @EventsHandler(BienImmobilierStatusValidationUpdatedEvent)
-export class BienImmobilierStatusValidationUpdatedEventHandler
-  implements IEventHandler<BienImmobilierStatusValidationUpdatedEvent>
-{
+export class BienImmobilierStatusValidationUpdatedEventHandler implements IEventHandler<BienImmobilierStatusValidationUpdatedEvent> {
   constructor(
     @Inject(Deps.BiensImmobiliesRepository)
     private readonly bienImmobilier: IBienImmobilierRepository,
@@ -64,6 +65,10 @@ export class BienImmobilierStatusValidationUpdatedEventHandler
       htmlMessage: emailContent,
       returnUrl: `${HUB2_RETURN_URL}/estate_detail/${bienImmobilier.id}`,
       sendMail: true,
+      data: {
+        type: PushNotificationType.BienImmobilier,
+        id: bienImmobilier.id,
+      },
     });
   }
 }

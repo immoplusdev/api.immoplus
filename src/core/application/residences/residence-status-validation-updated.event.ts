@@ -5,7 +5,10 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 import { IResidenceRepository } from "@/core/domain/residences";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { User } from "@/core/domain/users";
 
 export class ResidenceStatusValidationUpdatedEvent {
@@ -18,9 +21,7 @@ export class ResidenceStatusValidationUpdatedEvent {
 }
 
 @EventsHandler(ResidenceStatusValidationUpdatedEvent)
-export class ResidenceStatusUpdatedEventHandler
-  implements IEventHandler<ResidenceStatusValidationUpdatedEvent>
-{
+export class ResidenceStatusUpdatedEventHandler implements IEventHandler<ResidenceStatusValidationUpdatedEvent> {
   constructor(
     @Inject(Deps.ResidenceRepository)
     private readonly residenceRepository: IResidenceRepository,
@@ -62,6 +63,10 @@ export class ResidenceStatusUpdatedEventHandler
       htmlMessage: emailContent,
       returnUrl: `${HUB2_RETURN_URL}/residence_detail/${residence.id}`,
       sendMail: true,
+      data: {
+        type: PushNotificationType.Residence,
+        residenceId: residence.id,
+      },
     });
   }
 }
