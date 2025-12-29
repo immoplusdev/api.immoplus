@@ -24,6 +24,9 @@ export class SendTestNotificationDto {
   @ApiProperty()
   @IsOptional()
   returnUrl?: string;
+  @ApiProperty()
+  @IsOptional()
+  data?: Record<string, any>;
 
   constructor(data?: OmitMethods<SendTestNotificationDto>) {
     Object.assign(this, data);

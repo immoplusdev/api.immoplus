@@ -82,6 +82,7 @@ export class NotificationRepository implements INotificationRepository {
       message: params.message,
       htmlMessage: params.htmlMessage || params.message,
       returnUrl: params.returnUrl || "localhost:3000/estate_detail/12",
+      data: params.data,
     });
 
     return Promise.resolve("Notification sent successfully");

@@ -21,6 +21,7 @@ import {
   WrapperResponse,
 } from "@/core/domain/common/models";
 import { GeoJsonType } from "@/core/domain/map/geo-json-type.enum";
+import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers/status-validation-bien-immobilier.enum";
 
 @Injectable()
 export class BienImmobilierRepository implements IBienImmobilierRepository {
@@ -174,6 +175,9 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
         "proprietaire.deleted_at IS NULL",
       )
       .andWhere("bien.bien_immobilier_disponible = :dispo", { dispo: true })
+      .andWhere("bien.status_validation = :status", {
+        status: StatusValidationBienImmobilier.Valide,
+      })
       .andWhere("bien.deleted_at IS NULL")
       .andWhere("bien.latitude IS NOT NULL")
       .andWhere("bien.longitude IS NOT NULL");
@@ -320,6 +324,9 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
         "proprietaire.deleted_at IS NULL",
       )
       .andWhere("bien.bien_immobilier_disponible = :dispo", { dispo: true })
+      .andWhere("bien.status_validation = :status", {
+        status: StatusValidationBienImmobilier.Valide,
+      })
       .andWhere("bien.deleted_at IS NULL");
 
     // 🔍 Recherche plein texte

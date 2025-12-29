@@ -243,7 +243,6 @@ export class NotificationController {
     @Body() payload: SendTestNotificationDto,
     @CurrentUser("id") userId: string,
   ) {
-    console.log("Sending test notification with payload:", payload);
     const emailContent = `
         Objet : Test de notification !
 
@@ -267,9 +266,9 @@ export class NotificationController {
       sendSms: payload.sendSms,
       htmlMessage: payload.htmlMessage || emailContent,
       returnUrl: payload.returnUrl || "localhost:3000/estate_detail/12",
+      data: payload.data,
     });
 
-    console.log("Sending test notification with params:", params);
 
     const result = await this.repository.sendTestNotification(params);
 
