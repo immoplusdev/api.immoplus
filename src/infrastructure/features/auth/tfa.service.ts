@@ -195,15 +195,14 @@ export class TfaService implements ITfaService {
     sendmessage: string,
   ): Promise<void> {
     const apiKey =
-      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_KEY");
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_KEY") ??
+      "eaae56e05bf95ec6854e41821383fee5";
     const sender =
-      this.configsManagerService.getEnvVariable<string>("LETEXTO_SENDER");
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_SENDER") ??
+      "Immoplus";
     const apiUrl =
-      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_URL");
-
-    this.loggerService.info(`Sending SMS via Letexto to: ${to}`);
-
-    console.log("apiUrl:", apiUrl, apiKey, sender, to, sendmessage);
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_URL") ??
+      "https://apis.letexto.com/v1/messages/send";
 
     const completeUrl =
       apiUrl +
