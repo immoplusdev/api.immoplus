@@ -138,7 +138,8 @@ export class TfaService implements ITfaService {
 
       if (phoneNumber !== "2250700000001") {
         const smsProvider =
-          this.configsManagerService.getEnvVariable<string>("SMS_PROVIDER");
+          this.configsManagerService.getEnvVariable<string>("SMS_PROVIDER") ??
+          "letexto";
 
         const message = `Votre code de vérification est : ${otp}`;
 
