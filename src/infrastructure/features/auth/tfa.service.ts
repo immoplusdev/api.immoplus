@@ -233,26 +233,20 @@ export class TfaService implements ITfaService {
   }
 
   async isUserSmsOtpValid(phoneNumber: string, otp: string) {
-    if (
-      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-        AppProfile.Dev ||
-      phoneNumber == BYPASS_USER_PHONE_NUMBER
-    )
-      return true;
-
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, {
       fields: ["phoneNumber"],
     });
+    console.log("isUserSmsOtpValid User: ", user);
+
     if (!user) throw new UserNotFoundException();
 
     try {
-      const to = sanitizePhoneNumberIntl(user.phoneNumber);
+      const otpIsValid = user.otp === otp;
+      console.log("isUserSmsOtpValid: ", otpIsValid);
 
-      const verificationCheck = await this.twilioService.verify.v2
-        .services(this.verifyServiceSid)
-        .verificationChecks.create({ code: otp, to });
+      if (!otpIsValid) throw new InvalidOtpException();
 
-      return verificationCheck.status == "approved";
+      return otpIsValid;
     } catch (e) {
       this.loggerService.error(e);
       return false;

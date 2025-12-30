@@ -21,9 +21,7 @@ import { UserApp, UserRole } from "@/core/domain/roles";
 import { verifyUserType } from "../common/verify-user-type";
 
 @CommandHandler(LoginWithPhoneNumberOtpCommand)
-export class LoginWithPhoneNumberOtpCommandHandler
-  implements ICommandHandler<LoginWithPhoneNumberOtpCommand>
-{
+export class LoginWithPhoneNumberOtpCommandHandler implements ICommandHandler<LoginWithPhoneNumberOtpCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly userRepository: IUserRepository,
@@ -39,10 +37,11 @@ export class LoginWithPhoneNumberOtpCommandHandler
     const user = await this.userRepository.findOneByPhoneNumber(
       command.phoneNumber,
     );
+    console.log("User: ", user);
     if (!user) throw new UserNotFoundException();
 
     verifyUserType(user, command.source);
-
+    console.log("Right app ");
     if (user.status != UserStatus.Active) throw new UserCannotLoginException();
 
     // Verification for test phone numbers;
@@ -54,7 +53,7 @@ export class LoginWithPhoneNumberOtpCommandHandler
       await this.createUserSession(user);
       return this.generateUserTokens(user);
     }
-
+    
     const isOtpValid = await this.tfaService.isUserSmsOtpValid(
       command.phoneNumber,
       command.otp,
