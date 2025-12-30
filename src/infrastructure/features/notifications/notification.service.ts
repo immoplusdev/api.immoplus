@@ -246,25 +246,32 @@ export class NotificationService implements INotificationService {
         `[OneSignal] Récupération credentials pour rôle: ${userRole || "undefined"} -> ${keyPrefix}`,
       );
 
-      const appIdKey = `ONE_SIGNAL_${keyPrefix}_APP_ID`;
-      const apiKeyKey = `ONE_SIGNAL_${keyPrefix}_API_KEY`;
+      let app_id: string = "";
+      let api_key: string = "";
 
-      const app_id: string =
-        this.configsManagerService.getEnvVariable(appIdKey);
-      const api_key: string =
-        this.configsManagerService.getEnvVariable(apiKeyKey);
-
-      // Validation stricte
-      if (!app_id) {
-        throw new Error(
-          `Variable d'environnement ${appIdKey} manquante ou vide`,
-        );
+      // Get credentials for Customer
+      if (userRole === UserRole.Customer) {
+        app_id =
+          this.configsManagerService.getEnvVariable(
+            "ONE_SIGNAL_CLIENT_APP_ID",
+          ) ?? "3dcf3bc5-e4c7-4328-9d30-0f33cdedb1f0";
+        api_key =
+          this.configsManagerService.getEnvVariable(
+            "ONE_SIGNAL_CLIENT_API_KEY",
+          ) ?? "ZjViY2JhM2ItYTExZC00Mzk4LTg4ZmItODcwZWI1MWJlMjQ2";
       }
 
-      if (!api_key) {
-        throw new Error(
-          `Variable d'environnement ${apiKeyKey} manquante ou vide`,
-        );
+      // Get credentials for Pro
+      if (
+        userRole === UserRole.ProEntreprise ||
+        userRole === UserRole.ProParticulier
+      ) {
+        app_id =
+          this.configsManagerService.getEnvVariable("ONE_SIGNAL_PRO_APP_ID") ??
+          "7eb65c1b-a1c3-4bd2-9a3c-955743582362";
+        api_key =
+          this.configsManagerService.getEnvVariable("ONE_SIGNAL_PRO_API_KEY") ??
+          "os_v2_app_p23fyg5bynf5fgr4svlugwbdmlqsx4eocraewqm3znsutbhju52ye6dbjtfcbk76fi556ueqdil72pkhuaurtfiik5labc75psf3rgi";
       }
 
       // Validation du format OneSignal
@@ -276,13 +283,8 @@ export class NotificationService implements INotificationService {
         );
       }
 
-      // L'API key OneSignal est généralement en base64
-      if (api_key.length < 20 || !api_key.match(/^[A-Za-z0-9+/=]+$/)) {
-        console.warn(`[OneSignal] Format d'API key suspect pour ${keyPrefix}`);
-      }
-
       console.log(
-        `[OneSignal] Credentials validés pour ${keyPrefix} - app_id: ${app_id.substring(0, 8)}...****`,
+        `[OneSignal] credentials récupérées pour rôle: ${userRole || "undefined"} {app_id: ${app_id}, api_key: ${api_key}}`,
       );
 
       return { app_id, api_key };
