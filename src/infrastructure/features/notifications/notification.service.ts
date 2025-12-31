@@ -25,10 +25,11 @@ export class NotificationService implements INotificationService {
   ) {}
 
   async sendNotification(params: SendNotificationParams) {
+    console.log("params", params);
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
-    if (params.sendMail == true)
+    if (params.sendMail == true) {
       try {
         await this.mailService.sendMail({
           to: user.email,
@@ -38,13 +39,15 @@ export class NotificationService implements INotificationService {
       } catch (error) {
         this.loggerService.error(`[Send Mail] Test failed: ${error}`);
       }
+    }
 
-    if (params.sendSms == true)
+    if (params.sendSms == true) {
       try {
         await this.smsService.sendSms([user.phoneNumber], params.message);
       } catch (error) {
         this.loggerService.error(error);
       }
+    }
 
     if (params.skipInAppNotification == false) {
       try {
