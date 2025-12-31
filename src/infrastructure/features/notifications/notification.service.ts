@@ -266,11 +266,8 @@ export class NotificationService implements INotificationService {
         userRole === UserRole.ProEntreprise ||
         userRole === UserRole.ProParticulier
       ) {
-        app_id =
-          this.configsManagerService.getEnvVariable("ONE_SIGNAL_PRO_APP_ID") ??
-          "7eb65c1b-a1c3-4bd2-9a3c-955743582362";
+        app_id = "7eb65c1b-a1c3-4bd2-9a3c-955743582362";
         api_key =
-          this.configsManagerService.getEnvVariable("ONE_SIGNAL_PRO_API_KEY") ??
           "os_v2_app_p23fyg5bynf5fgr4svlugwbdmlqsx4eocraewqm3znsutbhju52ye6dbjtfcbk76fi556ueqdil72pkhuaurtfiik5labc75psf3rgi";
       }
 
