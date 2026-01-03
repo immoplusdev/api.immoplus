@@ -21,9 +21,10 @@ import { S3_TOKEN } from "@/infrastructure/decorators";
           ...(configService.get("AWS_S3_ENDPOINT")
             ? {
               endpoint: configService.get("AWS_S3_ENDPOINT"),
-              forcePathStyle:
-                (configService.get("AWS_S3_FORCE_PATH_STYLE") || "false") ===
-                "true",
+              forcePathStyle: false,
+              tls: true
+              // (configService.get("AWS_S3_FORCE_PATH_STYLE") || "false") ===
+              // "true",
             }
             : {}),
         });

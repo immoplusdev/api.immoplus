@@ -124,13 +124,8 @@ export class FileController {
     const responseMapper =
       new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
 
-    const split = file?.originalname?.split(".");
-    const extension = split[split.length - 1];
 
-    const uploadedFile: MulterFile = {
-      ...file,
-      externalFileId: `${randomUUID().toString()}.${extension}`,
-    };
+    const uploadedFile: MulterFile = { ...file, externalFileId: `${randomUUID()}` };
 
     await this.service.uploadFile(uploadedFile);
 
@@ -181,13 +176,7 @@ export class FileController {
     const responseMapper =
       new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
 
-    const split = file?.originalname?.split(".");
-    const extension = split[split.length - 1];
-
-    const uploadedFile: MulterFile = {
-      ...file,
-      externalFileId: `${randomUUID().toString()}.${extension}`,
-    };
+    const uploadedFile: MulterFile = { ...file, externalFileId: `${randomUUID()}` };
 
     await this.service.uploadFile(uploadedFile);
 
