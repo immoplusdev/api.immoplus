@@ -1,7 +1,7 @@
 meta {
   name: login-customer
   type: http
-  seq: 7
+  seq: 5
 }
 
 post {
@@ -12,15 +12,18 @@ post {
 
 body:json {
   {
-    "username": "{{CUSTOMER_USERNAME}}",
+    "username": "{{DEFAULT_CUSTOMER_EMAIL}}",
     "password": "{{DEFAULT_USER_PASSWORD}}",
     "source": "customer_app"
   }
 }
 
 script:post-response {
-  const { data: { accessToken } }  = res.getBody();
+  const { data: { user: { id, phoneNumber, email }, accessToken, refreshToken } }  = res.getBody();
     
-  bru.setEnvVar("DEFAULT_CUSTOMER_TOKEN", accessToken);
-  
+  bru.setEnvVar("DEFAULT_CUSTOMER_ID", id);
+  bru.setEnvVar("DEFAULT_CUSTOMER_AT", accessToken);
+  bru.setEnvVar("DEFAULT_CUSTOMER_RT", refreshToken);
+  bru.setEnvVar("DEFAULT_CUSTOMER_PHONE", phoneNumber);
+  bru.setEnvVar("DEFAULT_CUSTOMER_EMAIL", email);
 }

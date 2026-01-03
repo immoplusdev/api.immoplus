@@ -12,28 +12,23 @@ post {
 
 body:json {
   {
-    "avatar": "{{DEFAULT_IMAGE_ID}}",
-    "firstName": "string",
-    "lastName": "string",
-    "email": "pro-particulier-{{userId}}@immoplus.ci",
-    "phoneNumber": "225{{userId}}",
+    "avatar": "{{DEFAULT_APP_LOGO_ID}}",
+    "firstName": "{{$randomFirstName}}",
+    "lastName": "{{$randomLastName}}",
+    "email": "pro-par-{{$timestamp}}@immoplus.ci",
+    "phoneNumber": "225{{$timestamp}}",
     "password": "{{DEFAULT_USER_PASSWORD}}",
-    "activite": "Activite",
-    "photoIdentiteId": "{{DEFAULT_IMAGE_ID}}",
-    "pieceIdentiteId": "{{DEFAULT_IMAGE_ID}}"
+    "activite": "{{$randomJobTitle}}",
+    "photoIdentiteId": "{{DEFAULT_APP_LOGO_ID}}",
+    "pieceIdentiteId": "{{DEFAULT_APP_LOGO_ID}}",
+    "token": "{{DEFAULT_APP_OTP}}"
   }  
 }
 
-script:pre-request {
-  const { faker } = require('@faker-js/faker');
-  bru.setVar("userId", faker.string.numeric(10));
-  
-}
-
-tests {
-  test("Should receive a not null pieceIdentiteId", function() {
-    const {data: { user: { additionalData }}} = res.getBody();
+script:post-response {
+  const { data: { user: { id }, accessToken, refreshToken } }  = res.getBody();
     
-    expect(additionalData.pieceIdentiteId).to.be.a('string');
-  });
+  bru.setEnvVar("DEFAULT_PRO_PAR_ID", id);
+  bru.setEnvVar("DEFAULT_PRO_PAR_AT", accessToken);
+  bru.setEnvVar("DEFAULT_PRO_PAR_RT", refreshToken);
 }

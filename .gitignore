@@ -406,6 +406,7 @@ credentials.txt
 environments/local.bru
 environments/dev.bru
 environments/prod.bru
+environments/sandbox.bru
 perf-tests/env.js
 data/
 mysql-data

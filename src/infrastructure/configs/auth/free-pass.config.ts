@@ -1,0 +1,1 @@
+export const FREE_PASS_EMAIL_DOMAIN = "immoplus.ci";

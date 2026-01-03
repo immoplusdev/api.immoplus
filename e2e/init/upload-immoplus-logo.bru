@@ -1,5 +1,5 @@
 meta {
-  name: upload-public-file
+  name: upload-immoplus-logo
   type: http
   seq: 1
 }
@@ -21,6 +21,6 @@ body:multipart-form {
 script:post-response {
   const { data: { id } }  = res.getBody();
     
-  bru.setEnvVar("DEFAULT_FILE_ID", id);
+  bru.setEnvVar("DEFAULT_APP_LOGO_ID", id);
   
 }
