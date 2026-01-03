@@ -14,6 +14,9 @@ export function verifyUserType(user: User, source: UserApp) {
     case UserApp.ProApp:
       allowRoles.push(UserRole.ProEntreprise, UserRole.ProParticulier);
       break;
+    default:
+      allowRoles.push(UserRole.Admin);
+      break;
   }
 
   const userrole: string =

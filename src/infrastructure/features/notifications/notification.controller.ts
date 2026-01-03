@@ -232,6 +232,7 @@ export class NotificationController {
 
   @Post("send-test-notification")
   async sendTestNotification(@Body() payload: SendTestNotificationDto) {
+    console.log("payload : ", payload);
     const emailContent = `
         Objet : Test de notification !
 
