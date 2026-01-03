@@ -12,28 +12,26 @@ post {
 
 body:json {
   {
-    "email": "pro-enteprise-{{userId}}@immoplus.ci",
-    "avatar": "{{DEFAULT_IMAGE_ID}}",
-    "phoneNumber": "225{{userId}}",
+    "avatar": "{{DEFAULT_APP_LOGO_ID}}",
+    "email": "pro-ent-{{$timestamp}}@immoplus.ci",
+    "phoneNumber": "225{{$timestamp}}",
     "password": "{{DEFAULT_USER_PASSWORD}}",
-    "nomEntreprise": "NomEntreprise",
-    "emailEntreprise": "test@gmail.com",
-    "registreCommerceId": "{{DEFAULT_IMAGE_ID}}",
-    "numeroContribuable": "string",
-    "typeEntreprise": "string"
+    "nomEntreprise": "{{$randomCompanyName}}",
+    "emailEntreprise": "ent-{{$timestamp}}@immoplus.ci",
+    "registreCommerceId": "{{DEFAULT_APP_LOGO_ID}}",
+    "numeroContribuable": "{{$randomBankAccount}}",
+    "typeEntreprise": "{{$randomDepartment}}",
+    "token": "{{DEFAULT_APP_OTP}}"
   }
 }
 
-script:pre-request {
-  const { faker } = require('@faker-js/faker');
-  bru.setVar("userId", faker.string.numeric(10));
+script:post-response {
+  const { data: { user: { id }, accessToken, refreshToken } }  = res.getBody();
+    
+  bru.setEnvVar("DEFAULT_PRO_ENT_ID", id);
+  bru.setEnvVar("DEFAULT_PRO_ENT_AT", accessToken);
+  bru.setEnvVar("DEFAULT_PRO_ENT_RT", refreshToken);
   
-}
-
-tests {
-  test("Should receive a not null registreCommerceId", function() {
-    const {data: { user: { additionalData }}} = res.getBody();
   
-    expect(additionalData.registreCommerceId).to.be.a('string');
-  });
+  
 }

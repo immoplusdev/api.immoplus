@@ -1,0 +1,536 @@
+{
+  "name": "Immoplus",
+  "uuid": "515d6446-e55e-433c-84d6-ba0d1c6f9476",
+  "lastMigration": 33,
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3005,
+  "hostname": "",
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "b655be8d-ba15-48f6-8d74-c1a959d1fadd"
+    },
+    {
+      "type": "route",
+      "uuid": "2e8fdcc5-fdff-4d18-99be-cedf59ee2d9d"
+    },
+    {
+      "type": "route",
+      "uuid": "5488ee1c-19b8-457c-84cc-d684f45249e7"
+    },
+    {
+      "type": "route",
+      "uuid": "a6ca700c-cd3c-41e1-a820-13d226198bbc"
+    },
+    {
+      "type": "route",
+      "uuid": "cb68fff4-6614-47a5-919f-f8096d01cc94"
+    },
+    {
+      "type": "route",
+      "uuid": "dd58c116-2823-4567-b8ea-2da343c5fe3e"
+    }
+  ],
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "b655be8d-ba15-48f6-8d74-c1a959d1fadd",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "v2/predict",
+      "responses": [
+        {
+          "uuid": "45be24de-307d-424a-8890-074275c0e90b",
+          "body": "{\n  \"task_id\": \"8ee55d86-c{{faker 'number.int' min=10 max=99}}a-4ff0-8ebe-814c{{faker 'number.int' min=100 max=999}}f{{faker 'number.int' min=1000 max=9999}}\",\n  \"status\": \"PENDING\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": null,\n  \"completed_at_timestamp\": null,\n  \"scenario\": null,\n  \"version\": \"2.0.0\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "d0c3138b-b42f-401b-ae0b-a83b10f1cd48",
+          "body": "{\n  \"detail\": \"{{faker 'lorem.sentence'}}\",\n  \"error_code\": \"{{faker 'lorem.sentence'}}\",\n  \"context\": {\n    \"additionalProp1\": {}\n  },\n  \"request_id\": \"{{faker 'string.uuid'}}\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "Error",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "2e8fdcc5-fdff-4d18-99be-cedf59ee2d9d",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "v2/result/:id",
+      "responses": [
+        {
+          "uuid": "e9b145e8-4b06-4c55-a8e0-c83f072c5caa",
+          "body": "{\n  \"task_id\": \"{{urlParam 'id'}}\",\n  \"status\": \"SUCCESS\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"scenario\": null,\n  \"version\": null,\n  \"versions\": [\n    {{#repeat 2}}\n    {\n      \"metrics\": {\n        \"save\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"comment\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"like\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"share\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"total\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        }\n      },\n      \"suggestions\": {\n          \"processing_start_timestamp\": 0,\n          \"completed_at_timestamp\": 0,\n          \"text_suggestion\": \"This morning I decided to {{faker 'lorem.word'}} because the weather was {{faker 'lorem.word'}} and my friends wanted to {{faker 'lorem.word'}} before we {{faker 'lorem.word'}} and finally {{faker 'lorem.word'}} together.\",\n          \"text_revision\": \"This morning I decided to {{faker 'lorem.word'}} because the weather was {{faker 'lorem.word'}} and my friends wanted to {{faker 'lorem.word'}} before we {{faker 'lorem.word'}} and finally {{faker 'lorem.word'}} together.\",\n          \"image_suggestions\": [\n            {\n              \"file_path\": \"{{faker 'lorem.sentence'}}\",\n              \"suggestion\": \"{{faker 'lorem.sentence'}}\",\n              \"error\": \"\"\n            }\n          ],\n          \"video_suggestions\": [\n            {\n              \"file_path\": \"{{faker 'lorem.sentence'}}\",\n              \"suggestion\": \"{{faker 'lorem.sentence'}}\",\n              \"error\": \"This morning I decided to _ because the weather was _ and my friends wanted to _ before we _ and finally _ together.\"\n            }\n          ],\n          \"token_usage\": {\n            \"additionalProp1\": {}\n          }\n        },\n      \"user_reactions\": [\n        {{#repeat 10}}\n        {\n          \"index\": {{faker 'number.int' min=0 max=100}},\n          \"reaction\": {\n            \"like\": {{faker 'datatype.boolean'}},\n            \"comment\": {{faker 'datatype.boolean'}},\n            \"save\": {{faker 'datatype.boolean'}}, \n            \"share\": {{faker 'datatype.boolean'}}\n          },\n          \"emotion\": \"{{faker 'helpers.arrayElement' (array 'positive' 'neutral' 'negative')}}\",\n          \"attracted\": {{faker 'datatype.boolean'}}\n        }\n        {{/repeat}}\n      ],\n      \"process_data\": {\n        \"image_descriptions\": [],\n        \"video_descriptions\": [],\n        \"media_type\": \"text_image\",\n        \"version_content\": \"[Text]\\nA\",\n        \"person_desc\": \"{{faker 'lorem.sentence'}}\"\n      },\n      \"failed_prediction_count\": 0,\n      \"emotion\": {\n        \"positive\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"neutral\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"negative\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        }\n      },\n      \"attraction\": {\n        \"attracted\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"not_attracted\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        }\n      },\n      \"followup_cases\": [\n        {{#repeat 10}}\n        {\n          \"user_index\": {{faker 'number.int' min=0 max=100}},\n          \"random_state\": \"{{faker 'lorem.word'}}\",\n          \"random_emo\": \"{{faker 'lorem.word'}}\",\n          \"emotion\":\"{{faker 'helpers.arrayElement' (array 'positive' 'neutral' 'negative')}}\",\n          \"attracted\": {{faker 'datatype.boolean'}},\n          \"reaction\": {\n            \"like\": {{faker 'datatype.boolean'}},\n            \"comment\": {{faker 'datatype.boolean'}},\n            \"save\": {{faker 'datatype.boolean'}},\n            \"share\": {{faker 'datatype.boolean'}}\n          },\n          \"reason\": \"{{faker 'lorem.word'}}\",\n          \"error\": null\n        }\n        {{/repeat}}\n      ]\n    }\n    {{/repeat}}\n  ],\n  \"original_request\": {\n    \"platform\": \"facebook\",\n    \"max_users\": 100,\n    \"ui_language\": \"en\",\n    \"person_info\": {\n      \"age_range\": \"18-35 years old\",\n      \"gender\": null,\n      \"education\": \"High School or above\",\n      \"income\": \"2000-6000USD/month\",\n      \"platform_usage\": null,\n      \"content_preference\": [],\n      \"live_in\": [\n        \"United States\"\n      ],\n      \"custom_traits\": \"active lifestyle, brand-conscious, health-focused, trend-aware\",\n      \"language\": \"\"\n    },\n    \"user_type\": \"ngo\",\n    \"decision_purpose\": \"marketing\",\n    \"decision_scenario\": \"string\",\n    \"versions\": [\n      {\n        \"version_text\": \"{{faker 'lorem.sentence'}}\",\n         \"images\": [\n             \"{{faker 'helpers.arrayElement' (array 'images/2b853e90-2474-4b71-a2f4-65d4f135b145.png' 'images/86916561-f459-409d-ae0e-a7b781a634dc.png' 'images/153bbfb5-3761-4cf7-b8ad-3c0b6f5fc555.jpeg' 'images/723ea70f-5eb8-4797-b6bd-730efda3bdfd.png' 'images/4cac4a16-1e3c-421b-9319-1f99fd8a121f.jpeg' 'images/ed163058-fba5-4c96-aab0-9106b51a29a1.jpeg' 'images/2f87be57-4ff8-4277-acf0-434a6b2ad01f.jpeg' 'images/eec236a6-fb76-42b8-a8cd-28855ac3a3bc.jpeg' 'images/4e77a059-65ca-4662-a2ec-2b96abdbf4e2.jpeg' 'images/d5342aed-fab5-4ce5-90b2-214c391a1d71.jpeg' 'images/6d569e4a-71b8-4e23-b91b-c51149d83686.jpeg' 'images/ef3e603a-a228-4cc9-b108-a64922bdf3a7.jpeg' 'images/d40e8c70-3d97-48e0-a38d-ff4ceee0a13c.jpeg' 'images/5c7687ec-5d5d-48f0-b158-30f19bed3527.png' 'images/c49bcce9-adf6-45b2-b3d7-9717ce2bdbac.png' 'images/5a33a657-141d-4a04-943e-5f0bfe5e7945.png' 'images/d5c5eb13-1835-47c2-8277-5b00cf5add5c.png' 'images/2c23e22a-8891-42bf-b28a-75676c93d10e.png')}}\"\n        ],\n        \"videos\": null\n      },\n      {\n        \"version_text\": \"{{faker 'lorem.sentence'}}\",\n        \"images\": [\n            \"{{faker 'helpers.arrayElement' (array 'images/2b853e90-2474-4b71-a2f4-65d4f135b145.png' 'images/86916561-f459-409d-ae0e-a7b781a634dc.png' 'images/153bbfb5-3761-4cf7-b8ad-3c0b6f5fc555.jpeg' 'images/723ea70f-5eb8-4797-b6bd-730efda3bdfd.png' 'images/4cac4a16-1e3c-421b-9319-1f99fd8a121f.jpeg' 'images/ed163058-fba5-4c96-aab0-9106b51a29a1.jpeg' 'images/2f87be57-4ff8-4277-acf0-434a6b2ad01f.jpeg' 'images/eec236a6-fb76-42b8-a8cd-28855ac3a3bc.jpeg' 'images/4e77a059-65ca-4662-a2ec-2b96abdbf4e2.jpeg' 'images/d5342aed-fab5-4ce5-90b2-214c391a1d71.jpeg' 'images/6d569e4a-71b8-4e23-b91b-c51149d83686.jpeg' 'images/ef3e603a-a228-4cc9-b108-a64922bdf3a7.jpeg' 'images/d40e8c70-3d97-48e0-a38d-ff4ceee0a13c.jpeg' 'images/5c7687ec-5d5d-48f0-b158-30f19bed3527.png' 'images/c49bcce9-adf6-45b2-b3d7-9717ce2bdbac.png' 'images/5a33a657-141d-4a04-943e-5f0bfe5e7945.png' 'images/d5c5eb13-1835-47c2-8277-5b00cf5add5c.png' 'images/2c23e22a-8891-42bf-b28a-75676c93d10e.png')}}\"\n        ],\n        \"videos\": null\n      }\n    ]\n  },\n  \"total_duration_seconds\": 18.1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"total_simulated_users\": 200,\n  \"token_usage_stats\": {\n    \"image_description\": {\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0\n    },\n    \"video_description\": {\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0\n    },\n    \"user_prediction\": {\n      \"prompt_tokens\": 551{{faker 'number.int' min=100 max=999}},\n      \"completion_tokens\": 51{{faker 'number.int' min=100 max=999}}\n    },\n    \"ai_summary\": null,\n    \"total_text\": {\n      \"prompt_tokens\": 55{{faker 'number.int' min=100 max=999}},\n      \"completion_tokens\": 5{{faker 'number.int' min=100 max=999}}\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Multiple test with images and text",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "fceaf537-5804-4743-b154-4fd4069886d0",
+          "body": "{\n  \"task_id\": \"{{urlParam 'id'}}\",\n  \"status\": \"SUCCESS\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"scenario\": null,\n  \"version\": null,\n  \"versions\": [\n    {\n      \"metrics\": {\n        \"save\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"comment\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"like\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"share\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        }\n      },\n      \"suggestions\": {\n          \"processing_start_timestamp\": 0,\n          \"completed_at_timestamp\": 0,\n          \"text_suggestion\": \"This morning I decided to {{faker 'lorem.word'}} because the weather was {{faker 'lorem.word'}} and my friends wanted to {{faker 'lorem.word'}} before we {{faker 'lorem.word'}} and finally {{faker 'lorem.word'}} together.\",\n          \"text_revision\": \"This morning I decided to {{faker 'lorem.word'}} because the weather was {{faker 'lorem.word'}} and my friends wanted to {{faker 'lorem.word'}} before we {{faker 'lorem.word'}} and finally {{faker 'lorem.word'}} together.\",\n          \"image_suggestions\": [\n            {\n              \"file_path\": \"{{faker 'lorem.sentence'}}\",\n              \"suggestion\": \"{{faker 'lorem.sentence'}}\",\n              \"error\": \"\"\n            }\n          ],\n          \"video_suggestions\": [\n            {\n              \"file_path\": \"{{faker 'lorem.sentence'}}\",\n              \"suggestion\": \"{{faker 'lorem.sentence'}}\",\n              \"error\": \"This morning I decided to _ because the weather was _ and my friends wanted to _ before we _ and finally _ together.\"\n            }\n          ],\n          \"token_usage\": {\n            \"additionalProp1\": {}\n          }\n        }\n      ,\n      \"user_reactions\": [\n        {{#repeat 10}}\n        {\n          \"index\": {{faker 'number.int' min=0 max=100}},\n          \"reaction\": {\n            \"like\": {{faker 'datatype.boolean'}},\n            \"comment\": {{faker 'datatype.boolean'}},\n            \"save\": {{faker 'datatype.boolean'}}, \n            \"share\": {{faker 'datatype.boolean'}}\n          },\n          \"emotion\": \"{{faker 'helpers.arrayElement' (array 'positive' 'neutral' 'negative')}}\",\n          \"attracted\": {{faker 'datatype.boolean'}}\n        }\n        {{/repeat}}\n      ],\n      \"process_data\": {\n        \"image_descriptions\": [],\n        \"video_descriptions\": [],\n        \"media_type\": \"text_image\",\n        \"version_content\": \"[Text]\\nA\",\n        \"person_desc\": \"{{faker 'lorem.sentence'}}\"\n      },\n      \"failed_prediction_count\": 0,\n      \"emotion\": {\n        \"positive\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"neutral\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"negative\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        }\n      },\n      \"attraction\": {\n        \"attracted\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        },\n        \"not_attracted\": {\n          \"count\": {{faker 'number.int' min=0 max=100}},\n          \"rate\": {{faker 'number.int' min=0 max=100}}\n        }\n      },\n      \"followup_cases\": [\n        {{#repeat 10}}\n        {\n          \"user_index\": {{faker 'number.int' min=0 max=100}},\n          \"random_state\": \"{{faker 'lorem.word'}}\",\n          \"random_emo\": \"{{faker 'lorem.word'}}\",\n          \"emotion\":\"{{faker 'helpers.arrayElement' (array 'positive' 'neutral' 'negative')}}\",\n          \"attracted\": {{faker 'datatype.boolean'}},\n          \"reaction\": {\n            \"like\": {{faker 'datatype.boolean'}},\n            \"comment\": {{faker 'datatype.boolean'}},\n            \"save\": {{faker 'datatype.boolean'}},\n            \"share\": {{faker 'datatype.boolean'}}\n          },\n          \"reason\": \"{{faker 'lorem.word'}}\",\n          \"error\": null\n        }\n        {{/repeat}}\n      ]\n    }\n  ],\n  \"original_request\": {\n    \"platform\": \"facebook\",\n    \"max_users\": 100,\n    \"ui_language\": \"en\",\n    \"person_info\": {\n      \"age_range\": \"18-35 years old\",\n      \"gender\": null,\n      \"education\": \"High School or above\",\n      \"income\": \"2000-6000USD/month\",\n      \"platform_usage\": null,\n      \"content_preference\": [],\n      \"live_in\": [\n        \"United States\"\n      ],\n      \"custom_traits\": \"active lifestyle, brand-conscious, health-focused, trend-aware\",\n      \"language\": \"\"\n    },\n    \"user_type\": \"ngo\",\n    \"decision_purpose\": \"marketing\",\n    \"decision_scenario\": \"string\",\n    \"versions\": [\n      {\n        \"version_text\": \"{{faker 'lorem.sentence'}}\",\n         \"images\": [\n             \"{{faker 'helpers.arrayElement' (array 'images/2b853e90-2474-4b71-a2f4-65d4f135b145.png' 'images/86916561-f459-409d-ae0e-a7b781a634dc.png' 'images/153bbfb5-3761-4cf7-b8ad-3c0b6f5fc555.jpeg' 'images/723ea70f-5eb8-4797-b6bd-730efda3bdfd.png' 'images/4cac4a16-1e3c-421b-9319-1f99fd8a121f.jpeg' 'images/ed163058-fba5-4c96-aab0-9106b51a29a1.jpeg' 'images/2f87be57-4ff8-4277-acf0-434a6b2ad01f.jpeg' 'images/eec236a6-fb76-42b8-a8cd-28855ac3a3bc.jpeg' 'images/4e77a059-65ca-4662-a2ec-2b96abdbf4e2.jpeg' 'images/d5342aed-fab5-4ce5-90b2-214c391a1d71.jpeg' 'images/6d569e4a-71b8-4e23-b91b-c51149d83686.jpeg' 'images/ef3e603a-a228-4cc9-b108-a64922bdf3a7.jpeg' 'images/d40e8c70-3d97-48e0-a38d-ff4ceee0a13c.jpeg' 'images/5c7687ec-5d5d-48f0-b158-30f19bed3527.png' 'images/c49bcce9-adf6-45b2-b3d7-9717ce2bdbac.png' 'images/5a33a657-141d-4a04-943e-5f0bfe5e7945.png' 'images/d5c5eb13-1835-47c2-8277-5b00cf5add5c.png' 'images/2c23e22a-8891-42bf-b28a-75676c93d10e.png')}}\"\n        ],\n        \"videos\": null\n      },\n      {\n        \"version_text\": \"{{faker 'lorem.sentence'}}\",\n        \"images\": [\n            \"{{faker 'helpers.arrayElement' (array 'images/2b853e90-2474-4b71-a2f4-65d4f135b145.png' 'images/86916561-f459-409d-ae0e-a7b781a634dc.png' 'images/153bbfb5-3761-4cf7-b8ad-3c0b6f5fc555.jpeg' 'images/723ea70f-5eb8-4797-b6bd-730efda3bdfd.png' 'images/4cac4a16-1e3c-421b-9319-1f99fd8a121f.jpeg' 'images/ed163058-fba5-4c96-aab0-9106b51a29a1.jpeg' 'images/2f87be57-4ff8-4277-acf0-434a6b2ad01f.jpeg' 'images/eec236a6-fb76-42b8-a8cd-28855ac3a3bc.jpeg' 'images/4e77a059-65ca-4662-a2ec-2b96abdbf4e2.jpeg' 'images/d5342aed-fab5-4ce5-90b2-214c391a1d71.jpeg' 'images/6d569e4a-71b8-4e23-b91b-c51149d83686.jpeg' 'images/ef3e603a-a228-4cc9-b108-a64922bdf3a7.jpeg' 'images/d40e8c70-3d97-48e0-a38d-ff4ceee0a13c.jpeg' 'images/5c7687ec-5d5d-48f0-b158-30f19bed3527.png' 'images/c49bcce9-adf6-45b2-b3d7-9717ce2bdbac.png' 'images/5a33a657-141d-4a04-943e-5f0bfe5e7945.png' 'images/d5c5eb13-1835-47c2-8277-5b00cf5add5c.png' 'images/2c23e22a-8891-42bf-b28a-75676c93d10e.png')}}\"\n        ],\n        \"videos\": null\n      }\n    ]\n  },\n  \"total_duration_seconds\": 18.1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"total_simulated_users\": 200,\n  \"token_usage_stats\": {\n    \"image_description\": {\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0\n    },\n    \"video_description\": {\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0\n    },\n    \"user_prediction\": {\n      \"prompt_tokens\": 551{{faker 'number.int' min=100 max=999}},\n      \"completion_tokens\": 51{{faker 'number.int' min=100 max=999}}\n    },\n    \"ai_summary\": null,\n    \"total_text\": {\n      \"prompt_tokens\": 55{{faker 'number.int' min=100 max=999}},\n      \"completion_tokens\": 5{{faker 'number.int' min=100 max=999}}\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Single test ok response",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "ea26e664-de06-4355-abcf-2009f8048f55",
+          "body": "{\n  \"task_id\": \"{{urlParam 'id'}}\",\n  \"status\": \"PENDING\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "e3b57656-35ae-463d-9701-5a7305f00a5e",
+          "body": "{\n  \"task_id\": \"{{urlParam 'id'}}\",\n  \"status\": \"FAILURE\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Failed",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "dab9af29-1afe-42fc-b35b-c736986d062e",
+          "body": "{\n  \"detail\": \"{{faker 'lorem.sentence'}}\",\n  \"error_code\": \"{{faker 'lorem.sentence'}}\",\n  \"context\": {\n    \"additionalProp1\": {}\n  },\n  \"request_id\": \"{{faker 'string.uuid'}}\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "5488ee1c-19b8-457c-84cc-d684f45249e7",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "v2/user_persona/generate",
+      "responses": [
+        {
+          "uuid": "4dfdf752-1c3f-4a3c-bf57-2c6362b75d74",
+          "body": "{\n  \"task_id\": \"8ee55d86-c{{faker 'number.int' min=10 max=99}}a-4ff0-8ebe-814c{{faker 'number.int' min=100 max=999}}f{{faker 'number.int' min=1000 max=9999}}\",\n  \"status\": \"PENDING\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"scenario\": \"{{faker 'lorem.sentence'}}\",\n  \"version\": \"2.0.0\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "01559f00-8383-4dff-a3e6-ba0d814afcf2",
+          "body": "{\n  \"detail\": \"{{faker 'lorem.sentence'}}\",\n  \"error_code\": \"{{faker 'lorem.sentence'}}\",\n  \"context\": {\n    \"additionalProp1\": {}\n  },\n  \"request_id\": \"{{faker 'string.uuid'}}\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "a6ca700c-cd3c-41e1-a820-13d226198bbc",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "v2/user_persona/result/:id",
+      "responses": [
+        {
+          "uuid": "666334d0-943e-4493-bb1d-4e3b45ef52ea",
+          "body": "{\n  \"person_info\": {\n    \"age_range\": \"3{{faker 'number.int' min=0 max=9}}-5{{faker 'number.int' min=0 max=9}}岁\",\n    \"gender\": \"男性\",\n    \"education\": \"高中以下-硕士学位\",\n    \"income\": \"{{faker 'number.int' min=1 max=4}}00-{{faker 'number.int' min=5 max=9}}00USD/月\",\n    \"platform_usage\": \"\",\n    \"content_preference\": [],\n    \"live_in\": [\"China\"],\n    \"custom_traits\": [],\n    \"language\": \"zh\"\n  },\n  \"user_type\": \"solopreneur\",\n  \"token_usage_stats\": {\n    \"user_persona\": {\n      \"input_tokens\": {{faker 'number.int' min=0 max=100}},\n      \"output_tokens\": {{faker 'number.int' min=0 max=100}}\n    },\n    \"user_type\": {\n      \"input_tokens\": {{faker 'number.int' min=0 max=100}},\n      \"output_tokens\": {{faker 'number.int' min=0 max=100}}\n    },\n    \"video_description\": {\n      \"input_tokens\": {{faker 'number.int' min=0 max=100}},\n      \"output_tokens\": {{faker 'number.int' min=0 max=100}}\n    },\n    \"total_text\": {\n      \"input_tokens\": {{faker 'number.int' min=0 max=100}},\n      \"output_tokens\": {{faker 'number.int' min=0 max=100}}\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "b546ad50-449d-4010-9f14-29b9684f7b16",
+          "body": "{\n  \"task_id\": \"{{urlParam 'id'}}\",\n  \"status\": \"FAILURE\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"scenario\": \"{{faker 'lorem.sentence'}}\",\n  \"version\": \"2.0.0\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Failed",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "ef1fdcec-617e-46b1-a25f-fa057bc8e8af",
+          "body": "{\n  \"task_id\": \"{{urlParam 'id'}}\",\n  \"status\": \"PENDING\",\n  \"message\": \"{{faker 'lorem.sentence'}}\",\n  \"created_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"processing_start_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"completed_at_timestamp\": 1{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}}{{faker 'number.int' min=100 max=999}},\n  \"scenario\": \"{{faker 'lorem.sentence'}}\",\n  \"version\": \"2.0.0\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "7264393b-d5fd-4b39-ad41-d1ab0829763a",
+          "body": "{\n  \"detail\": \"{{faker 'lorem.sentence'}}\",\n  \"error_code\": \"{{faker 'lorem.sentence'}}\",\n  \"context\": {\n    \"additionalProp1\": {}\n  },\n  \"request_id\": \"{{faker 'string.uuid'}}\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "cb68fff4-6614-47a5-919f-f8096d01cc94",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "v2/user_persona/check",
+      "responses": [
+        {
+          "uuid": "764c9cae-ccb6-43ef-881c-e47706730e92",
+          "body": "{\n  \"available\": true,\n  \"overall_suggestion\": \"\",\n  \"field_suggestions\": [],\n  \"total_text\": {\n    \"input_tokens\": 938,\n    \"output_tokens\": 1410\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Valid Persona",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "65ad3893-4641-4ba4-9faf-1efedbdde822",
+          "body": "{\n  \"available\": false,\n  \"overall_suggestion\": \"Error / 错误: {{faker 'lorem.sentence'}}\",\n  \"field_suggestions\": [\n    {\n      \"field_name\": \"custom_traits: '{{faker 'lorem.sentence'}}'\",\n      \"suggestion\": \"Suggestions: {{faker 'lorem.paragraph'}}\"\n    },\n    {\n      \"field_name\": \"custom_traits: '{{faker 'lorem.sentence'}}'\",\n      \"suggestion\": \"Suggestions: {{faker 'lorem.paragraph'}}\"\n    },\n    {\n      \"field_name\": \"custom_traits: '{{faker 'lorem.sentence'}}'\",\n      \"suggestion\": \"Suggestions: {{faker 'lorem.paragraph'}}\"\n    }\n  ],\n  \"total_text\": {\n    \"input_tokens\": 938,\n    \"output_tokens\": 1410\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Invalid Persona",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "23405e5d-f37d-4338-9741-b783d979e2cb",
+          "body": "{\n  \"detail\": \"{{faker 'lorem.sentence'}}\",\n  \"error_code\": \"{{faker 'lorem.sentence'}}\",\n  \"context\": {\n    \"additionalProp1\": {}\n  },\n  \"request_id\": \"{{faker 'string.uuid'}}\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "dd58c116-2823-4567-b8ea-2da343c5fe3e",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "v2/generate-summary",
+      "responses": [
+        {
+          "uuid": "29abdafb-55c9-4880-bdae-ec25533f0174",
+          "body": "{\n  \"ai_summary\": \"{{faker 'lorem.paragraph'}} {{faker 'lorem.paragraph'}} {{faker 'lorem.paragraph'}} {{faker 'lorem.paragraph'}} {{faker 'lorem.paragraph'}} {{faker 'lorem.paragraph'}}\",\n  \"token_usage\": {\n    \"prompt_tokens\": {{faker 'number.int' min=100 max=600}},\n    \"completion_tokens\": {{faker 'number.int' min=1000 max=1600}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "proxyMode": true,
+  "proxyHost": "http://localhost:3002",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [],
+  "proxyReqHeaders": [],
+  "proxyResHeaders": [],
+  "data": [],
+  "callbacks": []
+}

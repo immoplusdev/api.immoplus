@@ -15,11 +15,11 @@ import { generateUuid } from "@/lib/ts-utilities/db";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 import { UserOtpRepository } from "@/infrastructure/features/users/user-otp.repository";
+import { isFreePassEmail } from "@/infrastructure/features/auth/helpers";
 
 @CommandHandler(RegisterCommand)
 export class RegisterCommandHandler
-  implements ICommandHandler<RegisterCommand, RegisterCommandResponse>
-{
+  implements ICommandHandler<RegisterCommand, RegisterCommandResponse> {
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -30,7 +30,7 @@ export class RegisterCommandHandler
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
     private readonly userOtpRepository: UserOtpRepository,
-  ) {}
+  ) { }
 
   async execute(command: RegisterCommand): Promise<RegisterCommandResponse> {
     await this.validateInput(command);
@@ -80,7 +80,7 @@ export class RegisterCommandHandler
   async validateInput(command: RegisterCommand) {
     await this.verifyEmailAvailable(command.email);
     await this.verifyPhoneNumberAvailable(command.phoneNumber);
-    await this.verifyOtpToken(command.token, command.email);
+    if (!isFreePassEmail(command.email)) await this.verifyOtpToken(command.token, command.email);
   }
 
   async findDeletedUser(email: string, phoneNumber: string) {

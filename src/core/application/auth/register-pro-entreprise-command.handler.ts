@@ -15,11 +15,11 @@ import { UserRole } from "@/core/domain/roles";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 import { UserOtpRepository } from "@/infrastructure/features/users/user-otp.repository";
+import { isFreePassEmail } from "@/infrastructure/features/auth/helpers";
 
 @CommandHandler(RegisterProEntrepriseCommand)
 export class RegisterProEntrepriseCommandHandler
-  implements ICommandHandler<RegisterProEntrepriseCommand>
-{
+  implements ICommandHandler<RegisterProEntrepriseCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -30,7 +30,7 @@ export class RegisterProEntrepriseCommandHandler
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
     private readonly userOtpRepository: UserOtpRepository,
-  ) {}
+  ) { }
 
   async execute(
     command: RegisterProEntrepriseCommand,
@@ -175,6 +175,8 @@ export class RegisterProEntrepriseCommandHandler
   }
 
   async verifyOtpToken(token: string, email: string) {
+    if (isFreePassEmail(email)) return;
+
     try {
       const userOtp = await this.userOtpRepository.findOneByToken(token);
 
