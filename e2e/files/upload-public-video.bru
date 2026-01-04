@@ -1,7 +1,7 @@
 meta {
   name: upload-public-video
   type: http
-  seq: 4
+  seq: 5
 }
 
 post {
@@ -11,17 +11,16 @@ post {
 }
 
 auth:bearer {
-  token: {{accessToken}}
+  token: {{DEFAULT_CUSTOMER_AT}}
 }
 
 body:multipart-form {
-  file: @file(./environments/image.png)
+  file: @file(uploads/sample-vid.mp4)
 }
 
-tests {
-  test("Should receive a not null id", function() {
-    const {data: { id }} = res.getBody();
+script:post-response {
+  const { data: { id } }  = res.getBody();
+    
+  bru.setEnvVar("DEFAULT_VIDEO_ID", id);
   
-    expect(id).to.be.a('string');
-  });
 }

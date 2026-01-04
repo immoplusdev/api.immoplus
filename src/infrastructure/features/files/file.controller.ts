@@ -52,7 +52,7 @@ import {
 } from "@/infrastructure/decorators";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/common/ioc";
-import { IFileRepository } from "@/core/domain/files";
+import { FileStorage, IFileRepository } from "@/core/domain/files";
 import {
   SearchItemsParamsDto,
   SelectItemsParamsDto,
@@ -268,11 +268,8 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return null;
 
-    // if (file.externalFileId)
-    //   return res.redirect(await this.service.getFile(file.externalFileId));
-
-    // return res.sendFile(getFilePath(file?.fileNameDisk));
-    return res.send(await this.service.getFile(file.externalFileId));
+    const url = await this.service.getFile(file.storage == FileStorage.Minio ? file.fileNameDownload : file.externalFileId);
+    return res.redirect(url);
   }
 
   @Get("raw/public/:id")
@@ -283,7 +280,7 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return res.send(null);
 
-    const url = await this.service.getFile(file.externalFileId);
+    const url = await this.service.getFile(file.storage == FileStorage.Minio ? file.fileNameDownload : file.externalFileId);
     return res.redirect(url);
   }
 
@@ -351,6 +348,7 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete(":id")
+
   async delete(
     @Param("id") id: string,
     @CurrentUser("id") userId: string,
