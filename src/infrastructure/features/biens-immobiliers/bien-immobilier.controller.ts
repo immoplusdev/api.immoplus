@@ -149,19 +149,6 @@ export class BienImmobilierController {
   @ApiResponse({
     type: WrapperResponseBienImmobilierDto,
   })
-  @RequiredRoles(
-    UserRole.Admin,
-    UserRole.Customer,
-    UserRole.ProEntreprise,
-    UserRole.ProParticulier,
-  )
-  @RequiredPermissions([
-    PermissionCollection.BiensImmobilies,
-    PermissionAction.Read,
-  ])
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
@@ -179,6 +166,30 @@ export class BienImmobilierController {
   })
   @Get("/data/public/")
   async readManyPublic(@Query() params: SearchItemsParamsDto) {
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseBienImmobilierBatchDto,
+  })
+  @Get("/data/public/proprietaire/:proprietaireId")
+  async readManyByProprietaire(
+    @Param("proprietaireId") proprietaireId: string,
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "proprietaire",
+          _l_op: "and",
+          _val: proprietaireId,
+        },
+      ],
+      params._where,
+    );
+
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);

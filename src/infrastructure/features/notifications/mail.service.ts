@@ -17,19 +17,44 @@ export class MailService implements IMailService {
     private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
   ) {
+    // const port = parseInt(
+    //   this.configsManagerService.getEnvVariable("NODE_MAILER_PORT"),
+    // );
+    // const isSecure = port === 465;
+
+    // this.mailingConfig = {
+    //   host: this.configsManagerService.getEnvVariable("NODE_MAILER_HOST"),
+    //   port: port,
+    //   secure: isSecure,
+    //   auth: {
+    //     user: this.configsManagerService.getEnvVariable("NODE_MAILER_USER"),
+    //     pass: this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD"),
+    //   },
+    //   tls: {
+    //     rejectUnauthorized: false,
+    //   },
+    //   connectionTimeout: 10000,
+    //   greetingTimeout: 10000,
+    //   socketTimeout: 10000,
+    // };
+
+    const port = 465;
+    const isSecure = port === 465;
+
     this.mailingConfig = {
-      host: this.configsManagerService.getEnvVariable("NODE_MAILER_HOST"),
-      port: parseInt(
-        this.configsManagerService.getEnvVariable("NODE_MAILER_PORT"),
-      ),
-      // secure: this.configsManagerService.getEnvVariable("NODE_MAILER_SECURE") == "true",
+      host: "mail.immoplus.ci",
+      port: port,
+      secure: isSecure,
       auth: {
-        user: this.configsManagerService.getEnvVariable("NODE_MAILER_USER"),
-        pass: this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD"),
+        user: "immoplus@immoplus.ci",
+        pass: "sa*-Ur=GM$kz,rw6",
       },
-      // tls: {
-      //   rejectUnauthorized: this.configsManagerService.getEnvVariable("NODE_MAILER_IGNORE_TLS") == "true",
-      // },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     };
     this.mailTransport = nodemailer.createTransport(this.mailingConfig);
   }
@@ -37,25 +62,36 @@ export class MailService implements IMailService {
   async sendMail(params: SendMailParams) {
     const mailParams = {
       ...params,
-      from: params.from ? params.from : process.env.NODE_MAILER_FROM,
+      from: "immoplus@immoplus.ci",
     };
 
-    if (
-      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-      AppProfile.Dev
-    ) {
-      // this.loggerService.info(params.html || params.text, params);
-      // return;
-      mailParams.to = "dev.johnlight@gmail.com";
-    }
+    console.log("Sending mail with params:", mailParams);
 
-    this.mailTransport.sendMail(mailParams);
+    // if (
+    //   this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
+    //   AppProfile.Dev
+    // ) {
+    //   // this.loggerService.info(params.html || params.text, params);
+    //   // return;
+    //   mailParams.to = "dev.johnlight@gmail.com";
+    // }
+
+    try {
+      await this.mailTransport.sendMail(mailParams);
+      this.loggerService.info(`Email sent successfully to ${mailParams.to}`);
+    } catch (error) {
+      this.loggerService.error(
+        `Failed to send email to ${mailParams.to}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   async isMailServerAlive(): Promise<boolean> {
     const loggerService = this.loggerService;
     return new Promise((resolve, reject) => {
-      this.mailTransport.verify(function (error: unknown, _success: unknown) {
+      this.mailTransport.verify(function (error: unknown) {
         if (error) {
           loggerService.error(error.toString(), error);
           reject(false);
