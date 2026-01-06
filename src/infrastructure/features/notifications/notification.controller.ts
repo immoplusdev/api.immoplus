@@ -239,11 +239,8 @@ export class NotificationController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post("send-test-notification")
-  async sendTestNotification(
-    @Body() payload: SendTestNotificationDto,
-    @CurrentUser("id") userId: string,
-  ) {
-    console.log("Sending test notification with payload:", payload);
+  async sendTestNotification(@Body() payload: SendTestNotificationDto) {
+    console.log("payload : ", payload);
     const emailContent = `
         Objet : Test de notification !
 
