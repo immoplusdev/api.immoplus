@@ -230,22 +230,12 @@ export class NotificationController {
     return this.responseMapper.mapFrom({ id });
   }
 
-  @RequiredRoles(
-    UserRole.Admin,
-    UserRole.Customer,
-    UserRole.ProEntreprise,
-    UserRole.ProParticulier,
-  )
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @Post("send-test-notification")
   async sendTestNotification(@Body() payload: SendTestNotificationDto) {
     console.log("payload : ", payload);
     const emailContent = `
         Objet : Test de notification !
-
         Bonjour,
-
         Nous vous remercions de votre confiance et de votre soutien.
         
         Nous sommes ravis de vous informer que nous avons bien reçu votre demande de test de notification.
@@ -256,7 +246,7 @@ export class NotificationController {
       `;
 
     const params = new SendNotificationParams({
-      userId: userId || userId,
+      userId: payload.userId,
       subject: payload.subject,
       message: payload.message,
       skipInAppNotification: payload.skipInAppNotification,
@@ -264,9 +254,8 @@ export class NotificationController {
       sendSms: payload.sendSms,
       htmlMessage: payload.htmlMessage || emailContent,
       returnUrl: payload.returnUrl || "localhost:3000/estate_detail/12",
+      data: payload.data,
     });
-
-    console.log("Sending test notification with params:", params);
 
     const result = await this.repository.sendTestNotification(params);
 
