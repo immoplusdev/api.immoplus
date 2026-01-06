@@ -11,7 +11,8 @@ export class LoginCommand {
   @IsNotEmpty({ message: "$t:all.exception.invalid_password_format_exception" })
   password: string;
 
-  @ApiProperty({ type: String, enum: UserApp })
+  // @ApiProperty({ type: String, enum: UserApp })
+  // @IsNotEmpty()
   source: UserApp;
 
   constructor(data?: OmitMethods<LoginCommand>) {
