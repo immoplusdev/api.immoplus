@@ -14,7 +14,7 @@ import { UserEntity } from "@/infrastructure/features/users";
 export class VilleEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column({ name: "name", type: "varchar", unique: true })
+  @Column({ name: "name", type: "varchar" })
   name: string;
 
   @CreateDateColumn({ name: "created_at" })

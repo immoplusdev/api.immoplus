@@ -42,7 +42,7 @@ export class SeedMap20240803172312 implements MigrationInterface {
 
     for (const commune of communes) {
       await queryRunner.query(
-        `INSERT INTO communes (id, name, ville_id) VALUES ('${commune.id}', '${commune.name}', '${commune.ville}')`,
+        `INSERT IGNORE INTO communes (id, name, ville_id) VALUES ('${commune.id}', '${commune.name}', '${commune.ville}')`,
       );
     }
   }
