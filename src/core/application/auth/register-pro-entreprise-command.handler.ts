@@ -15,11 +15,15 @@ import { UserRole } from "@/core/domain/roles";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 import { UserOtpRepository } from "@/infrastructure/features/users/user-otp.repository";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
 import { isFreePassEmail } from "@/infrastructure/features/auth/helpers";
 
 @CommandHandler(RegisterProEntrepriseCommand)
-export class RegisterProEntrepriseCommandHandler
-  implements ICommandHandler<RegisterProEntrepriseCommand> {
+export class RegisterProEntrepriseCommandHandler implements ICommandHandler<RegisterProEntrepriseCommand> {
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -30,7 +34,11 @@ export class RegisterProEntrepriseCommandHandler
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
     private readonly userOtpRepository: UserOtpRepository,
-  ) { }
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
+  ) {}
 
   async execute(
     command: RegisterProEntrepriseCommand,
@@ -49,6 +57,10 @@ export class RegisterProEntrepriseCommandHandler
         deletedUser,
         command,
       );
+
+      // Send welcome notification
+      await this.sendWelcomeNotification(restoredUser.id);
+
       return new RegisterProEntrepriseCommandResponse({
         user: restoredUser,
       });
@@ -76,9 +88,39 @@ export class RegisterProEntrepriseCommandHandler
       createdBy: null,
     });
 
+    // Send welcome notification
+    await this.sendWelcomeNotification(user.id);
+
     return new RegisterProEntrepriseCommandResponse({
       user,
     });
+  }
+
+  private async sendWelcomeNotification(userId: string): Promise<void> {
+    try {
+      const subject = this.globalizationService.t(
+        "all.notifications.auth.welcome.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.auth.welcome.message",
+      );
+
+      await this.notificationService.sendNotification({
+        userId,
+        subject,
+        message,
+        skipInAppNotification: false,
+        sendMail: true,
+        sendSms: false,
+        data: {
+          type: PushNotificationType.Auth,
+          id: null,
+        },
+      });
+    } catch (error) {
+      console.error("Error sending welcome notification:", error);
+      // Don't throw error to prevent blocking user registration
+    }
   }
 
   async validateInput(command: RegisterProEntrepriseCommand) {

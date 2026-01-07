@@ -47,7 +47,7 @@ import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 import { IUserRepository } from "@/core/domain/users";
-import { INotificationService } from "@/core/domain/notifications";
+import { INotificationService, PushNotificationType } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
 @ApiTags("Residence")
@@ -344,6 +344,10 @@ export class ResidenceController {
           sendMail: true,
           sendSms: false,
           returnUrl: `/admin/residences/${residenceId}`,
+          data: {
+            type: PushNotificationType.Residence,
+            id: residenceId,
+          },
         });
       }
     } catch (error) {

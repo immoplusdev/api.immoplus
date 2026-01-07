@@ -1,6 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { ApiProperty } from "@/core/domain/common/docs";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { UserApp } from "@/core/domain/roles";
 
 export class LoginCommand {
@@ -11,8 +11,8 @@ export class LoginCommand {
   @IsNotEmpty({ message: "$t:all.exception.invalid_password_format_exception" })
   password: string;
 
-  // @ApiProperty({ type: String, enum: UserApp })
-  // @IsNotEmpty()
+  @ApiProperty({ type: String, enum: UserApp })
+  @IsOptional()
   source: UserApp;
 
   constructor(data?: OmitMethods<LoginCommand>) {

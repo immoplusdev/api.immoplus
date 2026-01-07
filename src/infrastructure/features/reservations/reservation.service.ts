@@ -14,7 +14,11 @@ import { DEFAULT_CURRENCY, TransactionSource } from "@/core/domain/wallet";
 import { IResidenceRepository, Residence } from "@/core/domain/residences";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { WalletsService } from "../wallets/wallet.service";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
+import { identity } from "rxjs";
 
 @Injectable()
 export class ReservationService {
@@ -193,6 +197,12 @@ export class ReservationService {
             sendMail: true,
             sendSms: true,
             returnUrl: ``,
+            data: {
+              type: PushNotificationType.Wallet,
+              id: proprietaireWallet.id,
+              wallet: PushNotificationType.Wallet,
+              walletId: proprietaireWallet.id,
+            },
           });
         }
       }
@@ -245,6 +255,12 @@ export class ReservationService {
             sendMail: true,
             sendSms: true,
             returnUrl: ``,
+            data: {
+              type: PushNotificationType.Wallet,
+              id: proprietaireWallet.id,
+              wallet: PushNotificationType.Wallet,
+              walletId: proprietaireWallet.id,
+            },
           });
         }
       }

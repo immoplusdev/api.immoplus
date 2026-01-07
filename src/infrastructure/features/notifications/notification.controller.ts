@@ -19,7 +19,6 @@ import {
 } from "@/core/domain/notifications";
 import {
   CreateNotificationDto,
-  NotificationDto,
   NotificationDtoMapper,
   UpdateNotificationDto,
   WrapperResponseNotificationDto,

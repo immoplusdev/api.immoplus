@@ -4,11 +4,10 @@ import {
   SendNotificationParams,
 } from "@/core/domain/notifications";
 
-export interface INotificationRepository
-  extends IBaseRepository<
-    Notification,
-    Partial<Notification>,
-    Partial<Notification>
-  > {
+export interface INotificationRepository extends IBaseRepository<
+  Notification,
+  Partial<Notification>,
+  Partial<Notification>
+> {
   sendTestNotification(params: SendNotificationParams): Promise<string>;
 }

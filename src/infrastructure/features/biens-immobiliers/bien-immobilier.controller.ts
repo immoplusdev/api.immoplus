@@ -51,8 +51,12 @@ import { BienImmobilierStatusValidationUpdatedEvent } from "@/core/application/d
 import { BienImmobilierGeolocalisizeDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize.dto";
 import { BienImmobilierGeolocalisizeFilterDto } from "@/infrastructure/http/dto/bien-immobilier-geolocalisize-filter.dto";
 import { IUserRepository } from "@/core/domain/users";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
+import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers/status-validation-bien-immobilier.enum";
 
 @ApiTags("BienImmobilier")
 @Controller("biens-immobiliers")
@@ -166,6 +170,18 @@ export class BienImmobilierController {
   })
   @Get("/data/public/")
   async readManyPublic(@Query() params: SearchItemsParamsDto) {
+    // Filter only valid biens immobiliers
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "statusValidation",
+          _l_op: "and",
+          _val: StatusValidationBienImmobilier.Valide,
+        },
+      ],
+      params._where,
+    );
+
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
@@ -228,6 +244,11 @@ export class BienImmobilierController {
     const item = await this.repository.findOne(id, { fields: params?._select });
 
     if (!item) throw new ItemNotFoundException();
+
+    // Only return valid biens immobiliers for public endpoint
+    if (item.statusValidation !== StatusValidationBienImmobilier.Valide) {
+      throw new ItemNotFoundException();
+    }
 
     return this.responseMapper.mapFrom(item);
   }
@@ -354,6 +375,10 @@ export class BienImmobilierController {
           sendMail: true,
           sendSms: false,
           returnUrl: `/admin/biens-immobiliers/${bienImmobilierId}`,
+          data: {
+            type: PushNotificationType.BienImmobilier,
+            id: bienImmobilierId,
+          },
         });
       }
     } catch (error) {

@@ -28,6 +28,20 @@ export class FilesService {
     );
   }
 
+  // async bucketsList() {
+  //   return await this.minioService.listBuckets();
+  // }
+
+  // async getFile(filename: string) {
+  //   const presignedUrl = await this.minioService.presignedUrl(
+  //     "GET",
+  //     this.bucketName,
+  //     filename,
+  //   );
+  //   console.log("Presigned URL: ", presignedUrl);
+  //   return presignedUrl;
+  // }
+
   async bucketsList() {
     const command = new ListBucketsCommand({});
     const response = await this.s3Client.send(command);

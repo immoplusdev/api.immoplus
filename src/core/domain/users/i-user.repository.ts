@@ -4,8 +4,12 @@ import { User } from "./user.model";
 import { PublicUserInfo } from "./public-user-info.model";
 import { UserWithRoleAndPermissions } from "./user-with-role-and-permissions.model";
 
-export interface IUserRepository
-  extends IBaseRepository<User, Partial<User>, Partial<User>, string> {
+export interface IUserRepository extends IBaseRepository<
+  User,
+  Partial<User>,
+  Partial<User>,
+  string
+> {
   findOneByEmail(
     email: string,
     options?: FindItemOptions,

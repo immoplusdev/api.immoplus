@@ -15,11 +15,18 @@ import { generateUuid } from "@/lib/ts-utilities/db";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 import { UserOtpRepository } from "@/infrastructure/features/users/user-otp.repository";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
 import { isFreePassEmail } from "@/infrastructure/features/auth/helpers";
 
 @CommandHandler(RegisterCommand)
-export class RegisterCommandHandler
-  implements ICommandHandler<RegisterCommand, RegisterCommandResponse> {
+export class RegisterCommandHandler implements ICommandHandler<
+  RegisterCommand,
+  RegisterCommandResponse
+> {
   constructor(
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
@@ -30,7 +37,11 @@ export class RegisterCommandHandler
     @Inject(Deps.ConfigsManagerService)
     private readonly configsManagerService: IConfigsManagerService,
     private readonly userOtpRepository: UserOtpRepository,
-  ) { }
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
+  ) {}
 
   async execute(command: RegisterCommand): Promise<RegisterCommandResponse> {
     await this.validateInput(command);
@@ -47,6 +58,10 @@ export class RegisterCommandHandler
         deletedUser,
         command,
       );
+
+      // Send welcome notification
+      await this.sendWelcomeNotification(restoredUser.id);
+
       return new RegisterCommandResponse({
         user: restoredUser,
       });
@@ -72,15 +87,46 @@ export class RegisterCommandHandler
       avatar: command.avatar || null,
     });
 
+    // Send welcome notification
+    await this.sendWelcomeNotification(user.id);
+
     return new RegisterCommandResponse({
       user,
     });
   }
 
+  private async sendWelcomeNotification(userId: string): Promise<void> {
+    try {
+      const subject = this.globalizationService.t(
+        "all.notifications.auth.welcome.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.auth.welcome.message",
+      );
+
+      await this.notificationService.sendNotification({
+        userId,
+        subject,
+        message,
+        skipInAppNotification: false,
+        sendMail: true,
+        sendSms: false,
+        data: {
+          type: PushNotificationType.Auth,
+          id: null,
+        },
+      });
+    } catch (error) {
+      console.error("Error sending welcome notification:", error);
+      // Don't throw error to prevent blocking user registration
+    }
+  }
+
   async validateInput(command: RegisterCommand) {
     await this.verifyEmailAvailable(command.email);
     await this.verifyPhoneNumberAvailable(command.phoneNumber);
-    if (!isFreePassEmail(command.email)) await this.verifyOtpToken(command.token, command.email);
+    if (!isFreePassEmail(command.email))
+      await this.verifyOtpToken(command.token, command.email);
   }
 
   async findDeletedUser(email: string, phoneNumber: string) {

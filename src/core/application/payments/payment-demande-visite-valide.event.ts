@@ -3,7 +3,7 @@ import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
-import { INotificationService } from "@/core/domain/notifications";
+import { INotificationService, PushNotificationType } from "@/core/domain/notifications";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
@@ -66,6 +66,10 @@ export class PaymentDemandeVisiteValideEventHandler
       skipInAppNotification: false,
       sendMail: true,
       sendSms: true,
+      data: {
+        type: PushNotificationType.DemandeVisite,
+        id: demandeVisite.id,
+      },
     });
 
     await this.notificationService.sendNotification({
@@ -80,6 +84,10 @@ export class PaymentDemandeVisiteValideEventHandler
       skipInAppNotification: false,
       sendMail: true,
       sendSms: true,
+      data: {
+        type: PushNotificationType.DemandeVisite,
+        id: demandeVisite.id,
+      },
     });
   }
 }
