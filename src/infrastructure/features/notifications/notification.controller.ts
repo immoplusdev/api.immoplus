@@ -9,6 +9,7 @@ import {
   Inject,
   UseGuards,
   Patch,
+  BadRequestException,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { ApiResponse } from "@nestjs/swagger";
@@ -16,6 +17,7 @@ import { Deps } from "@/core/domain/common/ioc";
 import {
   INotificationRepository,
   SendNotificationParams,
+  SendBulkNotificationByRolesParams,
 } from "@/core/domain/notifications";
 import {
   CreateNotificationDto,
@@ -23,6 +25,9 @@ import {
   UpdateNotificationDto,
   WrapperResponseNotificationDto,
   WrapperResponseNotificationListDto,
+  BroadcastNotificationDto,
+  BroadcastNotificationResponseDto,
+  WrapperResponseBroadcastNotificationDto,
 } from "@/infrastructure/features/notifications";
 import {
   CurrentUser,
@@ -236,11 +241,11 @@ export class NotificationController {
         Objet : Test de notification !
         Bonjour,
         Nous vous remercions de votre confiance et de votre soutien.
-        
+
         Nous sommes ravis de vous informer que nous avons bien reçu votre demande de test de notification.
         Nous avons effectué les vérifications nécessaires et nous sommes heureux de vous confirmer que tout fonctionne correctement.
-        
-        Cordialement,  
+
+        Cordialement,
         L'équipe de support technique
       `;
 
@@ -259,5 +264,51 @@ export class NotificationController {
     const result = await this.repository.sendTestNotification(params);
 
     return result;
+  }
+
+  @ApiResponse({
+    type: WrapperResponseBroadcastNotificationDto,
+    description: "Broadcast push notifications to users by role",
+  })
+  @Post("broadcast")
+  @RequiredRoles(UserRole.Admin)
+  @RequiredPermissions([
+    PermissionCollection.Notifications,
+    PermissionAction.Create,
+  ])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async broadcastNotification(
+    @Body() payload: BroadcastNotificationDto,
+    @CurrentUser("id") adminId: string,
+  ) {
+    // Validation: Prevent broadcasting to Admin role
+    if (payload.roles.includes(UserRole.Admin)) {
+      throw new BadRequestException(
+        "Cannot broadcast notifications to Admin role",
+      );
+    }
+
+    // Map DTO to domain params
+    const params = new SendBulkNotificationByRolesParams({
+      roles: payload.roles,
+      subject: payload.subject,
+      message: payload.message,
+      data: payload.data,
+      url: payload.url,
+      type: payload.type,
+      imageUrl: payload.imageUrl,
+    });
+
+    // Call repository to send bulk notifications
+    const result = await this.repository.sendBulkNotification(params, adminId);
+
+    // Map to response DTO
+    const response = new BroadcastNotificationResponseDto({
+      ...result,
+      timestamp: new Date(),
+    });
+
+    return this.responseMapper.mapFrom(response);
   }
 }

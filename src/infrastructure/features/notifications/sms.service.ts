@@ -67,6 +67,8 @@ export class SmsService implements ISmsService {
       "&content=" +
       message;
 
+    console.log("completeUrl", completeUrl);
+
     const response = await fetch(completeUrl, {
       method: "GET",
       headers: {
