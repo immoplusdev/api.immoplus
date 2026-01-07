@@ -5,12 +5,18 @@ import {
   ISmsService,
   OneSignalResponse,
   SendNotificationParams,
+  SendBulkNotificationByRolesParams,
+  BulkNotificationResult,
 } from "@/core/domain/notifications";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { Role, UserRole } from "@/core/domain/roles";
-import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
+import {
+  IUserRepository,
+  UserNotFoundException,
+  UserStatus,
+} from "@/core/domain/users";
 import { ILoggerService } from "@/core/domain/logging";
 
 export class NotificationService implements INotificationService {
@@ -61,9 +67,136 @@ export class NotificationService implements INotificationService {
     }
   }
 
+  async sendBulkNotificationByRoles(
+    params: SendBulkNotificationByRolesParams,
+  ): Promise<BulkNotificationResult> {
+    try {
+      this.loggerService.info(
+        `[Bulk Notification] Starting broadcast to roles: ${params.roles.join(", ")}`,
+      );
+
+      // 1. Fetch all users for the specified roles
+      const allUsers = [];
+
+      // Group roles by OneSignal app to optimize queries
+      const customerRoles = params.roles.filter((r) => r === UserRole.Customer);
+      const proRoles = params.roles.filter(
+        (r) => r === UserRole.ProEntreprise || r === UserRole.ProParticulier,
+      );
+
+      // Fetch Customer users if needed
+      if (customerRoles.length > 0) {
+        this.loggerService.info(
+          `[Bulk Notification] Fetching Customer role users...`,
+        );
+        const customerUsers = await this.usersRepository.findByQuery({
+          _where: [
+            { _field: "role", _op: "in", _val: customerRoles },
+            { _field: "status", _val: UserStatus.Active, _l_op: "and" },
+          ],
+        });
+
+        allUsers.push(...customerUsers.data);
+      }
+
+      // Fetch Pro users if needed
+      if (proRoles.length > 0) {
+        this.loggerService.info(
+          `[Bulk Notification] Fetching Pro role users...`,
+        );
+        const proUsers = await this.usersRepository.findByQuery({
+          _where: [
+            { _field: "role", _op: "in", _val: proRoles },
+            { _field: "status", _val: UserStatus.Active, _l_op: "and" },
+          ],
+        });
+        allUsers.push(...proUsers.data);
+      }
+
+      const totalTargeted = allUsers.length;
+      this.loggerService.info(
+        `[Bulk Notification] Total users targeted: ${totalTargeted}`,
+      );
+
+      if (totalTargeted === 0) {
+        this.loggerService.warn(
+          `[Bulk Notification] No users found for roles: ${params.roles.join(", ")}`,
+        );
+        return {
+          totalTargeted: 0,
+          successful: 0,
+          failed: 0,
+        };
+      }
+
+      // 2. Send notifications to all users using Promise.allSettled
+      this.loggerService.info(
+        `[Bulk Notification] Sending notifications to ${totalTargeted} users...`,
+      );
+
+      const results = await Promise.allSettled(
+        allUsers.map((user) =>
+          this.sendOneSignalNotification(
+            {
+              userId: user.id,
+              subject: params.subject,
+              message: params.message,
+              data: params.data,
+              url: params.url,
+              skipInAppNotification: false,
+            },
+            (user.role as Role)?.id as UserRole,
+            params.imageUrl,
+          ),
+        ),
+      );
+
+      // 3. Analyze results
+      const successful = results.filter((r) => r.status === "fulfilled").length;
+      const failed = results.filter((r) => r.status === "rejected").length;
+
+      const errors = results
+        .map((r, index) => {
+          if (r.status === "rejected") {
+            return {
+              userId: allUsers[index].id,
+              error: r.reason?.message || "Unknown error",
+            };
+          }
+          return null;
+        })
+        .filter((e) => e !== null);
+
+      this.loggerService.info(
+        `[Bulk Notification] Broadcast completed - Success: ${successful}, Failed: ${failed}`,
+      );
+
+      if (errors.length > 0) {
+        this.loggerService.warn(
+          `[Bulk Notification] Errors encountered:`,
+          errors,
+        );
+      }
+
+      return {
+        totalTargeted,
+        successful,
+        failed,
+        errors: errors.length > 0 ? errors : undefined,
+      };
+    } catch (error) {
+      this.loggerService.error(
+        `[Bulk Notification] Fatal error during broadcast:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
   private async sendOneSignalNotification(
     params: SendNotificationParams,
     userRole?: UserRole,
+    imageUrl?: string,
   ): Promise<OneSignalResponse> {
     try {
       // 1. Validation des paramètres d'entrée
@@ -106,6 +239,12 @@ export class NotificationService implements INotificationService {
 
         // URL d'action (optionnel)
         ...(params.url && { url: params.url }),
+
+        // Image (Android big picture & iOS attachments)
+        ...(imageUrl && {
+          big_picture: imageUrl, // Android
+          ios_attachments: { id1: imageUrl }, // iOS
+        }),
 
         // Configuration de comportement
         content_available: true, // Pour iOS background processing

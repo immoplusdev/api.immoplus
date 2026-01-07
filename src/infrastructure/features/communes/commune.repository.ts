@@ -1,4 +1,4 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource } from "typeorm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { Commune, ICommuneRepository } from "@/core/domain/communes";
@@ -6,7 +6,6 @@ import { CommuneEntity } from "@/infrastructure/features/communes";
 import { BaseRepository } from "@/infrastructure/typeorm";
 import { SearchItemsParams } from "@/core/domain/http";
 import { FindItemOptions, WrapperResponse } from "@/core/domain/common/models";
-import { Residence } from "@/core/domain/residences";
 
 @Injectable()
 export class CommuneRepository implements ICommuneRepository {

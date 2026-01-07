@@ -1,4 +1,6 @@
 import { OmitMethods } from "@/lib/ts-utilities";
+import { UserRole } from "@/core/domain/roles";
+import { PushNotificationType } from "./notification-type.enum";
 
 export class SendNotificationParams {
   userId: string;
@@ -13,6 +15,20 @@ export class SendNotificationParams {
   url?: string;
 
   constructor(data?: OmitMethods<SendNotificationParams>) {
+    if (data) Object.assign(this, data);
+  }
+}
+
+export class SendBulkNotificationByRolesParams {
+  roles: UserRole[];
+  subject: string;
+  message: string;
+  data?: Record<string, any>;
+  url?: string;
+  type?: PushNotificationType;
+  imageUrl?: string;
+
+  constructor(data?: OmitMethods<SendBulkNotificationByRolesParams>) {
     if (data) Object.assign(this, data);
   }
 }
@@ -45,4 +61,14 @@ export interface OneSignalResponse {
     invalid_external_user_ids?: string[];
     invalid_player_ids?: string[];
   };
+}
+
+export interface BulkNotificationResult {
+  totalTargeted: number;
+  successful: number;
+  failed: number;
+  errors?: Array<{
+    userId: string;
+    error: string;
+  }>;
 }
