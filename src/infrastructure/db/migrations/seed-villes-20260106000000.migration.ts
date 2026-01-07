@@ -91,11 +91,14 @@ export class SeedVilles20260106000000 implements MigrationInterface {
 
     // Insérer toutes les villes
     for (const ville of villes) {
-      // Échapper les apostrophes dans le nom de la ville
+      // Remplacer les apostrophes par des doubles apostrophes
       const escapedName = ville.name.replace(/'/g, "''");
-      await queryRunner.query(
-        `INSERT IGNORE INTO villes (id, name) VALUES ('${ville.id}', '${escapedName}')`,
-      );
+
+      await queryRunner.query(`
+        INSERT INTO villes (id, name)
+        VALUES ('${ville.id}', '${escapedName}')
+        ON DUPLICATE KEY UPDATE name = name
+      `);
     }
   }
 
