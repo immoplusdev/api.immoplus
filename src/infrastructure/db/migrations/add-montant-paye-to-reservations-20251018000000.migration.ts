@@ -8,6 +8,8 @@ export class AddMontantPayeToReservations20251018000000 implements MigrationInte
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE reservations DROP COLUMN montant_paye`);
+    await queryRunner.query(
+      `ALTER TABLE reservations DROP COLUMN montant_paye`,
+    );
   }
 }
