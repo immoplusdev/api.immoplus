@@ -21,7 +21,7 @@ export class UploadFileCommandHandler
       type: command?.file?.mimetype,
       title: command?.title,
       folder: command?.folder,
-      storage: FileStorage.S3,
+      storage: FileStorage.Minio,
       description: command?.description,
       fileSize: command?.file?.size,
       externalFileId: command?.externalFileId?.split(".")[0],

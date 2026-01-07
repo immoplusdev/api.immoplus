@@ -55,7 +55,7 @@ export class FilesService {
     });
 
     return await getSignedUrl(this.s3Client, command, {
-      expiresIn: 60 * 15,
+      expiresIn: 3600,
     });
   }
 
