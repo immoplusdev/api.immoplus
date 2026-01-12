@@ -17,7 +17,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 export class CommuneEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column({ name: "name", type: "varchar", unique: true })
+  @Column({ name: "name", type: "varchar" })
   name: string;
 
   @ManyToOne(() => VilleEntity, (entity) => entity.id)

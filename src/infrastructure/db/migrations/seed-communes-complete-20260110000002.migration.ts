@@ -107,15 +107,15 @@ export class SeedCommunesComplete20260110000002 implements MigrationInterface {
       { id: generateUuid(), commune: "Ouaninou", ville: "Ouaninou" },
     ];
 
-    // Construire la requête INSERT avec UNION ALL
+    // Construire la requête INSERT avec vérification d'existence
     const selectStatements = communesData.map((item) => {
       const escapedCommune = item.commune.replace(/'/g, "''");
       const escapedVille = item.ville.replace(/'/g, "''");
-      return `SELECT '${item.id}' as id, '${escapedCommune}' as name, v.id as ville_id FROM villes v WHERE v.name = '${escapedVille}'`;
+      return `SELECT '${item.id}' as id, '${escapedCommune}' as name, v.id as ville_id FROM villes v WHERE v.name = '${escapedVille}' AND NOT EXISTS (SELECT 1 FROM communes WHERE name = '${escapedCommune}')`;
     });
 
     const insertQuery = `
-      INSERT IGNORE INTO communes (id, name, ville_id)
+      INSERT INTO communes (id, name, ville_id)
       ${selectStatements.join("\nUNION ALL\n")}
     `;
 

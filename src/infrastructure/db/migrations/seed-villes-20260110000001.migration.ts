@@ -88,17 +88,17 @@ export class SeedVilles20260110000001 implements MigrationInterface {
       { id: generateUuid(), name: "Ouaninou" },
     ];
 
-    // Construire la requête INSERT avec VALUES
+    // Construire la requête INSERT avec vérification d'existence
     const values = villes
       .map((ville) => {
         const escapedName = ville.name.replace(/'/g, "''");
-        return `('${ville.id}', '${escapedName}')`;
+        return `SELECT '${ville.id}', '${escapedName}' WHERE NOT EXISTS (SELECT 1 FROM villes WHERE name = '${escapedName}')`;
       })
-      .join(",\n");
+      .join("\nUNION ALL\n");
 
     const insertQuery = `
-      INSERT IGNORE INTO villes (id, name)
-      VALUES ${values}
+      INSERT INTO villes (id, name)
+      ${values}
     `;
 
     await queryRunner.query(insertQuery);
