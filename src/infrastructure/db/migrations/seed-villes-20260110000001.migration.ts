@@ -96,6 +96,8 @@ export class SeedVilles20260110000001 implements MigrationInterface {
       })
       .join("\nUNION ALL\n");
 
+    console.log("values :", values);
+
     const insertQuery = `
       INSERT INTO villes (id, name)
       ${values}
