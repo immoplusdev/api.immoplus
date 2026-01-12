@@ -6,9 +6,7 @@ import { Deps } from "@/core/domain/common/ioc";
 import { FileData, FileStorage, IFileRepository } from "@/core/domain/files";
 
 @CommandHandler(UploadFileCommand)
-export class UploadFileCommandHandler
-  implements ICommandHandler<UploadFileCommand>
-{
+export class UploadFileCommandHandler implements ICommandHandler<UploadFileCommand> {
   constructor(
     @Inject(Deps.FileRepository)
     private readonly fileRepository: IFileRepository,
