@@ -1,125 +1,120 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
-import { generateUuid } from "@/lib/ts-utilities/db";
 
 export class SeedCommunesComplete20260110000002 implements MigrationInterface {
   async up(queryRunner: QueryRunner): Promise<void> {
     const communesData = [
       // Région d'Abidjan - Communes détaillées
-      { id: generateUuid(), commune: "Abobo", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Adjamé", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Attécoubé", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Cocody", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Koumassi", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Marcory", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Plateau", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Port-Bouët", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Treichville", ville: "Abidjan" },
-      { id: generateUuid(), commune: "Yopougon", ville: "Abidjan" },
+      { commune: "Abobo", ville: "Abidjan" },
+      { commune: "Adjamé", ville: "Abidjan" },
+      { commune: "Attécoubé", ville: "Abidjan" },
+      { commune: "Cocody", ville: "Abidjan" },
+      { commune: "Koumassi", ville: "Abidjan" },
+      { commune: "Marcory", ville: "Abidjan" },
+      { commune: "Plateau", ville: "Abidjan" },
+      { commune: "Port-Bouët", ville: "Abidjan" },
+      { commune: "Treichville", ville: "Abidjan" },
+      { commune: "Yopougon", ville: "Abidjan" },
 
       // Autres villes de la région d'Abidjan
-      { id: generateUuid(), commune: "Grand-Bassam", ville: "Grand-Bassam" },
-      { id: generateUuid(), commune: "Bingerville", ville: "Bingerville" },
-      { id: generateUuid(), commune: "Anyama", ville: "Anyama" },
-      { id: generateUuid(), commune: "Songon", ville: "Songon" },
-      { id: generateUuid(), commune: "Dabou", ville: "Dabou" },
-      { id: generateUuid(), commune: "Jacqueville", ville: "Jacqueville" },
-      { id: generateUuid(), commune: "Grand-Lahou", ville: "Grand-Lahou" },
+      { commune: "Grand-Bassam", ville: "Grand-Bassam" },
+      { commune: "Bingerville", ville: "Bingerville" },
+      { commune: "Anyama", ville: "Anyama" },
+      { commune: "Songon", ville: "Songon" },
+      { commune: "Dabou", ville: "Dabou" },
+      { commune: "Jacqueville", ville: "Jacqueville" },
+      { commune: "Grand-Lahou", ville: "Grand-Lahou" },
 
       // Région du Sud-Comoé
-      { id: generateUuid(), commune: "Aboisso", ville: "Aboisso" },
-      { id: generateUuid(), commune: "Adiaké", ville: "Adiaké" },
-      { id: generateUuid(), commune: "Adzopé", ville: "Adzopé" },
-      { id: generateUuid(), commune: "Agboville", ville: "Agboville" },
-      { id: generateUuid(), commune: "Akoupé", ville: "Akoupé" },
-      { id: generateUuid(), commune: "Alepé", ville: "Alepé" },
-      { id: generateUuid(), commune: "Tiapoum", ville: "Tiapoum" },
+      { commune: "Aboisso", ville: "Aboisso" },
+      { commune: "Adiaké", ville: "Adiaké" },
+      { commune: "Adzopé", ville: "Adzopé" },
+      { commune: "Agboville", ville: "Agboville" },
+      { commune: "Akoupé", ville: "Akoupé" },
+      { commune: "Alepé", ville: "Alepé" },
+      { commune: "Tiapoum", ville: "Tiapoum" },
 
       // Région des Lacs
-      { id: generateUuid(), commune: "Yamoussoukro", ville: "Yamoussoukro" },
+      { commune: "Yamoussoukro", ville: "Yamoussoukro" },
 
       // Région du Gbêkê
-      { id: generateUuid(), commune: "Bouaké", ville: "Bouaké" },
-      { id: generateUuid(), commune: "Toumodi", ville: "Toumodi" },
-      { id: generateUuid(), commune: "Tiébissou", ville: "Tiébissou" },
-      { id: generateUuid(), commune: "Didiévi", ville: "Didiévi" },
-      { id: generateUuid(), commune: "Béoumi", ville: "Béoumi" },
-      { id: generateUuid(), commune: "Sakassou", ville: "Sakassou" },
-      { id: generateUuid(), commune: "Botro", ville: "Botro" },
+      { commune: "Bouaké", ville: "Bouaké" },
+      { commune: "Toumodi", ville: "Toumodi" },
+      { commune: "Tiébissou", ville: "Tiébissou" },
+      { commune: "Didiévi", ville: "Didiévi" },
+      { commune: "Béoumi", ville: "Béoumi" },
+      { commune: "Sakassou", ville: "Sakassou" },
+      { commune: "Botro", ville: "Botro" },
 
       // Région du Haut-Sassandra
-      { id: generateUuid(), commune: "Daloa", ville: "Daloa" },
-      { id: generateUuid(), commune: "Gagnoa", ville: "Gagnoa" },
-      { id: generateUuid(), commune: "Issia", ville: "Issia" },
-      { id: generateUuid(), commune: "Sinfra", ville: "Sinfra" },
-      { id: generateUuid(), commune: "Bouaflé", ville: "Bouaflé" },
-      { id: generateUuid(), commune: "Oumé", ville: "Oumé" },
-      { id: generateUuid(), commune: "Vavoua", ville: "Vavoua" },
-      { id: generateUuid(), commune: "Zoukougbeu", ville: "Zoukougbeu" },
+      { commune: "Daloa", ville: "Daloa" },
+      { commune: "Gagnoa", ville: "Gagnoa" },
+      { commune: "Issia", ville: "Issia" },
+      { commune: "Sinfra", ville: "Sinfra" },
+      { commune: "Bouaflé", ville: "Bouaflé" },
+      { commune: "Oumé", ville: "Oumé" },
+      { commune: "Vavoua", ville: "Vavoua" },
+      { commune: "Zoukougbeu", ville: "Zoukougbeu" },
 
       // Région des Montagnes
-      { id: generateUuid(), commune: "Man", ville: "Man" },
-      { id: generateUuid(), commune: "Danané", ville: "Danané" },
-      { id: generateUuid(), commune: "Biankouma", ville: "Biankouma" },
-      { id: generateUuid(), commune: "Zouan-Hounien", ville: "Zouan-Hounien" },
-      { id: generateUuid(), commune: "Duékoué", ville: "Duékoué" },
-      { id: generateUuid(), commune: "Bangolo", ville: "Bangolo" },
-      { id: generateUuid(), commune: "Guiglo", ville: "Guiglo" },
-      { id: generateUuid(), commune: "Bloléquin", ville: "Bloléquin" },
-      { id: generateUuid(), commune: "Toulepleu", ville: "Toulepleu" },
-      { id: generateUuid(), commune: "Taï", ville: "Taï" },
+      { commune: "Man", ville: "Man" },
+      { commune: "Danané", ville: "Danané" },
+      { commune: "Biankouma", ville: "Biankouma" },
+      { commune: "Zouan-Hounien", ville: "Zouan-Hounien" },
+      { commune: "Duékoué", ville: "Duékoué" },
+      { commune: "Bangolo", ville: "Bangolo" },
+      { commune: "Guiglo", ville: "Guiglo" },
+      { commune: "Bloléquin", ville: "Bloléquin" },
+      { commune: "Toulepleu", ville: "Toulepleu" },
+      { commune: "Taï", ville: "Taï" },
 
       // Région du Bas-Sassandra
-      { id: generateUuid(), commune: "San-Pédro", ville: "San-Pédro" },
-      { id: generateUuid(), commune: "Sassandra", ville: "Sassandra" },
-      { id: generateUuid(), commune: "Soubré", ville: "Soubré" },
-      { id: generateUuid(), commune: "Tabou", ville: "Tabou" },
-      { id: generateUuid(), commune: "Fresco", ville: "Fresco" },
-      { id: generateUuid(), commune: "Méagui", ville: "Méagui" },
-      { id: generateUuid(), commune: "Buyo", ville: "Buyo" },
-      { id: generateUuid(), commune: "Guéyo", ville: "Guéyo" },
+      { commune: "San-Pédro", ville: "San-Pédro" },
+      { commune: "Sassandra", ville: "Sassandra" },
+      { commune: "Soubré", ville: "Soubré" },
+      { commune: "Tabou", ville: "Tabou" },
+      { commune: "Fresco", ville: "Fresco" },
+      { commune: "Méagui", ville: "Méagui" },
+      { commune: "Buyo", ville: "Buyo" },
+      { commune: "Guéyo", ville: "Guéyo" },
 
       // Région du Poro
-      { id: generateUuid(), commune: "Korhogo", ville: "Korhogo" },
-      {
-        id: generateUuid(),
-        commune: "Ferkessédougou",
-        ville: "Ferkessédougou",
-      },
-      { id: generateUuid(), commune: "Boundiali", ville: "Boundiali" },
-      { id: generateUuid(), commune: "Kouto", ville: "Kouto" },
-      { id: generateUuid(), commune: "M'Bengué", ville: "M'Bengué" },
-      { id: generateUuid(), commune: "Sinématiali", ville: "Sinématiali" },
-      { id: generateUuid(), commune: "Dikodougou", ville: "Dikodougou" },
-      {
-        id: generateUuid(),
-        commune: "Ouangolodougou",
-        ville: "Ouangolodougou",
-      },
-      { id: generateUuid(), commune: "Kong", ville: "Kong" },
+      { commune: "Korhogo", ville: "Korhogo" },
+      { commune: "Ferkessédougou", ville: "Ferkessédougou" },
+      { commune: "Boundiali", ville: "Boundiali" },
+      { commune: "Kouto", ville: "Kouto" },
+      { commune: "M'Bengué", ville: "M'Bengué" },
+      { commune: "Sinématiali", ville: "Sinématiali" },
+      { commune: "Dikodougou", ville: "Dikodougou" },
+      { commune: "Ouangolodougou", ville: "Ouangolodougou" },
+      { commune: "Kong", ville: "Kong" },
 
       // Région du Denguélé
-      { id: generateUuid(), commune: "Odienné", ville: "Odienné" },
-      { id: generateUuid(), commune: "Minignan", ville: "Minignan" },
-      { id: generateUuid(), commune: "Séguéla", ville: "Séguéla" },
-      { id: generateUuid(), commune: "Touba", ville: "Touba" },
-      { id: generateUuid(), commune: "Mankono", ville: "Mankono" },
-      { id: generateUuid(), commune: "Dianra", ville: "Dianra" },
-      { id: generateUuid(), commune: "Ouaninou", ville: "Ouaninou" },
+      { commune: "Odienné", ville: "Odienné" },
+      { commune: "Minignan", ville: "Minignan" },
+      { commune: "Séguéla", ville: "Séguéla" },
+      { commune: "Touba", ville: "Touba" },
+      { commune: "Mankono", ville: "Mankono" },
+      { commune: "Dianra", ville: "Dianra" },
+      { commune: "Ouaninou", ville: "Ouaninou" },
     ];
 
-    // Construire la requête INSERT avec vérification d'existence
-    const selectStatements = communesData.map((item) => {
+    // Insérer uniquement les communes qui n'existent pas encore
+    for (const item of communesData) {
       const escapedCommune = item.commune.replace(/'/g, "''");
       const escapedVille = item.ville.replace(/'/g, "''");
-      return `SELECT '${item.id}' as id, '${escapedCommune}' as name, v.id as ville_id FROM villes v WHERE v.name = '${escapedVille}' AND NOT EXISTS (SELECT 1 FROM communes WHERE name = '${escapedCommune}')`;
-    });
 
-    const insertQuery = `
-      INSERT INTO communes (id, name, ville_id)
-      ${selectStatements.join("\nUNION ALL\n")}
-    `;
-
-    await queryRunner.query(insertQuery);
+      await queryRunner.query(`
+        INSERT INTO communes (id, name, ville_id)
+        SELECT UUID(), '${escapedCommune}', v.id
+        FROM villes v
+        WHERE v.name = '${escapedVille}'
+        AND NOT EXISTS (
+          SELECT 1 FROM communes c
+          WHERE c.name = '${escapedCommune}'
+          AND c.ville_id = v.id
+        )
+      `);
+    }
   }
 
   async down(queryRunner: QueryRunner): Promise<void> {

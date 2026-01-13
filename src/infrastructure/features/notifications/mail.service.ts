@@ -38,16 +38,24 @@ export class MailService implements IMailService {
     //   socketTimeout: 10000,
     // };
 
-    const port = 465;
+    const port = parseInt(
+      this.configsManagerService.getEnvVariable("NODE_MAILER_PORT") ?? "465",
+    );
     const isSecure = port === 465;
 
     this.mailingConfig = {
-      host: "mail.immoplus.ci",
+      host:
+        this.configsManagerService.getEnvVariable("NODE_MAILER_HOST") ??
+        "smtp.immoplus.ci",
       port: port,
       secure: isSecure,
       auth: {
-        user: "immoplus@immoplus.ci",
-        pass: "sa*-Ur=GM$kz,rw6",
+        user:
+          this.configsManagerService.getEnvVariable("NODE_MAILER_USER") ??
+          "immoplus@immoplus.ci",
+        pass:
+          this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD") ??
+          "sa*-Ur=GM$kz,rw6",
       },
       tls: {
         rejectUnauthorized: false,
@@ -66,15 +74,6 @@ export class MailService implements IMailService {
     };
 
     console.log("Sending mail with params:", mailParams);
-
-    // if (
-    //   this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-    //   AppProfile.Dev
-    // ) {
-    //   // this.loggerService.info(params.html || params.text, params);
-    //   // return;
-    //   mailParams.to = "dev.johnlight@gmail.com";
-    // }
 
     try {
       await this.mailTransport.sendMail(mailParams);
