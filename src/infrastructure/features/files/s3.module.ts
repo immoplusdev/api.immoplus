@@ -15,20 +15,23 @@ import { S3_TOKEN } from "@/infrastructure/decorators";
           region: configService.getOrThrow("AWS_S3_REGION"),
           credentials: {
             accessKeyId: configService.getOrThrow("AWS_S3_ACCESS_KEY_ID"),
-            secretAccessKey: configService.getOrThrow("AWS_S3_SECRET_ACCESS_KEY"),
+            secretAccessKey: configService.getOrThrow(
+              "AWS_S3_SECRET_ACCESS_KEY",
+            ),
           },
           // Optional: For S3-compatible services (like MinIO in S3 compatibility mode)
           ...(configService.get("AWS_S3_ENDPOINT")
             ? {
-              endpoint: configService.get("AWS_S3_ENDPOINT"),
-              forcePathStyle:
-                (configService.get("AWS_S3_FORCE_PATH_STYLE") || "false") ===
-                "true",
-            }
+                endpoint: configService.get("AWS_S3_ENDPOINT"),
+                forcePathStyle: false,
+                tls: true,
+                // (configService.get("AWS_S3_FORCE_PATH_STYLE") || "false") ===
+                // "true",
+              }
             : {}),
         });
       },
     },
   ],
 })
-export class S3Module { }
+export class S3Module {}

@@ -83,33 +83,83 @@ export class TfaService implements ITfaService {
     return otp;
   }
 
+  // async sendUserSmsOtp(phoneNumber: string) {
+  //   try {
+  //     const user = await this.usersRepository.findOneByPhoneNumber(
+  //       phoneNumber,
+  //       {
+  //         fields: ["id", "phoneNumber"],
+  //       },
+  //     );
+  //     this.loggerService.info(`Sending SMS OTP to user: ${user?.id}`);
+  //     if (!user) throw new UserNotFoundException();
+
+  //     const to = sanitizePhoneNumberIntl(phoneNumber);
+  //     const otp =
+  //       phoneNumber === "2250700000001" ? "675494" : this.generateOtp();
+  //     await this.usersRepository.updateOne(user.id, { otp });
+
+  //     if (phoneNumber !== "2250700000001") {
+  //       await this.twilioService.messages.create({
+  //         body: `Votre code de vérification est : ${otp}`,
+  //         messagingServiceSid: this.configsManagerService.getEnvVariable(
+  //           "TWILIO_MESSAGING_SERVICE_ID",
+  //         ),
+  //         to: to,
+  //       });
+  //     }
+  //   } catch (e) {
+  //     this.loggerService.error(`Error sending SMS OTP: ${e.message}`, e);
+  //     throw new NotificationException(
+  //       e.message,
+  //       e.status,
+  //       e.messageCode,
+  //       e.messageId,
+  //     );
+  //   }
+  // }
+
   async sendUserSmsOtp(phoneNumber: string) {
     try {
       const user = await this.usersRepository.findOneByPhoneNumber(
         phoneNumber,
-        {
-          fields: ["phoneNumber"],
-        },
+        { fields: ["id", "phoneNumber"] },
       );
-      console.log("user : ", user);
+
       if (!user) throw new UserNotFoundException();
 
-      const to = sanitizePhoneNumberIntl(phoneNumber);
+      this.loggerService.info(`Sending SMS OTP to user: ${user.id}`);
+
+      const to = phoneNumber;
       const otp =
-        phoneNumber == "2250700000001" ? "675494" : this.generateOtp();
+        phoneNumber === "2250700000001" ? "675494" : this.generateOtp();
+
       await this.usersRepository.updateOne(user.id, { otp });
 
-      if (phoneNumber != "2250700000001") {
-        await this.twilioService.messages.create({
-          body: `Votre code de vérification est : ${otp}`,
-          from: this.configsManagerService.getEnvVariable(
-            "TWILIO_PHONE_NUMBER",
-          ),
-          to: to,
-        });
+      if (phoneNumber !== "2250700000001") {
+        const smsProvider =
+          this.configsManagerService.getEnvVariable<string>("SMS_PROVIDER") ??
+          "letexto";
+
+        const message = `Votre code de vérification est : ${otp}`;
+
+        if (smsProvider === "twilio") {
+          await this.sendSmsViaTwilio(to, message);
+        } else if (smsProvider === "letexto") {
+          await this.sendSmsViaLetexto(to, message);
+        }
       }
     } catch (e) {
-      this.loggerService.error(e);
+      this.loggerService.error(`❌ Error sending SMS OTP: ${e.message}`);
+
+      if (e.status) {
+        this.loggerService.error(`Error Code: ${e.code}`);
+        this.loggerService.error(`Status: ${e.status}`);
+        this.loggerService.error(`More info: ${e.moreInfo || "N/A"}`);
+      }
+
+      this.loggerService.error(e.stack);
+
       throw new NotificationException(
         e.message,
         e.status,
@@ -119,27 +169,84 @@ export class TfaService implements ITfaService {
     }
   }
 
-  async isUserSmsOtpValid(phoneNumber: string, otp: string) {
-    if (
-      this.configsManagerService.getEnvVariable("NEST_APP_PROFILE") ==
-        AppProfile.Dev ||
-      phoneNumber == BYPASS_USER_PHONE_NUMBER
-    )
-      return true;
+  private async sendSmsViaTwilio(
+    to: string,
+    sendmessage: string,
+  ): Promise<void> {
+    const from: string = this.configsManagerService.getEnvVariable(
+      "TWILIO_PHONE_NUMBER",
+    );
 
+    const receptor = sanitizePhoneNumberIntl(to);
+
+    this.loggerService.info(`Sending SMS to: ${receptor}`);
+    this.loggerService.info(`Sending SMS from: ${from}`);
+
+    const message = await this.twilioService.messages.create({
+      body: sendmessage,
+      from: from,
+      to: receptor,
+    });
+
+    this.loggerService.info(`✅ SMS sent successfully. SID: ${message.sid}`);
+  }
+
+  private async sendSmsViaLetexto(
+    to: string,
+    sendmessage: string,
+  ): Promise<void> {
+    const apiKey =
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_KEY") ??
+      "eaae56e05bf95ec6854e41821383fee5";
+    const sender =
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_SENDER") ??
+      "Immoplus";
+    const apiUrl =
+      this.configsManagerService.getEnvVariable<string>("LETEXTO_API_URL") ??
+      "https://apis.letexto.com/v1/messages/send";
+
+    const completeUrl =
+      apiUrl +
+      "?token=" +
+      apiKey +
+      "&from=" +
+      sender +
+      "&to=" +
+      to +
+      "&content=" +
+      sendmessage;
+
+    const response = await fetch(completeUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: null,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Letexto API error: ${response.statusText}`);
+    }
+
+    this.loggerService.info(`✅ SMS sent successfully via Letexto`);
+  }
+
+  async isUserSmsOtpValid(phoneNumber: string, otp: string) {
     const user = await this.usersRepository.findOneByPhoneNumber(phoneNumber, {
       fields: ["phoneNumber"],
     });
+    console.log("isUserSmsOtpValid User: ", user);
+
     if (!user) throw new UserNotFoundException();
 
     try {
-      const to = sanitizePhoneNumberIntl(user.phoneNumber);
+      const otpIsValid = user.otp === otp;
+      console.log("isUserSmsOtpValid: ", otpIsValid);
 
-      const verificationCheck = await this.twilioService.verify.v2
-        .services(this.verifyServiceSid)
-        .verificationChecks.create({ code: otp, to });
+      if (!otpIsValid) throw new InvalidOtpException();
 
-      return verificationCheck.status == "approved";
+      return otpIsValid;
     } catch (e) {
       this.loggerService.error(e);
       return false;

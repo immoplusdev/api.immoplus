@@ -77,6 +77,12 @@ export class VilleController {
   async readMany(@Query() params: SearchItemsParamsDto) {
     const responseMapper = new WrapperResponseDtoMapper<VilleDto[]>();
 
+    // Tri alphabétique par défaut si aucun tri n'est spécifié
+    if (!params._order_by) {
+      params._order_by = "name";
+      params._order_dir = "asc";
+    }
+
     const items = await this.repository.findByQuery(params);
 
     return responseMapper.mapFromQueryResult(items);

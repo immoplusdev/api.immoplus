@@ -32,6 +32,9 @@ COPY --chown=node:node . .
 
 RUN npm run build
 
+# Vérifier que le build a bien créé le fichier main.js
+RUN ls -la dist/src/ && test -f dist/src/main.js
+
 # Gestion spécifique pour bcrypt si besoin
 RUN npm uninstall bcrypt --force && npm install bcrypt --force
 
@@ -54,4 +57,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

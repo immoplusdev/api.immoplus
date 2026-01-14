@@ -23,7 +23,6 @@ import {
 } from "@/infrastructure/features/communes";
 import {
   CurrentUser,
-  OwnerAccessRequired,
   RequiredPermissions,
   RequiredRoles,
 } from "@/infrastructure/decorators";
@@ -77,6 +76,12 @@ export class CommuneController {
   })
   @Get()
   async readMany(@Query() params: SearchItemsParamsDto) {
+    // Tri alphabétique par défaut si aucun tri n'est spécifié
+    if (!params._order_by) {
+      params._order_by = "name";
+      params._order_dir = "asc";
+    }
+
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);

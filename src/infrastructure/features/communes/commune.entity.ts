@@ -6,7 +6,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  RelationId,
   UpdateDateColumn,
 } from "typeorm";
 import { UserEntity } from "@/infrastructure/features/users";

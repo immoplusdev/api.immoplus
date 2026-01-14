@@ -1,0 +1,26 @@
+meta {
+  name: upload-immoplus-logo
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/files/public
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{DEFAULT_CUSTOMER_TOKEN}}
+}
+
+body:multipart-form {
+  file: @file(uploads/immoplus-logo.png)
+}
+
+script:post-response {
+  const { data: { id } }  = res.getBody();
+    
+  bru.setEnvVar("DEFAULT_APP_LOGO_ID", id);
+  
+}

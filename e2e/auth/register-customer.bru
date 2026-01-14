@@ -1,7 +1,7 @@
 meta {
   name: register-customer
   type: http
-  seq: 7
+  seq: 3
 }
 
 post {
@@ -12,17 +12,22 @@ post {
 
 body:json {
   {
-    "avatar": "{{DEFAULT_IMAGE_ID}}",
-    "email": "customer-{{userId}}@immoplus.ci",
-    "firstName": "{{userId}}",
-    "lastName": "{{userId}}",
-    "phoneNumber": "225{{userId}}",
-    "password": "{{DEFAULT_USER_PASSWORD}}"
+    "avatar": "{{DEFAULT_APP_LOGO_ID}}",
+    "email": "customer-{{$timestamp}}@immoplus.ci",
+    "firstName": "{{$randomFirstName}}",
+    "lastName": "{{$randomLastName}}",
+    "phoneNumber": "225{{$timestamp}}",
+    "password": "{{DEFAULT_USER_PASSWORD}}",
+    "token": "{{DEFAULT_APP_OTP}}"
   }
 }
 
-script:pre-request {
-  const { faker } = require('@faker-js/faker');
-  bru.setVar("userId", faker.string.numeric(10));
-  
+script:post-response {
+  const { data: { user: { id, phoneNumber, email }, accessToken, refreshToken } }  = res.getBody();
+    
+  bru.setEnvVar("DEFAULT_CUSTOMER_ID", id);
+  bru.setEnvVar("DEFAULT_CUSTOMER_AT", accessToken);
+  bru.setEnvVar("DEFAULT_CUSTOMER_RT", refreshToken);
+  bru.setEnvVar("DEFAULT_CUSTOMER_PHONE", phoneNumber);
+  bru.setEnvVar("DEFAULT_CUSTOMER_EMAIL", email);
 }

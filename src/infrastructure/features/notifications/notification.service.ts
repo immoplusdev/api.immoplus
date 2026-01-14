@@ -5,12 +5,18 @@ import {
   ISmsService,
   OneSignalResponse,
   SendNotificationParams,
+  SendBulkNotificationByRolesParams,
+  BulkNotificationResult,
 } from "@/core/domain/notifications";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { Role, UserRole } from "@/core/domain/roles";
-import { IUserRepository, UserNotFoundException } from "@/core/domain/users";
+import {
+  IUserRepository,
+  UserNotFoundException,
+  UserStatus,
+} from "@/core/domain/users";
 import { ILoggerService } from "@/core/domain/logging";
 
 export class NotificationService implements INotificationService {
@@ -25,10 +31,11 @@ export class NotificationService implements INotificationService {
   ) {}
 
   async sendNotification(params: SendNotificationParams) {
+    console.log("params", params);
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
-    if (params.sendMail)
+    if (params.sendMail == true) {
       try {
         await this.mailService.sendMail({
           to: user.email,
@@ -38,28 +45,158 @@ export class NotificationService implements INotificationService {
       } catch (error) {
         this.loggerService.error(`[Send Mail] Test failed: ${error}`);
       }
+    }
 
-    if (params.sendSms)
+    if (params.sendSms == true) {
       try {
         await this.smsService.sendSms([user.phoneNumber], params.message);
       } catch (error) {
         this.loggerService.error(error);
       }
+    }
 
-    try {
-      if (!params.skipInAppNotification)
+    if (params.skipInAppNotification == false) {
+      try {
         await this.sendOneSignalNotification(
           params,
           (user.role as Role)?.id as UserRole,
         );
+      } catch (error) {
+        this.loggerService.error(`[Send SMS] Test failed: ${error}`);
+      }
+    }
+  }
+
+  async sendBulkNotificationByRoles(
+    params: SendBulkNotificationByRolesParams,
+  ): Promise<BulkNotificationResult> {
+    try {
+      this.loggerService.info(
+        `[Bulk Notification] Starting broadcast to roles: ${params.roles.join(", ")}`,
+      );
+
+      // 1. Fetch all users for the specified roles
+      const allUsers = [];
+
+      // Group roles by OneSignal app to optimize queries
+      const customerRoles = params.roles.filter((r) => r === UserRole.Customer);
+      const proRoles = params.roles.filter(
+        (r) => r === UserRole.ProEntreprise || r === UserRole.ProParticulier,
+      );
+
+      // Fetch Customer users if needed
+      if (customerRoles.length > 0) {
+        this.loggerService.info(
+          `[Bulk Notification] Fetching Customer role users...`,
+        );
+        const customerUsers = await this.usersRepository.findByQuery({
+          _where: [
+            { _field: "role", _op: "in", _val: customerRoles },
+            { _field: "status", _val: UserStatus.Active, _l_op: "and" },
+          ],
+        });
+
+        allUsers.push(...customerUsers.data);
+      }
+
+      // Fetch Pro users if needed
+      if (proRoles.length > 0) {
+        this.loggerService.info(
+          `[Bulk Notification] Fetching Pro role users...`,
+        );
+        const proUsers = await this.usersRepository.findByQuery({
+          _where: [
+            { _field: "role", _op: "in", _val: proRoles },
+            { _field: "status", _val: UserStatus.Active, _l_op: "and" },
+          ],
+        });
+        allUsers.push(...proUsers.data);
+      }
+
+      const totalTargeted = allUsers.length;
+      this.loggerService.info(
+        `[Bulk Notification] Total users targeted: ${totalTargeted}`,
+      );
+
+      if (totalTargeted === 0) {
+        this.loggerService.warn(
+          `[Bulk Notification] No users found for roles: ${params.roles.join(", ")}`,
+        );
+        return {
+          totalTargeted: 0,
+          successful: 0,
+          failed: 0,
+        };
+      }
+
+      // 2. Send notifications to all users using Promise.allSettled
+      this.loggerService.info(
+        `[Bulk Notification] Sending notifications to ${totalTargeted} users...`,
+      );
+
+      const results = await Promise.allSettled(
+        allUsers.map((user) =>
+          this.sendOneSignalNotification(
+            {
+              userId: user.id,
+              subject: params.subject,
+              message: params.message,
+              data: params.data,
+              url: params.url,
+              skipInAppNotification: false,
+            },
+            (user.role as Role)?.id as UserRole,
+            params.imageUrl,
+          ),
+        ),
+      );
+
+      // 3. Analyze results
+      const successful = results.filter((r) => r.status === "fulfilled").length;
+      const failed = results.filter((r) => r.status === "rejected").length;
+
+      const errors = results
+        .map((r, index) => {
+          if (r.status === "rejected") {
+            return {
+              userId: allUsers[index].id,
+              error: r.reason?.message || "Unknown error",
+            };
+          }
+          return null;
+        })
+        .filter((e) => e !== null);
+
+      this.loggerService.info(
+        `[Bulk Notification] Broadcast completed - Success: ${successful}, Failed: ${failed}`,
+      );
+
+      if (errors.length > 0) {
+        this.loggerService.warn(
+          `[Bulk Notification] Errors encountered:`,
+          errors,
+        );
+      }
+
+      return {
+        totalTargeted,
+        successful,
+        failed,
+        errors: errors.length > 0 ? errors : undefined,
+      };
     } catch (error) {
-      this.loggerService.error(`[Send SMS] Test failed: ${error}`);
+      this.loggerService.error(
+        `[Bulk Notification] Fatal error during broadcast:`,
+        error,
+      );
+      throw error;
     }
   }
 
   private async sendOneSignalNotification(
     params: SendNotificationParams,
     userRole?: UserRole,
+    imageUrl?: string,
   ): Promise<OneSignalResponse> {
     try {
       // 1. Validation des paramètres d'entrée
@@ -102,6 +239,12 @@ export class NotificationService implements INotificationService {
 
         // URL d'action (optionnel)
         ...(params.url && { url: params.url }),
+
+        // Image (Android big picture & iOS attachments)
+        ...(imageUrl && {
+          big_picture: imageUrl, // Android
+          ios_attachments: { id1: imageUrl }, // iOS
+        }),
 
         // Configuration de comportement
         content_available: true, // Pour iOS background processing
@@ -245,25 +388,29 @@ export class NotificationService implements INotificationService {
         `[OneSignal] Récupération credentials pour rôle: ${userRole || "undefined"} -> ${keyPrefix}`,
       );
 
-      const appIdKey = `ONE_SIGNAL_${keyPrefix}_APP_ID`;
-      const apiKeyKey = `ONE_SIGNAL_${keyPrefix}_API_KEY`;
+      let app_id: string = "";
+      let api_key: string = "";
 
-      const app_id: string =
-        this.configsManagerService.getEnvVariable(appIdKey);
-      const api_key: string =
-        this.configsManagerService.getEnvVariable(apiKeyKey);
-
-      // Validation stricte
-      if (!app_id) {
-        throw new Error(
-          `Variable d'environnement ${appIdKey} manquante ou vide`,
-        );
+      // Get credentials for Customer
+      if (userRole === UserRole.Customer) {
+        app_id =
+          this.configsManagerService.getEnvVariable(
+            "ONE_SIGNAL_CLIENT_APP_ID",
+          ) ?? "3dcf3bc5-e4c7-4328-9d30-0f33cdedb1f0";
+        api_key =
+          this.configsManagerService.getEnvVariable(
+            "ONE_SIGNAL_CLIENT_API_KEY",
+          ) ?? "ZjViY2JhM2ItYTExZC00Mzk4LTg4ZmItODcwZWI1MWJlMjQ2";
       }
 
-      if (!api_key) {
-        throw new Error(
-          `Variable d'environnement ${apiKeyKey} manquante ou vide`,
-        );
+      // Get credentials for Pro
+      if (
+        userRole === UserRole.ProEntreprise ||
+        userRole === UserRole.ProParticulier
+      ) {
+        app_id = "7eb65c1b-a1c3-4bd2-9a3c-955743582362";
+        api_key =
+          "os_v2_app_p23fyg5bynf5fgr4svlugwbdmlqsx4eocraewqm3znsutbhju52ye6dbjtfcbk76fi556ueqdil72pkhuaurtfiik5labc75psf3rgi";
       }
 
       // Validation du format OneSignal
@@ -275,13 +422,8 @@ export class NotificationService implements INotificationService {
         );
       }
 
-      // L'API key OneSignal est généralement en base64
-      if (api_key.length < 20 || !api_key.match(/^[A-Za-z0-9+/=]+$/)) {
-        console.warn(`[OneSignal] Format d'API key suspect pour ${keyPrefix}`);
-      }
-
       console.log(
-        `[OneSignal] Credentials validés pour ${keyPrefix} - app_id: ${app_id.substring(0, 8)}...****`,
+        `[OneSignal] credentials récupérées pour rôle: ${userRole || "undefined"} {app_id: ${app_id}, api_key: ${api_key}}`,
       );
 
       return { app_id, api_key };

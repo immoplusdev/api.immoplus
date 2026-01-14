@@ -36,13 +36,13 @@ export class SeedMap20240803172312 implements MigrationInterface {
 
     for (const ville of villes) {
       await queryRunner.query(
-        `INSERT INTO villes (id, name) VALUES ('${ville.id}', '${ville.name}')`,
+        `INSERT IGNORE INTO villes (id, name) VALUES ('${ville.id}', '${ville.name}')`,
       );
     }
 
     for (const commune of communes) {
       await queryRunner.query(
-        `INSERT INTO communes (id, name, ville_id) VALUES ('${commune.id}', '${commune.name}', '${commune.ville}')`,
+        `INSERT IGNORE INTO communes (id, name, ville_id) VALUES ('${commune.id}', '${commune.name}', '${commune.ville}')`,
       );
     }
   }

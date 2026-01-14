@@ -47,7 +47,7 @@ import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 import { IUserRepository } from "@/core/domain/users";
-import { INotificationService } from "@/core/domain/notifications";
+import { INotificationService, PushNotificationType } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
 @ApiTags("Residence")
@@ -142,6 +142,30 @@ export class ResidenceController {
   })
   @Get("/data/public/")
   async readManyPublic(@Query() params: SearchItemsParamsDto) {
+    const items = await this.repository.findByQuery(params);
+
+    return this.responseMapper.mapFromQueryResult(items);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceBatchDto,
+  })
+  @Get("/data/public/proprietaire/:proprietaireId")
+  async readManyByProprietaire(
+    @Param("proprietaireId") proprietaireId: string,
+    @Query() params: SearchItemsParamsDto,
+  ) {
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "proprietaire",
+          _l_op: "and",
+          _val: proprietaireId,
+        },
+      ],
+      params._where,
+    );
+
     const items = await this.repository.findByQuery(params);
 
     return this.responseMapper.mapFromQueryResult(items);
@@ -320,6 +344,10 @@ export class ResidenceController {
           sendMail: true,
           sendSms: false,
           returnUrl: `/admin/residences/${residenceId}`,
+          data: {
+            type: PushNotificationType.Residence,
+            id: residenceId,
+          },
         });
       }
     } catch (error) {

@@ -6,6 +6,8 @@ import {
   INotificationRepository,
   INotificationService,
   SendNotificationParams,
+  SendBulkNotificationByRolesParams,
+  BulkNotificationResult,
 } from "@/core/domain/notifications";
 import { NotificationEntity } from "@/infrastructure/features/notifications";
 import { BaseRepository } from "@/infrastructure/typeorm";
@@ -82,8 +84,24 @@ export class NotificationRepository implements INotificationRepository {
       message: params.message,
       htmlMessage: params.htmlMessage || params.message,
       returnUrl: params.returnUrl || "localhost:3000/estate_detail/12",
+      data: params.data,
     });
 
     return Promise.resolve("Notification sent successfully");
+  }
+
+  async sendBulkNotification(
+    params: SendBulkNotificationByRolesParams,
+    senderId: string,
+  ): Promise<BulkNotificationResult> {
+    // Call the notification service to send bulk notifications
+    const result =
+      await this.notificationService.sendBulkNotificationByRoles(params);
+
+    // TODO: Optionally create notification records for tracking
+    // For now, we're relying on the service logs for tracking
+    // Future enhancement: Create NotificationEntity records for each successful send
+
+    return result;
   }
 }

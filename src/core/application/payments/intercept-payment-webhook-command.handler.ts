@@ -28,7 +28,10 @@ import { IResidenceRepository, Residence } from "@/core/domain/residences";
 import { DEFAULT_CURRENCY, TransactionSource } from "@/core/domain/wallet";
 import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import {
   IGlobalizationService,
   TranslateOptions,
@@ -40,9 +43,7 @@ import { generateReservationCode } from "@/lib/ts-utilities/strings/string-gener
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 
 @CommandHandler(InterceptPaymentWebhookCommand)
-export class InterceptPaymentWebhookCommandHandler
-  implements ICommandHandler<InterceptPaymentWebhookCommand>
-{
+export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<InterceptPaymentWebhookCommand> {
   constructor(
     @Inject(Deps.ReservationRepository)
     private readonly reservationRepository: IReservationRepository,
@@ -267,6 +268,10 @@ export class InterceptPaymentWebhookCommandHandler
             sendMail: true,
             sendSms: true,
             returnUrl: ``,
+            data: {
+              type: PushNotificationType.Wallet,
+              id: proprietaireWallet.id,
+            },
           });
         }
       }
@@ -321,6 +326,10 @@ export class InterceptPaymentWebhookCommandHandler
         sendMail: false,
         sendSms: true,
         returnUrl: ``,
+        data: {
+          type: PushNotificationType.Wallet,
+          id: proprietaireWallet.id,
+        },
       });
     }
   }
@@ -359,6 +368,10 @@ export class InterceptPaymentWebhookCommandHandler
       sendMail: true,
       sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+      data: {
+        type: PushNotificationType.Reservation,
+        id: reservation.id,
+      },
     });
 
     await this.notificationService.sendNotification({
@@ -373,6 +386,10 @@ export class InterceptPaymentWebhookCommandHandler
       sendMail: true,
       sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+      data: {
+        type: PushNotificationType.Reservation,
+        id: reservation.id,
+      },
     });
   }
 }

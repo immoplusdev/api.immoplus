@@ -2,7 +2,10 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
-import { INotificationService } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
@@ -20,9 +23,7 @@ export class PaymentReservationValideEvent {
 }
 
 @EventsHandler(PaymentReservationValideEvent)
-export class PaymentReservationValideEventHandler
-  implements IEventHandler<PaymentReservationValideEvent>
-{
+export class PaymentReservationValideEventHandler implements IEventHandler<PaymentReservationValideEvent> {
   constructor(
     @Inject(Deps.ReservationRepository)
     private readonly reservationRepository: IReservationRepository,
@@ -67,6 +68,10 @@ export class PaymentReservationValideEventHandler
       sendMail: true,
       sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+      data: {
+        type: PushNotificationType.Reservation,
+        id: reservation.id,
+      },
     });
 
     await this.notificationService.sendNotification({
@@ -81,6 +86,10 @@ export class PaymentReservationValideEventHandler
       sendMail: true,
       sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+      data: {
+        type: PushNotificationType.Reservation,
+        id: reservation.id,
+      },
     });
   }
 }
