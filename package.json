@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && cp -r views dist/views && cp -r public dist/public",
+    "build": "nest build && cp -r views dist/src/infrastructure/views && cp -r public dist/src/infrastructure/public",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "migrate": "tsc && npm run typeorm -- migration:run",
     "seeder": "typeorm schema:run seeder",
