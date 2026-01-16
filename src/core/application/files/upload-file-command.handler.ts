@@ -22,7 +22,7 @@ export class UploadFileCommandHandler implements ICommandHandler<UploadFileComma
       storage: FileStorage.S3,
       description: command?.description,
       fileSize: command?.file?.size,
-      externalFileId: command?.externalFileId?.split(".")[0],
+      externalFileId: command?.externalFileId,
       fileNameDisk: command?.file?.originalname,
       fileNameDownload: command?.externalFileId,
       uploadedBy: command.userId || null,
