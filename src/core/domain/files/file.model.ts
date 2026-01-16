@@ -1,6 +1,8 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { FileStorage } from "./file-storage.enum";
 
+export type ForcedFileType = "image" | "video" | "pdf";
+
 export class FileData {
   id: string;
   fileNameDisk: string;
