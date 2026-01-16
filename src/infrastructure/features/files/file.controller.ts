@@ -50,7 +50,7 @@ import {
   RequiredPermissions,
   RequiredRoles,
 } from "@/infrastructure/decorators";
-import { addConditionsToWhereClause } from "@/infrastructure/helpers";
+import { addConditionsToWhereClause, hasFileExtension } from "@/infrastructure/helpers";
 import { Deps } from "@/core/domain/common/ioc";
 import { FileStorage, IFileRepository } from "@/core/domain/files";
 import {
@@ -61,6 +61,7 @@ import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { Response } from "express";
 import { randomUUID } from "crypto";
 import { FilesService } from "./file-service";
+import axios from "axios";
 
 @ApiTags("File")
 @Controller("files")
@@ -76,7 +77,7 @@ export class FileController {
     private readonly repository: IFileRepository,
     @Inject(Deps.FileService)
     readonly service: FilesService,
-  ) {}
+  ) { }
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
@@ -123,9 +124,10 @@ export class FileController {
     const responseMapper =
       new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
 
+    const fileExtension = file.originalname.split('.').pop();
     const uploadedFile: MulterFile = {
       ...file,
-      externalFileId: `${randomUUID()}`,
+      externalFileId: `${randomUUID()}.${fileExtension}`,
     };
 
     await this.service.uploadFile(uploadedFile);
@@ -177,12 +179,16 @@ export class FileController {
     const responseMapper =
       new WrapperResponseDtoMapper<UploadFileCommandResponseDto>();
 
+    console.log("Starting upload");
+    const fileExtension = file.originalname.split('.').pop();
     const uploadedFile: MulterFile = {
       ...file,
-      externalFileId: `${randomUUID()}`,
+      externalFileId: `${randomUUID()}.${fileExtension}`,
     };
 
     await this.service.uploadFile(uploadedFile);
+
+    console.log("Uploaded");
 
     const command = new UploadFileCommand({
       ...payload,
@@ -192,6 +198,8 @@ export class FileController {
     });
 
     const response = await this.commandBus.execute(command);
+
+    console.log("Record saved");
 
     return responseMapper.mapFrom(response);
   }
@@ -305,8 +313,38 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return res.send(null);
 
-    const url = await this.service.getFile(file.externalFileId);
-    return res.redirect(url);
+    // Generate ETag based on file ID and updated date for caching
+    const etag = `"${file.id}-${file.updatedAt?.getTime() || file.createdAt?.getTime()}"`;
+
+    // Check if client has cached version
+    const clientEtag = res.req.headers['if-none-match'];
+    if (clientEtag === etag) {
+      return res.status(304).send();
+    }
+
+    const url = await this.service.getFile(
+      file.storage == FileStorage.Minio
+        ? file.fileNameDownload
+        : file.externalFileId,
+      "video"
+    );
+
+    console.log("url => ", url);
+    if (hasFileExtension(url)) return res.redirect(url);
+    // return res.redirect(url);
+    const response = await axios.get(url, { responseType: 'stream' });
+
+    res.setHeader('Content-Type', 'video/mp4');
+    if (response.headers['content-length']) {
+      res.setHeader('Content-Length', response.headers['content-length']);
+    }
+
+    // Add caching headers
+    res.setHeader('ETag', etag);
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); // Cache for 1 year
+    res.setHeader('Accept-Ranges', 'bytes'); // Enable range requests for video seeking
+
+    return response.data.pipe(res);
   }
 
   @ApiResponse({

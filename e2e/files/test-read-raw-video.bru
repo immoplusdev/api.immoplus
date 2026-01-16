@@ -1,0 +1,11 @@
+meta {
+  name: test-read-raw-video
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{API_URL}}/files/raw/public/{{DEFAULT_FILE_ID}}
+  body: multipartForm
+  auth: none
+}
