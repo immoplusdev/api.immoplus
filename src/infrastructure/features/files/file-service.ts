@@ -11,6 +11,7 @@ import { MulterFile } from "@/infrastructure/features/files/dto";
 import { ConfigService } from "@nestjs/config";
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
+import { ForcedFileType } from "@/core/domain/files";
 
 @Injectable()
 export class FilesService {
@@ -34,15 +35,43 @@ export class FilesService {
     return response.Buckets || [];
   }
 
-  async getFile(fileKey: string) {
+  async getFile(fileKey: string, forcedType?: ForcedFileType) {
+    const additionalAttributes = forcedType
+      ? this.getAwsFileTypeAttributes(forcedType)
+      : {};
+
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
       Key: fileKey,
+      ...additionalAttributes,
     });
+    console.log("command => ", command.input);
 
     return await getSignedUrl(this.s3Client, command, {
       expiresIn: 60 * 15,
     });
+  }
+
+  async getAwsFileTypeAttributes(forcedFileType: ForcedFileType) {
+    switch (forcedFileType) {
+      case "image":
+        return {
+          ResponseContentType: "image/png",
+          ResponseContentDisposition: 'inline; filename="file.png"',
+        };
+      case "video":
+        return {
+          ResponseContentType: "video/mp4",
+          ResponseContentDisposition: 'inline; filename="file.mp4"',
+        };
+      case "pdf":
+        return {
+          ResponseContentType: "application/pdf",
+          ResponseContentDisposition: 'inline; filename="file.pdf"',
+        };
+      default:
+        return {};
+    }
   }
 
   async uploadFile(file: MulterFile) {
