@@ -35,4 +35,14 @@ export interface IUserRepository extends IBaseRepository<
   findClientByPhoneNumber(phoneNumber: string): Promise<PublicUserInfo | null>;
 
   findAdminUsers(): Promise<User[]>;
+
+  findOneByGoogleId(
+    googleId: string,
+    options?: FindItemOptions,
+  ): Promise<User | null>;
+
+  findOneByFacebookId(
+    facebookId: string,
+    options?: FindItemOptions,
+  ): Promise<User | null>;
 }

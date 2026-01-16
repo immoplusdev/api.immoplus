@@ -7,6 +7,7 @@ import { NotificationService } from "@/infrastructure/features/notifications/not
 import { GlobalizationService } from "@/infrastructure/features/globalization";
 import { TransactionSource } from "@/core/domain/wallet";
 import { JwtModule } from "@nestjs/jwt";
+import { PaymentMethod } from "@/core/domain/common/enums/payment-method.enum";
 
 describe("InterceptPaymentWebhookCommandHandler", () => {
   let handler: InterceptPaymentWebhookCommandHandler;
@@ -77,7 +78,7 @@ describe("InterceptPaymentWebhookCommandHandler", () => {
     mockResidenceRepository.findOne.mockResolvedValue(residence);
     mockWalletService.creditWallet.mockResolvedValue({ walletId: "w1" });
 
-    await handler.reservationWalletCredit("res1", 900);
+    await handler.reservationWalletCredit("res1", PaymentMethod.Ecobank);
 
     expect(mockWalletService.creditWallet).toHaveBeenCalledWith(
       "user1",
@@ -100,7 +101,7 @@ describe("InterceptPaymentWebhookCommandHandler", () => {
   it("ne fait rien si la réservation est introuvable", async () => {
     mockReservationRepository.findOne.mockResolvedValue(null);
 
-    await handler.reservationWalletCredit("unknown", 1000);
+    await handler.reservationWalletCredit("unknown", PaymentMethod.Ecobank);
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
     expect(mockNotificationService.sendNotification).not.toHaveBeenCalled();
@@ -111,7 +112,7 @@ describe("InterceptPaymentWebhookCommandHandler", () => {
       montantTotalReservation: 1000,
     });
 
-    await handler.reservationWalletCredit("res2", 800); // < 900
+    await handler.reservationWalletCredit("res2", PaymentMethod.Ecobank); // < 900
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
     expect(mockNotificationService.sendNotification).not.toHaveBeenCalled();
@@ -128,7 +129,7 @@ describe("InterceptPaymentWebhookCommandHandler", () => {
     mockReservationRepository.findOne.mockResolvedValue(reservation);
     mockResidenceRepository.findOne.mockResolvedValue(null);
 
-    await handler.reservationWalletCredit("res3", 1000);
+    await handler.reservationWalletCredit("res3", PaymentMethod.Ecobank);
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
   });
@@ -146,7 +147,7 @@ describe("InterceptPaymentWebhookCommandHandler", () => {
       proprietaire: "user1",
     });
 
-    await handler.reservationWalletCredit("res4", 100);
+    await handler.reservationWalletCredit("res4", PaymentMethod.Ecobank);
 
     expect(mockWalletService.creditWallet).not.toHaveBeenCalled();
   });
@@ -168,7 +169,7 @@ describe("InterceptPaymentWebhookCommandHandler", () => {
     mockResidenceRepository.findOne.mockResolvedValue(residence);
     mockWalletService.creditWallet.mockResolvedValue(null);
 
-    await handler.reservationWalletCredit("res5", 1000);
+    await handler.reservationWalletCredit("res5", PaymentMethod.Ecobank);
 
     expect(mockNotificationService.sendNotification).not.toHaveBeenCalled();
   });

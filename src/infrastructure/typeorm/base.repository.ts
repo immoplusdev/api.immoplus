@@ -26,8 +26,7 @@ export class BaseRepository<
   CreateDto = Partial<Model>,
   UpdateDto = Partial<Model>,
   KeyType = string,
-> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType>
-{
+> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
   private relations?: RepositoryRelations;
   private fullTextSearchFields?: string[];

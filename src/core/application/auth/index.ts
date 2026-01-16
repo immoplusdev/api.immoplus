@@ -39,3 +39,6 @@ export * from "./login-with-email-otp-command.response";
 export * from "./refresh-token.command";
 export * from "./refresh-token-command.handler";
 export * from "./refresh-token-command.response";
+export * from "./social-login.command";
+export * from "./social-login-command.handler";
+export * from "./social-login-command.response";

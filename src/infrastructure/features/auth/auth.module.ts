@@ -17,6 +17,7 @@ import {
   VerifyEmailCommandHandler,
   VerifyPhoneNumberCommandHandler,
 } from "@/core/application/auth";
+import { SocialLoginCommandHandler } from "@/core/application/auth/social-login-command.handler";
 import { JwtManagerService } from "./jwt-manager.service";
 import { LoggingModule } from "../logging";
 import { Deps } from "@/core/domain/common/ioc";
@@ -26,12 +27,14 @@ import { TfaService } from "@/infrastructure/features/auth/tfa.service";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { LoginWithPhoneNumberOtpCommandHandler } from "@/core/application/auth/login-with-phone-number-otp-command.handler";
+import { SocialAuthService } from "./social-auth.service";
 
 const commandHandlers = [
   RegisterCommandHandler,
   RegisterProEntrepriseCommandHandler,
   RegisterProParticulierCommandHandler,
   LoginCommandHandler,
+  SocialLoginCommandHandler,
   RefreshTokenCommandHandler,
   UpdatePasswordCommandHandler,
   SendSmsOtpCommandHandler,
@@ -59,6 +62,10 @@ const providers: Provider[] = [
   {
     provide: Deps.AuthService,
     useClass: AuthService,
+  },
+  {
+    provide: Deps.SocialAuthService,
+    useClass: SocialAuthService,
   },
 ];
 
