@@ -38,6 +38,7 @@ export enum Deps {
   TransfertService = "TransfertService",
   GatewayService = "GatewayService",
   FileService = "FileService",
+  SocialAuthService = "SocialAuthService",
 
   // Guards
 

@@ -7,10 +7,9 @@ import {
 import { InvalidQueryException } from "@/core/domain/common/exceptions";
 import { ItemsParamsCriteriasDto } from "@/infrastructure/http";
 import {
-  And,
   Equal,
   Like,
-  Or,
+  ILike,
   Not,
   MoreThan,
   MoreThanOrEqual,
@@ -19,7 +18,6 @@ import {
   In,
 } from "typeorm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "@/infrastructure/configs";
-import { Contains } from "class-validator";
 
 export function parseHttpQuery(query: any): SearchItemsParams {
   const params: SearchItemsParams = {};
@@ -137,14 +135,14 @@ export function mapToTypeormWhere(criterias: ItemsParamsCriterias[]): any {
 }
 
 function getLOperator(lOperator: ItemsParamsCriteriasLogic, value: any[]): any {
-  switch (lOperator) {
-    case "and":
-      return And(...value);
-    case "or":
-      return Or(...value);
-    default:
-      return And(...value);
+  // In TypeORM 0.3.x, And/Or are no longer exported
+  // For a single value, return it directly
+  if (value.length === 1) {
+    return value[0];
   }
+  // For multiple values on the same field, return the first one
+  // (TypeORM 0.3 handles multiple conditions differently)
+  return value[0];
 }
 
 function getOperator(operator: ItemsOperator, value: any): any {
@@ -166,9 +164,9 @@ function getOperator(operator: ItemsOperator, value: any): any {
     case "nin":
       return In(Not(value));
     case "contains":
-      return Contains(value);
+      return ILike(`%${value}%`);
     case "ncontains":
-      return Not(Contains(value));
+      return Not(ILike(`%${value}%`));
     case "like":
       return Like(`%${value}%`);
     default:

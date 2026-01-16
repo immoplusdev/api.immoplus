@@ -13,3 +13,5 @@ export * from "./invalid-password.exception";
 export * from "./invalid-refresh-token.exception";
 export * from "./unauthorized.exception";
 export * from "./verify-otp-options.model";
+export * from "./i-social-auth.service";
+export * from "./invalid-social-token.exception";

@@ -29,8 +29,24 @@ export class UserEntity {
   lastName: string;
   @Column({ name: "email", type: "varchar", unique: true })
   email: string;
-  @Column({ name: "password", type: "varchar" })
-  password: string;
+  @Column({ name: "password", type: "varchar", nullable: true })
+  password?: string;
+
+  // Social auth data
+  @Column({
+    name: "google_id",
+    type: "varchar",
+    nullable: true,
+    unique: true,
+  })
+  googleId?: string;
+  @Column({
+    name: "facebook_id",
+    type: "varchar",
+    nullable: true,
+    unique: true,
+  })
+  facebookId?: string;
 
   @ManyToOne(() => RoleEntity, (role) => role.id)
   @JoinColumn({ name: "role_id" })

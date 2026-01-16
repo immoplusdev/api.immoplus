@@ -17,7 +17,12 @@ export class UserDto {
   @ApiProperty()
   email: string;
   @ApiProperty()
-  password: string;
+  password?: string;
+  // Social auth data
+  @ApiProperty()
+  googleId?: string;
+  @ApiProperty()
+  facebookId?: string;
   @ApiProperty({ type: RoleDto })
   role: RoleDto | string;
   @ApiProperty()

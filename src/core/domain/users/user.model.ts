@@ -9,7 +9,12 @@ export class User {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
+  password?: string;
+
+  // Social auth data
+  googleId?: string;
+  facebookId?: string;
+
   role: Role | string;
   language?: string;
   avatar?: string;
@@ -42,7 +47,9 @@ export class User {
   deletedBy?: string;
 
   clearPrivateCredentials() {
-    this.password = "********";
+    if (this.password) {
+      this.password = "********";
+    }
     return this;
   }
 

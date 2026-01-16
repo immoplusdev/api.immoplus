@@ -35,6 +35,11 @@ import {
   RequiredRoles,
 } from "@/infrastructure/decorators";
 import { UserApp, UserRole } from "@/core/domain/roles";
+import { SocialLoginCommand } from "@/core/application/auth/social-login.command";
+import {
+  SocialLoginCommandResponse,
+  WrapperResponseSocialLoginCommandResponseDto,
+} from "@/core/application/auth/social-login-command.response";
 import {
   PermissionAction,
   PermissionCollection,
@@ -110,6 +115,21 @@ export class AuthController {
     const responseMapper = new WrapperResponseLoginCommandResponseDtoMapper();
 
     const response = await this.commandBus.execute(new LoginCommand(payload));
+    return responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseSocialLoginCommandResponseDto,
+  })
+  @HttpCode(200)
+  @Post("social-login")
+  async socialLogin(@Body() payload: SocialLoginCommand) {
+    const responseMapper =
+      new WrapperResponseDtoMapper<SocialLoginCommandResponse>();
+
+    const response = await this.commandBus.execute(
+      new SocialLoginCommand(payload),
+    );
     return responseMapper.mapFrom(response);
   }
 
