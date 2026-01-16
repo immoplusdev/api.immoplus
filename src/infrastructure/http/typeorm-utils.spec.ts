@@ -1,5 +1,5 @@
 // import { Test, TestingModule } from "@nestjs/testing";
-import { And, Equal } from "typeorm";
+import { Equal } from "typeorm";
 import { mapToTypeormWhere } from "@/infrastructure/http/typeorm-utils";
 
 describe("TypeormUtils", () => {
@@ -17,8 +17,8 @@ describe("TypeormUtils", () => {
   it("should be equal", () => {
     const typeormFilter = {
       where: {
-        subject: And(Equal("test2")),
-        message: And(Equal("test22")),
+        subject: Equal("test2"),
+        message: Equal("test22"),
       },
     };
 

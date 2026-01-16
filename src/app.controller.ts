@@ -15,6 +15,10 @@ import * as path from "path";
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  getHello(): string {
+    return "Hello World!";
+  }
+
   @Get()
   @Render("index")
   getHome() {

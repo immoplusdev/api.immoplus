@@ -218,4 +218,24 @@ export class UserRepository implements IUserRepository {
     });
     return data;
   }
+
+  async findOneByGoogleId(
+    googleId: string,
+    options?: FindItemOptions,
+  ): Promise<User | null> {
+    return await this.findOneByQuery(
+      { _where: [{ _field: "googleId", _val: googleId }] },
+      options,
+    );
+  }
+
+  async findOneByFacebookId(
+    facebookId: string,
+    options?: FindItemOptions,
+  ): Promise<User | null> {
+    return await this.findOneByQuery(
+      { _where: [{ _field: "facebookId", _val: facebookId }] },
+      options,
+    );
+  }
 }

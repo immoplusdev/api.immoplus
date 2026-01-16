@@ -26,8 +26,7 @@ export class BaseRepository<
   CreateDto = Partial<Model>,
   UpdateDto = Partial<Model>,
   KeyType = string,
-> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType>
-{
+> implements IBaseRepository<Model, CreateDto, UpdateDto, KeyType> {
   private readonly repository: Repository<any>;
   private relations?: RepositoryRelations;
   private fullTextSearchFields?: string[];
@@ -174,13 +173,13 @@ export class BaseRepository<
   ): Promise<KeyType[]> {
     const result = await this.repository.update(
       mapQueryToTypeormQuery(query).where,
-      payload,
+      payload as any,
     );
     return result.affected && result.affected[0] ? result.affected[0] : [];
   }
 
   async updateOne(id: KeyType, payload: UpdateDto): Promise<KeyType> {
-    await this.repository.update(id, payload);
+    await this.repository.update(id, payload as any);
     return id;
   }
 
