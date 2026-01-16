@@ -76,7 +76,7 @@ export class FileController {
     private readonly repository: IFileRepository,
     @Inject(Deps.FileService)
     readonly service: FilesService,
-  ) {}
+  ) { }
 
   @ApiResponse({
     type: WrapperResponseUploadFileCommandResponseDto,
@@ -305,7 +305,11 @@ export class FileController {
     const file = await this.repository.findOne(id.split(".")[0]);
     if (!file) return res.send(null);
 
-    const url = await this.service.getFile(file.externalFileId);
+    const url = await this.service.getFile(
+      file.storage == FileStorage.Minio
+        ? file.fileNameDownload
+        : file.externalFileId,
+    );
     return res.redirect(url);
   }
 
