@@ -14,7 +14,6 @@ import {
   TransactionType,
   Wallet,
 } from "@/core/domain/wallet";
-import { UserEntity } from "../users";
 import { PaymentMethod } from "@/core/domain/common/enums";
 
 @Entity("wallet_transactions")
@@ -22,7 +21,7 @@ export class WalletTransactionEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => WalletEntity, (wallet) => wallet.id, { eager: true })
+  @ManyToOne(() => WalletEntity, (wallet) => wallet.id)
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet | string; // ID du portefeuille associé
 
@@ -61,7 +60,6 @@ export class WalletTransactionEntity {
   @DeleteDateColumn({ name: "deleted_at" })
   deletedAt?: Date;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @Column({ name: "created_by", type: "varchar", nullable: true })
   createdBy?: string; // ID de l'utilisateur qui a créé la transaction
 
