@@ -29,14 +29,14 @@ export async function applicationConfigs() {
   configureI18n(app);
 
   // Definir le repertoire des vues
-  app.setBaseViewsDir(join(__dirname, "..", "..", "views"));
+  app.setBaseViewsDir(join(__dirname, "..", "..", "..", "..", "views"));
   // app.setBaseViewsDir(join(process.cwd(), "views"));
 
   // definir le moteur des vues
   app.setViewEngine("hbs");
 
   // Servir les fichiers statiques
-  app.useStaticAssets(join(__dirname, "..", "..", "public"));
+  app.useStaticAssets(join(__dirname, "..", "..", "..", "..", "public"));
   // app.useStaticAssets(join(process.cwd(), "public"));
 
   await app.listen(process.env.PORT || 3000);
