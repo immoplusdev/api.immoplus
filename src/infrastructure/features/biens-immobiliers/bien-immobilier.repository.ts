@@ -104,8 +104,28 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
 
   async findByQuery(
     query?: SearchItemsParams,
+    options?: FindItemOptions,
   ): Promise<WrapperResponse<BienImmobilier[]>> {
-    return await this.repository.findByQuery(query);
+    // Transformer les filtres de relations pour TypeORM (ManyToOne)
+    if (query?._where && Array.isArray(query._where)) {
+      query._where = query._where.map((condition) => {
+        if (condition._field === "proprietaire") {
+          return {
+            ...condition,
+            _field: "proprietaire.id",
+          };
+        }
+        if (condition._field === "createdBy") {
+          return {
+            ...condition,
+            _field: "createdBy.id",
+          };
+        }
+        return condition;
+      });
+    }
+
+    return await this.repository.findByQuery(query, options);
   }
 
   async findOne(

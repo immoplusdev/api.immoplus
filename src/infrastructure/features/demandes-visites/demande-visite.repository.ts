@@ -73,6 +73,25 @@ export class DemandeVisiteRepository implements IDemandeVisiteRepository {
     query?: SearchItemsParams,
     options?: FindItemOptions,
   ): Promise<WrapperResponse<DemandeVisite[]>> {
+    // Transformer les filtres de relations pour TypeORM (ManyToOne)
+    if (query?._where && Array.isArray(query._where)) {
+      query._where = query._where.map((condition) => {
+        if (condition._field === "bienImmobilier") {
+          return {
+            ...condition,
+            _field: "bienImmobilier.id",
+          };
+        }
+        if (condition._field === "createdBy") {
+          return {
+            ...condition,
+            _field: "createdBy.id",
+          };
+        }
+        return condition;
+      });
+    }
+
     return await this.repository.findByQuery(query, options);
   }
 

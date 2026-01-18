@@ -1,6 +1,6 @@
 import { IAuthorizationManagerService } from "@/core/domain/auth";
 import { UserWithRoleAndPermissions } from "@/core/domain/users";
-import { Role } from "@/core/domain/roles";
+import { Role, UserRole } from "@/core/domain/roles";
 
 export class AuthorizationManagerService
   implements IAuthorizationManagerService
@@ -28,7 +28,20 @@ export class AuthorizationManagerService
   }
 
   hasRequiredRoles(requiredRoles: string[]) {
-    return requiredRoles.includes((this.user.role as Role).id);
+    const userRoleId = (this.user.role as Role).id;
+
+    // Financier et Commercial ont les mêmes accès que Admin
+    if (requiredRoles.includes(UserRole.Admin)) {
+      if (
+        userRoleId === UserRole.Admin ||
+        userRoleId === UserRole.Financier ||
+        userRoleId === UserRole.Commercial
+      ) {
+        return true;
+      }
+    }
+
+    return requiredRoles.includes(userRoleId);
   }
 
   hasRequiredPermissions(requiredPermissions: string[]) {

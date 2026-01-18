@@ -6,7 +6,7 @@ export function verifyUserType(user: User, source: UserApp) {
   const allowRoles: string[] = [];
   switch (source) {
     case UserApp.AdminApp:
-      allowRoles.push(UserRole.Admin);
+      allowRoles.push(UserRole.Admin, UserRole.Financier, UserRole.Commercial);
       break;
     case UserApp.CustomerApp:
       allowRoles.push(UserRole.Customer);

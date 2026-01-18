@@ -128,7 +128,20 @@ export function mapToTypeormWhere(criterias: ItemsParamsCriterias[]): any {
   }
 
   for (const key of Object.keys(filters)) {
-    typeormFilter[key] = getLOperator(filters[key]._l_op, filters[key].filters);
+    const value = getLOperator(filters[key]._l_op, filters[key].filters);
+
+    // Gérer les clés avec des points pour les relations (ex: "proprietaire.id")
+    if (key.includes(".")) {
+      const parts = key.split(".");
+      let current = typeormFilter;
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (!current[parts[i]]) current[parts[i]] = {};
+        current = current[parts[i]];
+      }
+      current[parts[parts.length - 1]] = value;
+    } else {
+      typeormFilter[key] = value;
+    }
   }
 
   return typeormFilter;
