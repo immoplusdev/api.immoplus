@@ -60,6 +60,25 @@ export class ReservationRepository implements IReservationRepository {
   async findByQuery(
     query?: SearchItemsParams,
   ): Promise<WrapperResponse<Reservation[]>> {
+    // Transformer les filtres de relations pour TypeORM (ManyToOne)
+    if (query?._where && Array.isArray(query._where)) {
+      query._where = query._where.map((condition) => {
+        if (condition._field === "residence") {
+          return {
+            ...condition,
+            _field: "residence.id",
+          };
+        }
+        if (condition._field === "createdBy") {
+          return {
+            ...condition,
+            _field: "createdBy.id",
+          };
+        }
+        return condition;
+      });
+    }
+
     return await this.repository.findByQuery(query);
   }
 
@@ -71,7 +90,7 @@ export class ReservationRepository implements IReservationRepository {
       {
         _where: [
           {
-            _field: "proprietaire",
+            _field: "proprietaire.id",
             _op: "eq",
             _val: ownerId,
           },

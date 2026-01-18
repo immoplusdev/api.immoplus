@@ -123,25 +123,29 @@ export class ResidenceController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess()) {
-      // Pour les rôles pro_entreprise et pro_particulier, filtrer par proprietaire
-      // Pour les autres rôles (ex: customer), filtrer par createdBy
-      const isProRole =
-        userRole.id === UserRole.ProEntreprise ||
-        userRole.id === UserRole.ProParticulier;
+    const roleId = userRole?.id;
+    const isAdmin =
+      userRole?.adminAccess ||
+      roleId === UserRole.Admin ||
+      roleId === UserRole.Financier ||
+      roleId === UserRole.Commercial;
 
-      if (isProRole) {
-        params._where = addConditionsToWhereClause(
-          [
-            {
-              _field: "createdBy",
-              _l_op: "and",
-              _val: userId,
-            },
-          ],
-          params._where,
-        );
-      }
+    const isProRole =
+      roleId === UserRole.ProEntreprise || roleId === UserRole.ProParticulier;
+
+    // Les pros voient toutes les résidences dont ils sont propriétaires
+    // Les autres utilisateurs (non-admin) ne voient que leurs propres résidences
+    if (!isAdmin && isProRole) {
+      params._where = addConditionsToWhereClause(
+        [
+          {
+            _field: "proprietaire",
+            _op: "eq",
+            _val: userId,
+          },
+        ],
+        params._where,
+      );
     }
 
     const items = await this.repository.findByQuery(params);
@@ -170,8 +174,8 @@ export class ResidenceController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "proprietaire",
-          _l_op: "and",
+          _field: "createdBy",
+          _op: "eq",
           _val: proprietaireId,
         },
       ],
