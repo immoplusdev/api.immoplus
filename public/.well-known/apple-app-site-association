@@ -3,23 +3,11 @@
         "apps": [],
         "details": [
             {
-                "appIDs": [
-                    "24766DWL23.com.monimmoci.monimmp.prod"
-                ],
+                "appID": "Y2KLD8527S.com.immoplus.ci",
                 "paths": [
                     "*"
-                ],
-                "components": [
-                    {
-                        "/": "/*"
-                    }
                 ]
             }
-        ]
-    },
-    "webcredentials": {
-        "apps": [
-            "24766DWL23.com.monimmoci.monimmp.prod"
         ]
     }
 }
