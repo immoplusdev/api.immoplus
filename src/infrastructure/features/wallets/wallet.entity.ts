@@ -18,7 +18,7 @@ export class WalletEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.id, { eager: true })
+  @OneToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: "owner_id" })
   owner: User | string; // ID de l'utilisateur propriétaire du portefeuille
 
