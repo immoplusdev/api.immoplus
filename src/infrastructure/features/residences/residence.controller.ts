@@ -47,7 +47,10 @@ import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 import { IUserRepository } from "@/core/domain/users";
-import { INotificationService, PushNotificationType } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
 @ApiTags("Residence")
@@ -120,17 +123,30 @@ export class ResidenceController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess())
+    const roleId = userRole?.id;
+    const isAdmin =
+      userRole?.adminAccess ||
+      roleId === UserRole.Admin ||
+      roleId === UserRole.Financier ||
+      roleId === UserRole.Commercial;
+
+    const isProRole =
+      roleId === UserRole.ProEntreprise || roleId === UserRole.ProParticulier;
+
+    // Les pros voient toutes les résidences dont ils sont propriétaires
+    // Les autres utilisateurs (non-admin) ne voient que leurs propres résidences
+    if (!isAdmin && isProRole) {
       params._where = addConditionsToWhereClause(
         [
           {
-            _field: "createdBy",
-            _l_op: "and",
+            _field: "proprietaire",
+            _op: "eq",
             _val: userId,
           },
         ],
         params._where,
       );
+    }
 
     const items = await this.repository.findByQuery(params);
 
@@ -158,8 +174,8 @@ export class ResidenceController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "proprietaire",
-          _l_op: "and",
+          _field: "createdBy",
+          _op: "eq",
           _val: proprietaireId,
         },
       ],

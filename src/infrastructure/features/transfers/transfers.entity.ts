@@ -27,7 +27,7 @@ export class TransfersEntity {
   @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
   fees?: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true })
+  @ManyToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: "customer_id" })
   customer?: string;
 

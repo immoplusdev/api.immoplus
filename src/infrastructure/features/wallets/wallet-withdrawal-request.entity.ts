@@ -18,7 +18,7 @@ export class WalletWithdrawalRequestEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true })
+  @ManyToOne(() => UserEntity, (user) => user.id)
   @JoinColumn({ name: "user_id" })
   owner: User | string; // ID of the user who made the withdrawal request
 

@@ -91,6 +91,21 @@ export class ResidenceRepository implements IResidenceRepository {
   async findByQuery(
     query?: SearchItemsParams,
   ): Promise<WrapperResponse<Residence[]>> {
+    console.log("ResidenceRepository.findByQuery called with query:", query);
+
+    // Transformer le filtre 'proprietaire' pour TypeORM (relation ManyToOne)
+    if (query?._where && Array.isArray(query._where)) {
+      query._where = query._where.map((condition) => {
+        if (condition._field === "proprietaire") {
+          return {
+            ...condition,
+            _field: "proprietaire.id",
+          };
+        }
+        return condition;
+      });
+    }
+
     return await this.repository.findByQuery(query);
   }
 

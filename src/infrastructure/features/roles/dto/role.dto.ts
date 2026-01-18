@@ -24,6 +24,9 @@ export class RoleDto {
 
   constructor(data?: OmitMethods<RoleDto>) {
     Object.assign(this, data);
-    this.adminAccess = this.id == UserRole.Admin;
+    this.adminAccess =
+      this.id == UserRole.Admin ||
+      this.id == UserRole.Financier ||
+      this.id == UserRole.Commercial;
   }
 }
