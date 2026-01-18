@@ -21,7 +21,7 @@ export class WalletTransactionEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => WalletEntity, (wallet) => wallet.id)
+  @ManyToOne(() => WalletEntity, (wallet: WalletEntity) => wallet.id)
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet | string; // ID du portefeuille associé
 
