@@ -47,7 +47,10 @@ import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
 import { IUserRepository } from "@/core/domain/users";
-import { INotificationService, PushNotificationType } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
 @ApiTags("Residence")
@@ -120,17 +123,26 @@ export class ResidenceController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
-    if (!userRole.hasAdminAccess())
-      params._where = addConditionsToWhereClause(
-        [
-          {
-            _field: "createdBy",
-            _l_op: "and",
-            _val: userId,
-          },
-        ],
-        params._where,
-      );
+    if (!userRole.hasAdminAccess()) {
+      // Pour les rôles pro_entreprise et pro_particulier, filtrer par proprietaire
+      // Pour les autres rôles (ex: customer), filtrer par createdBy
+      const isProRole =
+        userRole.id === UserRole.ProEntreprise ||
+        userRole.id === UserRole.ProParticulier;
+
+      if (isProRole) {
+        params._where = addConditionsToWhereClause(
+          [
+            {
+              _field: "createdBy",
+              _l_op: "and",
+              _val: userId,
+            },
+          ],
+          params._where,
+        );
+      }
+    }
 
     const items = await this.repository.findByQuery(params);
 

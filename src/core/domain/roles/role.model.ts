@@ -10,7 +10,12 @@ export class Role {
   appAccess: boolean;
   adminAccess: boolean;
   hasAdminAccess() {
-    return this.adminAccess || this.id == UserRole.Admin;
+    return (
+      this.adminAccess ||
+      this.id == UserRole.Admin ||
+      this.id == UserRole.Financier ||
+      this.id == UserRole.Commercial
+    );
   }
   constructor(data?: OmitMethods<Role>) {
     if (data) Object.assign(this, data);
