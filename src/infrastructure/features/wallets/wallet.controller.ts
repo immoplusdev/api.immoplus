@@ -208,7 +208,7 @@ export class WalletsController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "wallet",
+          _field: "wallet.id",
           _op: "eq",
           _val: wallet.id,
         },
@@ -237,7 +237,7 @@ export class WalletsController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "wallet",
+          _field: "wallet.id",
           _op: "eq",
           _val: wallet.id,
         },
@@ -399,7 +399,7 @@ export class WalletsController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "owner",
+          _field: "owner.id",
           _op: "eq",
           _val: userId,
         },
