@@ -176,6 +176,16 @@ export class ReservationController {
         code: "UNAUTHORIZED",
       });
 
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "statusFacture",
+          _val: StatusFacture.Paye,
+        },
+      ],
+      params._where,
+    );
+
     const items = await this.repository.findByResidenceOwnerId(ownerId, params);
 
     return this.responseMapper.mapFromQueryResult(items);
