@@ -180,6 +180,7 @@ export class ReservationController {
       [
         {
           _field: "statusFacture",
+          _op: "eq",
           _val: StatusFacture.Paye,
         },
       ],
