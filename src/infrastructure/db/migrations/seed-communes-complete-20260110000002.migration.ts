@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class SeedCommunesComplete20260110000002 implements MigrationInterface {
+  name = "SeedCommunesComplete20260110000002";
   async up(queryRunner: QueryRunner): Promise<void> {
     const communesData = [
       // Région d'Abidjan - Communes détaillées
