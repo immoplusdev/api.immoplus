@@ -171,7 +171,7 @@ export class PaymentController {
       params._where = addConditionsToWhereClause(
         [
           {
-            _field: "customer",
+            _field: "customer.id",
             _l_op: "and",
             _val: userId,
           },
