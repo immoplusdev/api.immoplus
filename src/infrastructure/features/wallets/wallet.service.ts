@@ -52,7 +52,7 @@ export class WalletsService {
     let wallet = await this.walletRepo.findOneByQuery({
       _where: [
         {
-          _field: "owner",
+          _field: "owner.id",
           _op: "eq",
           _val: ownerId,
         },
@@ -65,7 +65,9 @@ export class WalletsService {
         availableBalance: 0,
         pendingBalance: 0,
         currency: DEFAULT_CURRENCY,
+        pinHash: undefined,
       });
+      console.log("Created new wallet for ownerId:", ownerId);
     }
 
     return wallet;
@@ -184,7 +186,7 @@ export class WalletsService {
     const transaction = await this.walletTransactionRepo.findOneByQuery({
       _where: [
         {
-          _field: "wallet",
+          _field: "wallet.id",
           _op: "eq",
           _val: wallet.id,
         },
@@ -298,8 +300,9 @@ export class WalletsService {
    * and create two new transactions : one for unblocking the funds and one for crediting the available balance.
    * Finally it update the transaction to be released.
    */
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async verifyAndMakeRefund() {
+    console.log("Verifying and making refund");
     const transactions = await this.walletTransactionRepo.findByQuery({
       _where: [
         {
@@ -319,6 +322,10 @@ export class WalletsService {
         },
       ],
     });
+
+    console.log(
+      `Found ${transactions.data.length} transactions to verify for refund`,
+    );
 
     await transactions.data.forEach(async (transaction) => {
       if (transaction.releaseDate && new Date() >= transaction.releaseDate) {
@@ -393,7 +400,9 @@ export class WalletsService {
   }
 
   async hasPinCode(ownerId: string): Promise<boolean> {
+    console.log("Checking if wallet has PIN for ownerId:", ownerId);
     const wallet = await this.findWalletByOwner(ownerId);
+    console.log("Wallet :", wallet);
     return !!wallet.pinHash;
   }
 
