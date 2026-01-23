@@ -6,6 +6,7 @@ import { ResidenceController } from "@/infrastructure/features/residences/reside
 import {
   ResidenceStatusUpdatedEventHandler,
   UpdateResidenceByIdCommandHandler,
+  ManageUnavailabilityDatesCommandHandler,
 } from "@/core/application/residences";
 import { CqrsModule } from "@nestjs/cqrs";
 import { NotificationModule } from "@/infrastructure/features/notifications";
@@ -13,7 +14,10 @@ import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { UserModule } from "@/infrastructure/features/users";
 
 const queryHandler = [];
-const commandHandlers = [UpdateResidenceByIdCommandHandler];
+const commandHandlers = [
+  UpdateResidenceByIdCommandHandler,
+  ManageUnavailabilityDatesCommandHandler,
+];
 const eventHandlers = [ResidenceStatusUpdatedEventHandler];
 
 const providers: Provider[] = [
@@ -25,7 +29,13 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [ResidenceController],
-  imports: [TypeormModule, CqrsModule, GlobalizationModule, NotificationModule, UserModule],
+  imports: [
+    TypeormModule,
+    CqrsModule,
+    GlobalizationModule,
+    NotificationModule,
+    UserModule,
+  ],
   providers: [
     ...providers,
     ...queryHandler,
