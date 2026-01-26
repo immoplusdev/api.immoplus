@@ -4,6 +4,7 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { TypeResidence } from "./type-residence.enum";
 import { Commodite } from "./commodite.model";
 import { Piece } from "./piece.model";
+import { ServiceDates } from "@/core/domain/common/models/service-dates.model";
 
 export class Residence {
   id: string;
@@ -33,6 +34,7 @@ export class Residence {
   animauxAutorises: boolean;
   fetesAutorises: boolean;
   reglesSupplementaires?: string;
+  datesReservation?: ServiceDates;
   proprietaire?: string;
 
   createdAt?: Date;

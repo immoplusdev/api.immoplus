@@ -22,6 +22,8 @@ import {
   ResidenceDtoMapper,
   WrapperResponseResidenceDto,
   WrapperResponseResidenceBatchDto,
+  AddUnavailabilityDatesDto,
+  RemoveUnavailabilityDatesDto,
 } from "@/infrastructure/features/residences";
 import {
   CurrentUser,
@@ -42,7 +44,11 @@ import {
 } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
-import { UpdateResidenceByIdCommand } from "@/core/application/residences";
+import {
+  UpdateResidenceByIdCommand,
+  ManageUnavailabilityDatesCommand,
+  UnavailabilityAction,
+} from "@/core/application/residences";
 import { CommandBus } from "@nestjs/cqrs";
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { GeolocalizedItemsSearchFiltersParamsQueryDto } from "@/infrastructure/http/dto/residence-geolocalized-filters-params-query.dto";
@@ -139,7 +145,7 @@ export class ResidenceController {
       params._where = addConditionsToWhereClause(
         [
           {
-            _field: "proprietaire",
+            _field: "createdBy.id",
             _op: "eq",
             _val: userId,
           },
@@ -174,7 +180,7 @@ export class ResidenceController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "createdBy",
+          _field: "proprietaire.id",
           _op: "eq",
           _val: proprietaireId,
         },
@@ -287,6 +293,76 @@ export class ResidenceController {
         isAdmin: userRole.hasAdminAccess(),
         userId,
         residenceId: id,
+      }),
+    );
+
+    return this.responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceDto,
+    description: "Ajouter des dates d'indisponibilité à une résidence",
+  })
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Residences,
+    PermissionAction.Update,
+  ])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post(":id/unavailability-dates")
+  async addUnavailabilityDates(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+    @Body() payload: AddUnavailabilityDatesDto,
+  ) {
+    const response = await this.commandBus.execute(
+      new ManageUnavailabilityDatesCommand({
+        residenceId: id,
+        userId,
+        isAdmin: userRole.hasAdminAccess(),
+        action: UnavailabilityAction.Add,
+        dates: payload.dates,
+      }),
+    );
+
+    return this.responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceDto,
+    description: "Supprimer des dates d'indisponibilité d'une résidence",
+  })
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Residences,
+    PermissionAction.Update,
+  ])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete(":id/unavailability-dates")
+  async removeUnavailabilityDates(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+    @Body() payload: RemoveUnavailabilityDatesDto,
+  ) {
+    const response = await this.commandBus.execute(
+      new ManageUnavailabilityDatesCommand({
+        residenceId: id,
+        userId,
+        isAdmin: userRole.hasAdminAccess(),
+        action: UnavailabilityAction.Remove,
+        dates: payload.dates,
       }),
     );
 

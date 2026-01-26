@@ -135,8 +135,8 @@ export class BienImmobilierController {
       params._where = addConditionsToWhereClause(
         [
           {
-            _field: "proprietaire",
-            _l_op: "and",
+            _field: "proprietaire.id",
+            _op: "eq",
             _val: userId,
           },
         ],
@@ -196,8 +196,8 @@ export class BienImmobilierController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "proprietaire",
-          _l_op: "and",
+          _field: "proprietaire.id",
+          _op: "eq",
           _val: proprietaireId,
         },
       ],

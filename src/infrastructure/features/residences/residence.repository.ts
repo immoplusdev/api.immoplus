@@ -149,8 +149,8 @@ export class ResidenceRepository implements IResidenceRepository {
     const pageSize = query?._per_page ?? DEFAULT_PAGE_SIZE;
     const search = query?._search?.trim().toLowerCase() || "";
 
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0];
+    // const today = new Date();
+    // const formattedDate = today.toISOString().split("T")[0];
 
     const qb = this.dataSource
       .getRepository(ResidenceEntity)
@@ -170,9 +170,9 @@ export class ResidenceRepository implements IResidenceRepository {
       //     );
       //   }),
       // )
-      .setParameters({
-        today: formattedDate,
-      })
+      // .setParameters({
+      //   today: formattedDate,
+      // })
       .andWhere("residence.statusValidation = :status", {
         status: StatusValidationBienImmobilier.Valide,
       })
@@ -485,41 +485,64 @@ export class ResidenceRepository implements IResidenceRepository {
    *  Construit la requête de base optimisée
    */
   private buildBaseQuery(startDate: string, endDate: string) {
-    return this.dataSource
-      .getRepository(ResidenceEntity)
-      .createQueryBuilder("residence")
-      .leftJoin(
-        "residence.reservations",
-        "reservation",
-        "reservation.deleted_at IS NULL AND reservation.status_facture = :statusPaye",
-      )
-      .leftJoinAndSelect(
-        "residence.miniature",
-        "miniature",
-        "miniature.deleted_on IS NULL",
-      )
-      .leftJoinAndSelect("residence.video", "video", "video.deleted_on IS NULL")
-      .leftJoinAndSelect("residence.ville", "ville", "ville.deleted_at IS NULL")
-      .leftJoinAndSelect(
-        "residence.commune",
-        "commune",
-        "commune.deleted_at IS NULL",
-      )
-      .leftJoinAndSelect(
-        "residence.proprietaire",
-        "proprietaire",
-        "proprietaire.deleted_at IS NULL",
-      )
-      .andWhere("residence.status_validation = :status", {
-        status: StatusValidationBienImmobilier.Valide,
-      })
-      .andWhere("residence.residence_disponible = true")
-      .andWhere("residence.deleted_at IS NULL")
-      .setParameters({
-        startDate,
-        endDate,
-        statusPaye: StatusFacture.Paye,
-      });
+    return (
+      this.dataSource
+        .getRepository(ResidenceEntity)
+        .createQueryBuilder("residence")
+        .leftJoin(
+          "residence.reservations",
+          "reservation",
+          "reservation.deleted_at IS NULL AND reservation.status_facture = :statusPaye",
+        )
+        .leftJoinAndSelect(
+          "residence.miniature",
+          "miniature",
+          "miniature.deleted_on IS NULL",
+        )
+        .leftJoinAndSelect(
+          "residence.video",
+          "video",
+          "video.deleted_on IS NULL",
+        )
+        .leftJoinAndSelect(
+          "residence.ville",
+          "ville",
+          "ville.deleted_at IS NULL",
+        )
+        .leftJoinAndSelect(
+          "residence.commune",
+          "commune",
+          "commune.deleted_at IS NULL",
+        )
+        .leftJoinAndSelect(
+          "residence.proprietaire",
+          "proprietaire",
+          "proprietaire.deleted_at IS NULL",
+        )
+        .andWhere("residence.status_validation = :status", {
+          status: StatusValidationBienImmobilier.Valide,
+        })
+        .andWhere("residence.residence_disponible = true")
+        .andWhere("residence.deleted_at IS NULL")
+        // Exclure les résidences qui ont des dates d'indisponibilité dans la période demandée
+        .andWhere(
+          `(
+          residence.dates_reservation IS NULL
+          OR NOT EXISTS (
+            SELECT 1 FROM JSON_TABLE(
+              residence.dates_reservation,
+              '$[*]' COLUMNS(reserved_date DATE PATH '$.date')
+            ) AS jt
+            WHERE jt.reserved_date BETWEEN :startDate AND :endDate
+          )
+        )`,
+        )
+        .setParameters({
+          startDate,
+          endDate,
+          statusPaye: StatusFacture.Paye,
+        })
+    );
   }
 
   /**

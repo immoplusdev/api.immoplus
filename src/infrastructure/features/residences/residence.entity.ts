@@ -21,6 +21,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { File } from "@/core/domain/files";
 import { User } from "@/core/domain/users";
 import { ReservationEntity } from "../reservations/reservation.entity";
+import { ServiceDates } from "@/core/domain/common/models/service-dates.model";
 
 @Entity("residences")
 export class ResidenceEntity {
@@ -110,6 +111,14 @@ export class ResidenceEntity {
   fetesAutorises: boolean;
   @Column({ name: "regles_supplementaires", type: "text", nullable: true })
   reglesSupplementaires?: string;
+
+  @Column({
+    name: "dates_reservation",
+    type: "json",
+    nullable: true,
+    default: null,
+  })
+  datesReservation?: ServiceDates;
 
   @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "proprietaire_id" })
