@@ -17,7 +17,6 @@ import { Deps } from "@/core/domain/common/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import {
   CurrentUser,
-  OwnerAccessRequired,
   RequiredPermissions,
   RequiredRoles,
 } from "@/infrastructure/decorators";
@@ -28,7 +27,6 @@ import {
 } from "@/core/domain/permissions";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import {
-  GeolocalizedItemsSearchParamsQueryDto,
   SearchItemsParamsDto,
   SelectItemsParamsDto,
 } from "@/infrastructure/http";
@@ -338,7 +336,7 @@ export class BienImmobilierController {
     };
 
     if (!userRole.hasAdminAccess())
-      query._where.push({ _field: "createdBy", _val: userId });
+      query._where.push({ _field: "createdBy.id", _val: userId });
 
     await this.repository.deleteByQuery(query);
 
