@@ -211,7 +211,7 @@ export class UserRepository implements IUserRepository {
     const { data } = await this.repository.findByQuery({
       _where: [
         {
-          _field: "role",
+          _field: "role.id",
           _val: UserRole.Admin,
         },
       ],
