@@ -145,7 +145,7 @@ export class ResidenceController {
       params._where = addConditionsToWhereClause(
         [
           {
-            _field: "proprietaire",
+            _field: "createdBy.id",
             _op: "eq",
             _val: userId,
           },
@@ -180,7 +180,7 @@ export class ResidenceController {
     params._where = addConditionsToWhereClause(
       [
         {
-          _field: "createdBy",
+          _field: "proprietaire.id",
           _op: "eq",
           _val: proprietaireId,
         },

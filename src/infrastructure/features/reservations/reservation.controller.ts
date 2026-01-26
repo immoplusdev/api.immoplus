@@ -138,8 +138,8 @@ export class ReservationController {
       params._where = addConditionsToWhereClause(
         [
           {
-            _field: "createdBy",
-            _l_op: "or",
+            _field: "proprietaire.id",
+            _op: "eq",
             _val: userId,
           },
         ],

@@ -100,7 +100,7 @@ export class ReservationRepository implements IReservationRepository {
     );
 
     const idFilter: ItemsParamsCriterias = {
-      _field: "residence",
+      _field: "residence.id",
       _op: "in",
       _val: idsResponse.data.map((item) => item.id),
     };

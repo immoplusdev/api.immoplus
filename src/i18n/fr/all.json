@@ -32,7 +32,6 @@
     "email_not_found": "Adresse e-mail introuvable",
     "same_password": "Le nouveau mot de passe est identique à l'ancien. Veuillez saisir un mot de passe différent.",
     "forbidden_website": "Votre type de compte ne vous autorise pas à continuer sur cette page",
-
     "jwt_token_expired": "JWT token a expiré",
     "invalid_jwt_token": "JWT token non valide",
     "jwt_token_not_active": "JWT token pas encore actif",
@@ -54,25 +53,29 @@
   "notifications": {
     "demandes_visites": {
       "paiement_valide_client": {
-        "subject": "\uD83D\uDE97 Visite Express confirmée !",
-        "message": "✅ Paiement validé ! Votre visite express a été programmée avec succès.\\n\uD83D\uDCC5 Date : Sous 24 heures (nous vous contacterons bientôt pour confirmer l’heure exacte).\\n\uD83D\uDE97 Service inclus : Un véhicule vous sera mis à disposition.\\n\\nPréparez-vous pour une expérience rapide et pratique ! \uD83C\uDFE1✨"
+        "subject": "🚗 Visite Express confirmée !",
+        "message": "✅ Paiement validé ! Votre visite express a été programmée avec succès.\\n📅 Date : Sous 24 heures (nous vous contacterons bientôt pour confirmer l’heure exacte).\\n🚗 Service inclus : Un véhicule vous sera mis à disposition.\\n\\nPréparez-vous pour une expérience rapide et pratique ! 🏡✨"
       },
       "paiement_valide_pro": {
-        "subject": "\uD83D\uDD14 Nouvelle demande de visite !",
+        "subject": "🔔 Nouvelle demande de visite !",
         "message": "Nouvelle demande de visite reçue, ouvrez l'application pour voir les détails."
       },
       "visite_programmee_client": {
-        "subject": "\uD83D\uDCC5 Votre visite est confirmée !",
-        "message": "✅ Bonne nouvelle ! Le propriétaire a validé votre demande de visite.\nMerci d’être à l’heure pour votre rendez-vous. On espère que ce sera un coup de cœur ! \uD83C\uDFE1✨"
+        "subject": "📅 Votre visite est confirmée !",
+        "message": "✅ Bonne nouvelle ! Le propriétaire a validé votre demande de visite.\nMerci d’être à l’heure pour votre rendez-vous. On espère que ce sera un coup de cœur ! 🏡✨"
+      },
+      "nouvelle_demande_visite_normale_pro": {
+        "subject": "🔔 Nouvelle demande de visite !",
+        "message": "Vous avez reçu une nouvelle demande de visite pour votre bien immobilier. Ouvrez l'application pour consulter les détails et programmer la visite."
       }
     },
     "reservations": {
       "paiement_valide_client": {
-        "subject": "\uD83C\uDF89 Réservation confirmée !",
+        "subject": "🎉 Réservation confirmée !",
         "message": "Votre réservation a été validée avec succès ! \n\n📋 Votre code de réservation : {codeReservation} \n\n⚠️ Veuillez présenter ce code à l'accueil le jour de votre arrivée à la résidence.\n\n Nous sommes impatients de vous accueillir ! Passez un excellent séjour ! ✨🏴"
       },
       "paiement_valide_pro": {
-        "subject": "\uD83D\uDD14 Nouvelle réservation reçue !",
+        "subject": "🔔 Nouvelle réservation reçue !",
         "message": "Nouvelle réservation reçue, ouvrez l'application pour voir les détails."
       },
       "nouvelle_residence_admin": {

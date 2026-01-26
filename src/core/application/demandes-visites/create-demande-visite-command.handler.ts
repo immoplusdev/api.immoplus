@@ -9,6 +9,7 @@ import { Inject } from "@nestjs/common";
 import {
   IDemandeVisiteRepository,
   StatusDemandeVisite,
+  TypeDemandeVisite,
 } from "@/core/domain/demandes-visites";
 import { Deps } from "@/core/domain/common/ioc";
 import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
@@ -18,11 +19,14 @@ import {
   EstimerPrixDemandeVisiteQueryResponse,
   GetDemandeVisiteByIdQuery,
 } from "@/core/application/demandes-visites";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
+import { IGlobalizationService } from "@/core/domain/globalization";
 
 @CommandHandler(CreateDemandeVisiteCommand)
-export class CreateDemandeVisiteCommandHandler
-  implements ICommandHandler<CreateDemandeVisiteCommand>
-{
+export class CreateDemandeVisiteCommandHandler implements ICommandHandler<CreateDemandeVisiteCommand> {
   constructor(
     private readonly queryBus: QueryBus,
     @Inject(Deps.DemandeVisiteRepository)
@@ -31,6 +35,10 @@ export class CreateDemandeVisiteCommandHandler
     private readonly biensImmobiliesRepository: IBienImmobilierRepository,
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
   ) {}
 
   async execute(
@@ -59,12 +67,12 @@ export class CreateDemandeVisiteCommandHandler
       {
         _where: [
           {
-            _field: "bienImmobilier",
+            _field: "bienImmobilier.id",
             _op: "eq",
             _val: command.bienImmobilier,
           },
           {
-            _field: "createdBy",
+            _field: "createdBy.id",
             _op: "eq",
             _val: command.userId,
           },
@@ -97,6 +105,25 @@ export class CreateDemandeVisiteCommandHandler
       },
       false,
     );
+
+    if (command.typeDemandeVisite === TypeDemandeVisite.Normal) {
+      await this.notificationService.sendNotification({
+        userId: bienImmobilier.proprietaire as string,
+        subject: this.globalizationService.t(
+          "all.notifications.demandes_visites.nouvelle_demande_visite_normale_pro.subject",
+        ),
+        message: this.globalizationService.t(
+          "all.notifications.demandes_visites.nouvelle_demande_visite_normale_pro.message",
+        ),
+        sendMail: true,
+        sendSms: true,
+        skipInAppNotification: false,
+        data: {
+          type: PushNotificationType.DemandeVisite,
+          id,
+        },
+      });
+    }
 
     return await this.queryBus.execute(new GetDemandeVisiteByIdQuery({ id }));
   }
