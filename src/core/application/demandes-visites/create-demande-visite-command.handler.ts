@@ -107,6 +107,10 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
     );
 
     if (command.typeDemandeVisite === TypeDemandeVisite.Normal) {
+      console.log(
+        "bienImmobilier.proprietaire as string: ",
+        bienImmobilier.proprietaire as string,
+      );
       await this.notificationService.sendNotification({
         userId: bienImmobilier.proprietaire as string,
         subject: this.globalizationService.t(
