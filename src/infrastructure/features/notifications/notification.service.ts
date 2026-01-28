@@ -31,7 +31,7 @@ export class NotificationService implements INotificationService {
   ) {}
 
   async sendNotification(params: SendNotificationParams) {
-    console.log("params", params);
+    console.log("Notification params: ", params);
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
