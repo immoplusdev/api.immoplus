@@ -14,6 +14,10 @@ auth:bearer {
   token: {{proToken}}
 }
 
+vars:pre-request {
+  API_URL: http://localhost:3000
+}
+
 tests {
   test("Should receive a none empty list of date objects", function() {
     const { data } = res.getBody();
