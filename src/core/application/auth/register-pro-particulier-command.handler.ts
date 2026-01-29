@@ -16,6 +16,7 @@ import { IConfigsManagerService } from "@/core/domain/configs";
 import { sanitizePhoneNumber } from "@/lib/ts-utilities/strings";
 import { UserOtpRepository } from "@/infrastructure/features/users/user-otp.repository";
 import { isFreePassEmail } from "@/infrastructure/features/auth/helpers";
+import { SocialAuthProvider } from "@/core/application/auth/social-login.command";
 import {
   INotificationService,
   PushNotificationType,
@@ -87,6 +88,10 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
       role: UserRole.ProParticulier,
       additionalData: userData.id as never,
       createdBy: null,
+      googleId:
+        command.provider === SocialAuthProvider.Google ? command.token : null,
+      facebookId:
+        command.provider === SocialAuthProvider.Facebook ? command.token : null,
     });
 
     // Send welcome notification
@@ -127,7 +132,10 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
   async validateInput(command: RegisterProParticulierCommand) {
     await this.verifyEmailAvailable(command.email);
     await this.verifyPhoneNumberAvailable(command.phoneNumber);
-    await this.verifyOtpToken(command.token, command.email);
+    // Skip OTP verification for social auth registrations
+    if (!command.provider) {
+      await this.verifyOtpToken(command.token, command.email);
+    }
   }
 
   async findDeletedUser(email: string, phoneNumber: string) {
@@ -185,7 +193,7 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     }
 
     // Restaurer l'utilisateur en supprimant le deletedAt et en mettant à jour ses informations
-    await this.usersRepository.updateOne(deletedUser.id, {
+    const updateData: any = {
       email: command.email.toLowerCase(),
       phoneNumber: command.phoneNumber,
       password: this.passwordManagerService.encryptPassword(command.password),
@@ -195,7 +203,16 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
       role: UserRole.ProParticulier,
       deletedAt: null, // Restaurer l'utilisateur
       updatedAt: new Date(),
-    });
+    };
+
+    // Add social ID if provider is specified
+    if (command.provider === SocialAuthProvider.Google) {
+      updateData.googleId = command.token;
+    } else if (command.provider === SocialAuthProvider.Facebook) {
+      updateData.facebookId = command.token;
+    }
+
+    await this.usersRepository.updateOne(deletedUser.id, updateData);
 
     // Récupérer l'utilisateur mis à jour
     return await this.usersRepository.findOne(deletedUser.id);
