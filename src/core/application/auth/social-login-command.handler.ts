@@ -5,7 +5,11 @@ import { Inject } from "@nestjs/common";
 import { ILoggerService } from "@/core/domain/logging";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserRepository, User, UserStatus } from "@/core/domain/users";
-import { IAuthService, UserCannotLoginException } from "@/core/domain/auth";
+import {
+  IAuthService,
+  InvalidCredentialsException,
+  UserCannotLoginException,
+} from "@/core/domain/auth";
 import {
   ISocialAuthService,
   SocialUserProfile,
@@ -53,18 +57,22 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
         command.provider,
         socialProfile.socialId,
       );
+      await this.createUserSession(user);
+      return this.generateUserTokens(user);
     } else {
       // Create new user from social profile
-      user = await this.createUserFromSocialProfile(
-        command.provider,
-        socialProfile,
-        command.source,
-      );
+      // user = await this.createUserFromSocialProfile(
+      //   command.provider,
+      //   socialProfile,
+      //   command.source,
+      // );
+      throw new InvalidCredentialsException({
+        message: "$t:all.exception.social_account_not_found",
+        statusCode: 404,
+        error: "Forbidden",
+        code: "SOCIAL_ACCOUNT_NOT_FOUND",
+      });
     }
-
-    await this.createUserSession(user);
-
-    return this.generateUserTokens(user);
   }
 
   private async verifySocialToken(
