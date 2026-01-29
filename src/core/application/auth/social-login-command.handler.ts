@@ -69,7 +69,7 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
       throw new InvalidCredentialsException({
         message: "$t:all.exception.social_account_not_found",
         statusCode: 404,
-        error: "Forbidden",
+        error: "SocialAccountNotFound",
         code: "SOCIAL_ACCOUNT_NOT_FOUND",
       });
     }
