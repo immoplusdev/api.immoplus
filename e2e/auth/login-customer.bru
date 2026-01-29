@@ -14,8 +14,13 @@ body:json {
   {
     "username": "{{DEFAULT_CUSTOMER_EMAIL}}",
     "password": "{{DEFAULT_USER_PASSWORD}}",
-    "source": "customer_app"
+    "source": "pro_app"
   }
+}
+
+vars:pre-request {
+  DEFAULT_CUSTOMER_EMAIL: moizassoko@gmail.com
+  DEFAULT_USER_PASSWORD: Assoko03.
 }
 
 script:post-response {

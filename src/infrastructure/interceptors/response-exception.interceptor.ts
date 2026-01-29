@@ -51,9 +51,14 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
           } else {
             if (!this.configsManagerService.isAppProfileProduction()) {
               this.loggerService.error("App Exception", err);
+              // En développement, afficher le message technique
+              throw new UnexpectedException(
+                err.message ?? `$t:all.exception.something_went_wrong`,
+              );
             }
+            // En production, toujours retourner un message personnalisé
             throw new UnexpectedException(
-              err.message ?? `$t:all.exception.something_went_wrong`,
+              `$t:all.exception.something_went_wrong`,
             );
           }
         },
