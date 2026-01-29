@@ -38,7 +38,8 @@
     "jwt_token_required": "JWT token requis",
     "authentication_failed": "Authentification echouée",
     "insufficient_permissions": "Permissions insuffisantes",
-    "invalid_refresh_token": "Token de rafraîchissement invalide"
+    "invalid_refresh_token": "Token de rafraîchissement invalide",
+    "social_account_not_found": "Auncun compte trouvé, Veuillez vous inscrire pour continuer"
   },
   "validation": {
     "create_user_error": "Erreur lors de la création de l'utilisateur",
