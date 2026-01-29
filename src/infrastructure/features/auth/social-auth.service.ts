@@ -34,12 +34,12 @@ export class SocialAuthService implements ISocialAuthService {
 
   async verifyGoogleToken(token: string): Promise<SocialUserProfile> {
     try {
-      const googleClientId =
-        this.configsManagerService.getEnvVariable<string>("GOOGLE_CLIENT_ID");
+      const googleClientIds = this.configsManagerService
+        .getEnvVariable<string>("GOOGLE_CLIENT_IDS")
+        .split(",")
+        .map((id) => id.trim());
 
-      // Verify the token with Google's tokeninfo endpoint
       const tokenInfoUrl = `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`;
-
       const response = await fetch(tokenInfoUrl);
 
       if (!response.ok) {
@@ -48,23 +48,20 @@ export class SocialAuthService implements ISocialAuthService {
 
       const payload: GoogleTokenInfo = await response.json();
 
-      // Verify the audience matches our client ID
-      if (payload.aud !== googleClientId) {
+      // ✅ Vérifier que le client_id est autorisé
+      if (!googleClientIds.includes(payload.aud)) {
         this.loggerService.error("Google token audience mismatch", {
-          expected: googleClientId,
+          expected: googleClientIds,
           received: payload.aud,
         });
         throw new InvalidSocialTokenException();
       }
 
-      // Verify the token issuer
+      // ✅ Vérifier l’issuer
       if (
         payload.iss !== "accounts.google.com" &&
         payload.iss !== "https://accounts.google.com"
       ) {
-        this.loggerService.error("Google token issuer invalid", {
-          issuer: payload.iss,
-        });
         throw new InvalidSocialTokenException();
       }
 
