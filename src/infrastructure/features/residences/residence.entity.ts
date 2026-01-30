@@ -93,9 +93,8 @@ export class ResidenceEntity {
 
   @Column({
     name: "prix_reservation",
-    type: "decimal",
-    precision: 15,
-    scale: 2,
+    type: "int",
+    default: 0,
   })
   prixReservation: number;
   @Column({ name: "duree_min_sejour", type: "int", nullable: true })
