@@ -91,7 +91,12 @@ export class ResidenceEntity {
   })
   statusValidation: StatusValidationBienImmobilier;
 
-  @Column({ name: "prix_reservation", type: "int" })
+  @Column({
+    name: "prix_reservation",
+    type: "decimal",
+    precision: 15,
+    scale: 2,
+  })
   prixReservation: number;
   @Column({ name: "duree_min_sejour", type: "int", nullable: true })
   dureeMinSejour: number;
