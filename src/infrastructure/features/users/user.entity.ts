@@ -37,16 +37,12 @@ export class UserEntity {
     name: "google_id",
     type: "text",
     nullable: true,
-    length: 500,
-    unique: true,
   })
   googleId?: string;
   @Column({
     name: "facebook_id",
     type: "text",
     nullable: true,
-    length: 500,
-    unique: true,
   })
   facebookId?: string;
 
