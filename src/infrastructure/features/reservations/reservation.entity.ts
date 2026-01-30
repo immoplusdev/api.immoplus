@@ -57,25 +57,19 @@ export class ReservationEntity {
 
   @Column({
     name: "montant_total_reservation",
-    type: "decimal",
-    precision: 15,
-    scale: 2,
+    type: "int",
     default: 0,
   })
   montantTotalReservation: number;
   @Column({
     name: "montant_commission",
-    type: "decimal",
-    precision: 15,
-    scale: 2,
+    type: "int",
     default: 0,
   })
   montantCommission: number;
   @Column({
     name: "montant_paye",
-    type: "decimal",
-    precision: 15,
-    scale: 2,
+    type: "int",
     default: 0,
   })
   montantPaye: number;

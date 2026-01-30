@@ -84,7 +84,7 @@ export class BienImmobilierEntity {
   })
   statusValidation: StatusValidationBienImmobilier;
 
-  @Column({ name: "prix", type: "decimal", precision: 15, scale: 2 })
+  @Column({ name: "prix", type: "int" })
   prix: number;
 
   @Column({ name: "metadata", type: "json", nullable: true })
