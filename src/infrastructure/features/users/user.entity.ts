@@ -35,16 +35,14 @@ export class UserEntity {
   // Social auth data
   @Column({
     name: "google_id",
-    type: "varchar",
+    type: "text",
     nullable: true,
-    unique: true,
   })
   googleId?: string;
   @Column({
     name: "facebook_id",
-    type: "varchar",
+    type: "text",
     nullable: true,
-    unique: true,
   })
   facebookId?: string;
 

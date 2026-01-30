@@ -5,14 +5,18 @@ import { Inject } from "@nestjs/common";
 import { ILoggerService } from "@/core/domain/logging";
 import { Deps } from "@/core/domain/common/ioc";
 import { IUserRepository, User, UserStatus } from "@/core/domain/users";
-import { IAuthService, UserCannotLoginException } from "@/core/domain/auth";
+import {
+  IAuthService,
+  InvalidCredentialsException,
+  UserCannotLoginException,
+} from "@/core/domain/auth";
 import {
   ISocialAuthService,
   SocialUserProfile,
 } from "@/core/domain/auth/i-social-auth.service";
 import { InvalidSocialTokenException } from "@/core/domain/auth/invalid-social-token.exception";
 import { verifyUserType } from "../common/verify-user-type";
-import { UserRole } from "@/core/domain/roles";
+import { UserApp, UserRole } from "@/core/domain/roles";
 
 @CommandHandler(SocialLoginCommand)
 export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCommand> {
@@ -53,17 +57,22 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
         command.provider,
         socialProfile.socialId,
       );
+      await this.createUserSession(user);
+      return this.generateUserTokens(user);
     } else {
       // Create new user from social profile
-      user = await this.createUserFromSocialProfile(
-        command.provider,
-        socialProfile,
-      );
+      // user = await this.createUserFromSocialProfile(
+      //   command.provider,
+      //   socialProfile,
+      //   command.source,
+      // );
+      throw new InvalidCredentialsException({
+        message: "$t:all.exception.social_account_not_found",
+        statusCode: 404,
+        error: "SocialAccountNotFound",
+        code: "SOCIAL_ACCOUNT_NOT_FOUND",
+      });
     }
-
-    await this.createUserSession(user);
-
-    return this.generateUserTokens(user);
   }
 
   private async verifySocialToken(
@@ -136,7 +145,16 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
   private async createUserFromSocialProfile(
     provider: SocialAuthProvider,
     profile: SocialUserProfile,
+    source: UserApp,
   ): Promise<User> {
+    let role: UserRole;
+
+    if (source === UserApp.ProApp) {
+      role = UserRole.ProEntreprise;
+    } else {
+      role = UserRole.Customer;
+    }
+
     const newUser: Partial<User> = {
       email: profile.email,
       firstName: profile.firstName,
@@ -144,7 +162,7 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
       avatar: profile.avatar,
       emailVerified: !!profile.email,
       status: UserStatus.Active,
-      role: UserRole.Customer,
+      role: role,
       authLoginAttempts: 0,
       identityVerified: false,
       phoneNumberVerified: false,
