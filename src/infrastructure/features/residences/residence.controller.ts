@@ -104,13 +104,10 @@ export class ResidenceController {
       proprietaire: payload.proprietaire ? payload.proprietaire : userId,
     });
 
-    // Notify all admin users about the new residence
-    try {
-      await this.notifyAdminsNewResidence(response.id);
-    } catch (error) {
+    // Notify all admin users about the new residence (non-blocking)
+    this.notifyAdminsNewResidence(response.id).catch((error) => {
       console.error("Error notifying admins about new residence:", error);
-      // Don't throw error to prevent blocking residence creation
-    }
+    });
     return this.responseMapper.mapFrom(response);
   }
 
