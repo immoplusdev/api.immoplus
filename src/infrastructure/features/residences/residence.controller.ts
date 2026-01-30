@@ -105,8 +105,12 @@ export class ResidenceController {
     });
 
     // Notify all admin users about the new residence
-    await this.notifyAdminsNewResidence(response.id);
-
+    try {
+      await this.notifyAdminsNewResidence(response.id);
+    } catch (error) {
+      console.error("Error notifying admins about new residence:", error);
+      // Don't throw error to prevent blocking residence creation
+    }
     return this.responseMapper.mapFrom(response);
   }
 
