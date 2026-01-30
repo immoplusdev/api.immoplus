@@ -55,11 +55,11 @@ export class ReservationEntity {
   @Column({ name: "pro_reverse", type: "bool", default: false })
   proReverse?: boolean;
 
-  @Column({ name: "montant_total_reservation", type: "int" })
+  @Column({ name: "montant_total_reservation", type: "bigint" })
   montantTotalReservation: number;
-  @Column({ name: "montant_commission", type: "int" })
+  @Column({ name: "montant_commission", type: "bigint" })
   montantCommission: number;
-  @Column({ name: "montant_paye", type: "int", default: 0 })
+  @Column({ name: "montant_paye", type: "bigint", default: 0 })
   montantPaye: number;
 
   @Column({ name: "notes", type: "text", nullable: true })
