@@ -57,20 +57,32 @@ export class ReservationEntity {
 
   @Column({
     name: "montant_total_reservation",
-    type: "int",
+    type: "bigint",
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
   })
   montantTotalReservation: number;
   @Column({
     name: "montant_commission",
-    type: "int",
+    type: "bigint",
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
   })
   montantCommission: number;
   @Column({
     name: "montant_paye",
-    type: "int",
+    type: "bigint",
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
   })
   montantPaye: number;
 

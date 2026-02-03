@@ -18,13 +18,26 @@ export class TransfersEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({
+    type: "bigint",
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   amount: number;
 
   @Column({ type: "varchar", length: 3, default: "XOF" })
   currency: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  @Column({
+    type: "bigint",
+    nullable: true,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   fees?: number;
 
   @ManyToOne(() => UserEntity, (user) => user.id)

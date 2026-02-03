@@ -56,9 +56,23 @@ export class DemandeVisiteEntity {
 
   @Column({ name: "retrait_pro_effectue", type: "bool", default: false })
   retraitProEffectue: boolean;
-  @Column({ name: "montant_total_demande_visite", type: "int" })
+  @Column({
+    name: "montant_total_demande_visite",
+    type: "bigint",
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   montantTotalDemandeVisite: number;
-  @Column({ name: "montant_demande_visite_sans_commission", type: "int" })
+  @Column({
+    name: "montant_demande_visite_sans_commission",
+    type: "bigint",
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   montantCommission: number;
 
   @Column({ name: "notes", type: "text", nullable: true })

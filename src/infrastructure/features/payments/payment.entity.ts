@@ -24,9 +24,24 @@ export class PaymentEntity {
   // Basic Fields
   @PrimaryGeneratedColumn("uuid")
   id: string;
-  @Column({ name: "amount", type: "int" })
+  @Column({
+    name: "amount",
+    type: "bigint",
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   amount: number;
-  @Column({ name: "amount_no_fees", type: "int", nullable: true })
+  @Column({
+    name: "amount_no_fees",
+    type: "bigint",
+    nullable: true,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   amountNoFees: number;
   @ManyToOne(() => UserEntity, (item) => item.id, { nullable: true })
   @JoinColumn({ name: "customer_id" })

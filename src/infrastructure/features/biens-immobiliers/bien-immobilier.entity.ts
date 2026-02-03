@@ -84,7 +84,14 @@ export class BienImmobilierEntity {
   })
   statusValidation: StatusValidationBienImmobilier;
 
-  @Column({ name: "prix", type: "int" })
+  @Column({
+    name: "prix",
+    type: "bigint",
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
+  })
   prix: number;
 
   @Column({ name: "metadata", type: "json", nullable: true })

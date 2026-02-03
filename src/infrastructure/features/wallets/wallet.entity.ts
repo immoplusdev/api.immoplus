@@ -24,19 +24,23 @@ export class WalletEntity {
 
   @Column({
     name: "available_balance",
-    type: "decimal",
-    precision: 10,
-    scale: 2,
+    type: "bigint",
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
   })
   availableBalance: number; // Retirable
 
   @Column({
     name: "pending_balance",
-    type: "decimal",
-    precision: 10,
-    scale: 2,
+    type: "bigint",
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
   })
   pendingBalance: number; // En attente de déblocage
 
