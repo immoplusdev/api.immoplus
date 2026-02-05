@@ -93,8 +93,12 @@ export class ResidenceEntity {
 
   @Column({
     name: "prix_reservation",
-    type: "int",
+    type: "bigint",
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseInt(value, 10),
+    },
   })
   prixReservation: number;
   @Column({ name: "duree_min_sejour", type: "int", nullable: true })

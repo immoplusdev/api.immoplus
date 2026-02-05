@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code de vérification</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f2f6fb;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td align="center" style="padding:40px 15px;">
+
+        <!-- Card -->
+        <table width="100%" style="max-width:520px;background:#ffffff;border-radius:14px;padding:35px 30px;box-shadow:0 10px 25px rgba(0,0,0,0.05);">
+
+          <!-- Logo / Header -->
+          <tr>
+            <td align="center" style="padding-bottom:10px;">
+              <h1 style="margin:0;font-size:22px;color:#111;font-weight:700;">
+                Vérification du compte
+              </h1>
+              <p style="margin:8px 0 0;color:#6b7280;font-size:14px;">
+                Utilisez le code ci-dessous pour continuer
+              </p>
+            </td>
+          </tr>
+
+          <!-- Greeting -->
+          <tr>
+            <td style="padding-top:25px;color:#333;font-size:15px;line-height:1.6;">
+              Bonjour <strong>{{name}}</strong>,
+              <br/><br/>
+              Voici votre code de vérification à 6 chiffres :
+            </td>
+          </tr>
+
+          <!-- OTP BOX -->
+          <tr>
+            <td align="center" style="padding:30px 0;">
+              <div style="
+                background:linear-gradient(135deg,#0497d8,#0373a6);
+                color:#ffffff;
+                font-size:32px;
+                letter-spacing:10px;
+                font-weight:700;
+                padding:18px 28px;
+                border-radius:12px;
+                display:inline-block;
+                box-shadow:0 8px 20px rgba(4,151,216,0.35);
+              ">
+                {{otp}}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Info -->
+          <tr>
+            <td style="color:#6b7280;font-size:14px;line-height:1.6;">
+              Ce code expire dans <strong style="color:#111;">10 minutes</strong>.
+              <br/>
+              Si vous n’êtes pas à l’origine de cette demande, ignorez simplement cet email.
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding:25px 0 10px;">
+              <hr style="border:none;border-top:1px solid #e5e7eb;" />
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="font-size:12px;color:#9ca3af;">
+              © {{year}} StylePass. Tous droits réservés.
+            </td>
+          </tr>
+
+        </table>
+        <!-- End Card -->
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
