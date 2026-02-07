@@ -1,7 +1,11 @@
 import { Injectable, Inject, BadRequestException } from "@nestjs/common";
 import { UserOtpRepository } from "./user-otp.repository";
 import { UserOtpEntity } from "./user-otp.entity";
-import { IMailService } from "@/core/domain/notifications";
+import {
+  IMailService,
+  IEmailTemplateService,
+  EmailTemplate,
+} from "@/core/domain/notifications";
 import { Deps } from "@/core/domain/common/ioc";
 import * as crypto from "crypto";
 import { UnauthorizedException } from "@/core/domain/auth";
@@ -12,6 +16,8 @@ export class UserOtpService {
     private readonly userOtpRepository: UserOtpRepository,
     @Inject(Deps.MailService)
     private readonly mailService: IMailService,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
   ) {}
 
   async sendOtp(email: string): Promise<string> {
@@ -44,15 +50,23 @@ export class UserOtpService {
       await this.userOtpRepository.createOne(userOtp);
     }
 
+    const otpDigits = otp.split("");
+    const html = await this.emailTemplateService.render(EmailTemplate.OTP, {
+      prenom: "Utilisateur",
+      otpDigit1: otpDigits[0] || "",
+      otpDigit2: otpDigits[1] || "",
+      otpDigit3: otpDigits[2] || "",
+      otpDigit4: otpDigits[3] || "",
+      otpDigit5: otpDigits[4] || "",
+      otpDigit6: otpDigits[5] || "",
+      lien: "https://immoplus.ci",
+      unsubscribe_link: "https://immoplus.ci/unsubscribe",
+    });
+
     await this.mailService.sendMail({
       to: email,
       subject: "Code de vérification - ImmoPlus",
-      html: `
-        <h2>Code de vérification</h2>
-        <p>Votre code de vérification est : <strong>${otp}</strong></p>
-        <p>Ce code expire dans 15 minutes.</p>
-        <p>Si vous n'avez pas demandé ce code, ignorez cet email.</p>
-      `,
+      html,
     });
 
     return "Code de vérification envoyé par email avec succès";
