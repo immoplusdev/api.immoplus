@@ -9,6 +9,7 @@ import { LoggingModule } from "@/infrastructure/features/logging";
 import { MailService } from "@/infrastructure/features/notifications/mail.service";
 import { NotificationService } from "./notification.service";
 import { UserModule, UserRepository } from "@/infrastructure/features/users";
+import { EmailTemplateService } from "@/infrastructure/features/notifications/email-template.service";
 
 const providers: Provider[] = [
   {
@@ -26,6 +27,10 @@ const providers: Provider[] = [
   {
     provide: Deps.MailService,
     useClass: MailService,
+  },
+  {
+    provide: Deps.EmailTemplateService,
+    useClass: EmailTemplateService,
   },
 ];
 
