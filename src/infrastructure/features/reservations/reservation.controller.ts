@@ -134,6 +134,18 @@ export class ReservationController {
   ) {
     const responseMapper = new WrapperResponseDtoMapper<ReservationDto[]>();
 
+    // Filtrer uniquement les réservations payées
+    params._where = addConditionsToWhereClause(
+      [
+        {
+          _field: "statusFacture",
+          _op: "eq",
+          _val: StatusFacture.Paye,
+        },
+      ],
+      params._where,
+    );
+
     if (!userRole.hasAdminAccess())
       params._where = addConditionsToWhereClause(
         [
