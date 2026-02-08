@@ -1,5 +1,8 @@
 export enum EmailTemplate {
   OTP = "otp",
+  NEW_RESIDENCE_ADMIN = "new-residence-admin",
+  WELCOME = "welcome",
+  WELCOME_PRO = "welcome-pro",
 }
 
 export interface EmailTemplateData {

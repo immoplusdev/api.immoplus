@@ -56,6 +56,9 @@ import { IUserRepository } from "@/core/domain/users";
 import {
   INotificationService,
   PushNotificationType,
+  IEmailTemplateService,
+  EmailTemplate,
+  IMailService,
 } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
@@ -77,6 +80,10 @@ export class ResidenceController {
     private readonly notificationService: INotificationService,
     @Inject(Deps.GlobalizationService)
     private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
+    @Inject(Deps.MailService)
+    private readonly mailService: IMailService,
   ) {}
 
   @ApiResponse({
@@ -420,6 +427,25 @@ export class ResidenceController {
   private async notifyAdminsNewResidence(residenceId: string): Promise<void> {
     try {
       const adminUsers = await this.usersRepository.findAdminUsers();
+      const residence = await this.repository.findOne(residenceId);
+
+      if (!residence) {
+        console.error("Residence not found for notification:", residenceId);
+        return;
+      }
+
+      // Get proprietaire info
+      let proprietaireName = "Non spécifié";
+      if (residence.proprietaire) {
+        const proprietaire = await this.usersRepository.findOne(
+          residence.proprietaire,
+        );
+        if (proprietaire) {
+          proprietaireName =
+            `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+            proprietaire.email;
+        }
+      }
 
       const subject = this.globalizationService.t(
         "all.notifications.reservations.nouvelle_residence_admin.subject",
@@ -429,12 +455,35 @@ export class ResidenceController {
       );
 
       for (const admin of adminUsers) {
+        // Render HTML email template
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.NEW_RESIDENCE_ADMIN,
+          {
+            admin_name:
+              `${admin.firstName || ""} ${admin.lastName || ""}`.trim() ||
+              "Admin",
+            residence_name: residence.nom || "Sans nom",
+            id_residence: residenceId,
+            nom_proprietaire: proprietaireName,
+            lien: `https://admin.immoplus.ci`,
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        // Send email with HTML template
+        await this.mailService.sendMail({
+          to: admin.email,
+          subject,
+          html,
+        });
+
+        // Send push notification (without email since we already sent it)
         await this.notificationService.sendNotification({
           userId: admin.id,
           subject,
           message,
           skipInAppNotification: false,
-          sendMail: true,
+          sendMail: false,
           sendSms: false,
           returnUrl: `/admin/residences/${residenceId}`,
           data: {
