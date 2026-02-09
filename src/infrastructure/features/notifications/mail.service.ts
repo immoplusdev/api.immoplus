@@ -64,6 +64,7 @@ export class MailService implements IMailService {
       greetingTimeout: 10000,
       socketTimeout: 10000,
     };
+    console.log("mailingConfig: ", this.mailingConfig);
     this.mailTransport = nodemailer.createTransport(this.mailingConfig);
   }
 
