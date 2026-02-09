@@ -1,4 +1,4 @@
-import { Module, Provider } from "@nestjs/common";
+import { forwardRef, Module, Provider } from "@nestjs/common";
 import { WalletsService } from "./wallet.service";
 import { WalletsController } from "./wallet.controller";
 import { TypeormModule } from "@/infrastructure/typeorm";
@@ -34,6 +34,9 @@ import { HasPinQuery } from "@/core/application/wallet/queries/has-pin.query";
 import { SetPinHandler } from "@/core/application/wallet/commands/handlers/set-pin.handler";
 import { VerifyPinHandler } from "@/core/application/wallet/commands/handlers/verify-pin.handler";
 import { HasPinHandler } from "@/core/application/wallet/queries/handlers/has-pin.handler";
+import { NotificationModule } from "@/infrastructure/features/notifications/notification.module";
+import { UserModule } from "@/infrastructure/features/users";
+import { GlobalizationModule } from "@/infrastructure/features/globalization/globalization.module";
 
 const providers: Provider[] = [
   {
@@ -75,7 +78,7 @@ const providers: Provider[] = [
   HasPinHandler,
 ];
 @Module({
-  imports: [TypeormModule, CqrsModule],
+  imports: [TypeormModule, CqrsModule, forwardRef(() => NotificationModule), forwardRef(() => UserModule), GlobalizationModule],
   providers: [...providers],
   controllers: [WalletsController],
   exports: [...providers],

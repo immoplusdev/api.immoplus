@@ -4,7 +4,11 @@ import { IMapper } from "@/lib/ts-utilities";
 
 export class ResidenceDtoMapper implements IMapper<Residence, ResidenceDto> {
   mapFrom(object: Residence): ResidenceDto {
-    return new ResidenceDto(object);
+    return new ResidenceDto({
+      ...object,
+      ville: object.ville,
+      commune: object.commune,
+    });
   }
 
   mapTo(object: ResidenceDto): Residence {
