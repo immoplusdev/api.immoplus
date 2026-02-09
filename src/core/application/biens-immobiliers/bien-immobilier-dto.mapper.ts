@@ -13,9 +13,21 @@ export class BienImmobilierDtoMapper implements IMapper<
         ? object.proprietaire
         : getIdFromObject(object.proprietaire);
 
+    const ville_id =
+      typeof object.ville === "string"
+        ? object.ville
+        : getIdFromObject(object.ville);
+
+    const commune_id =
+      typeof object.commune === "string"
+        ? object.commune
+        : getIdFromObject(object.commune);
+
     return new BienImmobilierDto({
       ...object,
       proprietaire,
+      ville_id,
+      commune_id,
       ville: object.ville,
       commune: object.commune,
     });
