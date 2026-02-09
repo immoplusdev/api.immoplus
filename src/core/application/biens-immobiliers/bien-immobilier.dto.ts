@@ -49,10 +49,16 @@ export class BienImmobilierDto {
   commune_id?: string;
 
   @ApiProperty({ format: "uuid" })
-  ville?: Ville | string;
+  ville?: string;
 
   @ApiProperty({ format: "uuid" })
-  commune?: Commune | string;
+  commune?: string;
+
+  @ApiProperty()
+  ville_model?: Ville;
+
+  @ApiProperty()
+  commune_model?: Commune;
 
   @ApiProperty()
   adresse?: string;

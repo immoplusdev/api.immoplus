@@ -23,8 +23,10 @@ export class BienImmobilier {
   tags?: string[];
   images?: string[];
   video?: string;
-  ville?: Ville | string;
-  commune?: Commune | string;
+  ville?: string;
+  commune?: string;
+  ville_model?: Ville;
+  commune_model?: Commune;
   adresse?: string;
   position?: GeoJsonPoint;
   latitude?: number;

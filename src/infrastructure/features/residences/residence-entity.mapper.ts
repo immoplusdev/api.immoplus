@@ -12,8 +12,10 @@ export class ResidenceEntityMapper implements IMapper<
       ...param,
       miniature: getIdFromObject(param.miniature),
       video: getIdFromObject(param.video),
-      ville: param.ville,
-      commune: param.commune,
+      ville: getIdFromObject(param.ville),
+      commune: getIdFromObject(param.commune),
+      ville_model: typeof param.ville === "object" ? param.ville : undefined,
+      commune_model: typeof param.commune === "object" ? param.commune : undefined,
       proprietaire: getIdFromObject(param.proprietaire),
     });
   }

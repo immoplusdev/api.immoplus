@@ -28,8 +28,10 @@ export class BienImmobilierDtoMapper implements IMapper<
       proprietaire,
       ville_id,
       commune_id,
-      ville: object.ville,
-      commune: object.commune,
+      ville: ville_id,
+      commune: commune_id,
+      ville_model: object.ville_model,
+      commune_model: object.commune_model,
     });
   }
 
