@@ -24,6 +24,7 @@ import {
   WrapperResponseResidenceBatchDto,
   AddUnavailabilityDatesDto,
   RemoveUnavailabilityDatesDto,
+  ReplaceUnavailabilityDatesDto,
 } from "@/infrastructure/features/residences";
 import {
   CurrentUser,
@@ -370,6 +371,41 @@ export class ResidenceController {
         userId,
         isAdmin: userRole.hasAdminAccess(),
         action: UnavailabilityAction.Remove,
+        dates: payload.dates,
+      }),
+    );
+
+    return this.responseMapper.mapFrom(response);
+  }
+
+  @ApiResponse({
+    type: WrapperResponseResidenceDto,
+    description: "Remplacer toutes les dates d'indisponibilité d'une résidence",
+  })
+  @RequiredRoles(
+    UserRole.Admin,
+    UserRole.ProEntreprise,
+    UserRole.ProParticulier,
+  )
+  @RequiredPermissions([
+    PermissionCollection.Residences,
+    PermissionAction.Update,
+  ])
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Put(":id/unavailability-dates")
+  async replaceUnavailabilityDates(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+    @Body() payload: ReplaceUnavailabilityDatesDto,
+  ) {
+    const response = await this.commandBus.execute(
+      new ManageUnavailabilityDatesCommand({
+        residenceId: id,
+        userId,
+        isAdmin: userRole.hasAdminAccess(),
+        action: UnavailabilityAction.Replace,
         dates: payload.dates,
       }),
     );
