@@ -7,6 +7,8 @@ import {
   TypeLocationBienImmobilier,
 } from "@/core/domain/biens-immobiliers";
 import { Piece } from "./piece.model";
+import { Ville } from "@/core/domain/villes";
+import { Commune } from "@/core/domain/communes";
 
 export class BienImmobilier {
   id: string;
@@ -21,8 +23,8 @@ export class BienImmobilier {
   tags?: string[];
   images?: string[];
   video?: string;
-  ville?: string;
-  commune?: string;
+  ville?: Ville | string;
+  commune?: Commune | string;
   adresse?: string;
   position?: GeoJsonPoint;
   latitude?: number;

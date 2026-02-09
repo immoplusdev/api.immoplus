@@ -8,6 +8,8 @@ import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { IsOptional } from "class-validator";
+import { Ville } from "@/core/domain/villes";
+import { Commune } from "@/core/domain/communes";
 
 export class ResidenceDto {
   @ApiProperty({ format: "uuid" })
@@ -30,9 +32,9 @@ export class ResidenceDto {
   @ApiProperty({ format: "uuid" })
   video?: string;
   @ApiProperty({ format: "uuid" })
-  ville?: string;
+  ville?: Ville | string;
   @ApiProperty({ format: "uuid" })
-  commune?: string;
+  commune?: Commune | string;
   @ApiProperty()
   adresse?: string;
 

@@ -5,6 +5,8 @@ import { TypeResidence } from "./type-residence.enum";
 import { Commodite } from "./commodite.model";
 import { Piece } from "./piece.model";
 import { ServiceDates } from "@/core/domain/common/models/service-dates.model";
+import { Ville } from "@/core/domain/villes";
+import { Commune } from "@/core/domain/communes";
 
 export class Residence {
   id: string;
@@ -16,8 +18,8 @@ export class Residence {
   pieces?: Piece[];
   images?: string[];
   video?: string;
-  ville?: string;
-  commune?: string;
+  ville?: Ville | string;
+  commune?: Commune | string;
   adresse?: string;
   position?: GeoJsonPoint;
   latitude?: number;
