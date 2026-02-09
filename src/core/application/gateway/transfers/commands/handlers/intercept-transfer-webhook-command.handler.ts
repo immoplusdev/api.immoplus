@@ -12,6 +12,7 @@ import {
   DEFAULT_CURRENCY,
   IWalletRepository,
   TransactionSource,
+  Wallet,
   WalletWithDrawalRequest,
   WithdrawalStatus,
 } from "@/core/domain/wallet";
@@ -19,7 +20,11 @@ import {
 import {
   INotificationService,
   PushNotificationType,
+  IEmailTemplateService,
+  EmailTemplate,
+  IMailService,
 } from "@/core/domain/notifications";
+import { IUserRepository } from "@/core/domain/users";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { PaymentMethod } from "@/core/domain/common/enums";
 import { ITransferRepository } from "@/core/domain/transfers/i-transfer.repository";
@@ -44,6 +49,12 @@ export class InterceptTransferWebhookCommandHandler implements ICommandHandler<I
     private readonly globalizationService: IGlobalizationService,
     @Inject(Deps.TransferRepository)
     private readonly transferRepository: ITransferRepository,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
+    @Inject(Deps.MailService)
+    private readonly mailService: IMailService,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
     private readonly eventBus: EventBus,
   ) {
     //
@@ -208,7 +219,7 @@ export class InterceptTransferWebhookCommandHandler implements ICommandHandler<I
   ) {
     const note = "Retrait de fonds";
     const walletSource = this.getWalletSource(source);
-    const wallet = await this.walletRepository.debitWallet(
+    const wallet: Wallet = await this.walletRepository.debitWallet(
       customerId,
       amount,
       DEFAULT_CURRENCY,
@@ -219,17 +230,66 @@ export class InterceptTransferWebhookCommandHandler implements ICommandHandler<I
     );
 
     if (wallet) {
-      // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
+      const proprietaire =
+        await this.usersRepository.findPublicUserInfoByUserId(customerId);
+
+      // Format montant
+      const montantFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(amount || 0);
+
+      // Format solde
+      const soldeFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(wallet.availableBalance || 0);
+
+      // Format date
+      const dateFormatee = new Date().toLocaleDateString("fr-FR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      const subject = this.globalizationService.t(
+        "all.notifications.wallets.paiement_debit_pro.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.wallets.paiement_debit_pro.message",
+      );
+
+      // Send HTML email to proprietaire
+      if (proprietaire?.email) {
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.RETRAIT_WALLET_PRO,
+          {
+            nom_proprietaire:
+              `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+              "Propriétaire",
+            montant: montantFormate,
+            ref_transaction: sourceId,
+            date: dateFormatee,
+            solde: soldeFormate,
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        await this.mailService.sendMail({
+          to: proprietaire.email,
+          subject,
+          html,
+        });
+      }
+
+      // Send push notification and SMS (without email since we already sent it)
       await this.notificationService.sendNotification({
         userId: customerId,
-        subject: this.globalizationService.t(
-          "all.notifications.wallets.paiement_debit_pro.subject",
-        ),
-        message: this.globalizationService.t(
-          "all.notifications.wallets.paiement_debit_pro.message",
-        ),
+        subject,
+        message,
         skipInAppNotification: false,
-        sendMail: true,
+        sendMail: false,
         sendSms: true,
         returnUrl: ``,
         data: {

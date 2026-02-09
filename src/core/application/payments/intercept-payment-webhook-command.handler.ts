@@ -23,14 +23,19 @@ import {
   StatusDemandeVisite,
 } from "@/core/domain/demandes-visites";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
-import { PaymentDemandeVisiteValideEvent } from "@/core/application/payments/payment-demande-visite-valide.event";
 import { IResidenceRepository, Residence } from "@/core/domain/residences";
 import { DEFAULT_CURRENCY, TransactionSource } from "@/core/domain/wallet";
 import { WalletsService } from "@/infrastructure/features/wallets/wallet.service";
-import { BienImmobilier } from "@/core/domain/biens-immobiliers";
+import {
+  BienImmobilier,
+  IBienImmobilierRepository,
+} from "@/core/domain/biens-immobiliers";
 import {
   INotificationService,
   PushNotificationType,
+  IEmailTemplateService,
+  EmailTemplate,
+  IMailService,
 } from "@/core/domain/notifications";
 import {
   IGlobalizationService,
@@ -62,6 +67,12 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
     private readonly eventBus: EventBus,
     @Inject(Deps.UsersRepository)
     private readonly usersRepository: IUserRepository,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
+    @Inject(Deps.MailService)
+    private readonly mailService: IMailService,
+    @Inject(Deps.BiensImmobiliesRepository)
+    private readonly bienImmobilierRepository: IBienImmobilierRepository,
   ) {
     //
   }
@@ -162,24 +173,6 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
         statusFacture,
       );
     }
-
-    // const operator = command.payments[0].metadata?.provider as PaymentMethod;
-
-    // Si payment de la reservation reussi, faire verfication pour crediter le wallet
-    // if (
-    //   paymentStatus == PaymentStatus.Successful &&
-    //   localPayment.collection == PaymentCollection.Reservation
-    // ) {
-    //   await this.reservationWalletCredit(localPayment.itemId, operator);
-    // }
-
-    // Si payment de la demande de visite reussi, faire verfication pour crediter le wallet
-    // if (
-    //   paymentStatus == PaymentStatus.Successful &&
-    //   localPayment.collection == PaymentCollection.DemandeDeVisite
-    // ) {
-    //   await this.demandeVisiteWalletCredit(localPayment.itemId, operator);
-    // }
   }
 
   async updateItemStatusAndStatusFacture(
@@ -208,9 +201,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
           statusDemandeVisite: StatusDemandeVisite.Valide,
         });
         if (statusFacture == StatusFacture.Paye)
-          this.eventBus.publish(
-            new PaymentDemandeVisiteValideEvent({ demandeVisiteId: itemId }),
-          );
+          this.demandeVisiteNotify(itemId);
         break;
       default:
         break;
@@ -351,21 +342,61 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
       getIdFromObject(residence.proprietaire),
     );
 
+    const clientSubject = this.globalizationService.t(
+      "all.notifications.reservations.paiement_valide_client.subject",
+    );
+    const clientMessage = this.globalizationService.t(
+      "all.notifications.reservations.paiement_valide_client.message",
+      {
+        args: {
+          codeReservation: reservation.codeReservation,
+        },
+      } as TranslateOptions,
+    );
+
+    // Format montant
+    const montantFormate = new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "XOF",
+    }).format(reservation.montantTotalReservation || 0);
+
+    // Format date
+    const dateFormatee = new Date().toLocaleDateString("fr-FR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // Send HTML email to client
+    if (client?.email) {
+      const html = await this.emailTemplateService.render(
+        EmailTemplate.PAIEMENT_RESERVATION_CONFIRME,
+        {
+          prenom: client.firstName || "Client",
+          montant: montantFormate,
+          residence_name: residence.nom || "Résidence",
+          ref_payment: reservation.codeReservation || reservation.id,
+          date: dateFormatee,
+          lien: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
+          unsubscribe_link: "https://immoplus.ci/unsubscribe",
+        },
+      );
+
+      await this.mailService.sendMail({
+        to: client.email,
+        subject: clientSubject,
+        html,
+      });
+    }
+
+    // Send push notification and SMS to client (without email since we already sent it)
     await this.notificationService.sendNotification({
       userId: client.id,
-      subject: this.globalizationService.t(
-        "all.notifications.reservations.paiement_valide_client.subject",
-      ),
-      message: this.globalizationService.t(
-        "all.notifications.reservations.paiement_valide_client.message",
-        {
-          args: {
-            codeReservation: reservation.codeReservation,
-          },
-        } as TranslateOptions,
-      ),
+      subject: clientSubject,
+      message: clientMessage,
       skipInAppNotification: false,
-      sendMail: true,
+      sendMail: false,
       sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
       data: {
@@ -374,21 +405,272 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
       },
     });
 
+    const proSubject = this.globalizationService.t(
+      "all.notifications.reservations.paiement_valide_pro.subject",
+    );
+    const proMessage = this.globalizationService.t(
+      "all.notifications.reservations.paiement_valide_pro.message",
+    );
+
+    // Send HTML email to proprietaire
+    if (proprietaire?.email) {
+      // Calculate owner's share (total - commission)
+      const montantProprietaire =
+        reservation.montantTotalReservation -
+        (reservation.montantCommission || 0);
+      const soldeFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(montantProprietaire);
+
+      const htmlPro = await this.emailTemplateService.render(
+        EmailTemplate.PAIEMENT_RESERVATION_RECU_PRO,
+        {
+          nom_proprietaire:
+            `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+            "Propriétaire",
+          montant: montantFormate,
+          residence_name: residence.nom || "Résidence",
+          ref_payment: reservation.codeReservation || reservation.id,
+          date: dateFormatee,
+          solde: soldeFormate,
+          lien: `https://admin.immoplus.ci`,
+          unsubscribe_link: "https://immoplus.ci/unsubscribe",
+        },
+      );
+
+      await this.mailService.sendMail({
+        to: proprietaire.email,
+        subject: proSubject,
+        html: htmlPro,
+      });
+    }
+
+    // Send push notification and SMS to proprietaire (without email since we already sent it)
     await this.notificationService.sendNotification({
       userId: proprietaire.id,
-      subject: this.globalizationService.t(
-        "all.notifications.reservations.paiement_valide_pro.subject",
-      ),
-      message: this.globalizationService.t(
-        "all.notifications.reservations.paiement_valide_pro.message",
-      ),
+      subject: proSubject,
+      message: proMessage,
       skipInAppNotification: false,
-      sendMail: true,
+      sendMail: false,
       sendSms: true,
       returnUrl: `${HUB2_RETURN_URL}/payment/reservations/${reservation.id}`,
       data: {
         type: PushNotificationType.Reservation,
         id: reservation.id,
+      },
+    });
+
+    // Notify admins about the payment
+    await this.notifyAdminsPayment(
+      reservation,
+      residence,
+      client,
+      proprietaire,
+      montantFormate,
+      dateFormatee,
+    );
+  }
+
+  private async notifyAdminsPayment(
+    reservation: Reservation,
+    residence: Residence,
+    client: any,
+    proprietaire: any,
+    montantFormate: string,
+    dateFormatee: string,
+  ): Promise<void> {
+    try {
+      const adminUsers = await this.usersRepository.findAdminUsers();
+
+      const commissionFormatee = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(reservation.montantCommission || 0);
+
+      const clientName =
+        `${client?.firstName || ""} ${client?.lastName || ""}`.trim() ||
+        "Client";
+      const proprietaireName =
+        `${proprietaire?.firstName || ""} ${proprietaire?.lastName || ""}`.trim() ||
+        "Propriétaire";
+
+      const adminSubject = this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_admin.subject",
+      );
+      const adminMessage = this.globalizationService.t(
+        "all.notifications.reservations.paiement_valide_admin.message",
+      );
+
+      for (const admin of adminUsers) {
+        // Render HTML email template
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.PAIEMENT_RESERVATION_ADMIN,
+          {
+            admin_name:
+              `${admin.firstName || ""} ${admin.lastName || ""}`.trim() ||
+              "Admin",
+            residence_name: residence.nom || "Résidence",
+            nom_client: clientName,
+            nom_proprietaire: proprietaireName,
+            montant: montantFormate,
+            commission: commissionFormatee,
+            ref_payment: reservation.codeReservation || reservation.id,
+            date: dateFormatee,
+            lien: `https://admin.immoplus.ci/reservations/${reservation.id}`,
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        // Send email
+        await this.mailService.sendMail({
+          to: admin.email,
+          subject: adminSubject,
+          html,
+        });
+
+        // Send push notification
+        await this.notificationService.sendNotification({
+          userId: admin.id,
+          subject: adminSubject,
+          message: adminMessage,
+          skipInAppNotification: false,
+          sendMail: false,
+          sendSms: false,
+          data: {
+            type: PushNotificationType.Reservation,
+            id: reservation.id,
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error notifying admins about payment:", error);
+      // Don't throw error to prevent blocking the payment flow
+    }
+  }
+
+  private async demandeVisiteNotify(demandeVisiteId: string) {
+    const demandeVisite =
+      await this.demandeVisiteRepository.findOne(demandeVisiteId);
+    if (!demandeVisite) throw new ItemNotFoundException();
+
+    const bienImmobilier = await this.bienImmobilierRepository.findOne(
+      getIdFromObject(demandeVisite.bienImmobilier),
+    );
+    if (!bienImmobilier) throw new ItemNotFoundException();
+
+    const client = await this.usersRepository.findPublicUserInfoByUserId(
+      getIdFromObject(bienImmobilier.createdBy),
+    );
+    const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(
+      getIdFromObject(bienImmobilier.proprietaire),
+    );
+
+    // Format montant
+    const montantFormate = new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "XOF",
+    }).format(demandeVisite.montantTotalDemandeVisite || 0);
+
+    // Format date
+    const dateFormatee = new Date().toLocaleDateString("fr-FR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const clientSubject = this.globalizationService.t(
+      "all.notifications.demandes_visites.paiement_valide_client.subject",
+    );
+    const clientMessage = this.globalizationService.t(
+      "all.notifications.demandes_visites.paiement_valide_client.message",
+    );
+
+    // Send HTML email to client
+    if (client?.email) {
+      const htmlClient = await this.emailTemplateService.render(
+        EmailTemplate.VISITE_EXPRESS_PAYEE_CLIENT,
+        {
+          prenom: client.firstName || "Client",
+          bien_name: bienImmobilier.nom || "Bien immobilier",
+          montant: montantFormate,
+          ref_payment: demandeVisite.id,
+          date: dateFormatee,
+          lien: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
+          unsubscribe_link: "https://immoplus.ci/unsubscribe",
+        },
+      );
+
+      await this.mailService.sendMail({
+        to: client.email,
+        subject: clientSubject,
+        html: htmlClient,
+      });
+    }
+
+    // Send push notification and SMS to client (without email since we already sent it)
+    await this.notificationService.sendNotification({
+      userId: client.id,
+      subject: clientSubject,
+      message: clientMessage,
+      returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
+      skipInAppNotification: false,
+      sendMail: false,
+      sendSms: true,
+      data: {
+        type: PushNotificationType.DemandeVisite,
+        id: demandeVisite.id,
+      },
+    });
+
+    const proSubject = this.globalizationService.t(
+      "all.notifications.demandes_visites.paiement_valide_pro.subject",
+    );
+    const proMessage = this.globalizationService.t(
+      "all.notifications.demandes_visites.paiement_valide_pro.message",
+    );
+
+    // Send HTML email to proprietaire
+    if (proprietaire?.email) {
+      const clientName =
+        `${client?.firstName || ""} ${client?.lastName || ""}`.trim() ||
+        "Client";
+
+      const html = await this.emailTemplateService.render(
+        EmailTemplate.VISITE_EXPRESS_PAYEE_PRO,
+        {
+          nom_proprietaire:
+            `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+            "Propriétaire",
+          bien_name: bienImmobilier.nom || "Bien immobilier",
+          nom_client: clientName,
+          montant: montantFormate,
+          date: dateFormatee,
+          lien: `https://admin.immoplus.ci/demandes-visites/${demandeVisite.id}`,
+          unsubscribe_link: "https://immoplus.ci/unsubscribe",
+        },
+      );
+
+      await this.mailService.sendMail({
+        to: proprietaire.email,
+        subject: proSubject,
+        html,
+      });
+    }
+
+    // Send push notification and SMS to proprietaire (without email since we already sent it)
+    await this.notificationService.sendNotification({
+      userId: proprietaire.id,
+      subject: proSubject,
+      message: proMessage,
+      returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${demandeVisite.id}`,
+      skipInAppNotification: false,
+      sendMail: false,
+      sendSms: true,
+      data: {
+        type: PushNotificationType.DemandeVisite,
+        id: demandeVisite.id,
       },
     });
   }

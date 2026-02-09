@@ -17,9 +17,7 @@ import { AppProfile } from "@/core/domain/common/enums";
 import { IConfigsManagerService } from "@/core/domain/configs";
 
 @CommandHandler(AuthenticatePaymentIntentCommand)
-export class AuthenticatePaymentIntentCommandHandler
-  implements ICommandHandler<AuthenticatePaymentIntentCommand>
-{
+export class AuthenticatePaymentIntentCommandHandler implements ICommandHandler<AuthenticatePaymentIntentCommand> {
   constructor(
     private readonly queryBus: QueryBus,
     @Inject(Deps.ConfigsManagerService)
