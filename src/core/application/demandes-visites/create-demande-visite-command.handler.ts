@@ -22,6 +22,9 @@ import {
 import {
   INotificationService,
   PushNotificationType,
+  IEmailTemplateService,
+  EmailTemplate,
+  IMailService,
 } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
@@ -39,6 +42,10 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
     private readonly notificationService: INotificationService,
     @Inject(Deps.GlobalizationService)
     private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
+    @Inject(Deps.MailService)
+    private readonly mailService: IMailService,
   ) {}
 
   async execute(
@@ -111,15 +118,62 @@ export class CreateDemandeVisiteCommandHandler implements ICommandHandler<Create
         "bienImmobilier.proprietaire as string: ",
         bienImmobilier.proprietaire as string,
       );
+
+      const subject = this.globalizationService.t(
+        "all.notifications.demandes_visites.nouvelle_demande_visite_normale_pro.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.demandes_visites.nouvelle_demande_visite_normale_pro.message",
+      );
+
+      // Get owner info
+      const owner = await this.usersRepository.findOne(
+        bienImmobilier.proprietaire as string,
+      );
+
+      // Get client info
+      const client = await this.usersRepository.findOne(command.userId);
+
+      // Get full bien info for residence name and address
+      const bienFull = await this.biensImmobiliesRepository.findOne(
+        command.bienImmobilier,
+      );
+
+      // Send HTML email if owner exists
+      if (owner?.email) {
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.NOUVELLE_DEMANDE_VISITE,
+          {
+            nom_proprietaire:
+              `${owner.firstName || ""} ${owner.lastName || ""}`.trim() ||
+              "Propriétaire",
+            residence_name: bienFull?.nom || "Bien immobilier",
+            adresse_residence:
+              bienFull?.adresse ||
+              `${bienFull?.commune || ""}, ${bienFull?.ville || ""}`.trim() ||
+              "Adresse non spécifiée",
+            nom_client:
+              `${client?.firstName || ""} ${client?.lastName || ""}`.trim() ||
+              "Client",
+            date_propose: "À définir",
+            lien: `https://immoplus.ci`,
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        await this.mailService.sendMail({
+          to: owner.email,
+          subject,
+          html,
+        });
+      }
+
+      // Send push notification and SMS (without email since we already sent it)
       await this.notificationService.sendNotification({
         userId: bienImmobilier.proprietaire as string,
-        subject: this.globalizationService.t(
-          "all.notifications.demandes_visites.nouvelle_demande_visite_normale_pro.subject",
-        ),
-        message: this.globalizationService.t(
-          "all.notifications.demandes_visites.nouvelle_demande_visite_normale_pro.message",
-        ),
-        sendMail: true,
+        subject,
+        message,
+        sendMail: false,
         sendSms: true,
         skipInAppNotification: false,
         data: {

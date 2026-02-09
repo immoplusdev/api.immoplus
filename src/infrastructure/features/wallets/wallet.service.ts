@@ -22,6 +22,15 @@ import { Reservation } from "@/core/domain/reservations";
 import { ReservationEntity } from "../reservations";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import * as bcrypt from "bcrypt";
+import {
+  IEmailTemplateService,
+  EmailTemplate,
+  IMailService,
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
+import { IUserRepository } from "@/core/domain/users";
+import { IGlobalizationService } from "@/core/domain/globalization";
 
 @Injectable()
 export class WalletsService {
@@ -29,7 +38,19 @@ export class WalletsService {
   private readonly walletTransactionRepo: BaseRepository<WalletTransaction>;
   private readonly walletWithdrawalRepo: BaseRepository<WalletWithDrawalRequest>;
   private readonly reservationRepo: BaseRepository<Reservation>;
-  constructor(@Inject(Deps.DataSource) readonly dataSource: DataSource) {
+  constructor(
+    @Inject(Deps.DataSource) readonly dataSource: DataSource,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
+    @Inject(Deps.MailService)
+    private readonly mailService: IMailService,
+    @Inject(Deps.NotificationService)
+    private readonly notificationService: INotificationService,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
+    @Inject(Deps.GlobalizationService)
+    private readonly globalizationService: IGlobalizationService,
+  ) {
     this.walletRepo = new BaseRepository(
       dataSource,
       WalletEntity,
@@ -376,9 +397,101 @@ export class WalletsService {
             await this.reservationRepo.updateOne(transaction.sourceId, {
               retraitProEffectue: true,
             });
+
+          // Notify owner that funds have been released
+          this.notifyOwnerFundsReleased(
+            wallet,
+            transaction.amount,
+            availableBalance,
+          );
         }
       }
     });
+  }
+
+  private async notifyOwnerFundsReleased(
+    wallet: Wallet,
+    amount: number,
+    newAvailableBalance: number,
+  ): Promise<void> {
+    try {
+      const ownerId =
+        typeof wallet.owner === "string" ? wallet.owner : wallet.owner.id;
+      const proprietaire =
+        await this.usersRepository.findPublicUserInfoByUserId(ownerId);
+
+      if (!proprietaire) return;
+
+      // Format montant
+      const montantFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(amount || 0);
+
+      // Format solde
+      const soldeFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(newAvailableBalance || 0);
+
+      // Format date
+      const dateFormatee = new Date().toLocaleDateString("fr-FR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+      const subject = this.globalizationService.t(
+        "all.notifications.wallets.solde_disponible_pro.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.wallets.solde_disponible_pro.message",
+      );
+
+      // Send HTML email
+      if (proprietaire?.email) {
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.SOLDE_DISPONIBLE_PRO,
+          {
+            nom_proprietaire:
+              `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+              "Propriétaire",
+            montant: montantFormate,
+            solde: soldeFormate,
+            date: dateFormatee,
+            lien: "https://admin.immoplus.ci/wallet",
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        await this.mailService.sendMail({
+          to: proprietaire.email,
+          subject: subject || "Votre solde a été crédité",
+          html,
+        });
+      }
+
+      // Send push notification and SMS
+      await this.notificationService.sendNotification({
+        userId: ownerId,
+        subject: subject || "Votre solde a été crédité",
+        message:
+          message ||
+          `${montantFormate} ont été ajoutés à votre solde disponible. Vous pouvez faire une demande de retrait.`,
+        skipInAppNotification: false,
+        sendMail: false,
+        sendSms: true,
+        returnUrl: "",
+        data: {
+          type: PushNotificationType.Wallet,
+          id: wallet.id,
+        },
+      });
+    } catch (error) {
+      console.error("Error notifying owner about funds release:", error);
+      // Don't throw error to prevent blocking the refund process
+    }
   }
 
   async setPinCode(ownerId: string, pin: string): Promise<void> {

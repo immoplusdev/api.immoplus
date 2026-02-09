@@ -10,6 +10,8 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { AmentityDto } from "./amentity.dto";
 import { IsOptional } from "class-validator";
+import { Ville } from "@/core/domain/villes";
+import { Commune } from "@/core/domain/communes";
 
 export class BienImmobilierDto {
   @ApiProperty({ format: "uuid" })
@@ -41,10 +43,22 @@ export class BienImmobilierDto {
   video?: string;
 
   @ApiProperty({ format: "uuid" })
+  ville_id?: string;
+
+  @ApiProperty({ format: "uuid" })
+  commune_id?: string;
+
+  @ApiProperty({ format: "uuid" })
   ville?: string;
 
   @ApiProperty({ format: "uuid" })
   commune?: string;
+
+  @ApiProperty()
+  ville_model?: Ville;
+
+  @ApiProperty()
+  commune_model?: Commune;
 
   @ApiProperty()
   adresse?: string;

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Nouvelle demande de retrait</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f5f7fa;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .wrap {
+        width: 100%;
+        background: #f5f7fa;
+        padding: 20px 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .header {
+        background: #2745dc;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      .content {
+        padding: 22px;
+        color: #333;
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: center;
+      }
+      .meta {
+        font-size: 14px;
+        color: #555;
+      }
+      .btn {
+        display: inline-block;
+        background: #2745dc;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 700;
+        margin: 18px 0;
+      }
+      .top-banner,
+      .final-banner-bottom {
+        width: 100%;
+        overflow: hidden;
+      }
+      .top-banner img,
+      .final-banner-bottom img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border: 0;
+        border-radius: 12px 12px 0 0;
+      }
+      .final-banner-bottom img {
+        border-radius: 0 0 12px 12px;
+      }
+      .footer {
+        padding: 18px;
+        text-align: center;
+        font-size: 13px;
+        color: #777;
+        line-height: 1.5;
+      }
+      .footer a {
+        color: #2745dc;
+        text-decoration: none;
+      }
+      @media (max-width: 480px) {
+        .content {
+          padding: 18px;
+        }
+        .header {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <table class="wrap" width="100%" role="presentation">
+      <tr>
+        <td>
+          <table class="container" width="100%" role="presentation">
+            <tr>
+              <td style="padding: 0">
+                <div class="top-banner">
+                  <img
+                    src="https://image2url.com/r2/default/images/1770479134139-b31947fd-2090-4878-be9a-7a766b7fc572.jpg"
+                    alt="Bannière Immo+"
+                    style="max-width: 100%; height: auto"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="header"><strong>Nouvelle demande de retrait</strong></td>
+            </tr>
+            <tr>
+              <td class="content">
+                <p>Bonjour {{admin_name}},</p>
+                <p>
+                  Une nouvelle demande de retrait a été soumise et nécessite votre attention.
+                </p>
+                <p class="meta">
+                  Propriétaire : <strong>{{nom_proprietaire}}</strong><br />
+                  Montant demandé : <strong>{{montant}}</strong><br />
+                  Numéro de téléphone : <strong>{{phone_number}}</strong><br />
+                  Opérateur : <strong>{{operator}}</strong><br />
+                  Date : <strong>{{date}}</strong>
+                </p>
+                <p style="text-align: center">
+                  <a class="btn" style="display:inline-block;background:#2745dc;color: #fff !important;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:700;margin:18px 0;" href="{{lien}}">Traiter la demande</a>
+                </p>
+                <p>
+                  Veuillez vous connecter à l'espace admin pour traiter cette demande.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td class="footer">
+                <strong>Coordonnées :</strong><br />
+                Cocody Riviera 3, Abidjan, Côte d'Ivoire<br />
+                Téléphone : 0701160450 / +225 0720154635<br />
+                Email :
+                <a href="mailto:support@immoplus.ci">support@immoplus.ci</a
+                ><br /><br />
+                Vous recevez cet email car vous êtes administrateur sur Immo+.<br />
+                Pour vous désinscrire,
+                <a href="{{unsubscribe_link}}">cliquez ici</a>.
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0">
+                <div class="final-banner-bottom">
+                  <img
+                    src="https://image2url.com/r2/default/images/1770479134139-b31947fd-2090-4878-be9a-7a766b7fc572.jpg"
+                    alt="Bannière finale"
+                    style="max-width: 100%; height: auto"
+                  />
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

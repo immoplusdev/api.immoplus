@@ -1,0 +1,23 @@
+meta {
+  name: Verify otp via Mail
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{API_URL}}/users/verify-otp
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "{{USER_EMAL}}",
+    "otp": "862302"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

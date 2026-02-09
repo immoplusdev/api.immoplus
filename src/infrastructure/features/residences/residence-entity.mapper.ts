@@ -14,6 +14,8 @@ export class ResidenceEntityMapper implements IMapper<
       video: getIdFromObject(param.video),
       ville: getIdFromObject(param.ville),
       commune: getIdFromObject(param.commune),
+      ville_model: typeof param.ville === "object" ? param.ville : undefined,
+      commune_model: typeof param.commune === "object" ? param.commune : undefined,
       proprietaire: getIdFromObject(param.proprietaire),
     });
   }
@@ -21,6 +23,8 @@ export class ResidenceEntityMapper implements IMapper<
   mapTo(param: Residence): ResidenceEntity {
     return new ResidenceEntity({
       ...param,
+      ville: getIdFromObject(param.ville),
+      commune: getIdFromObject(param.commune),
     });
   }
 }

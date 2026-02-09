@@ -40,6 +40,12 @@ body:json {
   }
 }
 
+vars:pre-request {
+  name: Mon bien
+  prix: 100000
+  DEFAULT_COMMUNE_ID: 5d756caf-51af-4b3f-8e6e-440f276f9b57
+}
+
 script:pre-request {
   const { faker } = require('@faker-js/faker');
   bru.setVar("name", faker.company.name());

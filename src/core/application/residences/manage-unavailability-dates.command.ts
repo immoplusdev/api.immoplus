@@ -3,6 +3,7 @@ import { OmitMethods } from "@/lib/ts-utilities";
 export enum UnavailabilityAction {
   Add = "add",
   Remove = "remove",
+  Replace = "replace",
 }
 
 export class ManageUnavailabilityDatesCommand {
