@@ -5,9 +5,7 @@ import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 
 @CommandHandler(CreditWalletCommand)
-export class CreditWalletHandler
-  implements ICommandHandler<CreditWalletCommand>
-{
+export class CreditWalletHandler implements ICommandHandler<CreditWalletCommand> {
   constructor(
     @Inject(Deps.WalletRepository)
     private readonly walletRepository: IWalletRepository,

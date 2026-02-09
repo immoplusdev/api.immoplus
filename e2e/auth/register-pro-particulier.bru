@@ -14,14 +14,19 @@ body:json {
   {
     "firstName": "{{$randomFirstName}}",
     "lastName": "{{$randomLastName}}",
-    "email": "pro-par-{{$timestamp}}@immoplus.ci",
+    //"email": "pro-par-{{$timestamp}}@immoplus.ci",
+    "email": "vivot32962@hopesx.com",
     "phoneNumber": "225{{$timestamp}}",
     "password": "{{DEFAULT_USER_PASSWORD}}",
     "activite": "{{$randomJobTitle}}",
     "photoIdentiteId": "{{DEFAULT_APP_LOGO_ID}}",
     "pieceIdentiteId": "{{DEFAULT_APP_LOGO_ID}}",
-    "token": "{{DEFAULT_APP_OTP}}"
+    "token": "{{DEFAULT_APP_OTP_TOKEN}}"
   }  
+}
+
+vars:pre-request {
+  DEFAULT_USER_PASSWORD: password
 }
 
 script:post-response {

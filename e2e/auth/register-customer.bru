@@ -13,13 +13,19 @@ post {
 body:json {
   {
     "avatar": "{{DEFAULT_APP_LOGO_ID}}",
-    "email": "customer-{{$timestamp}}@immoplus.ci",
+    //"email": "customer-{{$timestamp}}@immoplus.ci",
+    "email": "goboye8681@dnsclick.com",
     "firstName": "{{$randomFirstName}}",
     "lastName": "{{$randomLastName}}",
     "phoneNumber": "225{{$timestamp}}",
     "password": "{{DEFAULT_USER_PASSWORD}}",
-    "token": "{{DEFAULT_APP_OTP}}"
+    "token": "{{DEFAULT_APP_OTP_TOKEN}}"
   }
+}
+
+vars:pre-request {
+  DEFAULT_USER_PASSWORD: password
+  DEFAULT_APP_OTP: 04d81447-942f-47ba-9f70-dddc495ded0f
 }
 
 script:post-response {

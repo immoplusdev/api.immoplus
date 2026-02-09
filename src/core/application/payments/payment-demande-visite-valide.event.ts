@@ -3,7 +3,10 @@ import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Inject } from "@nestjs/common";
 import { Deps } from "@/core/domain/common/ioc";
 import { IDemandeVisiteRepository } from "@/core/domain/demandes-visites";
-import { INotificationService, PushNotificationType } from "@/core/domain/notifications";
+import {
+  INotificationService,
+  PushNotificationType,
+} from "@/core/domain/notifications";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
@@ -20,9 +23,7 @@ export class PaymentDemandeVisiteValideEvent {
 }
 
 @EventsHandler(PaymentDemandeVisiteValideEvent)
-export class PaymentDemandeVisiteValideEventHandler
-  implements IEventHandler<PaymentDemandeVisiteValideEvent>
-{
+export class PaymentDemandeVisiteValideEventHandler implements IEventHandler<PaymentDemandeVisiteValideEvent> {
   constructor(
     @Inject(Deps.DemandeVisiteRepository)
     private readonly demandeVisiteRepository: IDemandeVisiteRepository,

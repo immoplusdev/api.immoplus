@@ -1,0 +1,22 @@
+meta {
+  name: Send otp via Mail
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{API_URL}}/users/send-otp
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "vivot32962@hopesx.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

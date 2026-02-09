@@ -5,9 +5,7 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { ReleaseFundsCommand } from "../release-funds.command";
 
 @CommandHandler(ReleaseFundsCommand)
-export class ReleaseFundsHandler
-  implements ICommandHandler<ReleaseFundsCommand>
-{
+export class ReleaseFundsHandler implements ICommandHandler<ReleaseFundsCommand> {
   constructor(
     @Inject(Deps.WalletRepository)
     private readonly walletRepository: IWalletRepository,

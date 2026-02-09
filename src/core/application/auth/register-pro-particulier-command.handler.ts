@@ -20,6 +20,9 @@ import { SocialAuthProvider } from "@/core/application/auth/social-login.command
 import {
   INotificationService,
   PushNotificationType,
+  IEmailTemplateService,
+  EmailTemplate,
+  IMailService,
 } from "@/core/domain/notifications";
 import { IGlobalizationService } from "@/core/domain/globalization";
 
@@ -39,6 +42,10 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
     private readonly notificationService: INotificationService,
     @Inject(Deps.GlobalizationService)
     private readonly globalizationService: IGlobalizationService,
+    @Inject(Deps.EmailTemplateService)
+    private readonly emailTemplateService: IEmailTemplateService,
+    @Inject(Deps.MailService)
+    private readonly mailService: IMailService,
   ) {}
 
   async execute(
@@ -104,6 +111,9 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
 
   private async sendWelcomeNotification(userId: string): Promise<void> {
     try {
+      const user = await this.usersRepository.findOne(userId);
+      if (!user) return;
+
       const subject = this.globalizationService.t(
         "all.notifications.auth.welcome.subject",
       );
@@ -111,12 +121,30 @@ export class RegisterProParticulierCommandHandler implements ICommandHandler<Reg
         "all.notifications.auth.welcome.message",
       );
 
+      // Render HTML email template
+      const html = await this.emailTemplateService.render(
+        EmailTemplate.WELCOME_PRO,
+        {
+          prenom: user.firstName || "Professionnel",
+          lien: "https://immoplus.ci",
+          unsubscribe_link: "https://immoplus.ci/unsubscribe",
+        },
+      );
+
+      // Send email with HTML template
+      await this.mailService.sendMail({
+        to: user.email,
+        subject,
+        html,
+      });
+
+      // Send push notification (without email since we already sent it)
       await this.notificationService.sendNotification({
         userId,
         subject,
         message,
         skipInAppNotification: false,
-        sendMail: true,
+        sendMail: false,
         sendSms: false,
         data: {
           type: PushNotificationType.Auth,

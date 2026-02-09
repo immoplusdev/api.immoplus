@@ -25,6 +25,13 @@ body:json {
   }
 }
 
+vars:pre-request {
+  DEFAULT_USER_PASSWORD: Password
+  API_URL: http://localhost:3000
+  DEFAULT_APP_LOGO_ID: 7744506a-ad8e-42d1-960c-4c00633c750a
+  DEFAULT_APP_OTP: 0136ddfd-49d2-4448-8baf-ce633c842a7f
+}
+
 script:post-response {
   const { data: { user: { id }, accessToken, refreshToken } }  = res.getBody();
     

@@ -8,9 +8,7 @@ import {
 import { UpdateWalletWithdrawalRequestCommand } from "../update-wallet-withdrawal-request.command";
 
 @CommandHandler(UpdateWalletWithdrawalRequestCommand)
-export class UpdateWalletWithdrawalRequestHandler
-  implements ICommandHandler<UpdateWalletWithdrawalRequestCommand>
-{
+export class UpdateWalletWithdrawalRequestHandler implements ICommandHandler<UpdateWalletWithdrawalRequestCommand> {
   constructor(
     @Inject(Deps.WalletRepository)
     private readonly walletRepository: IWalletRepository,
