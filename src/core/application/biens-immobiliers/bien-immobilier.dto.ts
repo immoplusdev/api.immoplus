@@ -43,6 +43,12 @@ export class BienImmobilierDto {
   video?: string;
 
   @ApiProperty({ format: "uuid" })
+  ville_id?: string;
+
+  @ApiProperty({ format: "uuid" })
+  commune_id?: string;
+
+  @ApiProperty({ format: "uuid" })
   ville?: Ville | string;
 
   @ApiProperty({ format: "uuid" })

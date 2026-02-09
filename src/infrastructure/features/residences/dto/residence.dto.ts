@@ -32,6 +32,10 @@ export class ResidenceDto {
   @ApiProperty({ format: "uuid" })
   video?: string;
   @ApiProperty({ format: "uuid" })
+  ville_id?: string;
+  @ApiProperty({ format: "uuid" })
+  commune_id?: string;
+  @ApiProperty({ format: "uuid" })
   ville?: Ville | string;
   @ApiProperty({ format: "uuid" })
   commune?: Commune | string;
