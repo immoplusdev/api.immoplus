@@ -28,8 +28,10 @@ export class ManageUnavailabilityDatesCommandHandler implements ICommandHandler<
 
     if (command.action === UnavailabilityAction.Add) {
       updatedDates = this.addDates(currentDates, command.dates);
-    } else {
+    } else if (command.action === UnavailabilityAction.Remove) {
       updatedDates = this.removeDates(currentDates, command.dates);
+    } else {
+      updatedDates = this.replaceDates(command.dates);
     }
 
     await this.repository.updateOne(command.residenceId, {
@@ -80,6 +82,12 @@ export class ManageUnavailabilityDatesCommandHandler implements ICommandHandler<
 
     return currentDates.filter(
       (d) => !datesToRemoveSet.has(this.normalizeDate(d.date)),
+    );
+  }
+
+  private replaceDates(newDates: string[]): ServiceDate[] {
+    return newDates.map(
+      (dateStr) => new ServiceDate({ date: new Date(dateStr) }),
     );
   }
 
