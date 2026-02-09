@@ -12,8 +12,11 @@ export class BienImmobilierEntityMapper implements IMapper<
       ...object,
       miniature: getIdFromObject(object.miniature),
       video: getIdFromObject(object.video),
-      ville: object.ville,
-      commune: object.commune,
+      ville: getIdFromObject(object.ville),
+      commune: getIdFromObject(object.commune),
+      ville_model: typeof object.ville === "object" ? object.ville : undefined,
+      commune_model:
+        typeof object.commune === "object" ? object.commune : undefined,
       proprietaire: getIdFromObject(object.proprietaire),
     });
   }
