@@ -9,6 +9,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateIf,
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
@@ -48,13 +49,13 @@ export class CreateFurnitureDto {
   position?: GeoJsonPoint;
 
   @ApiProperty({ description: "Latitude (double)" })
-  @IsOptional()
+  @ValidateIf((object: CreateFurnitureDto) => object.lng !== undefined)
   @IsNumber()
   @Type(() => Number)
   lat?: number;
 
   @ApiProperty({ description: "Longitude (double)" })
-  @IsOptional()
+  @ValidateIf((object: CreateFurnitureDto) => object.lat !== undefined)
   @IsNumber()
   @Type(() => Number)
   lng?: number;

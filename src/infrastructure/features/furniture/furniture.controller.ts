@@ -9,9 +9,17 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { CommandBus } from "@nestjs/cqrs";
 import { Deps } from "@/core/domain/common/ioc";
 import { IFurnitureRepository } from "@/core/domain/furniture";
@@ -36,6 +44,7 @@ import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import { FilesInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("Furniture")
 @Controller("furnitures")
@@ -67,14 +76,40 @@ export class FurnitureController {
   ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        titre: { type: "string" },
+        description: { type: "string" },
+        prix: { type: "number" },
+        adresse: { type: "string" },
+        ville: { type: "string", format: "uuid", nullable: true },
+        commune: { type: "string", format: "uuid", nullable: true },
+        lat: { type: "number", nullable: true },
+        lng: { type: "number", nullable: true },
+        position: { type: "object", nullable: true },
+        status: { type: "string", nullable: true },
+        metadata: { type: "object", nullable: true },
+        images: {
+          type: "array",
+          items: { type: "string", format: "binary" },
+        },
+      },
+    },
+  })
+  @UseInterceptors(FilesInterceptor("images", 10))
   async create(
     @Body() payload: CreateFurnitureDto,
     @CurrentUser("id") userId: string,
+    @UploadedFiles() uploadedImages?: Express.Multer.File[],
   ) {
     this.logger.debug("Create furniture request", {
       lat: payload.lat,
       lng: payload.lng,
       position: payload.position,
+      uploadedImagesCount: uploadedImages?.length ?? 0,
     });
 
     const furniture = await this.commandBus.execute(

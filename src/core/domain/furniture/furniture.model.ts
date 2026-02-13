@@ -5,6 +5,7 @@ import { FurnitureStatus } from "./furniture-status.enum";
 export class Furniture {
   id: string;
   owner: string;
+  ownerId?: string;
   ville?: string;
   commune?: string;
   adresse: string;
@@ -26,5 +27,7 @@ export class Furniture {
 
   constructor(data?: OmitMethods<Furniture>) {
     if (data) Object.assign(this, data);
+    if (!this.owner && this.ownerId) this.owner = this.ownerId;
+    if (!this.ownerId && this.owner) this.ownerId = this.owner;
   }
 }
