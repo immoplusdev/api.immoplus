@@ -50,7 +50,7 @@ export class NotificationService implements INotificationService {
       try {
         await this.smsService.sendSms([user.phoneNumber], params.message);
       } catch (error) {
-        this.loggerService.error(error. (), error);
+        this.loggerService.error(error.toString(), error);
       }
     }
 
