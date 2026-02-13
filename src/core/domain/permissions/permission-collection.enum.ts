@@ -11,4 +11,5 @@ export enum PermissionCollection {
   DemandesVisites = "demandesVisites",
   Payments = "payments",
   Transfers = "transfers",
+  Furnitures = "furniture",
 }
