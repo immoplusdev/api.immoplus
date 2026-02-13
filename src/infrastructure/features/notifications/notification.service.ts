@@ -31,7 +31,6 @@ export class NotificationService implements INotificationService {
   ) {}
 
   async sendNotification(params: SendNotificationParams) {
-    console.log("Notification params: ", params);
     const user = await this.usersRepository.findOne(params.userId);
     if (!user) throw new UserNotFoundException();
 
@@ -51,7 +50,7 @@ export class NotificationService implements INotificationService {
       try {
         await this.smsService.sendSms([user.phoneNumber], params.message);
       } catch (error) {
-        this.loggerService.error(error);
+        this.loggerService.error(error.toString(), error);
       }
     }
 

@@ -517,7 +517,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
             commission: commissionFormatee,
             ref_payment: reservation.codeReservation || reservation.id,
             date: dateFormatee,
-            lien: `https://admin.immoplus.ci/reservations/${reservation.id}`,
+            lien: `https://admin.immoplus.ci`,
             unsubscribe_link: "https://immoplus.ci/unsubscribe",
           },
         );
@@ -647,7 +647,7 @@ export class InterceptPaymentWebhookCommandHandler implements ICommandHandler<In
           nom_client: clientName,
           montant: montantFormate,
           date: dateFormatee,
-          lien: `https://admin.immoplus.ci/demandes-visites/${demandeVisite.id}`,
+          lien: `https://admin.immoplus.ci`,
           unsubscribe_link: "https://immoplus.ci/unsubscribe",
         },
       );

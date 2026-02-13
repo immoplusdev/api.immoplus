@@ -17,6 +17,7 @@ import { IBienImmobilierRepository } from "@/core/domain/biens-immobiliers";
 import { IGlobalizationService } from "@/core/domain/globalization";
 import { HUB2_RETURN_URL } from "@/infrastructure/configs/payments";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
 @CommandHandler(ProgrammerDemandeVisiteCommand)
 export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<ProgrammerDemandeVisiteCommand> {
@@ -48,13 +49,14 @@ export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<Pr
     );
     if (!demandeVisite) throw new ItemNotFoundException();
 
+    // Update
     await this.demandeVisiteRepository.updateOne(command.id, {
       datesDemandeVisite: command.datesDemandeVisite,
     });
 
     // Get client info
     const client = await this.usersRepository.findOne(
-      demandeVisite.createdBy as string,
+      getIdFromObject(demandeVisite.createdBy),
     );
 
     // Get bien immobilier info
@@ -98,13 +100,13 @@ export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<Pr
             bienImmobilier?.adresse ||
             `${bienImmobilier?.commune || ""}, ${bienImmobilier?.ville || ""}`.trim() ||
             "Adresse à confirmer",
-          lien: `${HUB2_RETURN_URL}/payment/demandes-visites/${command.id}`,
+          lien: `https://www.immoplus.ci`,
           unsubscribe_link: "https://immoplus.ci/unsubscribe",
         },
       );
 
       await this.mailService.sendMail({
-        to: client.email,
+        to: "dev.johnlight@gmail.com",
         subject,
         html,
       });
@@ -112,7 +114,7 @@ export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<Pr
 
     // Send push notification and SMS (without email since we already sent it)
     await this.notificationService.sendNotification({
-      userId: demandeVisite.createdBy as string,
+      userId: getIdFromObject(demandeVisite.createdBy),
       subject,
       message,
       returnUrl: `${HUB2_RETURN_URL}/payment/demandes-visites/${command.id}`,
