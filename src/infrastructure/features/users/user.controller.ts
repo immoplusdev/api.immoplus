@@ -82,6 +82,14 @@ export class UserController {
     @CurrentUser("id") userId: string,
     @CurrentUser("role") userRole: Role,
   ) {
+    if (params._where && Array.isArray(params._where)) {
+      params._where = params._where.map((condition) =>
+        condition._field === "role"
+          ? { ...condition, _field: "role.id" }
+          : condition,
+      );
+    }
+
     if (!userRole.hasAdminAccess())
       params._where = addConditionsToWhereClause(
         [
