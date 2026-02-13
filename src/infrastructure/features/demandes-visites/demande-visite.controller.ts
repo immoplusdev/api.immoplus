@@ -203,7 +203,6 @@ export class DemandeVisiteController {
   ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get("data/historique-retrait/bien-immobilier/owner/:id")
   async readManyFinancesByOwnerId(
     @Param("id") ownerId: string,
