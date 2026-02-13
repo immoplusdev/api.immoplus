@@ -19,7 +19,6 @@ import { OmitMethods } from "@/lib/ts-utilities";
 import { User } from "@/core/domain/users";
 
 @Entity("furnitures")
-@Index("IDX_furnitures_lat_lng", ["lat", "lng"])
 export class FurnitureEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
