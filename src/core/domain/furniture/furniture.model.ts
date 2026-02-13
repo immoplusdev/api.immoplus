@@ -1,6 +1,7 @@
 import { OmitMethods } from "@/lib/ts-utilities";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { FurnitureStatus } from "./furniture-status.enum";
+import { FurnitureMetadata } from "./furniture-metadata";
 
 export class Furniture {
   id: string;
@@ -15,11 +16,14 @@ export class Furniture {
   titre: string;
   description: string;
   prix: number;
+  type: string;
+  category: string;
+  etat: "neuf" | "reconditionne" | "occasion";
   images?: string[];
   video?: string;
   viewsCount: number;
   status: FurnitureStatus;
-  metadata?: Record<string, any>;
+  metadata?: FurnitureMetadata;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
