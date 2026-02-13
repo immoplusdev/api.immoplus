@@ -165,12 +165,7 @@ export class DemandeVisiteController {
     type: WrapperResponseDemandeVisiteBatchDto,
   })
   @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
-  // @RequiredPermissions([
-  //   PermissionCollection.DemandesVisites,
-  //   PermissionAction.Read,
-  // ])
   @UseGuards(JwtAuthGuard)
-  // @OwnerAccessRequired("createdBy")
   @ApiBearerAuth()
   @Get("data/bien-immobilier/owner/:id")
   async readManyByOwnerId(
