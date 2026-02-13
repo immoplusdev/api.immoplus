@@ -60,6 +60,7 @@ import { WrapperResponseGetResidenceOccupiedDatesQueryResponseDto } from "@/core
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers";
 import { StatusFacture } from "@/core/domain/payments";
+import { Console } from "node:console";
 
 @ApiTags("DemandeVisite")
 @Controller("demandes-visites")
@@ -164,19 +165,21 @@ export class DemandeVisiteController {
     type: WrapperResponseDemandeVisiteBatchDto,
   })
   @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Read,
-  ])
-  @UseGuards(JwtAuthGuard)
+  // @RequiredPermissions([
+  //   PermissionCollection.DemandesVisites,
+  //   PermissionAction.Read,
+  // ])
+  // @UseGuards(JwtAuthGuard)
+  // @OwnerAccessRequired("createdBy")
   @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get("data/bien-immobilier/owner/:id")
   async readManyByOwnerId(
     @Param("id") ownerId: string,
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
+    console.log("Hello welcome");
+
     if (ownerId !== userId)
       throw new UnauthorizedException({
         message: "Unauthorized",
@@ -217,7 +220,7 @@ export class DemandeVisiteController {
         error: "Unauthorized",
         code: "UNAUTHORIZED",
       });
-
+    console.log("Welcome to the route");
     const items = await this.repository.findByBienImmobilierOwnerId(
       ownerId,
       params,
