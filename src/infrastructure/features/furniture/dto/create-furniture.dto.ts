@@ -4,7 +4,9 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { FurnitureStatus } from "@/core/domain/furniture";
 import {
+  IsArray,
   IsIn,
+  Matches,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -13,6 +15,14 @@ import {
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
+
+class FurnitureMetadataDto {
+  @ApiProperty({ type: [String], required: false })
+  @IsOptional()
+  @IsArray()
+  @Matches(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, { each: true })
+  colors?: string[];
+}
 
 export class CreateFurnitureDto {
   @ApiProperty()
@@ -28,6 +38,21 @@ export class CreateFurnitureDto {
   @ApiProperty()
   @IsNumber()
   prix: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  type: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  category: string;
+
+  @ApiProperty({ enum: ["neuf", "reconditionne", "occasion"] })
+  @IsNotEmpty()
+  @IsIn(["neuf", "reconditionne", "occasion"])
+  etat: "neuf" | "reconditionne" | "occasion";
 
   @ApiProperty({ format: "Abidjan, Cocody..." })
   @IsNotEmpty()
@@ -74,9 +99,12 @@ export class CreateFurnitureDto {
   @IsOptional()
   @IsIn(enumToList(FurnitureStatus))
   status?: FurnitureStatus;
-  @ApiProperty()
+
+  @ApiProperty({ type: () => FurnitureMetadataDto, required: false })
   @IsOptional()
-  metadata?: Record<string, any>;
+  @ValidateNested()
+  @Type(() => FurnitureMetadataDto)
+  metadata?: FurnitureMetadataDto;
 
   constructor(data?: OmitMethods<CreateFurnitureDto>) {
     if (data) Object.assign(this, data);

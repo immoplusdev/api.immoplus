@@ -2,6 +2,7 @@ import { ApiProperty } from "@/core/domain/common/docs";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { WrapperResponseDto } from "@/lib/responses";
 import { FurnitureStatus } from "@/core/domain/furniture";
+import { FurnitureMetadata } from "@/core/domain/furniture/furniture-metadata";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 
@@ -40,6 +41,15 @@ export class FurnitureDto {
   @ApiProperty()
   prix: number;
 
+  @ApiProperty()
+  type: string;
+
+  @ApiProperty()
+  category: string;
+
+  @ApiProperty({ enum: ["neuf", "reconditionne", "occasion"] })
+  etat: "neuf" | "reconditionne" | "occasion";
+
   @ApiProperty({ type: "string", format: "uuid", isArray: true })
   images?: string[];
 
@@ -55,7 +65,7 @@ export class FurnitureDto {
 
 
   @ApiProperty()
-  metadata?: Record<string, any>;
+  metadata?: FurnitureMetadata;
 
 
   @ApiProperty()
