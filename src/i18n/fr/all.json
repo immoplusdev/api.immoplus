@@ -80,13 +80,18 @@
         "message": "Nouvelle réservation reçue, ouvrez l'application pour voir les détails."
       },
       "nouvelle_residence_admin": {
-        "subject": "🏠 Nouvelle résidence à valider",
-        "message": "Une nouvelle résidence vient d'être enregistrée et nécessite votre validation. Veuillez vous connecter à l'administration pour l'examiner et l'approuver."
+        "subject": "🏠 Nouvelle réservation à valider",
+        "message": "Une nouvelle réservation vient d'être enregistrée et nécessite votre validation. Veuillez vous connecter à l'administration pour l'examiner et l'approuver."
       },
       "nouveau_bien_immobilier_admin": {
         "subject": "🏢 Nouveau bien immobilier à valider",
         "message": "Un nouveau bien immobilier vient d'être enregistré et nécessite votre validation. Veuillez vous connecter à l'administration pour l'examiner et l'approuver."
+      },
+      "paiement_valide_admin": {
+        "subject": "🔔 Nouvelle reservation payée !",
+        "message": "Un client vient de payer une nouvelle réservation. Rendez-vous sur dans le backoffice pour avoir plus de details."
       }
+
     },
     "wallets": {
       "paiement_block_valide_pro": {

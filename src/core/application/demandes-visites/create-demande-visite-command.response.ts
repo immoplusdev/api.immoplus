@@ -17,13 +17,10 @@ export class WrapperResponseCreateDemandeVisiteResponseDto extends WrapperRespon
   data: CreateDemandeVisiteCommandResponse;
 }
 
-export class WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper
-  implements
-    IMapper<
-      CreateDemandeVisiteCommandResponse,
-      WrapperResponseCreateDemandeVisiteResponseDto
-    >
-{
+export class WrapperResponseCreateDemandeVisiteCommandResponseDtoMapper implements IMapper<
+  CreateDemandeVisiteCommandResponse,
+  WrapperResponseCreateDemandeVisiteResponseDto
+> {
   mapFrom(
     param: CreateDemandeVisiteCommandResponse,
   ): WrapperResponseCreateDemandeVisiteResponseDto {

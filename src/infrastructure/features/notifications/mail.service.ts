@@ -17,27 +17,6 @@ export class MailService implements IMailService {
     private readonly configsManagerService: IConfigsManagerService,
     @Inject(Deps.LoggerService) private readonly loggerService: ILoggerService,
   ) {
-    // const port = parseInt(
-    //   this.configsManagerService.getEnvVariable("NODE_MAILER_PORT"),
-    // );
-    // const isSecure = port === 465;
-
-    // this.mailingConfig = {
-    //   host: this.configsManagerService.getEnvVariable("NODE_MAILER_HOST"),
-    //   port: port,
-    //   secure: isSecure,
-    //   auth: {
-    //     user: this.configsManagerService.getEnvVariable("NODE_MAILER_USER"),
-    //     pass: this.configsManagerService.getEnvVariable("NODE_MAILER_PASSWORD"),
-    //   },
-    //   tls: {
-    //     rejectUnauthorized: false,
-    //   },
-    //   connectionTimeout: 10000,
-    //   greetingTimeout: 10000,
-    //   socketTimeout: 10000,
-    // };
-
     const port = parseInt(
       this.configsManagerService.getEnvVariable("NODE_MAILER_PORT") ?? "465",
     );
@@ -64,7 +43,6 @@ export class MailService implements IMailService {
       greetingTimeout: 10000,
       socketTimeout: 10000,
     };
-    console.log("mailingConfig: ", this.mailingConfig);
     this.mailTransport = nodemailer.createTransport(this.mailingConfig);
   }
 
@@ -73,8 +51,6 @@ export class MailService implements IMailService {
       ...params,
       from: "immoplus@immoplus.ci",
     };
-
-    console.log("Sending mail with params:", mailParams);
 
     try {
       await this.mailTransport.sendMail(mailParams);

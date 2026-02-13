@@ -24,7 +24,10 @@ import {
 @Injectable()
 export class DemandeVisiteRepository implements IDemandeVisiteRepository {
   private readonly repository: BaseRepository<DemandeVisite>;
-  private readonly relations: RepositoryRelations = ["bienImmobilier"];
+  private readonly relations: RepositoryRelations = [
+    "bienImmobilier",
+    "createdBy",
+  ];
   private readonly fullTextSearchFields: string[] = [
     "id",
     "id",
