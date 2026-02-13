@@ -8,6 +8,20 @@ export class FurnitureEntityMapper
 {
   mapFrom(param: FurnitureEntity): Furniture {
     const ownerId = getIdFromObject(param.owner);
+    const rawMetadata = (param.metadata ?? {}) as {
+      colors?: string[];
+      types?: string[];
+      categories?: string[];
+      etat?: "neuf" | "reconditionne" | "occasion";
+    };
+
+    const normalizedType = param.type ?? rawMetadata.types?.[0] ?? "non-specifie";
+    const normalizedCategory =
+      param.category ?? rawMetadata.categories?.[0] ?? "non-specifie";
+    const normalizedEtat = (param.etat ??
+      rawMetadata.etat ??
+      "occasion") as "neuf" | "reconditionne" | "occasion";
+
     return new Furniture({
       ...param,
       owner: ownerId,
@@ -15,6 +29,12 @@ export class FurnitureEntityMapper
       ville: getIdFromObject(param.ville),
       commune: getIdFromObject(param.commune),
       video: getIdFromObject(param.video),
+      type: normalizedType,
+      category: normalizedCategory,
+      etat: normalizedEtat,
+      metadata: {
+        colors: rawMetadata.colors,
+      },
     });
   }
 
@@ -26,6 +46,7 @@ export class FurnitureEntityMapper
       ville: getIdFromObject(param.ville),
       commune: getIdFromObject(param.commune),
       video: getIdFromObject(param.video),
+      metadata: param.metadata,
     });
   }
 }

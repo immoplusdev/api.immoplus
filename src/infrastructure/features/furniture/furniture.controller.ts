@@ -84,6 +84,9 @@ export class FurnitureController {
         titre: { type: "string" },
         description: { type: "string" },
         prix: { type: "number" },
+        type: { type: "string" },
+        category: { type: "string" },
+        etat: { type: "string", enum: ["neuf", "reconditionne", "occasion"] },
         adresse: { type: "string" },
         ville: { type: "string", format: "uuid", nullable: true },
         commune: { type: "string", format: "uuid", nullable: true },
@@ -91,7 +94,16 @@ export class FurnitureController {
         lng: { type: "number", nullable: true },
         position: { type: "object", nullable: true },
         status: { type: "string", nullable: true },
-        metadata: { type: "object", nullable: true },
+        metadata: {
+          type: "object",
+          nullable: true,
+          properties: {
+            colors: {
+              type: "array",
+              items: { type: "string", example: "#D7A86E" },
+            },
+          },
+        },
         images: {
           type: "array",
           items: { type: "string", format: "binary" },

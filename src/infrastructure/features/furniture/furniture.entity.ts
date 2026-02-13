@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -15,6 +14,7 @@ import { VilleEntity } from "@/infrastructure/features/villes";
 import { CommuneEntity } from "@/infrastructure/features/communes";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { FurnitureStatus } from "@/core/domain/furniture";
+import { FurnitureMetadata } from "@/core/domain/furniture/furniture-metadata";
 import { OmitMethods } from "@/lib/ts-utilities";
 import { User } from "@/core/domain/users";
 
@@ -28,7 +28,6 @@ export class FurnitureEntity {
   owner: User | string;
 
   // ---Gerer La localisation ---
-
   @ManyToOne(() => VilleEntity, (entity) => entity.id, { nullable: true })
   @JoinColumn({ name: "ville_id" })
   ville?: string;
@@ -68,6 +67,15 @@ export class FurnitureEntity {
   })
   prix: number;
 
+  @Column({ name: "type", type: "varchar", nullable: false })
+  type: string;
+
+  @Column({ name: "category", type: "varchar", nullable: false })
+  category: string;
+
+  @Column({ name: "etat", type: "varchar", nullable: false })
+  etat: "neuf" | "reconditionne" | "occasion";
+
   // --- Média ---
 
   @Column({ name: "images", type: "json", nullable: true })
@@ -94,7 +102,7 @@ export class FurnitureEntity {
   // --- Metadata ---
 
   @Column({ name: "metadata", type: "json", nullable: true })
-  metadata?: Record<string, any>;
+  metadata?: FurnitureMetadata;
 
   // --- Audit ---
 
