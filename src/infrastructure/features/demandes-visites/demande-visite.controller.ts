@@ -169,7 +169,7 @@ export class DemandeVisiteController {
   //   PermissionCollection.DemandesVisites,
   //   PermissionAction.Read,
   // ])
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   // @OwnerAccessRequired("createdBy")
   @ApiBearerAuth()
   @Get("data/bien-immobilier/owner/:id")
