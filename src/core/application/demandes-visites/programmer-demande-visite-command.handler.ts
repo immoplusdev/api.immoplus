@@ -100,7 +100,7 @@ export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<Pr
             bienImmobilier?.adresse ||
             `${bienImmobilier?.commune || ""}, ${bienImmobilier?.ville || ""}`.trim() ||
             "Adresse à confirmer",
-          lien: `${HUB2_RETURN_URL}/payment/demandes-visites/${command.id}`,
+          lien: `https://www.immoplus.ci`,
           unsubscribe_link: "https://immoplus.ci/unsubscribe",
         },
       );
