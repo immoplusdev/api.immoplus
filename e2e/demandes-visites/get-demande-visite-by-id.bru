@@ -14,6 +14,10 @@ auth:bearer {
   token: {{DEFAULT_CUSTOMER_AT}}
 }
 
+vars:pre-request {
+  DEFAULT_DEMANDE_VISITE_ID: 41b6fab7-d530-4f3d-9791-4def1fd719a7
+}
+
 tests {
   test("Should receive a list of date objects", function() {
     const {data: { datesDemandeVisite }} = res.getBody();

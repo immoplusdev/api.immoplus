@@ -19,6 +19,7 @@ export enum Deps {
   WalletRepository = "WalletRepository",
   TransferRepository = "TransferRepository",
   GatewayRepository = "GatewayRepository",
+  FurnitureRepository = "FurnitureRepository",
 
   // Services
   LoggerService = "LoggerService",
@@ -40,6 +41,7 @@ export enum Deps {
   FileService = "FileService",
   SocialAuthService = "SocialAuthService",
   EmailTemplateService = "EmailTemplateService",
+  
 
   // Guards
 

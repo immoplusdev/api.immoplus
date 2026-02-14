@@ -18,6 +18,7 @@ import { WalletModule } from "@/infrastructure/features/wallets/wallet.module";
 import { Transfer } from "@/core/domain/transfers/transfer.model";
 import { TransfersModule } from "@/infrastructure/features/transfers/transfers.module";
 import { GatewayModule } from "@/infrastructure/features/gateways/gateway.module";
+import { FurnitureModule } from "@/infrastructure/features/furniture";
 
 export const controllers = [];
 
@@ -34,9 +35,11 @@ const modules = [
   BienImmobilierModule,
   DemandeVisiteModule,
   PaymentModule,
+  FurnitureModule,
   WalletModule,
   TransfersModule,
   GatewayModule,
+  
 ];
 
 @Module({
