@@ -125,7 +125,7 @@ export class DemandeVisiteController {
         [
           {
             _field: "createdBy",
-            _l_op: "and",
+            _op: "eq",
             _val: userId,
           },
         ],
