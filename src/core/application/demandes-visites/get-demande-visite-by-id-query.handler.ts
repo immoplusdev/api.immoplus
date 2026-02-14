@@ -37,7 +37,7 @@ export class GetDemandeVisiteByIdQueryHandler
     if (!bienImmobilier) throw new ItemNotFoundException();
 
     const client = await this.usersRepository.findPublicUserInfoByUserId(
-      getIdFromObject(bienImmobilier.createdBy),
+      getIdFromObject(demandeVisite.createdBy),
     );
     const proprietaire = await this.usersRepository.findPublicUserInfoByUserId(
       getIdFromObject(bienImmobilier.proprietaire),
