@@ -106,7 +106,7 @@ export class ProgrammerDemandeVisiteCommandHandler implements ICommandHandler<Pr
       );
 
       await this.mailService.sendMail({
-        to: "dev.johnlight@gmail.com",
+        to: client.email,
         subject,
         html,
       });
