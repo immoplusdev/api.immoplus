@@ -64,6 +64,9 @@ export class DemandeVisiteDetailsDto {
   @ApiProperty()
   createdBy?: string;
 
+  @ApiProperty({ type: () => PublicUserInfoDto })
+  createdByModel?: PublicUserInfo;
+
   constructor(data?: OmitMethods<DemandeVisiteDetailsDto>) {
     if (data) Object.assign(this, data);
   }

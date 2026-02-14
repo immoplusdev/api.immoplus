@@ -43,11 +43,18 @@ export class GetDemandeVisiteByIdQueryHandler
       bienImmobilier.proprietaire,
     );
 
+    const createdByModel = demandeVisite.createdBy
+      ? await this.usersRepository.findPublicUserInfoByUserId(
+          demandeVisite.createdBy,
+        )
+      : undefined;
+
     return {
       ...demandeVisite,
       bienImmobilier,
       client,
       proprietaire,
+      createdByModel,
     };
   }
 }

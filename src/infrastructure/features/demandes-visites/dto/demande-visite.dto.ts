@@ -10,6 +10,8 @@ import { StatusFacture } from "@/core/domain/payments";
 import { BienImmobilierDto } from "@/core/application/biens-immobiliers";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { ServiceDateDto } from "@/core/application/common/dto";
+import { PublicUserInfoDto } from "@/core/application/users";
+import { PublicUserInfo } from "@/core/domain/users";
 
 export class DemandeVisiteDto {
   @ApiProperty({ format: "uuid" })
@@ -56,6 +58,9 @@ export class DemandeVisiteDto {
 
   @ApiProperty()
   createdBy?: string;
+
+  @ApiProperty({ type: () => PublicUserInfoDto })
+  createdByModel?: PublicUserInfo;
 
   constructor(data?: OmitMethods<DemandeVisiteDto>) {
     if (data) Object.assign(this, data);

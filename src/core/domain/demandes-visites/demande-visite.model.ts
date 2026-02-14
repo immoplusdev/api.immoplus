@@ -4,6 +4,7 @@ import { ServiceDates } from "@/core/domain/common/models";
 import { StatusFacture } from "@/core/domain/payments";
 import { BienImmobilier } from "@/core/domain/biens-immobiliers";
 import { TypeDemandeVisite } from "@/core/domain/demandes-visites";
+import { PublicUserInfo } from "@/core/domain/users";
 
 export class DemandeVisite {
   id: string;
@@ -21,6 +22,7 @@ export class DemandeVisite {
   updatedAt?: Date;
   deletedAt?: Date;
   createdBy?: string;
+  createdByModel?: PublicUserInfo;
 
   constructor(data?: OmitMethods<DemandeVisite>) {
     if (data) Object.assign(this, data);
