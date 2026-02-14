@@ -60,7 +60,6 @@ import { WrapperResponseGetResidenceOccupiedDatesQueryResponseDto } from "@/core
 import { JwtAuthGuard } from "@/infrastructure/features/auth";
 import { HistoriqueRetrait } from "@/core/domain/biens-immobiliers";
 import { StatusFacture } from "@/core/domain/payments";
-import { Console } from "node:console";
 
 @ApiTags("DemandeVisite")
 @Controller("demandes-visites")
@@ -88,10 +87,6 @@ export class DemandeVisiteController {
     UserRole.ProEntreprise,
     UserRole.ProParticulier,
   )
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Create,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(
@@ -117,13 +112,8 @@ export class DemandeVisiteController {
     UserRole.ProEntreprise,
     UserRole.ProParticulier,
   )
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Read,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get()
   async readMany(
     @Query() params: SearchItemsParamsDto,
@@ -173,8 +163,6 @@ export class DemandeVisiteController {
     @Query() params: SearchItemsParamsDto,
     @CurrentUser("id") userId: string,
   ) {
-    console.log("Hello welcome");
-
     if (ownerId !== userId)
       throw new UnauthorizedException({
         message: "Unauthorized",
@@ -195,10 +183,6 @@ export class DemandeVisiteController {
     type: HistoriqueRetrait,
   })
   @RequiredRoles(UserRole.ProEntreprise, UserRole.ProParticulier)
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Read,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get("data/historique-retrait/bien-immobilier/owner/:id")
@@ -256,13 +240,8 @@ export class DemandeVisiteController {
     UserRole.ProEntreprise,
     UserRole.ProParticulier,
   )
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Read,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @OwnerAccessRequired("createdBy")
   @Get(":id")
   async readOne(
     @Param("id") id: string,
@@ -284,10 +263,6 @@ export class DemandeVisiteController {
     UserRole.ProEntreprise,
     UserRole.ProParticulier,
   )
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Update,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Patch(":id")
@@ -331,10 +306,6 @@ export class DemandeVisiteController {
     UserRole.ProEntreprise,
     UserRole.ProParticulier,
   )
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Create,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async estimerPrixDemandeVisite(
@@ -388,10 +359,6 @@ export class DemandeVisiteController {
     UserRole.ProEntreprise,
     UserRole.ProParticulier,
   )
-  @RequiredPermissions([
-    PermissionCollection.DemandesVisites,
-    PermissionAction.Update,
-  ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async programmerDemandeVisiteById(
