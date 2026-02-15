@@ -45,6 +45,7 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
 import { FilesInterceptor } from "@nestjs/platform-express";
+import { IUserRepository } from "@/core/domain/users";
 
 @ApiTags("Furniture")
 @Controller("furnitures")
@@ -58,6 +59,8 @@ export class FurnitureController {
   constructor(
     @Inject(Deps.FurnitureRepository)
     private readonly repository: IFurnitureRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly usersRepository: IUserRepository,
     private readonly commandBus: CommandBus,
   ) {}
 
@@ -139,6 +142,30 @@ export class FurnitureController {
   @Get()
   async readMany(@Query() params: SearchItemsParamsDto) {
     const result = await this.repository.findByQuery(params as any);
+    const ownerIds = [
+      ...new Set(
+        (result.data || [])
+          .map((item) => item.ownerId || item.owner)
+          .filter(Boolean),
+      ),
+    ] as string[];
+
+    const ownerPhoneById = new Map<string, string>();
+    await Promise.all(
+      ownerIds.map(async (ownerId) => {
+        const phone = await this.resolveOwnerPhoneNumber(ownerId);
+        if (phone) ownerPhoneById.set(ownerId, phone);
+      }),
+    );
+
+    result.data = (result.data || []).map((item) => {
+      const resolvedOwnerId = item.ownerId || item.owner;
+      return {
+        ...item,
+        ownerPhoneNumber:
+          item.ownerPhoneNumber || ownerPhoneById.get(resolvedOwnerId) || null,
+      };
+    });
     return this.responseMapper.mapFromQueryResult(result);
   }
 
@@ -148,7 +175,22 @@ export class FurnitureController {
   async readOne(@Param("id") id: string) {
     const furniture = await this.repository.findOne(id);
     if (!furniture) throw new ItemNotFoundException();
+    const resolvedOwnerId = furniture.ownerId || furniture.owner;
+    if (resolvedOwnerId && !furniture.ownerPhoneNumber)
+      furniture.ownerPhoneNumber = await this.resolveOwnerPhoneNumber(
+        resolvedOwnerId,
+      );
+    if (!furniture.ownerPhoneNumber) furniture.ownerPhoneNumber = null;
     return this.responseMapper.mapFrom(furniture);
+  }
+
+  private async resolveOwnerPhoneNumber(ownerId: string): Promise<string | null> {
+    const owner = await this.usersRepository.findOne(ownerId, {
+      fields: ["id", "phoneNumber"],
+      relations: [],
+      withDeleted: true,
+    });
+    return owner?.phoneNumber || null;
   }
 
   // ─── UPDATE ───

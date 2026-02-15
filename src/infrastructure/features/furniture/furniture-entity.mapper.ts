@@ -8,6 +8,10 @@ export class FurnitureEntityMapper
 {
   mapFrom(param: FurnitureEntity): Furniture {
     const ownerId = getIdFromObject(param.owner);
+    const ownerPhoneNumber =
+      typeof param.owner === "object" && param.owner
+        ? (param.owner as { phoneNumber?: string }).phoneNumber
+        : undefined;
     const rawMetadata = (param.metadata ?? {}) as {
       colors?: string[];
       types?: string[];
@@ -26,6 +30,7 @@ export class FurnitureEntityMapper
       ...param,
       owner: ownerId,
       ownerId,
+      ownerPhoneNumber,
       ville: getIdFromObject(param.ville),
       commune: getIdFromObject(param.commune),
       video: getIdFromObject(param.video),

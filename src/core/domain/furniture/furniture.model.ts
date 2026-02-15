@@ -7,6 +7,7 @@ export class Furniture {
   id: string;
   owner: string;
   ownerId?: string;
+  ownerPhoneNumber?: string;
   ville?: string;
   commune?: string;
   adresse: string;
