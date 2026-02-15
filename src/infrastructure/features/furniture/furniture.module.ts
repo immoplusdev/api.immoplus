@@ -5,6 +5,7 @@ import { TypeormModule } from "@/infrastructure/typeorm";
 import { FurnitureRepository } from "./furniture.repository";
 import { FurnitureController } from "./furniture.controller";
 import { CreateFurnitureCommandHandler } from "@/core/application/furniture";
+import { UserModule } from "@/infrastructure/features/users";
 
 const queryHandlers = [];
 const commandHandlers = [CreateFurnitureCommandHandler];
@@ -19,7 +20,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [FurnitureController],
-  imports: [TypeormModule, CqrsModule],
+  imports: [TypeormModule, CqrsModule, UserModule],
   providers: [
     ...providers,
     ...queryHandlers,

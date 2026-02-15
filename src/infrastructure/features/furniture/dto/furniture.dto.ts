@@ -13,6 +13,9 @@ export class FurnitureDto {
   @ApiProperty({ format: "uuid" })
   owner: string;
 
+  @ApiProperty({ required: false })
+  ownerPhoneNumber?: string;
+
   @ApiProperty({ format: "uuid" })
   ville?: string;
 
