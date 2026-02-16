@@ -288,7 +288,6 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
     payload: TransfertPayloadDto,
   ): Promise<Hu2TransferResponseDto> {
     try {
-      console.log("payload: ", payload);
       const response = await axios.post<Hu2TransferResponseDto>(
         `${HUB2_API_URL}/transfers`,
         payload,
