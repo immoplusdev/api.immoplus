@@ -67,7 +67,11 @@ export function getPaymentMethodFees(amount: number, paymentMethod: string) {
   return formatAmount((amount * feesPercentage) / 100);
 }
 
-export function getTransferMethodFees(amount: number, paymentMethod: string) {
+export function getTransferMethodFees(
+  amount: number,
+  paymentMethod: string,
+  format: boolean = true,
+) {
   let feesPercentage = 0;
   switch (paymentMethod.toLocaleLowerCase()) {
     case PaymentMethod.Wave:
@@ -85,6 +89,9 @@ export function getTransferMethodFees(amount: number, paymentMethod: string) {
     default:
       break;
   }
+  const fees = format
+    ? formatAmount((amount * feesPercentage) / 100)
+    : (amount * feesPercentage) / 100;
 
-  return formatAmount((amount * feesPercentage) / 100);
+  return fees;
 }
