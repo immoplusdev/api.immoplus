@@ -172,7 +172,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       this.loggerService.error("error => ", error);
       if (error.response) {
         if (error.response.data) {
-          this.loggerService.error("error => ", error.response.data);
+          this.loggerService.error("error => ", error.response?.data);
         } else {
           this.loggerService.error("error => ", error.response);
         }
@@ -288,6 +288,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
     payload: TransfertPayloadDto,
   ): Promise<Hu2TransferResponseDto> {
     try {
+      console.log("payload: ", payload);
       const response = await axios.post<Hu2TransferResponseDto>(
         `${HUB2_API_URL}/transfers`,
         payload,
@@ -297,7 +298,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       );
       return response.data;
     } catch (error) {
-      this.loggerService.error("error => ", error.response.data);
+      this.loggerService.error("error => ", error.response?.data);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();
@@ -317,7 +318,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       );
       return response.data;
     } catch (error) {
-      this.loggerService.error("error => ", error.response.data);
+      this.loggerService.error("error => ", error.response?.data);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();
@@ -334,7 +335,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       );
       return response.data;
     } catch (error) {
-      this.loggerService.error("error => ", error.response.data);
+      this.loggerService.error("error => ", error.response?.data);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();
@@ -351,7 +352,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       );
       return response.data;
     } catch (error) {
-      this.loggerService.error("error => ", error.response.data);
+      this.loggerService.error("error => ", error.response?.data);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();
@@ -367,7 +368,7 @@ export class Hub2PaymentGatewayService implements IGatewayRepository {
       );
       return response.data;
     } catch (error) {
-      this.loggerService.error("error => ", error.response.data);
+      this.loggerService.error("error => ", error.response?.data);
       if (error instanceof AxiosError && error.response?.data)
         throw new ConflictException(error.response?.data.message);
       throw new UnexpectedException();

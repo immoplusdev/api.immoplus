@@ -25,9 +25,7 @@ import {
 } from "../../../utils/hub2.utils";
 
 @CommandHandler(CreateTransferCommand)
-export class CreateTransferHandler
-  implements ICommandHandler<CreateTransferCommand>
-{
+export class CreateTransferHandler implements ICommandHandler<CreateTransferCommand> {
   constructor(
     @Inject(Deps.GatewayRepository)
     private readonly gatewayRespository: IGatewayRepository,
@@ -66,13 +64,14 @@ export class CreateTransferHandler
     const fees = await getTransferMethodFees(
       withdrawal.amount,
       withdrawal.operator,
+      false,
     );
-    const amount = +withdrawal.amount - fees;
+
     const userName = user.firstName + " " + user.lastName;
 
     const transferData = new Transfer({
       id: uuidv4(),
-      amount: amount,
+      amount: +withdrawal.amount,
       currency: withdrawal.currency,
       fees: fees,
       customer: user.id,
@@ -104,7 +103,7 @@ export class CreateTransferHandler
 
     const transferPayload = new TransfertPayloadDto({
       reference: transfer.id,
-      amount: +withdrawal.amountWithFees,
+      amount: +withdrawal.amount,
       currency: transfer.currency,
       description: transfer.recipientName,
       destination: destination,
@@ -114,16 +113,16 @@ export class CreateTransferHandler
     try {
       const hub2Response: Hu2TransferResponseDto =
         await this.gatewayRespository.createTransfer(transferPayload);
-      console.log("hub2Response: ", hub2Response);
       await this.transferRepository.updateOne(transfer.id, {
         hub2TransferId: hub2Response.id,
         hub2Exception: null,
         hub2Metadata: hub2Response,
       });
     } catch (error) {
+      console.log("error: ", error);
       await this.transferRepository.updateOne(transfer.id, {
         hub2TransferId: null,
-        hub2Exception: error,
+        hub2Exception: error instanceof Error ? error.message : String(error),
         hub2Metadata: null,
       });
       throw error;
