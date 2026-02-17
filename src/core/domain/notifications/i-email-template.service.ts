@@ -13,6 +13,8 @@ export enum EmailTemplate {
   RETRAIT_WALLET_PRO = "retrait-wallet-pro",
   NOUVELLE_DEMANDE_RETRAIT_ADMIN = "nouvelle-demande-retrait-admin",
   SOLDE_DISPONIBLE_PRO = "solde-disponible-pro",
+  CREDIT_WALLET_PRO = "credit-wallet-pro",
+  DEBIT_WALLET_PRO = "debit-wallet-pro",
 }
 
 export interface EmailTemplateData {

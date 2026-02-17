@@ -32,7 +32,7 @@ export class ReservationEntity {
     default: StatusReservation.EnCours,
   })
   statusReservation: StatusReservation;
-  @Column({ name: "dates_reservation", type: "json" })
+  @Column({ name: "dates_reservation", type: "json", nullable: true })
   datesReservation: ServiceDates;
 
   @Column({ name: "date_debut", nullable: true })

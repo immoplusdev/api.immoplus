@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Solde disponible</title>
+    <title>Compte bloqué crédité</title>
     <style>
       body {
         margin: 0;
@@ -104,25 +104,25 @@
               </td>
             </tr>
             <tr>
-              <td class="header"><strong>Votre solde a été crédité</strong></td>
+              <td class="header"><strong>Votre compte bloqué a été crédité</strong></td>
             </tr>
             <tr>
               <td class="content">
                 <p>Bonjour {{nom_proprietaire}},</p>
                 <p>
-                  Bonne nouvelle ! Un montant de <strong>{{montant}}</strong> vient d'être débloqué et ajouté à votre solde disponible.
+                  Un montant de <strong>{{montant}}</strong> vient d'être crédité sur votre compte bloqué.
                 </p>
                 <p class="meta">
                   Montant crédité : <strong>{{montant}}</strong><br />
-                  Nouveau solde disponible : <strong>{{solde}}</strong><br />
-                  Solde bloqué : <strong>{{solde_bloque }}</strong><br />
+                  Solde disponible : <strong>{{solde_disponible}}</strong><br />
+                  Solde bloqué : <strong>{{solde}}</strong><br />
                   Date : <strong>{{date}}</strong>
                 </p>
                 <p>
-                  Vous pouvez dès maintenant faire une demande de retrait pour transférer cet argent sur votre compte Mobile Money.
+                  Ce montant sera disponible après validation. Connectez-vous à votre espace pour consulter les détails.
                 </p>
                 <p style="text-align: center">
-                  <a class="btn" style="display:inline-block;background:#2745dc;color: #fff !important;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:700;margin:18px 0;" href="{{lien}}">Faire une demande de retrait</a>
+                  <a class="btn" style="display:inline-block;background:#2745dc;color: #fff !important;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:700;margin:18px 0;" href="{{lien}}">Consulter mon compte</a>
                 </p>
               </td>
             </tr>

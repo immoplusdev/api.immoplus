@@ -127,6 +127,9 @@ export class WalletsService {
     if (source == TransactionSource.RESERVATION) {
       await this.reservationRepo.updateOne(sourceId, { proReverse: true });
     }
+
+    this.notifyOwnerWalletCredited(ownerId, wallet.id, amount);
+
     return this.findWalletByOwner(ownerId);
   }
 
@@ -160,6 +163,8 @@ export class WalletsService {
     await this.walletRepo.updateOne(wallet.id, {
       availableBalance: newAvailableBalance,
     });
+
+    this.notifyOwnerWalletDebited(ownerId, wallet.id, amount);
 
     return await this.findWalletByOwner(ownerId);
   }
@@ -246,6 +251,9 @@ export class WalletsService {
         retraitProEffectue: true,
       });
     }
+
+    this.notifyOwnerFundsReleased(wallet, amount, availableBalance);
+
     return this.findWalletByOwner(ownerId);
   }
 
@@ -434,12 +442,19 @@ export class WalletsService {
         currency: "XOF",
       }).format(newAvailableBalance || 0);
 
+      const soldeBloqueFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(wallet.pendingBalance || 0);
+
       // Format date
       const dateFormatee = new Date().toLocaleDateString("fr-FR", {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
       });
 
       const subject = this.globalizationService.t(
@@ -459,6 +474,7 @@ export class WalletsService {
               "Propriétaire",
             montant: montantFormate,
             solde: soldeFormate,
+            solde_bloque: soldeBloqueFormate,
             date: dateFormatee,
             lien: "https://admin.immoplus.ci/wallet",
             unsubscribe_link: "https://immoplus.ci/unsubscribe",
@@ -491,6 +507,178 @@ export class WalletsService {
     } catch (error) {
       console.error("Error notifying owner about funds release:", error);
       // Don't throw error to prevent blocking the refund process
+    }
+  }
+
+  private async notifyOwnerWalletCredited(
+    ownerId: string,
+    walletId: string,
+    amount: number,
+  ): Promise<void> {
+    try {
+      const proprietaire =
+        await this.usersRepository.findPublicUserInfoByUserId(ownerId);
+
+      if (!proprietaire) return;
+
+      const montantFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(amount || 0);
+
+      const wallet = await this.findWalletByOwner(ownerId);
+      const soldeFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(wallet.pendingBalance || 0);
+
+      const soldeDisponibleFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(wallet.availableBalance || 0);
+
+      const dateFormatee = new Date().toLocaleDateString("fr-FR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+
+      const subject = this.globalizationService.t(
+        "all.notifications.wallets.paiement_block_valide_pro.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.wallets.paiement_block_valide_pro.message",
+      );
+
+      if (proprietaire?.email) {
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.CREDIT_WALLET_PRO,
+          {
+            nom_proprietaire:
+              `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+              "Propriétaire",
+            montant: montantFormate,
+            solde: soldeFormate,
+            solde_disponible: soldeDisponibleFormate,
+            date: dateFormatee,
+            lien: "https://immoplus.ci",
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        await this.mailService.sendMail({
+          to: proprietaire.email,
+          subject: subject || "Compte bloqué crédité",
+          html,
+        });
+      }
+
+      await this.notificationService.sendNotification({
+        userId: ownerId,
+        subject: subject || "Compte bloqué crédité",
+        message:
+          message ||
+          `Votre compte bloqué vient d'être crédité de ${montantFormate}.`,
+        skipInAppNotification: false,
+        sendMail: false,
+        sendSms: true,
+        returnUrl: "",
+        data: {
+          type: PushNotificationType.Wallet,
+          id: walletId,
+        },
+      });
+    } catch (error) {
+      console.error("Error notifying owner about wallet credit:", error);
+    }
+  }
+
+  private async notifyOwnerWalletDebited(
+    ownerId: string,
+    walletId: string,
+    amount: number,
+  ): Promise<void> {
+    try {
+      const proprietaire =
+        await this.usersRepository.findPublicUserInfoByUserId(ownerId);
+
+      if (!proprietaire) return;
+
+      const montantFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(amount || 0);
+
+      const wallet = await this.findWalletByOwner(ownerId);
+      const soldeFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(wallet.availableBalance || 0);
+
+      const soldebloqueFormate = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "XOF",
+      }).format(wallet.pendingBalance || 0);
+
+      const dateFormatee = new Date().toLocaleDateString("fr-FR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+
+      const subject = this.globalizationService.t(
+        "all.notifications.wallets.paiement_debit_pro.subject",
+      );
+      const message = this.globalizationService.t(
+        "all.notifications.wallets.paiement_debit_pro.message",
+      );
+
+      if (proprietaire?.email) {
+        const html = await this.emailTemplateService.render(
+          EmailTemplate.DEBIT_WALLET_PRO,
+          {
+            nom_proprietaire:
+              `${proprietaire.firstName || ""} ${proprietaire.lastName || ""}`.trim() ||
+              "Propriétaire",
+            montant: montantFormate,
+            solde: soldeFormate,
+            solde_bloque: soldebloqueFormate,
+            date: dateFormatee,
+            lien: "https://admin.immoplus.ci/wallet",
+            unsubscribe_link: "https://immoplus.ci/unsubscribe",
+          },
+        );
+
+        await this.mailService.sendMail({
+          to: proprietaire.email,
+          subject: subject || "Nouveau retrait",
+          html,
+        });
+      }
+
+      await this.notificationService.sendNotification({
+        userId: ownerId,
+        subject: subject || "Nouveau retrait",
+        message:
+          message ||
+          `Un retrait de ${montantFormate} a été enregistré sur votre compte.`,
+        skipInAppNotification: false,
+        sendMail: false,
+        sendSms: true,
+        returnUrl: "",
+        data: {
+          type: PushNotificationType.Wallet,
+          id: walletId,
+        },
+      });
+    } catch (error) {
+      console.error("Error notifying owner about wallet debit:", error);
     }
   }
 
