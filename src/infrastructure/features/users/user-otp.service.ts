@@ -9,11 +9,15 @@ import {
 import { Deps } from "@/core/domain/common/ioc";
 import * as crypto from "crypto";
 import { UnauthorizedException } from "@/core/domain/auth";
+import { IUserRepository } from "@/core/domain/users";
+import { UserEmailAlreadyTakenException } from "@/core/application/auth";
 
 @Injectable()
 export class UserOtpService {
   constructor(
     private readonly userOtpRepository: UserOtpRepository,
+    @Inject(Deps.UsersRepository)
+    private readonly userRepository: IUserRepository,
     @Inject(Deps.MailService)
     private readonly mailService: IMailService,
     @Inject(Deps.EmailTemplateService)
@@ -21,8 +25,10 @@ export class UserOtpService {
   ) {}
 
   async sendOtp(email: string): Promise<string> {
+    const existingUser = await this.userRepository.findOneByEmail(email);
+    if (existingUser) throw new UserEmailAlreadyTakenException();
+
     const existingOtp = await this.userOtpRepository.findOneByEmail(email);
-    console.log("existingOtp: ", existingOtp);
 
     const otp = this.generateOtp();
     const token = this.generateToken();
