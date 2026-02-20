@@ -124,6 +124,9 @@ export class BienImmobilierEntity {
   @Column({ name: "regles_supplementaires", type: "text", nullable: true })
   reglesSupplementaires?: string;
 
+  @Column({ name: "score", type: "int", default: 0 })
+  score: number;
+
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: true })
   @JoinColumn({ name: "proprietaire_id" })
   proprietaire?: string;

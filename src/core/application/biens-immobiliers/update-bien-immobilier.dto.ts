@@ -96,6 +96,10 @@ export class UpdateBienImmobilierDto {
   @IsOptional()
   proprietaire?: string;
 
+  @ApiProperty()
+  @IsOptional()
+  score: number;
+
   constructor(data?: OmitMethods<UpdateBienImmobilierDto>) {
     if (data) Object.assign(this, data);
   }

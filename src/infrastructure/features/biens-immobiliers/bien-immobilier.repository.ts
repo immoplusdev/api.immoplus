@@ -59,6 +59,7 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
     "fetesAutorises",
     "reglesSupplementaires",
     "proprietaire",
+    "score",
   ];
 
   constructor(
@@ -106,6 +107,11 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
     query?: SearchItemsParams,
     options?: FindItemOptions,
   ): Promise<WrapperResponse<BienImmobilier[]>> {
+    // Tri par score DESC par défaut si aucun tri n'est spécifié
+    if (!query?._order_by) {
+      query = { ...query, _order_by: "score", _order_dir: "desc" };
+    }
+
     // Transformer les filtres de relations pour TypeORM (ManyToOne)
     if (query?._where && Array.isArray(query._where)) {
       query._where = query._where.map((condition) => {
@@ -296,6 +302,8 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
       const direction =
         query._order_dir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
       qb.orderBy(`bien.${query._order_by}`, direction);
+    } else {
+      qb.orderBy("bien.score", "DESC").addOrderBy("bien.createdAt", "DESC");
     }
 
     // 📄 Pagination
@@ -445,6 +453,8 @@ export class BienImmobilierRepository implements IBienImmobilierRepository {
       const direction =
         query._order_dir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
       qb.orderBy(`bien.${query._order_by}`, direction);
+    } else {
+      qb.orderBy("bien.score", "DESC").addOrderBy("bien.createdAt", "DESC");
     }
 
     // 📄 Pagination

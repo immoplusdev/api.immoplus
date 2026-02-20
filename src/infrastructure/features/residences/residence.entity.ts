@@ -120,6 +120,9 @@ export class ResidenceEntity {
   @Column({ name: "regles_supplementaires", type: "text", nullable: true })
   reglesSupplementaires?: string;
 
+  @Column({ name: "score", type: "int", default: 0 })
+  score: number;
+
   @Column({
     name: "dates_reservation",
     type: "json",

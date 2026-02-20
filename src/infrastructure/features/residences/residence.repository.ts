@@ -47,6 +47,7 @@ export class ResidenceRepository implements IResidenceRepository {
     "ville",
     "commune",
     "adresse",
+    "score",
   ];
 
   constructor(
@@ -92,6 +93,11 @@ export class ResidenceRepository implements IResidenceRepository {
     query?: SearchItemsParams,
   ): Promise<WrapperResponse<Residence[]>> {
     console.log("ResidenceRepository.findByQuery called with query:", query);
+
+    // Tri par score DESC par défaut si aucun tri n'est spécifié
+    if (!query?._order_by) {
+      query = { ...query, _order_by: "score", _order_dir: "desc" };
+    }
 
     // Transformer le filtre 'proprietaire' pour TypeORM (relation ManyToOne)
     if (query?._where && Array.isArray(query._where)) {
@@ -263,7 +269,7 @@ export class ResidenceRepository implements IResidenceRepository {
         query._order_dir?.toUpperCase() === "DESC" ? "DESC" : "ASC";
       qb.orderBy(`residence.${query._order_by}`, direction);
     } else {
-      qb.orderBy("residence.createdAt", "DESC");
+      qb.orderBy("residence.score", "DESC").addOrderBy("residence.createdAt", "DESC");
     }
 
     // Pagination
@@ -705,10 +711,9 @@ export class ResidenceRepository implements IResidenceRepository {
     orderDir?: string,
   ) {
     if (!orderBy || !this.isValidOrderField(orderBy)) {
-      qb.orderBy("residence.createdAt", "DESC").addOrderBy(
-        "residence.id",
-        "ASC",
-      );
+      qb.orderBy("residence.score", "DESC")
+        .addOrderBy("residence.createdAt", "DESC")
+        .addOrderBy("residence.id", "ASC");
       return;
     }
 
@@ -733,6 +738,7 @@ export class ResidenceRepository implements IResidenceRepository {
       "nb_salle_bain",
       "type_bien",
       "status_validation",
+      "score",
     ];
 
     return typeof field === "string" && allowedFields.includes(field);
@@ -749,6 +755,7 @@ export class ResidenceRepository implements IResidenceRepository {
       "created_at",
       "updated_at",
       "id",
+      "score",
     ];
 
     return allowedOrderFields.includes(field);

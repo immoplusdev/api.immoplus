@@ -40,6 +40,7 @@ export class BienImmobilier {
   bienImmobilierDisponible: boolean;
   fetesAutorises: boolean;
   reglesSupplementaires?: string;
+  score: number;
   proprietaire?: string;
   createdAt?: Date;
   updatedAt?: Date;

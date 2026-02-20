@@ -76,6 +76,8 @@ export class ResidenceDto {
   fetesAutorises: boolean;
   @ApiProperty()
   reglesSupplementaires?: string;
+  @ApiProperty()
+  score: number;
   @ApiProperty({ format: "uuid" })
   proprietaire?: string;
 

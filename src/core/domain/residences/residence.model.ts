@@ -39,6 +39,7 @@ export class Residence {
   fetesAutorises: boolean;
   reglesSupplementaires?: string;
   datesReservation?: ServiceDates;
+  score: number;
   proprietaire?: string;
 
   createdAt?: Date;

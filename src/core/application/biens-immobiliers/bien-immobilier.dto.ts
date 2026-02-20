@@ -96,6 +96,9 @@ export class BienImmobilierDto {
   @ApiProperty()
   reglesSupplementaires?: string;
 
+  @ApiProperty()
+  score: number;
+
   @ApiProperty({ format: "uuid" })
   proprietaire?: string;
 

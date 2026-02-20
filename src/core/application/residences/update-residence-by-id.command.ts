@@ -138,6 +138,11 @@ export class UpdateResidenceByIdCommand {
   @IsOptional()
   residenceDisponible: boolean;
 
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  score: number;
+
   constructor(data?: OmitMethods<UpdateResidenceByIdCommand>) {
     if (data) Object.assign(this, data);
   }
