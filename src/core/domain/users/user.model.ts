@@ -14,6 +14,7 @@ export class User {
   // Social auth data
   googleId?: string;
   facebookId?: string;
+  appleId?: string;
 
   role: Role | string;
   language?: string;

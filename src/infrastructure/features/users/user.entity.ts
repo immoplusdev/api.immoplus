@@ -46,6 +46,13 @@ export class UserEntity {
   })
   facebookId?: string;
 
+  @Column({
+    name: "apple_id",
+    type: "text",
+    nullable: true,
+  })
+  appleId?: string;
+
   @ManyToOne(() => RoleEntity, (role) => role.id)
   @JoinColumn({ name: "role_id" })
   role: Role | string;

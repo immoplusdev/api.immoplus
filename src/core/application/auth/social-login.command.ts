@@ -6,6 +6,7 @@ import { UserApp } from "@/core/domain/roles";
 export enum SocialAuthProvider {
   Google = "google",
   Facebook = "facebook",
+  Apple = "apple",
 }
 
 export class SocialLoginCommand {

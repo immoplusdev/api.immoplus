@@ -45,4 +45,9 @@ export interface IUserRepository extends IBaseRepository<
     facebookId: string,
     options?: FindItemOptions,
   ): Promise<User | null>;
+
+  findOneByAppleId(
+    appleId: string,
+    options?: FindItemOptions,
+  ): Promise<User | null>;
 }

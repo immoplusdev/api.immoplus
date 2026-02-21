@@ -9,4 +9,5 @@ export interface SocialUserProfile {
 export interface ISocialAuthService {
   verifyGoogleToken(token: string): Promise<SocialUserProfile>;
   verifyFacebookToken(token: string): Promise<SocialUserProfile>;
+  verifyAppleToken(token: string): Promise<SocialUserProfile>;
 }

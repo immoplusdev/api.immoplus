@@ -238,4 +238,14 @@ export class UserRepository implements IUserRepository {
       options,
     );
   }
+
+  async findOneByAppleId(
+    appleId: string,
+    options?: FindItemOptions,
+  ): Promise<User | null> {
+    return await this.findOneByQuery(
+      { _where: [{ _field: "appleId", _val: appleId }] },
+      options,
+    );
+  }
 }

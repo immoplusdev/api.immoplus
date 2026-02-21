@@ -85,6 +85,8 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
           return await this.socialAuthService.verifyGoogleToken(token);
         case SocialAuthProvider.Facebook:
           return await this.socialAuthService.verifyFacebookToken(token);
+        case SocialAuthProvider.Apple:
+          return await this.socialAuthService.verifyAppleToken(token);
         default:
           throw new InvalidSocialTokenException();
       }
@@ -105,6 +107,8 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
       user = await this.userRepository.findOneByGoogleId(profile.socialId);
     } else if (provider === SocialAuthProvider.Facebook && profile.socialId) {
       user = await this.userRepository.findOneByFacebookId(profile.socialId);
+    } else if (provider === SocialAuthProvider.Apple && profile.socialId) {
+      user = await this.userRepository.findOneByAppleId(profile.socialId);
     }
 
     // If not found by social ID, try to find by email
@@ -132,6 +136,8 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
       updates.googleId = socialId;
     } else if (provider === SocialAuthProvider.Facebook && !user.facebookId) {
       updates.facebookId = socialId;
+    } else if (provider === SocialAuthProvider.Apple && !user.appleId) {
+      updates.appleId = socialId;
     }
 
     if (Object.keys(updates).length > 0) {
@@ -173,6 +179,8 @@ export class SocialLoginCommandHandler implements ICommandHandler<SocialLoginCom
       newUser.googleId = profile.socialId;
     } else if (provider === SocialAuthProvider.Facebook) {
       newUser.facebookId = profile.socialId;
+    } else if (provider === SocialAuthProvider.Apple) {
+      newUser.appleId = profile.socialId;
     }
 
     return await this.userRepository.createOne(newUser);

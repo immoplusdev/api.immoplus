@@ -7,6 +7,8 @@ import { InvalidSocialTokenException } from "@/core/domain/auth/invalid-social-t
 import { Deps } from "@/core/domain/common/ioc";
 import { IConfigsManagerService } from "@/core/domain/configs";
 import { ILoggerService } from "@/core/domain/logging";
+import * as jwt from "jsonwebtoken";
+import * as crypto from "crypto";
 
 interface GoogleTokenInfo {
   iss: string;
@@ -21,6 +23,27 @@ interface GoogleTokenInfo {
   family_name?: string;
   iat: string;
   exp: string;
+}
+
+interface AppleJWK {
+  kty: string;
+  kid: string;
+  use: string;
+  alg: string;
+  n: string;
+  e: string;
+}
+
+interface AppleTokenPayload {
+  iss: string;
+  aud: string;
+  exp: number;
+  iat: number;
+  sub: string;
+  email?: string;
+  email_verified?: string;
+  nonce?: string;
+  nonce_supported?: boolean;
 }
 
 @Injectable()
@@ -116,6 +139,66 @@ export class SocialAuthService implements ISocialAuthService {
       };
     } catch (error) {
       this.loggerService.error("Facebook token verification failed", error);
+      throw new InvalidSocialTokenException();
+    }
+  }
+
+  async verifyAppleToken(token: string): Promise<SocialUserProfile> {
+    try {
+      const appleClientIds = this.configsManagerService
+        .getEnvVariable<string>("APPLE_CLIENT_IDS")
+        .split(",")
+        .map((id) => id.trim());
+
+      // Decode JWT header to get the key ID (kid)
+      const decodedHeader = jwt.decode(token, { complete: true });
+      if (!decodedHeader || !decodedHeader.header?.kid) {
+        throw new InvalidSocialTokenException();
+      }
+
+      // Fetch Apple's public keys (JWKS)
+      const jwksResponse = await fetch("https://appleid.apple.com/auth/keys");
+      if (!jwksResponse.ok) {
+        throw new InvalidSocialTokenException();
+      }
+
+      const jwks: { keys: AppleJWK[] } = await jwksResponse.json();
+      const appleKey = jwks.keys.find(
+        (key) => key.kid === decodedHeader.header.kid,
+      );
+
+      if (!appleKey) {
+        this.loggerService.error("Apple public key not found for kid", {
+          kid: decodedHeader.header.kid,
+        });
+        throw new InvalidSocialTokenException();
+      }
+
+      // Build RSA public key from JWK components
+      const publicKey = crypto.createPublicKey({
+        key: {
+          kty: appleKey.kty,
+          n: appleKey.n,
+          e: appleKey.e,
+        },
+        format: "jwk",
+      });
+
+      const pemKey = publicKey.export({ type: "spki", format: "pem" });
+
+      // Verify the JWT signature and claims
+      const payload = jwt.verify(token, pemKey, {
+        algorithms: ["RS256"],
+        issuer: "https://appleid.apple.com",
+        audience: appleClientIds,
+      }) as AppleTokenPayload;
+
+      return {
+        socialId: payload.sub,
+        email: payload.email,
+      };
+    } catch (error) {
+      this.loggerService.error("Apple token verification failed", error);
       throw new InvalidSocialTokenException();
     }
   }
