@@ -46,7 +46,7 @@ export class CreateFurnitureCommandHandler
       lng: command.lng,
       images: command.images,
       video: command.video,
-      status: command.status ?? FurnitureStatus.Active,
+      status: command.status ?? FurnitureStatus.Inactive,
       metadata: command.metadata,
       createdBy: command.ownerId,
     };
