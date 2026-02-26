@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   Inject,
   Logger,
@@ -49,6 +48,7 @@ import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
 import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import { AccessForbiddenException } from "@/core/domain/auth";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { IUserRepository } from "@/core/domain/users";
 import { FurnitureStatus } from "@/core/domain/furniture";
@@ -280,7 +280,7 @@ export class FurnitureController {
     const isAdmin = Boolean(userRole?.hasAdminAccess());
 
     if (!isAdmin && !isOwner) {
-      throw new ForbiddenException(
+      throw new AccessForbiddenException().setMessage(
         "Vous ne pouvez modifier que vos propres meubles.",
       );
     }
@@ -290,7 +290,7 @@ export class FurnitureController {
         payload.status !== FurnitureStatus.Active &&
         payload.status !== FurnitureStatus.Inactive
       ) {
-        throw new ForbiddenException(
+        throw new AccessForbiddenException().setMessage(
           "Le statut autorisé pour un pro est active ou inactive.",
         );
       }
@@ -299,7 +299,7 @@ export class FurnitureController {
         payload.status === FurnitureStatus.Active &&
         !existing.metadata?.adminValidated
       ) {
-        throw new ForbiddenException(
+        throw new AccessForbiddenException().setMessage(
           "Ce meuble n'est pas encore validé.",
         );
       }
@@ -349,7 +349,7 @@ export class FurnitureController {
     const isOwner = existingOwnerId === userId;
     const isAdmin = Boolean(userRole?.hasAdminAccess());
     if (!isAdmin && !isOwner) {
-      throw new ForbiddenException(
+      throw new AccessForbiddenException().setMessage(
         "Vous ne pouvez supprimer que vos propres meubles.",
       );
     }
