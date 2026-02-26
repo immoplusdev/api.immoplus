@@ -299,8 +299,11 @@ export class FurnitureController {
         payload.status === FurnitureStatus.Active &&
         !existing.metadata?.adminValidated
       ) {
+        const response = this.responseMapper.mapFrom(existing) as any;
         return {
+          ...response,
           message: "Ce meuble n'est pas encore validé.",
+          success: false,
         };
       }
     }
