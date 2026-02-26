@@ -299,9 +299,9 @@ export class FurnitureController {
         payload.status === FurnitureStatus.Active &&
         !existing.metadata?.adminValidated
       ) {
-        throw new AccessForbiddenException().setMessage(
-          "Ce meuble n'est pas encore validé.",
-        );
+        return {
+          message: "Ce meuble n'est pas encore validé.",
+        };
       }
     }
 
@@ -310,10 +310,15 @@ export class FurnitureController {
       ...(payload.metadata || {}),
     };
 
-    if (isAdmin && payload.status === FurnitureStatus.Active) {
-      mergedMetadata.adminValidated = true;
-      mergedMetadata.adminValidatedAt =
-        mergedMetadata.adminValidatedAt || new Date().toISOString();
+    if (isAdmin && payload.status) {
+      if (payload.status === FurnitureStatus.Active) {
+        mergedMetadata.adminValidated = true;
+        mergedMetadata.adminValidatedAt = new Date().toISOString();
+      } else {
+        // If admin invalidates/deactivates, keep status and validation in sync.
+        mergedMetadata.adminValidated = false;
+        mergedMetadata.adminValidatedAt = undefined;
+      }
     }
 
     await this.repository.updateOne(id, {
