@@ -300,7 +300,7 @@ export class FurnitureController {
         !existing.metadata?.adminValidated
       ) {
         throw new ForbiddenException(
-          "Ce meuble doit d'abord être validé par un admin avant activation.",
+          "Ce meuble n'est pas encore validé.",
         );
       }
     }

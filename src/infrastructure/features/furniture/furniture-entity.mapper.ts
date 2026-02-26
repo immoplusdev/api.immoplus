@@ -18,6 +18,8 @@ export class FurnitureEntityMapper implements IMapper<
       types?: string[];
       categories?: string[];
       etat?: "neuf" | "reconditionne" | "occasion";
+      adminValidated?: boolean;
+      adminValidatedAt?: string;
     };
 
     const normalizedType =
@@ -42,6 +44,8 @@ export class FurnitureEntityMapper implements IMapper<
       etat: normalizedEtat,
       metadata: {
         colors: rawMetadata.colors,
+        adminValidated: rawMetadata.adminValidated,
+        adminValidatedAt: rawMetadata.adminValidatedAt,
       },
     });
   }
