@@ -15,6 +15,7 @@ import {
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
+import { NoContactInfo } from "@/infrastructure/decorators/no-contact-info.validator";
 
 class FurnitureMetadataDto {
   @ApiProperty({ type: [String], required: false })
@@ -28,11 +29,18 @@ export class CreateFurnitureDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @NoContactInfo({
+    message: "Le nom ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   titre: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @NoContactInfo({
+    message:
+      "La description ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   description: string;
 
   @ApiProperty()
@@ -42,11 +50,18 @@ export class CreateFurnitureDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @NoContactInfo({
+    message: "Le type ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   type: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @NoContactInfo({
+    message:
+      "La catégorie ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   category: string;
 
   @ApiProperty({ enum: ["neuf", "reconditionne", "occasion"] })
@@ -57,6 +72,10 @@ export class CreateFurnitureDto {
   @ApiProperty({ format: "Abidjan, Cocody..." })
   @IsNotEmpty()
   @IsString()
+  @NoContactInfo({
+    message:
+      "L'adresse ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   adresse: string;
 
   @ApiProperty({ format: "uuid" })

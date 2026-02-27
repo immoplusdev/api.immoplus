@@ -12,6 +12,7 @@ import {
 } from "class-validator";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
+import { NoContactInfo } from "@/infrastructure/decorators/no-contact-info.validator";
 
 export class CreateResidenceDto {
   @ApiProperty({ format: "uuid" })
@@ -20,6 +21,9 @@ export class CreateResidenceDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @NoContactInfo({
+    message: "Le nom ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   nom: string;
 
   @ApiProperty({ enum: TypeResidence, enumName: "TypeResidence" })
@@ -28,6 +32,10 @@ export class CreateResidenceDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @NoContactInfo({
+    message:
+      "La description ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   description: string;
 
   @ApiProperty()
@@ -36,6 +44,10 @@ export class CreateResidenceDto {
 
   @ApiProperty({ format: "Abidjan, Cocody... " })
   @IsNotEmpty()
+  @NoContactInfo({
+    message:
+      "L'adresse ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   adresse?: string;
 
   @ApiProperty({ format: "uuid" })
@@ -108,8 +120,6 @@ export class CreateResidenceDto {
 
   @ApiProperty()
   @IsOptional()
-  reglesSupplementaires?: string;
-
   @ApiProperty({ format: "uuid" })
   @IsOptional()
   proprietaire?: string;

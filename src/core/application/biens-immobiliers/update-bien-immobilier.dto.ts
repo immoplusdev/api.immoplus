@@ -9,6 +9,7 @@ import { IsIn, IsOptional } from "class-validator";
 import { GeoJsonPointDto } from "@/core/application/common/dto";
 import { GeoJsonPoint } from "@/core/domain/map";
 import { AmentityDto } from "@/core/application/biens-immobiliers";
+import { NoContactInfo } from "@/infrastructure/decorators/no-contact-info.validator";
 
 export class UpdateBienImmobilierDto {
   @ApiProperty({ format: "uuid" })
@@ -17,6 +18,9 @@ export class UpdateBienImmobilierDto {
 
   @ApiProperty()
   @IsOptional()
+  @NoContactInfo({
+    message: "Le nom ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   nom: string;
 
   @ApiProperty({ enum: TypeBienImmobilier, enumName: "TypeBienImmobilier" })
@@ -30,6 +34,10 @@ export class UpdateBienImmobilierDto {
 
   @ApiProperty()
   @IsOptional()
+  @NoContactInfo({
+    message:
+      "La description ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   description: string;
 
   @ApiProperty({ type: () => AmentityDto, isArray: true })

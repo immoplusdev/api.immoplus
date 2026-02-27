@@ -6,6 +6,7 @@ import { FurnitureRepository } from "./furniture.repository";
 import { FurnitureController } from "./furniture.controller";
 import { CreateFurnitureCommandHandler } from "@/core/application/furniture";
 import { UserModule } from "@/infrastructure/features/users";
+import { NoContactInfoConstraint } from "@/infrastructure/decorators/no-contact-info.validator";
 
 const queryHandlers = [];
 const commandHandlers = [CreateFurnitureCommandHandler];
@@ -26,7 +27,8 @@ const providers: Provider[] = [
     ...queryHandlers,
     ...commandHandlers,
     ...eventHandlers,
+    NoContactInfoConstraint,
   ],
-  exports: [...providers],
+  exports: [...providers, NoContactInfoConstraint],
 })
 export class FurnitureModule {}

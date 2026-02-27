@@ -12,6 +12,7 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { NotificationModule } from "@/infrastructure/features/notifications";
 import { GlobalizationModule } from "@/infrastructure/features/globalization";
 import { UserModule } from "@/infrastructure/features/users";
+import { NoContactInfoConstraint } from "@/infrastructure/decorators/no-contact-info.validator";
 
 const queryHandler = [];
 const commandHandlers = [
@@ -41,7 +42,8 @@ const providers: Provider[] = [
     ...queryHandler,
     ...commandHandlers,
     ...eventHandlers,
+    NoContactInfoConstraint,
   ],
-  exports: [...providers],
+  exports: [...providers, NoContactInfoConstraint],
 })
 export class ResidenceModule {}

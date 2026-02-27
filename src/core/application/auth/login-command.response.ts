@@ -27,10 +27,10 @@ export class WrapperResponseLoginCommandResponseDto extends WrapperResponseDto<L
   }
 }
 
-export class WrapperResponseLoginCommandResponseDtoMapper
-  implements
-    IMapper<LoginCommandResponse, WrapperResponseLoginCommandResponseDto>
-{
+export class WrapperResponseLoginCommandResponseDtoMapper implements IMapper<
+  LoginCommandResponse,
+  WrapperResponseLoginCommandResponseDto
+> {
   mapFrom(param: LoginCommandResponse): WrapperResponseLoginCommandResponseDto {
     param.user = new UserDtoMapper().mapFrom(param.user);
     return new WrapperResponseLoginCommandResponseDto(param);

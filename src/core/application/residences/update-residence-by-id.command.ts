@@ -13,6 +13,7 @@ import { GeoJsonPoint } from "@/core/domain/map";
 import { CommoditeDto, PieceDto } from "@/infrastructure/features/residences";
 import { Piece } from "@/core/domain/residences/piece.model";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
+import { NoContactInfo } from "@/infrastructure/decorators/no-contact-info.validator";
 
 export class UpdateResidenceByIdCommand {
   @IsOptional()
@@ -28,6 +29,9 @@ export class UpdateResidenceByIdCommand {
 
   @ApiProperty()
   @IsOptional()
+  @NoContactInfo({
+    message: "Le nom ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   nom: string;
 
   @ApiProperty({ enum: TypeResidence })
@@ -46,6 +50,10 @@ export class UpdateResidenceByIdCommand {
   @ApiProperty()
   @IsNotEmpty()
   @IsOptional()
+  @NoContactInfo({
+    message:
+      "La description ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   description: string;
 
   @ApiProperty()
@@ -56,6 +64,10 @@ export class UpdateResidenceByIdCommand {
   @ApiProperty({ format: "Abidjan, Cocody... " })
   @IsNotEmpty()
   @IsOptional()
+  @NoContactInfo({
+    message:
+      "L'adresse ne doit pas contenir d'email ou de numéro de téléphone.",
+  })
   adresse?: string;
 
   @ApiProperty({ format: "uuid" })
