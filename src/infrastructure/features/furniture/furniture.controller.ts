@@ -35,17 +35,23 @@ import {
   RequiredPermissions,
   RequiredRoles,
 } from "@/infrastructure/decorators";
-import { UserRole } from "@/core/domain/roles";
+import { Role, UserRole } from "@/core/domain/roles";
 import {
   PermissionAction,
   PermissionCollection,
 } from "@/core/domain/permissions";
-import { JwtAuthGuard } from "@/infrastructure/features/auth";
+import {
+  JwtAuthGuard,
+  OptionalJwtAuthGuard,
+} from "@/infrastructure/features/auth";
 import { WrapperResponseDtoMapper } from "@/lib/responses";
 import { SearchItemsParamsDto } from "@/infrastructure/http";
+import { addConditionsToWhereClause } from "@/infrastructure/helpers";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
+import { AccessForbiddenException } from "@/core/domain/auth";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { IUserRepository } from "@/core/domain/users";
+import { FurnitureStatus } from "@/core/domain/furniture";
 
 @ApiTags("Furniture")
 @Controller("furnitures")
@@ -118,6 +124,7 @@ export class FurnitureController {
   async create(
     @Body() payload: CreateFurnitureDto,
     @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
     @UploadedFiles() uploadedImages?: Express.Multer.File[],
   ) {
     this.logger.debug("Create furniture request", {
@@ -127,9 +134,20 @@ export class FurnitureController {
       uploadedImagesCount: uploadedImages?.length ?? 0,
     });
 
+    const isAdmin = Boolean(userRole?.hasAdminAccess());
+    const status = isAdmin
+      ? (payload.status ?? FurnitureStatus.Active)
+      : FurnitureStatus.Inactive;
+
     const furniture = await this.commandBus.execute(
       new CreateFurnitureCommand({
         ...payload,
+        status,
+        metadata: {
+          ...(payload?.metadata || {}),
+          adminValidated: isAdmin,
+          adminValidatedAt: isAdmin ? new Date().toISOString() : undefined,
+        },
         ownerId: userId,
       }),
     );
@@ -137,10 +155,36 @@ export class FurnitureController {
     return this.responseMapper.mapFrom(furniture);
   }
 
-
   @ApiResponse({ type: WrapperResponseFurnitureBatchDto })
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth()
   @Get()
-  async readMany(@Query() params: SearchItemsParamsDto) {
+  async readMany(
+    @Query() params: SearchItemsParamsDto,
+    @CurrentUser("id") userId?: string,
+    @CurrentUser("role") userRole?: Role,
+  ) {
+    const isProRole =
+      userRole?.id === UserRole.ProEntreprise ||
+      userRole?.id === UserRole.ProParticulier;
+    const isAdmin = Boolean(userRole?.hasAdminAccess());
+
+    // Keep endpoint unchanged for Flutter:
+    // - Pro with token: only own furnitures
+    // - Admin: all furnitures
+    // - Public/no token: only active furnitures
+    if (isProRole && userId && !isAdmin) {
+      params._where = addConditionsToWhereClause(
+        [{ _field: "owner.id", _op: "eq", _val: userId }],
+        params._where,
+      );
+    } else if (!isAdmin) {
+      params._where = addConditionsToWhereClause(
+        [{ _field: "status", _op: "eq", _val: FurnitureStatus.Active }],
+        params._where,
+      );
+    }
+
     const result = await this.repository.findByQuery(params as any);
     const ownerIds = [
       ...new Set(
@@ -169,22 +213,37 @@ export class FurnitureController {
     return this.responseMapper.mapFromQueryResult(result);
   }
 
-
   @ApiResponse({ type: WrapperResponseFurnitureDto })
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiBearerAuth()
   @Get(":id")
-  async readOne(@Param("id") id: string) {
+  async readOne(
+    @Param("id") id: string,
+    @CurrentUser("id") userId?: string,
+    @CurrentUser("role") userRole?: Role,
+  ) {
     const furniture = await this.repository.findOne(id);
     if (!furniture) throw new ItemNotFoundException();
+
     const resolvedOwnerId = furniture.ownerId || furniture.owner;
+    const isOwner = Boolean(userId && resolvedOwnerId === userId);
+    const canSeeNonPublic = Boolean(userRole?.hasAdminAccess() || isOwner);
+
+    // Prevent data leak: only owner/admin can access non-public furnitures.
+    if (furniture.status !== FurnitureStatus.Active && !canSeeNonPublic)
+      throw new ItemNotFoundException();
+
+    // Keep previous behavior for active furnitures and owner/admin views.
     if (resolvedOwnerId && !furniture.ownerPhoneNumber)
-      furniture.ownerPhoneNumber = await this.resolveOwnerPhoneNumber(
-        resolvedOwnerId,
-      );
+      furniture.ownerPhoneNumber =
+        await this.resolveOwnerPhoneNumber(resolvedOwnerId);
     if (!furniture.ownerPhoneNumber) furniture.ownerPhoneNumber = null;
     return this.responseMapper.mapFrom(furniture);
   }
 
-  private async resolveOwnerPhoneNumber(ownerId: string): Promise<string | null> {
+  private async resolveOwnerPhoneNumber(
+    ownerId: string,
+  ): Promise<string | null> {
     const owner = await this.usersRepository.findOne(ownerId, {
       fields: ["id", "phoneNumber"],
       relations: [],
@@ -210,11 +269,65 @@ export class FurnitureController {
   async update(
     @Param("id") id: string,
     @Body() payload: Partial<CreateFurnitureDto>,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
   ) {
     const existing = await this.repository.findOne(id);
     if (!existing) throw new ItemNotFoundException();
 
-    await this.repository.updateOne(id, payload as any);
+    const existingOwnerId = existing.ownerId || existing.owner;
+    const isOwner = existingOwnerId === userId;
+    const isAdmin = Boolean(userRole?.hasAdminAccess());
+
+    if (!isAdmin && !isOwner) {
+      throw new AccessForbiddenException().setMessage(
+        "Vous ne pouvez modifier que vos propres meubles.",
+      );
+    }
+
+    if (!isAdmin && payload.status) {
+      if (
+        payload.status !== FurnitureStatus.Active &&
+        payload.status !== FurnitureStatus.Inactive
+      ) {
+        throw new AccessForbiddenException().setMessage(
+          "Le statut autorisé pour un pro est active ou inactive.",
+        );
+      }
+
+      if (
+        payload.status === FurnitureStatus.Active &&
+        !existing.metadata?.adminValidated
+      ) {
+        const response = this.responseMapper.mapFrom(existing) as any;
+        return {
+          ...response,
+          message: "Ce meuble n'est pas encore validé.",
+          success: false,
+        };
+      }
+    }
+
+    const mergedMetadata = {
+      ...(existing.metadata || {}),
+      ...(payload.metadata || {}),
+    };
+
+    if (isAdmin && payload.status) {
+      if (payload.status === FurnitureStatus.Active) {
+        mergedMetadata.adminValidated = true;
+        mergedMetadata.adminValidatedAt = new Date().toISOString();
+      } else {
+        // If admin invalidates/deactivates, keep status and validation in sync.
+        mergedMetadata.adminValidated = false;
+        mergedMetadata.adminValidatedAt = undefined;
+      }
+    }
+
+    await this.repository.updateOne(id, {
+      ...payload,
+      metadata: mergedMetadata,
+    } as any);
     const updated = await this.repository.findOne(id);
     return this.responseMapper.mapFrom(updated);
   }
@@ -232,9 +345,22 @@ export class FurnitureController {
   ])
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async delete(@Param("id") id: string) {
+  async delete(
+    @Param("id") id: string,
+    @CurrentUser("id") userId: string,
+    @CurrentUser("role") userRole: Role,
+  ) {
     const existing = await this.repository.findOne(id);
     if (!existing) throw new ItemNotFoundException();
+
+    const existingOwnerId = existing.ownerId || existing.owner;
+    const isOwner = existingOwnerId === userId;
+    const isAdmin = Boolean(userRole?.hasAdminAccess());
+    if (!isAdmin && !isOwner) {
+      throw new AccessForbiddenException().setMessage(
+        "Vous ne pouvez supprimer que vos propres meubles.",
+      );
+    }
 
     await this.repository.deleteOne(id);
     return { message: "Furniture deleted successfully" };

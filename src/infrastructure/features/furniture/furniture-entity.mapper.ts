@@ -3,9 +3,10 @@ import { FurnitureEntity } from "./furniture.entity";
 import { Furniture } from "@/core/domain/furniture";
 import { getIdFromObject } from "@/lib/ts-utilities/mapping";
 
-export class FurnitureEntityMapper
-  implements IMapper<FurnitureEntity, Furniture>
-{
+export class FurnitureEntityMapper implements IMapper<
+  FurnitureEntity,
+  Furniture
+> {
   mapFrom(param: FurnitureEntity): Furniture {
     const ownerId = getIdFromObject(param.owner);
     const ownerPhoneNumber =
@@ -17,14 +18,18 @@ export class FurnitureEntityMapper
       types?: string[];
       categories?: string[];
       etat?: "neuf" | "reconditionne" | "occasion";
+      adminValidated?: boolean;
+      adminValidatedAt?: string;
     };
 
-    const normalizedType = param.type ?? rawMetadata.types?.[0] ?? "non-specifie";
+    const normalizedType =
+      param.type ?? rawMetadata.types?.[0] ?? "non-specifie";
     const normalizedCategory =
       param.category ?? rawMetadata.categories?.[0] ?? "non-specifie";
-    const normalizedEtat = (param.etat ??
-      rawMetadata.etat ??
-      "occasion") as "neuf" | "reconditionne" | "occasion";
+    const normalizedEtat = (param.etat ?? rawMetadata.etat ?? "occasion") as
+      | "neuf"
+      | "reconditionne"
+      | "occasion";
 
     return new Furniture({
       ...param,
@@ -39,6 +44,8 @@ export class FurnitureEntityMapper
       etat: normalizedEtat,
       metadata: {
         colors: rawMetadata.colors,
+        adminValidated: rawMetadata.adminValidated,
+        adminValidatedAt: rawMetadata.adminValidatedAt,
       },
     });
   }
