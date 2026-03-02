@@ -90,6 +90,9 @@ export class FurnitureEntity {
   @Column({ name: "views_count", type: "int", default: 0 })
   viewsCount: number;
 
+  @Column({ name: "score", type: "int", default: 0 })
+  score: number;
+
   // --- Status ---
 
   @Column({

@@ -73,7 +73,12 @@ export class FurnitureRepository implements IFurnitureRepository {
     query?: SearchItemsParams,
     options?: FindItemOptions,
   ): Promise<WrapperResponse<Furniture[]>> {
-    return await this.repository.findByQuery(query, options);
+    const queryWithDefaultOrder: SearchItemsParams = {
+      ...query,
+      _order_by: query?._order_by ?? "score",
+      _order_dir: query?._order_dir ?? "desc",
+    };
+    return await this.repository.findByQuery(queryWithDefaultOrder, options);
   }
 
   async findOne(id: string, options?: FindItemOptions): Promise<Furniture> {
