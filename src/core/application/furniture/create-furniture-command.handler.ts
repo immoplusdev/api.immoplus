@@ -1,27 +1,38 @@
 import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
-import { Inject, Logger } from "@nestjs/common";
+import { BadRequestException, Inject, Logger } from "@nestjs/common";
 import { CreateFurnitureCommand } from "./create-furniture.command";
 import { Deps } from "@/core/domain/common/ioc";
 import { IFurnitureRepository } from "@/core/domain/furniture/i-furniture.repository";
 import { Furniture } from "@/core/domain/furniture/furniture.model";
 import { FurnitureStatus } from "@/core/domain/furniture";
+import { IFileRepository } from "@/core/domain/files";
 
 @CommandHandler(CreateFurnitureCommand)
-export class CreateFurnitureCommandHandler
-  implements ICommandHandler<CreateFurnitureCommand>
-{
+export class CreateFurnitureCommandHandler implements ICommandHandler<CreateFurnitureCommand> {
   private readonly logger = new Logger(CreateFurnitureCommandHandler.name);
 
   constructor(
     @Inject(Deps.FurnitureRepository)
     private readonly furnitureRepository: IFurnitureRepository,
+    @Inject(Deps.FileRepository)
+    private readonly fileRepository: IFileRepository,
     private readonly eventBus: EventBus,
   ) {
     //
   }
 
   async execute(command: CreateFurnitureCommand): Promise<Furniture> {
-    // ✅ Validation des données ultra ultra strictes
+    if (command.video) {
+      const file = await this.fileRepository
+        .findOne(command.video)
+        .catch(() => null);
+      if (!file) {
+        throw new BadRequestException(
+          "Fichier vidéo introuvable. Uploadez la vidéo via POST /files/public et utilisez l'id retourné, ou omettez le champ video.",
+        );
+      }
+    }
+
     this.logger.debug("CreateFurnitureCommand received", {
       ownerId: command.ownerId,
       lat: command.lat,
@@ -55,7 +66,7 @@ export class CreateFurnitureCommandHandler
 
     const furniture = await this.furnitureRepository.createOne(furnitureData);
 
-    // TODO: ACTIVER LA PUBLICATION DE L'EVENEMENT SUR L'EVENTBUS SI JE SUIS PRET 
+    // TODO: ACTIVER LA PUBLICATION DE L'EVENEMENT SUR L'EVENTBUS SI JE SUIS PRET
     // this.eventBus.publish(new FurnitureCreatedEvent({ id: furniture.id, ownerId: command.ownerId }));
 
     return furniture;

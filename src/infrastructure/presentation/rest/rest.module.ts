@@ -15,10 +15,10 @@ import { DemandeVisiteModule } from "@/infrastructure/features/demandes-visites"
 import { PaymentModule } from "@/infrastructure/features/payments";
 import { JwtAuthGuard, JwtStrategy } from "@/infrastructure/features/auth";
 import { WalletModule } from "@/infrastructure/features/wallets/wallet.module";
-import { Transfer } from "@/core/domain/transfers/transfer.model";
 import { TransfersModule } from "@/infrastructure/features/transfers/transfers.module";
 import { GatewayModule } from "@/infrastructure/features/gateways/gateway.module";
 import { FurnitureModule } from "@/infrastructure/features/furniture";
+import { FeedModule } from "@/infrastructure/features/feed";
 
 export const controllers = [];
 
@@ -36,10 +36,10 @@ const modules = [
   DemandeVisiteModule,
   PaymentModule,
   FurnitureModule,
+  FeedModule,
   WalletModule,
   TransfersModule,
   GatewayModule,
-  
 ];
 
 @Module({
