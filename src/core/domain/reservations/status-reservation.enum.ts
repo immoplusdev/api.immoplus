@@ -3,4 +3,10 @@ export enum StatusReservation {
   Terminee = "terminee",
   Valide = "valide",
   EnCours = "en_cours",
+  EnAttenteReponseProprietaire = "en_attente_reponse_proprietaire",
+  EnAttentePaiementClient = "en_attente_paiement_client",
+  ProprietaireAnnuleReservation = "proprietaire_annule_reservation",
+  ProprietaireSansReponse = "proprietaire_sans_reponse",
+  clientAnnuleReservation = "client_annule_reservation",
+  ClientSansReponse = "client_sans_reponse",
 }
