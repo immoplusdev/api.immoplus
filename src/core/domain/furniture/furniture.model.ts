@@ -24,6 +24,7 @@ export class Furniture {
   video?: string;
   viewsCount: number;
   status: FurnitureStatus;
+  codeFurniture?: string;
   metadata?: FurnitureMetadata;
   createdAt?: Date;
   updatedAt?: Date;
