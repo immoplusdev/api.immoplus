@@ -90,6 +90,9 @@ export class FurnitureEntity {
   @Column({ name: "views_count", type: "int", default: 0 })
   viewsCount: number;
 
+  @Column({ name: "score", type: "int", default: 0 })
+  score: number;
+
   // --- Status ---
 
   @Column({
@@ -98,6 +101,16 @@ export class FurnitureEntity {
     default: FurnitureStatus.Active,
   })
   status: FurnitureStatus;
+
+  // --- Code unique ---
+
+  @Column({
+    name: "code_furniture",
+    type: "varchar",
+    length: 6,
+    nullable: true,
+  })
+  codeFurniture?: string;
 
   // --- Metadata ---
 
