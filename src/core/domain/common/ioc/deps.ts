@@ -20,6 +20,8 @@ export enum Deps {
   TransferRepository = "TransferRepository",
   GatewayRepository = "GatewayRepository",
   FurnitureRepository = "FurnitureRepository",
+  FeedVideoRepository = "FeedVideoRepository",
+  VideoLikeRepository = "VideoLikeRepository",
 
   // Services
   LoggerService = "LoggerService",
