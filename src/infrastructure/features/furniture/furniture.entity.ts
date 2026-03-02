@@ -99,6 +99,16 @@ export class FurnitureEntity {
   })
   status: FurnitureStatus;
 
+  // --- Code unique ---
+
+  @Column({
+    name: "code_furniture",
+    type: "varchar",
+    length: 6,
+    nullable: true,
+  })
+  codeFurniture?: string;
+
   // --- Metadata ---
 
   @Column({ name: "metadata", type: "json", nullable: true })

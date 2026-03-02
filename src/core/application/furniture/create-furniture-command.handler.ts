@@ -5,11 +5,10 @@ import { Deps } from "@/core/domain/common/ioc";
 import { IFurnitureRepository } from "@/core/domain/furniture/i-furniture.repository";
 import { Furniture } from "@/core/domain/furniture/furniture.model";
 import { FurnitureStatus } from "@/core/domain/furniture";
+import { generateFurnitureCode } from "@/lib/ts-utilities/strings/string-generator";
 
 @CommandHandler(CreateFurnitureCommand)
-export class CreateFurnitureCommandHandler
-  implements ICommandHandler<CreateFurnitureCommand>
-{
+export class CreateFurnitureCommandHandler implements ICommandHandler<CreateFurnitureCommand> {
   private readonly logger = new Logger(CreateFurnitureCommandHandler.name);
 
   constructor(
@@ -47,6 +46,7 @@ export class CreateFurnitureCommandHandler
       images: command.images,
       video: command.video,
       status: command.status ?? FurnitureStatus.Inactive,
+      codeFurniture: generateFurnitureCode(),
       metadata: command.metadata,
       createdBy: command.ownerId,
     };
@@ -55,7 +55,7 @@ export class CreateFurnitureCommandHandler
 
     const furniture = await this.furnitureRepository.createOne(furnitureData);
 
-    // TODO: ACTIVER LA PUBLICATION DE L'EVENEMENT SUR L'EVENTBUS SI JE SUIS PRET 
+    // TODO: ACTIVER LA PUBLICATION DE L'EVENEMENT SUR L'EVENTBUS SI JE SUIS PRET
     // this.eventBus.publish(new FurnitureCreatedEvent({ id: furniture.id, ownerId: command.ownerId }));
 
     return furniture;
