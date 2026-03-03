@@ -20,6 +20,8 @@ export class Reservation {
   notes: string;
   clientPhoneNumber: string;
   codeReservation: string;
+  delaisProprietaireReponse?: Date;
+  delaisPaiementClient?: Date;
   createdAt?: Date;
   updatedAt?: Date;
   // deletedAt?: Date;

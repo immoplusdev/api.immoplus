@@ -7,13 +7,10 @@ import { Deps } from "@/core/domain/common/ioc";
 import { omitObjectProperties } from "@/lib/ts-utilities";
 import { StatusValidationBienImmobilier } from "@/core/domain/biens-immobiliers";
 import { ItemNotFoundException } from "@/core/domain/common/exceptions";
-import { AccessForbiddenException } from "@/core/domain/auth";
 import { ResidenceStatusValidationUpdatedEvent } from "@/core/application/residences/residence-status-validation-updated.event";
 
 @CommandHandler(UpdateResidenceByIdCommand)
-export class UpdateResidenceByIdCommandHandler
-  implements ICommandHandler<UpdateResidenceByIdCommand>
-{
+export class UpdateResidenceByIdCommandHandler implements ICommandHandler<UpdateResidenceByIdCommand> {
   constructor(
     @Inject(Deps.ResidenceRepository)
     private readonly repository: IResidenceRepository,

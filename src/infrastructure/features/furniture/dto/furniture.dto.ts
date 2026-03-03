@@ -34,7 +34,6 @@ export class FurnitureDto {
   @ApiProperty()
   lng?: number;
 
-
   @ApiProperty()
   titre: string;
 
@@ -59,17 +58,17 @@ export class FurnitureDto {
   @ApiProperty({ format: "uuid" })
   video?: string;
 
-
   @ApiProperty()
   viewsCount: number;
+
+  @ApiProperty()
+  score: number;
 
   @ApiProperty({ enum: FurnitureStatus, enumName: "FurnitureStatus" })
   status: FurnitureStatus;
 
-
   @ApiProperty()
   metadata?: FurnitureMetadata;
-
 
   @ApiProperty()
   createdAt?: Date;

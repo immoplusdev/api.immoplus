@@ -24,3 +24,7 @@ export const generateRandomString = (length: number, type = "*") => {
 export const generateReservationCode = (): string => {
   return generateRandomString(6, "alphanum").toUpperCase();
 };
+
+export const generateFurnitureCode = (): string => {
+  return generateRandomString(6, "alphanum").toUpperCase();
+};

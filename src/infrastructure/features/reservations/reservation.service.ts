@@ -150,62 +150,66 @@ export class ReservationService {
     reservationId: string,
     operator?: PaymentMethod,
   ) {
-    console.log("Reversement pour reservation : ", reservationId);
-    const reservation: Reservation =
-      await this.reservationRepository.findOne(reservationId);
+    try {
+      console.log("Reversement pour reservation : ", reservationId);
+      const reservation: Reservation =
+        await this.reservationRepository.findOne(reservationId);
+      if (reservation) {
+        console.log("Reservation recuperée : ", reservation.id);
+        // Si le montant paye est superieur au 90% du montant total de la reservation
+        const residenceId =
+          typeof reservation.residence == "string"
+            ? reservation.residence
+            : reservation.residence.id;
+        const residence: Residence =
+          await this.residenceRepository.findOne(residenceId);
 
-    if (reservation) {
-      // Si le montant paye est superieur au 90% du montant total de la reservation
-      const residenceId =
-        typeof reservation.residence == "string"
-          ? reservation.residence
-          : reservation.residence.id;
-      const residence: Residence =
-        await this.residenceRepository.findOne(residenceId);
+        if (residence) {
+          const refundDate = new Date(reservation.dateDebut); // Date de debut de la reservation
+          refundDate.setDate(refundDate.getDate() + 1); // Ajouter 1 jour a la date
 
-      if (residence) {
-        const refundDate = new Date(reservation.dateDebut); // Date de debut de la reservation
-        refundDate.setDate(refundDate.getDate() + 1); // Ajouter 1 jour a la date
-
-        // Calcul montant à reverser
-        const amountToRefund =
-          reservation.montantTotalReservation - reservation.montantCommission;
-        if (amountToRefund <= 0) return;
-        // Crediter le proprietaire
-        const note = "Crédit bloqué en attente de validation";
-        const proprietaireWallet = await this.walletService.creditWallet(
-          residence.proprietaire,
-          amountToRefund,
-          DEFAULT_CURRENCY,
-          TransactionSource.RESERVATION,
-          reservation.id,
-          operator,
-          note,
-          refundDate,
-        );
-        if (proprietaireWallet) {
-          // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
-          await this.notificationService.sendNotification({
-            userId: residence.proprietaire as string,
-            subject: this.globalizationService.t(
-              "all.notifications.wallets.paiement_block_valide_pro.subject",
-            ),
-            message: this.globalizationService.t(
-              "all.notifications.wallets.paiement_block_valide_pro.message",
-            ),
-            skipInAppNotification: false,
-            sendMail: true,
-            sendSms: true,
-            returnUrl: ``,
-            data: {
-              type: PushNotificationType.Wallet,
-              id: proprietaireWallet.id,
-              wallet: PushNotificationType.Wallet,
-              walletId: proprietaireWallet.id,
-            },
-          });
+          // Calcul montant à reverser
+          const amountToRefund =
+            reservation.montantTotalReservation - reservation.montantCommission;
+          if (amountToRefund <= 0) return;
+          // Crediter le proprietaire
+          const note = "Crédit bloqué en attente de validation";
+          const proprietaireWallet = await this.walletService.creditWallet(
+            residence.proprietaire,
+            amountToRefund,
+            DEFAULT_CURRENCY,
+            TransactionSource.RESERVATION,
+            reservation.id,
+            operator,
+            note,
+            refundDate,
+          );
+          if (proprietaireWallet) {
+            // TODO : Envoyer une notification au proprietaire pour lui indiquer que son solde a bien ete crediter
+            await this.notificationService.sendNotification({
+              userId: residence.proprietaire as string,
+              subject: this.globalizationService.t(
+                "all.notifications.wallets.paiement_block_valide_pro.subject",
+              ),
+              message: this.globalizationService.t(
+                "all.notifications.wallets.paiement_block_valide_pro.message",
+              ),
+              skipInAppNotification: false,
+              sendMail: true,
+              sendSms: true,
+              returnUrl: ``,
+              data: {
+                type: PushNotificationType.Wallet,
+                id: proprietaireWallet.id,
+                wallet: PushNotificationType.Wallet,
+                walletId: proprietaireWallet.id,
+              },
+            });
+          }
         }
       }
+    } catch (error) {
+      this.loggerService.error("Reversement Catech error: ", error);
     }
   }
 

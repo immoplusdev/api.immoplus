@@ -6,6 +6,7 @@ import { IFurnitureRepository } from "@/core/domain/furniture/i-furniture.reposi
 import { Furniture } from "@/core/domain/furniture/furniture.model";
 import { FurnitureStatus } from "@/core/domain/furniture";
 import { IFileRepository } from "@/core/domain/files";
+import { generateFurnitureCode } from "@/lib/ts-utilities/strings/string-generator";
 
 @CommandHandler(CreateFurnitureCommand)
 export class CreateFurnitureCommandHandler implements ICommandHandler<CreateFurnitureCommand> {
@@ -58,6 +59,7 @@ export class CreateFurnitureCommandHandler implements ICommandHandler<CreateFurn
       images: command.images,
       video: command.video,
       status: command.status ?? FurnitureStatus.Inactive,
+      codeFurniture: generateFurnitureCode(),
       metadata: command.metadata,
       createdBy: command.ownerId,
     };

@@ -105,6 +105,20 @@ export class ReservationEntity {
   })
   codeReservation: string;
 
+  @Column({
+    name: "delais_pro_reponse",
+    type: "timestamp",
+    nullable: true,
+  })
+  delaisProprietaireReponse?: Date;
+
+  @Column({
+    name: "delais_paiement_client",
+    type: "timestamp",
+    nullable: true,
+  })
+  delaisPaiementClient?: Date;
+
   @CreateDateColumn({ name: "created_at" })
   createdAt?: Date;
   @UpdateDateColumn({ name: "updated_at" })

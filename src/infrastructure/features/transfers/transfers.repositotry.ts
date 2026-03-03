@@ -17,7 +17,7 @@ export class TransfersRepository implements ITransferRepository {
       dataSource,
       TransfersEntity,
       this.relations,
-    ).setLoadRelationIds(true);
+    ).setLoadRelationIds(false);
   }
 
   async createMany(payload: Partial<Transfer>[]): Promise<Transfer[]> {
