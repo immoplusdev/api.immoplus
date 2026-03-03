@@ -4,6 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { randomBytes } from "crypto";
 import type { Redis } from "ioredis";
 import { Deps } from "@/core/domain/common/ioc";
+import { FeedVideoEntity } from "@/infrastructure/features/feed/feed-video.entity";
 import { ShortLinkEntity } from "./short-link.entity";
 
 const SHORT_CACHE_TTL = 60 * 60 * 24; // 24h en secondes
@@ -11,6 +12,7 @@ const SHORT_CACHE_TTL = 60 * 60 * 24; // 24h en secondes
 @Injectable()
 export class ShortService {
   private readonly repo: Repository<ShortLinkEntity>;
+  private readonly feedVideoRepo: Repository<FeedVideoEntity>;
   private readonly appUrl: string;
 
   constructor(
@@ -21,12 +23,17 @@ export class ShortService {
     private readonly config: ConfigService,
   ) {
     this.repo = dataSource.getRepository(ShortLinkEntity);
+    this.feedVideoRepo = dataSource.getRepository(FeedVideoEntity);
     this.appUrl = this.config.get<string>("APP_URL", "http://localhost:3000");
   }
 
   async create(
     feedVideoId: string,
   ): Promise<{ shortUrl: string; code: string }> {
+    const video = await this.feedVideoRepo.findOneBy({ id: feedVideoId });
+    if (!video)
+      throw new NotFoundException(`Vidéo '${feedVideoId}' introuvable`);
+
     let code: string;
     let exists: ShortLinkEntity | null;
 
