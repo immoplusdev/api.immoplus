@@ -15,7 +15,7 @@ services:
       - DB_MIGRATION_RUN=true
 
   minio:
-    image: minio/minio:latest
+    image: docker.io/bitnami/minio:2022
     container_name: ${MINIO_CONTAINER_NAME}
     restart: always
     env_file:
