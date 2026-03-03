@@ -18,7 +18,7 @@ COPY --chown=node:node . .
 
 USER node
 
-###################
+####################
 # BUILD STAGE POUR LA COMPILATION
 ###################
 FROM node:${NODE_VERSION} AS build
