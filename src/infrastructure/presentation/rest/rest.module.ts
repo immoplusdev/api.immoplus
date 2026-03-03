@@ -19,6 +19,7 @@ import { TransfersModule } from "@/infrastructure/features/transfers/transfers.m
 import { GatewayModule } from "@/infrastructure/features/gateways/gateway.module";
 import { FurnitureModule } from "@/infrastructure/features/furniture";
 import { FeedModule } from "@/infrastructure/features/feed";
+import { ShortModule } from "@/infrastructure/features/short/short.module";
 
 export const controllers = [];
 
@@ -37,6 +38,7 @@ const modules = [
   PaymentModule,
   FurnitureModule,
   FeedModule,
+  ShortModule,
   WalletModule,
   TransfersModule,
   GatewayModule,
