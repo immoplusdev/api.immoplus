@@ -304,6 +304,17 @@ export class FileController {
     return res.redirect(url);
   }
 
+  /** Sert un fichier S3 directement par sa cle (ex: thumbnails/uuid.webp).
+   *  Utile pour les fichiers uploadés directement par le worker (sans record DB). */
+  @Get("raw/public/*")
+  async getRawPublicFileByKey(
+    @Param("0") s3Key: string,
+    @Res() res: Response,
+  ): Promise<any> {
+    const url = await this.service.getFile(s3Key);
+    return res.redirect(url);
+  }
+
   @Get("videos/raw/public/:id")
   @Header("Content-Type", "video/mp4")
   async getRawPublicVideo(

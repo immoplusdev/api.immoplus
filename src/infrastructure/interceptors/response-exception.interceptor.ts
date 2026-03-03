@@ -42,12 +42,14 @@ export class ResponseExceptionInterceptor implements NestInterceptor {
             // Les BaseException sont maintenant gérées par le BaseExceptionFilter
             throw err;
           } else if (err instanceof BadRequestException) {
-            console.log("err instanceof BadRequestException");
-            const errResponse = err.getResponse();
-            const exception = new FailedValidationException(
-              (errResponse as any).message[0],
-            );
-            throw exception;
+            const errResponse = err.getResponse() as {
+              message?: string | string[];
+            };
+            const msg = errResponse?.message;
+            const messageStr = Array.isArray(msg)
+              ? (msg[0] ?? msg.join(", "))
+              : (msg ?? "Requête invalide");
+            throw new FailedValidationException(messageStr);
           } else {
             if (!this.configsManagerService.isAppProfileProduction()) {
               this.loggerService.error("App Exception", err);

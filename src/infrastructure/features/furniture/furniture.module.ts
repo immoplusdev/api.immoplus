@@ -6,6 +6,7 @@ import { FurnitureRepository } from "./furniture.repository";
 import { FurnitureController } from "./furniture.controller";
 import { CreateFurnitureCommandHandler } from "@/core/application/furniture";
 import { UserModule } from "@/infrastructure/features/users";
+import { FileModule } from "@/infrastructure/features/files";
 import { NoContactInfoConstraint } from "@/infrastructure/decorators/no-contact-info.validator";
 
 const queryHandlers = [];
@@ -21,7 +22,7 @@ const providers: Provider[] = [
 
 @Module({
   controllers: [FurnitureController],
-  imports: [TypeormModule, CqrsModule, UserModule],
+  imports: [TypeormModule, CqrsModule, UserModule, FileModule],
   providers: [
     ...providers,
     ...queryHandlers,

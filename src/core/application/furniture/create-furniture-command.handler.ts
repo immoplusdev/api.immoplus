@@ -1,10 +1,11 @@
 import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
-import { Inject, Logger } from "@nestjs/common";
+import { BadRequestException, Inject, Logger } from "@nestjs/common";
 import { CreateFurnitureCommand } from "./create-furniture.command";
 import { Deps } from "@/core/domain/common/ioc";
 import { IFurnitureRepository } from "@/core/domain/furniture/i-furniture.repository";
 import { Furniture } from "@/core/domain/furniture/furniture.model";
 import { FurnitureStatus } from "@/core/domain/furniture";
+import { IFileRepository } from "@/core/domain/files";
 import { generateFurnitureCode } from "@/lib/ts-utilities/strings/string-generator";
 
 @CommandHandler(CreateFurnitureCommand)
@@ -14,13 +15,25 @@ export class CreateFurnitureCommandHandler implements ICommandHandler<CreateFurn
   constructor(
     @Inject(Deps.FurnitureRepository)
     private readonly furnitureRepository: IFurnitureRepository,
+    @Inject(Deps.FileRepository)
+    private readonly fileRepository: IFileRepository,
     private readonly eventBus: EventBus,
   ) {
     //
   }
 
   async execute(command: CreateFurnitureCommand): Promise<Furniture> {
-    // ✅ Validation des données ultra ultra strictes
+    if (command.video) {
+      const file = await this.fileRepository
+        .findOne(command.video)
+        .catch(() => null);
+      if (!file) {
+        throw new BadRequestException(
+          "Fichier vidéo introuvable. Uploadez la vidéo via POST /files/public et utilisez l'id retourné, ou omettez le champ video.",
+        );
+      }
+    }
+
     this.logger.debug("CreateFurnitureCommand received", {
       ownerId: command.ownerId,
       lat: command.lat,
