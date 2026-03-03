@@ -11,6 +11,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TransfersModule } from "./infrastructure/features/transfers/transfers.module";
 import { GlobalPipesModule } from "@/infrastructure/pipes";
 import { S3Module } from "@/infrastructure/features/files";
+import { FeedProcessorsModule } from "@/infrastructure/features/feed/feed-processors.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
@@ -32,6 +33,7 @@ const providers: Provider[] = [AppService];
     S3Module,
     RestModule,
     TransfersModule,
+    FeedProcessorsModule,
   ],
   exports: [...providers],
   providers: [...providers],
