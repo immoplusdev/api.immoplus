@@ -1,4 +1,3 @@
-version: '3.4'
 services:
   api:
     container_name: ${NEST_CONTAINER_NAME}
@@ -30,4 +29,39 @@ services:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
       - MINIO_DEFAULT_BUCKETS=files
+    command: server /data --console-address ":9001"
+
+  redis:
+    image: redis:7-alpine
+    container_name: ${REDIS_CONTAINER_NAME:-immoplus_redis}
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: >
+      redis-server
+      ${REDIS_PASSWORD:+--requirepass ${REDIS_PASSWORD}}
+    volumes:
+      - redis-data:/data
+
+  worker:
+      build:
+        dockerfile: Dockerfile.worker
+        context: .
+      container_name: ${WORKER_CONTAINER_NAME:-immoplus_worker}
+      restart: always
+      env_file:
+        - ./.env
+      environment:
+        # Utilisation des variables d'environnement définies dans ton .env
+        - REDIS_HOST=${REDIS_HOST}
+        - REDIS_PORT=${REDIS_PORT:-6379}
+        - REDIS_PASSWORD=${REDIS_PASSWORD}
+        - DB_HOST=${DB_HOST}
+        - AWS_S3_ENDPOINT=${AWS_S3_ENDPOINT}
+      depends_on:
+        - redis
+        - minio
+
+volumes:
+  redis-data:
 
