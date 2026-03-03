@@ -13,12 +13,19 @@ import { ShortController } from "./short.controller";
     {
       provide: "REDIS_CLIENT",
       inject: [ConfigService],
-      useFactory: (config: ConfigService) =>
-        new Redis({
+      useFactory: (config: ConfigService) => {
+        const url = config.get<string>("REDIS_URL");
+
+        if (url) {
+          return new Redis(url, { tls: {} });
+        }
+
+        return new Redis({
           host: config.get<string>("REDIS_HOST", "localhost"),
           port: config.get<number>("REDIS_PORT", 6379),
           password: config.get<string>("REDIS_PASSWORD"),
-        }),
+        });
+      },
     },
   ],
 })

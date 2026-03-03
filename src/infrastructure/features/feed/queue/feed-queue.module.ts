@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { BullModule } from "@nestjs/bullmq";
 import { ConfigService } from "@nestjs/config";
+import { getRedisConnection } from "@/infrastructure/redis/redis-connection";
 import {
   QUEUE_VIDEO_PROCESSING,
   QUEUE_VIEW_EVENTS,
@@ -11,11 +12,7 @@ import {
     BullModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        connection: {
-          host: config.get<string>("REDIS_HOST", "localhost"),
-          port: config.get<number>("REDIS_PORT", 6379),
-          password: config.get<string>("REDIS_PASSWORD"),
-        },
+        connection: getRedisConnection(config),
       }),
     }),
     BullModule.registerQueue(
