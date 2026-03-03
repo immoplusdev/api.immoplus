@@ -42,7 +42,7 @@ RUN npm uninstall bcrypt --force && npm install bcrypt --force
 
 ENV NODE_ENV=production
 
-###################
+####################
 # IMAGE FINALE POUR PROD
 ###################
 FROM node:${NODE_VERSION} AS production
